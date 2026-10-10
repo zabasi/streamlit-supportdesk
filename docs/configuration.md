@@ -123,6 +123,8 @@ Defaults shown are the built-in ones. `*unset*` means the key is optional and no
 |---|---|---|
 | `system` | `configs/prompts/answer_system.txt` | system prompt of the answer call |
 | `output_format` | `configs/prompts/answer_output_format.txt` | JSON shape the answer must follow |
+| `rewrite` | `configs/prompts/rewrite_system.txt` | system prompt of the query-rewriting call (QueryRewriter) |
+| `rerank` | `configs/prompts/rerank_system.txt` | system prompt of the reranking call (LLMReranker) |
 
 ### `[paths]`
 
@@ -163,6 +165,8 @@ Defaults shown are the built-in ones. `*unset*` means the key is optional and no
 | `bm25_b` | `0.75` | BM25: how much longer chunks are penalised, from 0 (not at all) to 1 |
 | `hybrid_pool` | `30` | in hybrid search, how many candidates dense and BM25 search each contribute |
 | `doc_slots` | `0` | places in the results kept for documentation chunks, used by the dense_doc_slots retriever; 0 keeps none |
+| `max_queries` | `1` | most search queries a query stage may return; their results are merged by rank fusion |
+| `rerank_snippet_chars` | `600` | characters of each candidate shown to the model by the LLMReranker |
 | `bm25_slots` | `0` | places in the results filled by BM25 (keyword) search, the rest by dense search; used by the hybrid_split retriever |
 | `rrf_k` | `60` | Reciprocal Rank Fusion constant; higher values make rank differences count less |
 

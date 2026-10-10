@@ -90,6 +90,9 @@ class Models:
 class Prompts:
     system: Path = _opt("system prompt of the answer call", Path("configs/prompts/answer_system.txt"))
     output_format: Path = _opt("JSON shape the answer must follow", Path("configs/prompts/answer_output_format.txt"))
+    rewrite: Path = _opt("system prompt of the query-rewriting call (QueryRewriter)",
+                         Path("configs/prompts/rewrite_system.txt"))
+    rerank: Path = _opt("system prompt of the reranking call (LLMReranker)", Path("configs/prompts/rerank_system.txt"))
 
 
 @dataclass(frozen=True)
@@ -128,6 +131,9 @@ class Retrieval:
     hybrid_pool: int = _opt("in hybrid search, how many candidates dense and BM25 search each contribute", 30)
     doc_slots: int = _opt("places in the results kept for documentation chunks, used by the "
                           "dense_doc_slots retriever; 0 keeps none", 0)
+    max_queries: int = _opt("most search queries a query stage may return; their results are merged by "
+                            "rank fusion", 1)
+    rerank_snippet_chars: int = _opt("characters of each candidate shown to the model by the LLMReranker", 600)
     bm25_slots: int = _opt("places in the results filled by BM25 (keyword) search, the rest by dense "
                            "search; used by the hybrid_split retriever", 0)
     rrf_k: int = _opt("Reciprocal Rank Fusion constant; higher values make rank differences count less", 60)
@@ -374,6 +380,8 @@ class Settings:
             (self.case.review in REVIEW_POLICIES,
              f"case.review must be one of {REVIEW_POLICIES}, got {self.case.review!r}"),
             (r.top_k >= 1, "retrieval.top_k must be >= 1"),
+            (1 <= r.max_queries <= 8, f"retrieval.max_queries ({r.max_queries}) must be between 1 and 8"),
+            (r.rerank_snippet_chars >= 100, "retrieval.rerank_snippet_chars must be >= 100"),
             (0 <= r.bm25_slots <= r.top_k,
              f"retrieval.bm25_slots ({r.bm25_slots}) must be between 0 and retrieval.top_k ({r.top_k})"),
             (0 <= r.doc_slots <= r.top_k,

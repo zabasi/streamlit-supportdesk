@@ -23,9 +23,10 @@ per report:        intake -> query -> retrieve -> rerank -> packet -> generate -
 - **Pipelines:** `baseline` (dense search, 6 chunks) is the reference; `advanced` (hybrid search,
   10 chunks) is where improvements go. Experiments each change one thing in the baseline, so their
   effect can be measured alone: `clean_query` (the query without the issue template),
-  `doc_slots` (3 of the 6 results kept for documentation), `hybrid_rrf` (dense and keyword search
-  merged by rank fusion) and `hybrid_split` (3 results from each, not merged).
-  `supportdesk pipelines` lists them all.
+  `doc_slots` (3 of the 6 results kept for documentation), `hybrid_rrf` and `hybrid_split` (dense
+  and keyword search, merged or side by side), `rerank_llm` (a model reorders 30 candidates),
+  `rewrite_llm` and `split_llm` (a model writes one or several search queries) and
+  `split_sentences` (several queries without a model). `supportdesk pipelines` lists them all.
 
 ## 2. Set up
 

@@ -11,6 +11,10 @@ from .pipelines.experiments import (
     build_doc_slots,
     build_hybrid_rrf,
     build_hybrid_split,
+    build_rerank_llm,
+    build_rewrite_llm,
+    build_split_llm,
+    build_split_sentences,
 )
 from .retrieval.index import VectorIndex
 from .retrieval.retriever import (
@@ -24,7 +28,9 @@ from .retrieval.retriever import (
 #: Pipelines by name: each builds the pipeline from (retriever, clients, settings); its docstring is its one-line description.
 PIPELINES = {"baseline": build_baseline, "advanced": build_advanced,
              "clean_query": build_clean_query, "doc_slots": build_doc_slots,
-             "hybrid_rrf": build_hybrid_rrf, "hybrid_split": build_hybrid_split}
+             "hybrid_rrf": build_hybrid_rrf, "hybrid_split": build_hybrid_split,
+             "rerank_llm": build_rerank_llm, "rewrite_llm": build_rewrite_llm,
+             "split_llm": build_split_llm, "split_sentences": build_split_sentences}
 
 RETRIEVERS = {
     "dense": lambda index, clients, s: DenseRetriever(index, clients.embedding),

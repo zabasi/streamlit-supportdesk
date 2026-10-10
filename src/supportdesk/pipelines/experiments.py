@@ -9,6 +9,9 @@ from ..retrieval.retriever import Retriever
 from .staged import StagedPipeline
 from .stages import default_stages
 from .stages.clean_query import CleanQuery
+from .stages.llm_rerank import LLMReranker
+from .stages.rewrite_query import QueryRewriter
+from .stages.split_query import SentenceSplitQuery
 
 
 def build_clean_query(retriever: Retriever, clients: Clients, settings: Settings) -> StagedPipeline:
@@ -34,3 +37,31 @@ def build_hybrid_split(retriever: Retriever, clients: Clients, settings: Setting
     """Baseline with split hybrid search: half the results from dense, half from BM25, not merged."""
     return StagedPipeline(name="hybrid_split", clients=clients, settings=settings,
                           **default_stages(retriever, clients, settings))
+
+
+def build_rerank_llm(retriever: Retriever, clients: Clients, settings: Settings) -> StagedPipeline:
+    """Baseline with reranking: 30 candidates, ordered by one model call, the best 6 kept."""
+    stages = default_stages(retriever, clients, settings)
+    stages["reranker"] = LLMReranker(clients, settings)
+    return StagedPipeline(name="rerank_llm", clients=clients, settings=settings, **stages)
+
+
+def build_rewrite_llm(retriever: Retriever, clients: Clients, settings: Settings) -> StagedPipeline:
+    """Baseline with a rewritten query: the model turns the report into one documentation-style query."""
+    stages = default_stages(retriever, clients, settings)
+    stages["query"] = QueryRewriter(clients, settings)
+    return StagedPipeline(name="rewrite_llm", clients=clients, settings=settings, **stages)
+
+
+def build_split_llm(retriever: Retriever, clients: Clients, settings: Settings) -> StagedPipeline:
+    """Baseline with split queries: the model writes up to 3 focused queries, results merged by RRF."""
+    stages = default_stages(retriever, clients, settings)
+    stages["query"] = QueryRewriter(clients, settings)
+    return StagedPipeline(name="split_llm", clients=clients, settings=settings, **stages)
+
+
+def build_split_sentences(retriever: Retriever, clients: Clients, settings: Settings) -> StagedPipeline:
+    """Clean query split into up to 4 queries (title, code, sentences), results merged by RRF."""
+    stages = default_stages(retriever, clients, settings)
+    stages["query"] = SentenceSplitQuery(settings.context.max_query_chars, settings.retrieval.max_queries)
+    return StagedPipeline(name="split_sentences", clients=clients, settings=settings, **stages)

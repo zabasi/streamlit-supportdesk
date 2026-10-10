@@ -124,6 +124,15 @@ embeddings:
 | `doc_slots` | Retriever `dense_doc_slots` with `retrieval.doc_slots = 3`: at least 3 of the 6 results are documentation, still ordered by relevance |
 | `hybrid_rrf` | Retriever `hybrid`: dense and BM25 each return their top `retrieval.hybrid_pool` results, merged by Reciprocal Rank Fusion; chunks both find rise to the top |
 | `hybrid_split` | Retriever `hybrid_split` with `retrieval.bm25_slots = 3`: 3 results from dense, 3 different ones from BM25, without merging scores; the two lists take turns by rank, and if one runs short the other fills in |
+| `rerank_llm` | Reranker `LLMReranker` with `retrieval.candidate_k = 30`: dense search returns 30 candidates, one model call orders them by usefulness for the report, the best 6 are kept |
+| `rewrite_llm` | Query stage `QueryRewriter`: one model call turns the cleaned report into one documentation-style search query |
+| `split_llm` | `QueryRewriter` with `retrieval.max_queries = 3`: the model writes up to 3 focused queries; each is searched and the results are merged by rank fusion. Compare with `rewrite_llm` |
+| `split_sentences` | Query stage `SentenceSplitQuery` with `retrieval.max_queries = 4`: the cleaned report as the title, its Streamlit calls and its sentences, without a model; results merged by rank fusion. Compare with `clean_query` |
+
+The model-based stages fall back safely: unusable model output means the cleaned report (rewriting)
+or the retriever's order (reranking), never a failed case. Their prompts are
+`configs/prompts/rewrite_system.txt` and `configs/prompts/rerank_system.txt`, and their calls are
+recorded under the stages `rewrite` and `rerank`.
 
 ```bash
 supportdesk eval-retrieval --pipeline clean_query --split dev

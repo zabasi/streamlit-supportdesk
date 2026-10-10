@@ -94,7 +94,11 @@ def test_each_experiment_differs_from_the_baseline_in_exactly_one_way():
     for name, expected in (("clean_query", {"pipeline.name"}),
                            ("doc_slots", {"pipeline.name", "pipeline.retriever", "retrieval.doc_slots"}),
                            ("hybrid_rrf", {"pipeline.name", "pipeline.retriever"}),
-                           ("hybrid_split", {"pipeline.name", "pipeline.retriever", "retrieval.bm25_slots"})):
+                           ("hybrid_split", {"pipeline.name", "pipeline.retriever", "retrieval.bm25_slots"}),
+                           ("rerank_llm", {"pipeline.name", "retrieval.candidate_k"}),
+                           ("rewrite_llm", {"pipeline.name"}),
+                           ("split_llm", {"pipeline.name", "retrieval.max_queries"}),
+                           ("split_sentences", {"pipeline.name", "retrieval.max_queries"})):
         other = flat(name)
         assert {k for k in base if base[k] != other[k]} == expected, name
 
@@ -143,3 +147,74 @@ def test_split_hybrid_with_no_bm25_slots_is_plain_dense(index, clients):
 def test_bm25_slots_cannot_exceed_top_k():
     with pytest.raises(ConfigError, match="retrieval.bm25_slots"):
         Settings.load(env={}, overrides=["retrieval.bm25_slots=7"])
+
+
+def scripted(clients, text):
+    clients.chat.script[clients.chat.calls + 1] = text
+
+
+def test_the_rewriter_returns_the_models_queries_or_falls_back_to_the_clean_report(clients, settings):
+    import dataclasses
+    import json
+
+    from supportdesk.pipelines.stages.rewrite_query import QueryRewriter
+    three = dataclasses.replace(settings, retrieval=dataclasses.replace(settings.retrieval, max_queries=3))
+    rewriter = QueryRewriter(clients, three)
+    case = CaseInput(case_id="c", title="Expander loses state", body=REPORT)
+    scripted(clients, json.dumps({"queries": ["st.text_area value lost in st.expander", "session state widget key",
+                                              "session state widget key", "fourth one", "fifth"]}))
+    assert rewriter(case, {}) == ["st.text_area value lost in st.expander", "session state widget key", "fourth one"]
+    system = clients.chat.seen[-1][0]["content"]
+    assert "at most 3 queries" in system and "{max_queries}" not in system
+    scripted(clients, "not json at all")
+    assert rewriter(case, {}) == CleanQuery(three.context.max_query_chars)(case, {})  # unusable: the clean report
+
+
+def test_the_sentence_splitter_gives_title_code_then_sentences():
+    from supportdesk.pipelines.stages.split_query import SentenceSplitQuery
+    case = CaseInput(case_id="c", title="Expander loses state", body=REPORT)
+    queries = SentenceSplitQuery(4000, 4)(case, {})
+    assert queries[0] == "Expander loses state"
+    assert "st.expander" in queries[1] and "st.text_area" in queries[1]
+    assert queries[2] == "The text field is empty after pressing the button."
+    assert len(queries) <= 4 and len(set(queries)) == len(queries)
+    assert len(SentenceSplitQuery(4000, 1)(case, {})) == 1
+
+
+def test_the_reranker_applies_the_models_order_and_keeps_the_original_when_unusable(index, clients, settings):
+    import json
+
+    from supportdesk.pipelines.stages.llm_rerank import LLMReranker
+    case = CaseInput(case_id="c", title="Session state lost", body="st.session_state empty after F5")
+    hits = DenseRetriever(index, clients.embedding).search("session state lost", k=6)
+    reranker = LLMReranker(clients, settings)
+    scripted(clients, json.dumps({"ranking": ["C3", "C1", "C9", "C3", "x"]}))  # invalid and repeated labels ignored
+    ranked = reranker(case, "q", hits)
+    assert [h.chunk.chunk_id for h in ranked] == [hits[2].chunk.chunk_id, hits[0].chunk.chunk_id] + [
+        h.chunk.chunk_id for i, h in enumerate(hits) if i not in (0, 2)]
+    assert [h.rank for h in ranked] == list(range(1, 7))
+    assert "C6:" in clients.chat.seen[-1][1]["content"]  # every candidate is shown to the model
+    scripted(clients, '{"ranking": []}')
+    assert reranker(case, "q", hits) == hits
+
+
+def test_rerank_and_split_pipelines_run_end_to_end(index, clients, settings):
+    import dataclasses
+    import json
+
+    from supportdesk.pipelines.experiments import build_rerank_llm, build_split_llm
+    answer = json.dumps({"outcome": "request_info", "user_reply": "Which version?", "citations": []})
+    wide = dataclasses.replace(settings, retrieval=dataclasses.replace(settings.retrieval, candidate_k=12))
+    rerank = build_rerank_llm(DenseRetriever(index, clients.embedding), clients, wide)
+    case = CaseInput(case_id="c", title="Session state lost", body="st.session_state empty after F5")
+    scripted(clients, json.dumps({"ranking": ["C12", "C11"]}))
+    clients.chat.script[clients.chat.calls + 2] = answer
+    result = rerank.run(case)
+    assert result.outcome == "request_info" and len(result.retrieved) == 6
+    assert result.trace["stages"]["reranker"] == "LLMReranker"
+    three = dataclasses.replace(settings, retrieval=dataclasses.replace(settings.retrieval, max_queries=3))
+    split = build_split_llm(DenseRetriever(index, clients.embedding), clients, three)
+    scripted(clients, json.dumps({"queries": ["session state reset", "st.session_state refresh", "F5 loses values"]}))
+    clients.chat.script[clients.chat.calls + 2] = answer
+    result = split.run(case)
+    assert result.trace["n_queries"] == 3 and result.outcome == "request_info"

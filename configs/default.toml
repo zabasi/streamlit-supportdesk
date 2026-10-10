@@ -19,6 +19,8 @@ api_key_env = "OPENAI_API_KEY"   # NAME of the env var holding the key; the key 
 [prompts]
 system = "configs/prompts/answer_system.txt"
 output_format = "configs/prompts/answer_output_format.txt"
+rewrite = "configs/prompts/rewrite_system.txt"
+rerank = "configs/prompts/rerank_system.txt"
 
 [paths]
 data_dir = "data/processed"
@@ -47,6 +49,8 @@ bm25_k1 = 1.5
 bm25_b = 0.75
 hybrid_pool = 30
 doc_slots = 0                    # places kept for documentation (dense_doc_slots retriever); 0 = none
+max_queries = 1                  # most search queries per report (query stages that return several)
+rerank_snippet_chars = 600       # characters of each candidate the LLM reranker sees
 bm25_slots = 0                   # places filled by BM25 in the hybrid_split retriever; the rest are dense
 rrf_k = 60
 
