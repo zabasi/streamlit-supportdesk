@@ -114,7 +114,7 @@ class Chunking:
     method: str = _opt("which chunker the indexing graph's chunk node runs: " + " | ".join(CHUNKING_METHODS),
                        "fixed")
     max_tokens: int = _opt("chunk size in tokens (the project's tokenizer); changing it means building the index again", 512)
-    overlap_tokens: int = _opt("tokens shared by consecutive chunks; must be smaller than max_tokens", 64)
+    overlap_tokens: int = _opt("tokens shared by consecutive chunks; must be smaller than max_tokens", 128)
 
 
 @dataclass(frozen=True)

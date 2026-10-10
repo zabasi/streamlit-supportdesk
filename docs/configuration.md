@@ -149,7 +149,7 @@ Defaults shown are the built-in ones. `*unset*` means the key is optional and no
 |---|---|---|
 | `method` | `fixed` | which chunker the indexing graph's chunk node runs: fixed |
 | `max_tokens` | `512` | chunk size in tokens (the project's tokenizer); changing it means building the index again |
-| `overlap_tokens` | `64` | tokens shared by consecutive chunks; must be smaller than max_tokens |
+| `overlap_tokens` | `128` | tokens shared by consecutive chunks; must be smaller than max_tokens |
 
 ### `[retrieval]`
 

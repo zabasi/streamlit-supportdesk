@@ -191,7 +191,7 @@ def test_a_pipeline_that_needs_a_different_index_is_refused_with_instructions(
     from supportdesk.web.server import BadRequest
     monkeypatch.setitem(PIPELINES, "small", build_baseline)
     app = App(settings, clients=clients, index=index, settings_for=lambda name: (
-        override(settings, chunking={"max_tokens": 100}) if name == "small" else settings))
+        override(settings, chunking={"max_tokens": 100, "overlap_tokens": 10}) if name == "small" else settings))
     with pytest.raises(BadRequest, match=r"supportdesk index --pipeline small"):
         app.ask({"title": "t", "pipeline": "small"})
     assert app.ask({"title": "t", "pipeline": "baseline"})["result"]["outcome"] == "answer"

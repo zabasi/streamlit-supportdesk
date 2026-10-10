@@ -108,6 +108,23 @@ class Gateway:
     def _price(self, model: str) -> dict:
         return self.pricing["models"][model]
 
+    def _embedding_batches(self, texts: list[str], indexes: list[int]) -> list[list[int]]:
+        """Split the texts to embed into requests of at most retrieval.embed_batch_size texts, each
+        also small enough to pass limits.max_input_chars, so long chunks never make a request too
+        big. A single text over the limit still gets its own request, which the size check refuses."""
+        limit, size = self.settings.limits.max_input_chars, self.settings.retrieval.embed_batch_size
+        batches, current, chars = [], [], 32  # 32: room for the request's own JSON wrapping
+        for i in indexes:
+            cost = len(json.dumps(texts[i], ensure_ascii=False)) + 2
+            if current and (len(current) == size or chars + cost > limit):
+                batches.append(current)
+                current, chars = [], 32
+            current.append(i)
+            chars += cost
+        if current:
+            batches.append(current)
+        return batches
+
     def _guard(self, payload: dict, model: str, *, est_output_tokens: int) -> None:
         size = len(json.dumps(payload, ensure_ascii=False))
         limit = self.settings.limits.max_input_chars
@@ -189,9 +206,7 @@ class Gateway:
         if len(texts) - len(missing):
             self.ledger.record(stage=stage, request_type="embedding", model=model, mode="cache",
                                items=len(texts), cache_hits=len(texts) - len(missing), cost_usd=0.0)
-        size = self.settings.retrieval.embed_batch_size
-        for start in range(0, len(missing), size):
-            batch = missing[start:start + size]
+        for batch in self._embedding_batches(texts, missing):
             batch_texts = [texts[i] for i in batch]
             result, u = self._priced_call(
                 kind="embedding", stage=stage, model=model, payload={"texts": batch_texts},

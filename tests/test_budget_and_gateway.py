@@ -232,3 +232,27 @@ def test_factory_refuses_live_mode_with_unverified_prices_or_a_missing_price_fil
     s = Settings.from_dict({"run": {"mode": "live"}, "paths": {"pricing_path": str(tmp_path / "none.json")}})
     with pytest.raises(ConfigError, match="pricing file not found"):
         build_clients(s, transport=StubTransport())
+
+
+def test_embedding_requests_are_split_to_stay_under_the_size_limit(tmp_path):
+    """Long chunks used to make one batch of 64 exceed limits.max_input_chars, so indexing was
+    refused. Requests are now split by size as well as count, and none is refused."""
+    import json
+
+    class Recording(StubTransport):
+        def __init__(self):
+            super().__init__()
+            self.sizes = []
+
+        def embed(self, *, model, texts):
+            self.sizes.append(len(json.dumps({"texts": texts}, ensure_ascii=False)))
+            return super().embed(model=model, texts=texts)
+
+    transport = Recording()
+    gw, _ = make_gateway(tmp_path, ceiling=100.0, transport=transport)
+    texts = [f"chunk {i} " + "x" * 3000 for i in range(64)]  # about 194,000 characters in one batch
+    vectors, _ = gw.embed(texts, stage="index")
+    assert len(vectors) == 64
+    limit = gw.settings.limits.max_input_chars
+    assert len(transport.sizes) > 1 and max(transport.sizes) <= limit  # split, and every request fits
+    assert transport.calls == len(transport.sizes)

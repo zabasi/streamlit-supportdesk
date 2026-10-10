@@ -412,7 +412,7 @@ def test_cli_index_reports_where_it_wrote_and_status_agrees(tmp_path, capsys):
     status = json.loads(capsys.readouterr().out)
     assert status["index_exists"] is True and status["paths"]["index_dir"] == str(tmp_path / "idx")
     manifest = json.loads((tmp_path / "idx" / "manifest.json").read_text())
-    assert manifest["chunking"] == {"method": "fixed", "max_tokens": 512, "overlap_tokens": 64}
+    assert manifest["chunking"] == {"method": "fixed", "max_tokens": 512, "overlap_tokens": 128}
     assert manifest["sources_without_chunks"] == [] and len(manifest["config_sha256"]) == 16
 
 
@@ -420,7 +420,8 @@ def test_cli_refuses_to_run_against_an_index_built_with_other_chunking(tmp_path,
     cases = str(ROOT / "data" / "eval" / "sample_cases.jsonl")
     assert _cli(tmp_path, "index", "--cases", cases) == 0
     capsys.readouterr()
-    code = _cli(tmp_path, "ask", "--title", "t", "--body", "b", "--set", "chunking.max_tokens=100")
+    code = _cli(tmp_path, "ask", "--title", "t", "--body", "b", "--set", "chunking.max_tokens=100",
+                "--set", "chunking.overlap_tokens=10")
     assert code == 1 and "rebuild it" in capsys.readouterr().err
 
 

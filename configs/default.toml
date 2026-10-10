@@ -61,7 +61,7 @@ temperature = 0.0
 timeout_seconds = 60.0
 
 [limits]
-max_input_chars = 200000
+max_input_chars = 60000
 
 [pipeline]
 name = "baseline"
