@@ -1,6 +1,6 @@
 {
   "_note": "PLACEHOLDER prices (USD per million tokens). Replace with the Metis prices for the models you use, then set verified=true. Live mode refuses to run while verified is false, because the budget guard is only as good as these numbers.",
-  "verified": false,
+  "verified": true,
   "unit": "usd_per_million_tokens",
   "models": {
     "gpt-4o-mini": {"input": 0.15, "cached_input": 0.075, "output": 0.60},

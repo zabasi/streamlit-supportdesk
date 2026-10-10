@@ -36,7 +36,7 @@ max_live_calls = 5000
 [chunking]                       # changing either requires re-indexing (`supportdesk index`)
 method = "fixed"
 max_tokens = 512
-overlap_tokens = 64
+overlap_tokens = 128
 
 [retrieval]
 top_k = 6                        # chunks returned by retrieval AND (by default) allowed in the prompt
@@ -61,7 +61,7 @@ temperature = 0.0
 timeout_seconds = 60.0
 
 [limits]
-max_input_chars = 60000
+max_input_chars = 200000
 
 [pipeline]
 name = "baseline"

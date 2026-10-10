@@ -10,7 +10,7 @@
 [chunking]
 method = "fixed"
 max_tokens = 512
-overlap_tokens = 64
+overlap_tokens = 128
 
 [retrieval]
 top_k = 6                    # the baseline shows the model 6 chunks
