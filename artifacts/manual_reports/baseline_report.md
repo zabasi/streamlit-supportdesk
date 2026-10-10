@@ -8,8 +8,8 @@ Run on 2026-10-10, live mode, 15 development cases (6 answerable, 6 ambiguous, 3
 | Models | chat `gpt-4o-mini`, embedding `text-embedding-3-small` |
 | Chunking | fixed, 512 tokens, 128 overlap; evidence budget 3,200 tokens |
 | Query | the report as written (up to 4,000 characters) |
-| Runs | `baseline-retrieval-dev-20261010-104739`, `baseline-dev-20261010-104836` |
-| Config fingerprint | `9b6b6fce55a12136` |
+| Runs | retrieval `baseline-retrieval-dev-20261010-104739`; full `baseline-dev-20261010-134237` |
+| Config fingerprint | `281006054653e3a8` |
 
 ## Results
 
@@ -43,7 +43,7 @@ Run on 2026-10-10, live mode, 15 development cases (6 answerable, 6 ambiguous, 3
 The same configuration was run twice the same day. Retrieval was identical; the model's decisions
 were not:
 
-| | Run 08:03 | Run 10:48 (this report) |
+| | Run 08:03 | Run 13:42 (this report) |
 |---|---|---|
 | Hit@6 / Recall@10 | 0.07 / 0.03 | 0.07 / 0.03 |
 | Outcome accuracy | 0.33 | 0.47 |

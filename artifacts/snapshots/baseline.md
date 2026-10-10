@@ -2,12 +2,12 @@
 
 | | |
 |---|---|
-| Taken | 2026-10-10T10:50:33+00:00 |
+| Taken | 2026-10-10T13:48:58+00:00 |
 | Profile | configs/pipelines/baseline.toml |
 | Mode | live |
 | Retriever | `dense` |
 | Models | chat `gpt-4o-mini`, embedding `text-embedding-3-small` |
-| Config fingerprint | `9b6b6fce55a12136` |
+| Config fingerprint | `281006054653e3a8` |
 
 ## Stages
 
@@ -43,6 +43,8 @@ Values marked ★ come from this pipeline's own profile.
 | `retrieval.bm25_k1` | 1.5 | file:configs/default.toml |
 | `retrieval.bm25_b` | 0.75 | file:configs/default.toml |
 | `retrieval.hybrid_pool` | 30 | file:configs/default.toml |
+| `retrieval.doc_slots` | 0 | file:configs/default.toml |
+| `retrieval.bm25_slots` | 0 | file:configs/default.toml |
 | `retrieval.rrf_k` | 60 | file:configs/default.toml |
 | `context.max_chunks` | (unset) | default |
 | `context.max_tokens` | 3200 | file:configs/pipelines/baseline.toml ★ |
@@ -186,11 +188,11 @@ Model calls during this run:
 | query | embedding | cache | 0 | 0 | 0.000000 | ok |
 | answer | chat | cache | 4597 | 192 | 0.000000 | ok |
 
-Time: 0.029s
+Time: 0.026s
 
 ## Latest evaluation results
 
-**full** run `baseline-dev-20261010-104836` (2026-10-10T10:50:18+00:00, mode live):
+**full** run `baseline-dev-20261010-134237` (2026-10-10T13:42:38+00:00, mode live):
 
 ```
 cases: 15 (ambiguous 6, answerable 6, escalation 3)
