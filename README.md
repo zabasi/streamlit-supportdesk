@@ -1,4 +1,4 @@
-# supportdesk
+# streamlit supportdesk
 
 A technical-support assistant for [Streamlit](https://streamlit.io). Given a user's problem report,
 it searches the documentation, earlier GitHub issues and discussions, and release notes, then
