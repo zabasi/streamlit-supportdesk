@@ -1,0 +1,6 @@
+# Ablation: more evidence. One knob: the prompt follows top_k, so nothing else needs changing.
+[retrieval]
+top_k = 10
+
+[context]
+max_tokens = 3000     # more chunks need more room; otherwise the token budget silently caps them

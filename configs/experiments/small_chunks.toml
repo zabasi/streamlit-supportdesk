@@ -1,0 +1,7 @@
+# Ablation: smaller chunks. Changes the INDEX: run `supportdesk index ...` with this file first.
+[chunking]
+max_tokens = 160
+overlap_tokens = 24
+
+[retrieval]
+top_k = 10

@@ -1,0 +1,38 @@
+[project]
+name = "supportdesk"
+version = "0.1.0"
+description = "Streamlit technical-support triage assistant: evidence retrieval, grounded answers, evaluation."
+requires-python = ">=3.10"
+dependencies = [
+    "numpy>=1.26",
+    "tomli>=2.0; python_version < '3.11'",  # TOML config on Python 3.10 (3.11+ has tomllib)
+    "langgraph>=1.0,<2",                    # both graphs: indexing and support
+    "langchain-core>=1.0,<2",
+    "qdrant-client>=1.12,<2",               # vector store; a shared index needs a compatible client
+    "langgraph-checkpoint-sqlite>=2,<4",    # saved case state, so a pending review survives a restart
+    "python-dotenv>=1.0",                   # reads ./.env
+]
+
+[project.optional-dependencies]
+# Real provider calls (any OpenAI-compatible gateway, e.g. Metis). Offline and replay modes do not need it.
+live = ["openai>=1.40"]
+dev = ["pytest>=8", "ruff>=0.5"]
+
+[project.scripts]
+supportdesk = "supportdesk.cli:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/supportdesk"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q -p no:cacheprovider"
+pythonpath = ["src"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"

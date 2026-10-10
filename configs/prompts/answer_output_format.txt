@@ -1,0 +1,9 @@
+{
+  "outcome": "answer" | "request_info" | "escalate",
+  "confidence": "high" | "medium" | "low",
+  "user_reply": "message to the reporter",
+  "known_facts": [{"statement": "...", "evidence": ["S1"]}],
+  "open_questions": ["..."],
+  "next_step": "the single most useful next action",
+  "citations": ["S1"]
+}

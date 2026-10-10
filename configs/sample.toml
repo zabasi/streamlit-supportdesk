@@ -1,0 +1,12 @@
+# The bundled SYNTHETIC fixture: run everything without real data.
+#   export SUPPORTDESK_CONFIG=configs/sample.toml     (unset it to go back to real data)
+# Outputs go to index_sample/ and artifacts_sample/, never mixing with real runs.
+[eval]
+case_files = ["data/eval/sample_cases.jsonl"]
+
+[paths]
+data_dir = "data/sample"
+index_dir = "index_sample"
+artifacts_dir = "artifacts_sample"
+cache_path = "artifacts_sample/cache.sqlite"
+ledger_path = "artifacts_sample/cost_ledger.jsonl"

@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>supportdesk</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <header>
+    <h1>supportdesk <span class="sub">Streamlit support triage</span></h1>
+    <div id="status" class="status" aria-live="polite">loading…</div>
+  </header>
+
+  <main>
+    <section class="panel" aria-labelledby="h-report">
+      <h2 id="h-report">Report</h2>
+      <label for="title">Title</label>
+      <input id="title" type="text" autocomplete="off">
+
+      <label for="body">Description <span class="hint">steps, error, code, environment</span></label>
+      <textarea id="body" rows="9"></textarea>
+
+      <label for="history">Earlier messages <span class="hint">optional, one per line</span></label>
+      <textarea id="history" rows="3"></textarea>
+
+      <div class="row">
+        <div>
+          <label for="created">Filed at <span class="hint">optional, hides newer evidence</span></label>
+          <input id="created" type="text" placeholder="2024-05-01T10:00:00Z" autocomplete="off">
+        </div>
+        <div>
+          <label for="pipeline">Pipeline</label>
+          <select id="pipeline"></select>
+        </div>
+        <div>
+          <span class="label">Retriever</span>
+          <p id="retriever" class="readonly" aria-live="polite" title="Set by the pipeline. To try another retriever, use --retriever on the command line."></p>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button id="go" type="button">Analyze <kbd>Ctrl</kbd>+<kbd>Enter</kbd></button>
+        <span class="hint">Examples:</span>
+        <button class="link" type="button" data-example="0">session state</button>
+        <button class="link" type="button" data-example="1">stuck loading</button>
+      </div>
+      <div id="error" class="error" role="alert" hidden></div>
+    </section>
+
+    <section class="panel" aria-labelledby="h-result" aria-live="polite">
+      <h2 id="h-result">Result</h2>
+      <div id="empty" class="empty">Submit a report to see the answer, the evidence behind it, and what it cost.</div>
+      <div id="result" hidden></div>
+    </section>
+  </main>
+
+  <script src="/app.js"></script>
+</body>
+</html>

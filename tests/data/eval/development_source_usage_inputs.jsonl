@@ -1,0 +1,1 @@
+{"case_id": "SRC-DEV-ISSUE", "split": "development", "task_kind": "supplementary_source_use_not_issue_resolution", "user_report": "Does the multithreading issue establish an implemented API or a requested capability, and which related issues does it explicitly mention?", "initial_conversation": [], "schema_version": "6.0"}

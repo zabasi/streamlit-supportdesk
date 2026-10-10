@@ -1,0 +1,3 @@
+# Ablation: baseline with hybrid (dense + BM25) retrieval. Everything else is the default.
+[pipeline]
+retriever = "hybrid"

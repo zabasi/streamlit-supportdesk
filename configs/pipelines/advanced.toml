@@ -1,0 +1,27 @@
+# Settings for the advanced pipeline (--pipeline advanced). Every key here overrides
+# configs/default.toml for this pipeline only; --config and --set still override it.
+
+[retrieval]
+top_k = 10                   # more evidence than the baseline's 6
+candidate_k = 30             # fetch 30, rerank, keep top_k
+historical_filter = true
+
+[context]
+max_tokens = 5400            # 10 chunks x 512 tokens; otherwise this budget silently caps them
+
+[pipeline]
+retriever = "hybrid"
+
+# Its own answer prompt (copy and edit configs/prompts/answer_system.txt):
+# [prompts]
+# system = "configs/prompts/advanced_system.txt"
+
+# If advanced uses different chunking, give it its own index so the two never collide
+# (an index built with other chunking is refused). Then build it with:
+#   supportdesk index --pipeline advanced
+# [chunking]
+# method = "fixed"           # or a new chunker registered in data/chunking.py (for example an LLM chunker)
+# max_tokens = 256
+# overlap_tokens = 32
+# [paths]
+# index_dir = "index/advanced"

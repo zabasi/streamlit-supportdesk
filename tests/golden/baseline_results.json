@@ -1,0 +1,1882 @@
+{
+ "bad_json_then_ok": {
+  "citations": [
+   "fixture-doc-session-state:000"
+  ],
+  "error": null,
+  "known_facts": [
+   {
+    "evidence": [
+     "fixture-doc-session-state:000"
+    ],
+    "statement": "Session State (fixture) Session State is a way to share variables between reruns, for each user session."
+   }
+  ],
+  "maintainer_summary": {
+   "environment": {
+    "known": {
+     "browser": "Chrome",
+     "streamlit_version": "1.31.1"
+    },
+    "unknown": [
+     "python_version",
+     "operating_system"
+    ]
+   },
+   "known_facts": [
+    {
+     "evidence": [
+      "fixture-doc-session-state:000"
+     ],
+     "statement": "Session State (fixture) Session State is a way to share variables between reruns, for each user session."
+    }
+   ],
+   "next_step": "Check whether this matches your setup.",
+   "open_questions": [],
+   "outcome": "answer",
+   "problem": "Session state is empty after browser refresh",
+   "sources": [
+    {
+     "chunk_id": "fixture-doc-session-state:000",
+     "type": "documentation",
+     "url": "https://docs.streamlit.io/fixture/session-state",
+     "version": "fixture-commit-0001"
+    }
+   ]
+  },
+  "mode": "offline",
+  "next_step": "Check whether this matches your setup.",
+  "open_questions": [],
+  "outcome": "answer",
+  "packet_hash": "b48f72be756777ead635d15ab10e93b6818fda31a86dafa081198692359782d0",
+  "pipeline": "baseline",
+  "retrieved": [
+   [
+    "fixture-doc-session-state:000",
+    "fixture-doc-session-state",
+    null,
+    1
+   ],
+   [
+    "fixture-comment-3:000",
+    "fixture-comment-3",
+    "fixture-issue-9001",
+    2
+   ],
+   [
+    "fixture-issue-9001:000",
+    "fixture-issue-9001",
+    null,
+    3
+   ],
+   [
+    "fixture-release-1.33.0:000",
+    "fixture-release-1.33.0",
+    "release:1.33.0",
+    4
+   ],
+   [
+    "fixture-comment-2:000",
+    "fixture-comment-2",
+    "fixture-issue-9001",
+    5
+   ],
+   [
+    "fixture-issue-9003:000",
+    "fixture-issue-9003",
+    null,
+    6
+   ]
+  ],
+  "scores": [
+   0.461566,
+   0.242536,
+   0.215166,
+   0.121716,
+   0.117851,
+   0.108148
+  ],
+  "trace": {
+   "attempts": [
+    {
+     "attempt": 0,
+     "detail": "no JSON object in model output",
+     "status": "NotJson"
+    },
+    {
+     "attempt": 1,
+     "status": "ok"
+    }
+   ],
+   "packet": [
+    {
+     "chunk_id": "fixture-doc-session-state:000",
+     "label": "S1"
+    },
+    {
+     "chunk_id": "fixture-comment-3:000",
+     "label": "S2"
+    },
+    {
+     "chunk_id": "fixture-issue-9001:000",
+     "label": "S3"
+    },
+    {
+     "chunk_id": "fixture-release-1.33.0:000",
+     "label": "S4"
+    },
+    {
+     "chunk_id": "fixture-comment-2:000",
+     "label": "S5"
+    },
+    {
+     "chunk_id": "fixture-issue-9003:000",
+     "label": "S6"
+    }
+   ],
+   "query_sha256": "666401c37cb544f7"
+  },
+  "usage": {
+   "cache_hits": 0,
+   "cached_input_tokens": 0,
+   "calls": 0,
+   "cost_usd": 0.0,
+   "failed_calls": 0,
+   "input_tokens": 788,
+   "latency_seconds": 0.0,
+   "output_tokens": 63,
+   "replayed_cost_usd": 0.0
+  },
+  "user_reply": "Related material suggests: Session State (fixture) Session State is a way to share variables between reruns, for each user session. [S1]",
+  "violations": []
+ },
+ "bm25": {
+  "citations": [
+   "fixture-issue-9002:000"
+  ],
+  "error": null,
+  "known_facts": [
+   {
+    "evidence": [
+     "fixture-issue-9002:000"
+    ],
+    "statement": "Title: App stuck on loading spinner when deployed behind nginx Works locally but on the server the page stays on 'Please wait...'."
+   }
+  ],
+  "maintainer_summary": {
+   "environment": {
+    "known": {},
+    "unknown": [
+     "streamlit_version",
+     "python_version",
+     "operating_system",
+     "browser"
+    ]
+   },
+   "known_facts": [
+    {
+     "evidence": [
+      "fixture-issue-9002:000"
+     ],
+     "statement": "Title: App stuck on loading spinner when deployed behind nginx Works locally but on the server the page stays on 'Please wait...'."
+    }
+   ],
+   "next_step": "Check whether this matches your setup.",
+   "open_questions": [],
+   "outcome": "answer",
+   "problem": "App stuck on loading on my server but works locally",
+   "sources": [
+    {
+     "chunk_id": "fixture-issue-9002:000",
+     "type": "issue",
+     "url": "https://github.com/streamlit/streamlit/issues/9002",
+     "version": "1.30.0"
+    }
+   ]
+  },
+  "mode": "offline",
+  "next_step": "Check whether this matches your setup.",
+  "open_questions": [],
+  "outcome": "answer",
+  "packet_hash": "83a920eb3d0ed402c27b8a59a9f3009807474448e70e9fc1e9f2874b92de811b",
+  "pipeline": "baseline",
+  "retrieved": [
+   [
+    "fixture-issue-9002:000",
+    "fixture-issue-9002",
+    null,
+    1
+   ],
+   [
+    "fixture-doc-deploy-proxy:000",
+    "fixture-doc-deploy-proxy",
+    null,
+    2
+   ],
+   [
+    "fixture-comment-4:000",
+    "fixture-comment-4",
+    "fixture-issue-9002",
+    3
+   ],
+   [
+    "fixture-doc-session-state:000",
+    "fixture-doc-session-state",
+    null,
+    4
+   ],
+   [
+    "fixture-issue-9001:000",
+    "fixture-issue-9001",
+    null,
+    5
+   ],
+   [
+    "fixture-comment-3:000",
+    "fixture-comment-3",
+    "fixture-issue-9001",
+    6
+   ]
+  ],
+  "scores": [
+   19.821124,
+   11.517437,
+   6.133523,
+   1.42717,
+   0.717085,
+   0.683113
+  ],
+  "trace": {
+   "attempts": [
+    {
+     "attempt": 0,
+     "status": "ok"
+    }
+   ],
+   "packet": [
+    {
+     "chunk_id": "fixture-issue-9002:000",
+     "label": "S1"
+    },
+    {
+     "chunk_id": "fixture-doc-deploy-proxy:000",
+     "label": "S2"
+    },
+    {
+     "chunk_id": "fixture-comment-4:000",
+     "label": "S3"
+    },
+    {
+     "chunk_id": "fixture-doc-session-state:000",
+     "label": "S4"
+    },
+    {
+     "chunk_id": "fixture-issue-9001:000",
+     "label": "S5"
+    },
+    {
+     "chunk_id": "fixture-comment-3:000",
+     "label": "S6"
+    }
+   ],
+   "query_sha256": "49f490a141941eca"
+  },
+  "usage": {
+   "cache_hits": 0,
+   "cached_input_tokens": 0,
+   "calls": 0,
+   "cost_usd": 0.0,
+   "failed_calls": 0,
+   "input_tokens": 458,
+   "latency_seconds": 0.0,
+   "output_tokens": 65,
+   "replayed_cost_usd": 0.0
+  },
+  "user_reply": "Related material suggests: Title: App stuck on loading spinner when deployed behind nginx Works locally but on the server the page stays on 'Please wait...'. [S1]",
+  "violations": []
+ },
+ "budget_exhausted": {
+  "citations": [],
+  "error": "insufficient_quota for key <redacted>",
+  "known_facts": [],
+  "maintainer_summary": {},
+  "mode": "offline",
+  "next_step": null,
+  "open_questions": [],
+  "outcome": "budget_stopped",
+  "packet_hash": "b48f72be756777ead635d15ab10e93b6818fda31a86dafa081198692359782d0",
+  "pipeline": "baseline",
+  "retrieved": [
+   [
+    "fixture-doc-session-state:000",
+    "fixture-doc-session-state",
+    null,
+    1
+   ],
+   [
+    "fixture-comment-3:000",
+    "fixture-comment-3",
+    "fixture-issue-9001",
+    2
+   ],
+   [
+    "fixture-issue-9001:000",
+    "fixture-issue-9001",
+    null,
+    3
+   ],
+   [
+    "fixture-release-1.33.0:000",
+    "fixture-release-1.33.0",
+    "release:1.33.0",
+    4
+   ],
+   [
+    "fixture-comment-2:000",
+    "fixture-comment-2",
+    "fixture-issue-9001",
+    5
+   ],
+   [
+    "fixture-issue-9003:000",
+    "fixture-issue-9003",
+    null,
+    6
+   ]
+  ],
+  "scores": [
+   0.461566,
+   0.242536,
+   0.215166,
+   0.121716,
+   0.117851,
+   0.108148
+  ],
+  "trace": {
+   "attempts": [],
+   "packet": [
+    {
+     "chunk_id": "fixture-doc-session-state:000",
+     "label": "S1"
+    },
+    {
+     "chunk_id": "fixture-comment-3:000",
+     "label": "S2"
+    },
+    {
+     "chunk_id": "fixture-issue-9001:000",
+     "label": "S3"
+    },
+    {
+     "chunk_id": "fixture-release-1.33.0:000",
+     "label": "S4"
+    },
+    {
+     "chunk_id": "fixture-comment-2:000",
+     "label": "S5"
+    },
+    {
+     "chunk_id": "fixture-issue-9003:000",
+     "label": "S6"
+    }
+   ],
+   "query_sha256": "666401c37cb544f7"
+  },
+  "usage": {
+   "cache_hits": 0,
+   "cached_input_tokens": 0,
+   "calls": 0,
+   "cost_usd": 0.0,
+   "failed_calls": 0,
+   "input_tokens": 22,
+   "latency_seconds": 0.0,
+   "output_tokens": 0,
+   "replayed_cost_usd": 0.0
+  },
+  "user_reply": null,
+  "violations": []
+ },
+ "errors_exhausted": {
+  "citations": [],
+  "error": "no valid model output after 2 attempts",
+  "known_facts": [],
+  "maintainer_summary": {},
+  "mode": "offline",
+  "next_step": null,
+  "open_questions": [],
+  "outcome": "error",
+  "packet_hash": "b48f72be756777ead635d15ab10e93b6818fda31a86dafa081198692359782d0",
+  "pipeline": "baseline",
+  "retrieved": [
+   [
+    "fixture-doc-session-state:000",
+    "fixture-doc-session-state",
+    null,
+    1
+   ],
+   [
+    "fixture-comment-3:000",
+    "fixture-comment-3",
+    "fixture-issue-9001",
+    2
+   ],
+   [
+    "fixture-issue-9001:000",
+    "fixture-issue-9001",
+    null,
+    3
+   ],
+   [
+    "fixture-release-1.33.0:000",
+    "fixture-release-1.33.0",
+    "release:1.33.0",
+    4
+   ],
+   [
+    "fixture-comment-2:000",
+    "fixture-comment-2",
+    "fixture-issue-9001",
+    5
+   ],
+   [
+    "fixture-issue-9003:000",
+    "fixture-issue-9003",
+    null,
+    6
+   ]
+  ],
+  "scores": [
+   0.461566,
+   0.242536,
+   0.215166,
+   0.121716,
+   0.117851,
+   0.108148
+  ],
+  "trace": {
+   "attempts": [
+    {
+     "attempt": 0,
+     "detail": "fake chat provider unavailable",
+     "status": "ProviderError"
+    },
+    {
+     "attempt": 1,
+     "detail": "fake chat provider unavailable",
+     "status": "ProviderError"
+    }
+   ],
+   "packet": [
+    {
+     "chunk_id": "fixture-doc-session-state:000",
+     "label": "S1"
+    },
+    {
+     "chunk_id": "fixture-comment-3:000",
+     "label": "S2"
+    },
+    {
+     "chunk_id": "fixture-issue-9001:000",
+     "label": "S3"
+    },
+    {
+     "chunk_id": "fixture-release-1.33.0:000",
+     "label": "S4"
+    },
+    {
+     "chunk_id": "fixture-comment-2:000",
+     "label": "S5"
+    },
+    {
+     "chunk_id": "fixture-issue-9003:000",
+     "label": "S6"
+    }
+   ],
+   "query_sha256": "666401c37cb544f7"
+  },
+  "usage": {
+   "cache_hits": 0,
+   "cached_input_tokens": 0,
+   "calls": 0,
+   "cost_usd": 0.0,
+   "failed_calls": 0,
+   "input_tokens": 22,
+   "latency_seconds": 0.0,
+   "output_tokens": 0,
+   "replayed_cost_usd": 0.0
+  },
+  "user_reply": null,
+  "violations": []
+ },
+ "fabricated_citation": {
+  "citations": [],
+  "error": null,
+  "known_facts": [
+   {
+    "evidence": [],
+    "statement": "x"
+   }
+  ],
+  "maintainer_summary": {
+   "environment": {
+    "known": {
+     "browser": "Chrome",
+     "streamlit_version": "1.31.1"
+    },
+    "unknown": [
+     "python_version",
+     "operating_system"
+    ]
+   },
+   "known_facts": [
+    {
+     "evidence": [],
+     "statement": "x"
+    }
+   ],
+   "next_step": "n",
+   "open_questions": [],
+   "outcome": "answer",
+   "problem": "Session state is empty after browser refresh",
+   "sources": []
+  },
+  "mode": "offline",
+  "next_step": "n",
+  "open_questions": [],
+  "outcome": "answer",
+  "packet_hash": "b48f72be756777ead635d15ab10e93b6818fda31a86dafa081198692359782d0",
+  "pipeline": "baseline",
+  "retrieved": [
+   [
+    "fixture-doc-session-state:000",
+    "fixture-doc-session-state",
+    null,
+    1
+   ],
+   [
+    "fixture-comment-3:000",
+    "fixture-comment-3",
+    "fixture-issue-9001",
+    2
+   ],
+   [
+    "fixture-issue-9001:000",
+    "fixture-issue-9001",
+    null,
+    3
+   ],
+   [
+    "fixture-release-1.33.0:000",
+    "fixture-release-1.33.0",
+    "release:1.33.0",
+    4
+   ],
+   [
+    "fixture-comment-2:000",
+    "fixture-comment-2",
+    "fixture-issue-9001",
+    5
+   ],
+   [
+    "fixture-issue-9003:000",
+    "fixture-issue-9003",
+    null,
+    6
+   ]
+  ],
+  "scores": [
+   0.461566,
+   0.242536,
+   0.215166,
+   0.121716,
+   0.117851,
+   0.108148
+  ],
+  "trace": {
+   "attempts": [
+    {
+     "attempt": 0,
+     "status": "ok"
+    }
+   ],
+   "packet": [
+    {
+     "chunk_id": "fixture-doc-session-state:000",
+     "label": "S1"
+    },
+    {
+     "chunk_id": "fixture-comment-3:000",
+     "label": "S2"
+    },
+    {
+     "chunk_id": "fixture-issue-9001:000",
+     "label": "S3"
+    },
+    {
+     "chunk_id": "fixture-release-1.33.0:000",
+     "label": "S4"
+    },
+    {
+     "chunk_id": "fixture-comment-2:000",
+     "label": "S5"
+    },
+    {
+     "chunk_id": "fixture-issue-9003:000",
+     "label": "S6"
+    }
+   ],
+   "query_sha256": "666401c37cb544f7"
+  },
+  "usage": {
+   "cache_hits": 0,
+   "cached_input_tokens": 0,
+   "calls": 0,
+   "cost_usd": 0.0,
+   "failed_calls": 0,
+   "input_tokens": 405,
+   "latency_seconds": 0.0,
+   "output_tokens": 15,
+   "replayed_cost_usd": 0.0
+  },
+  "user_reply": "see S9",
+  "violations": [
+   "citation_not_retrieved",
+   "answer_without_citation",
+   "claim_without_citation"
+  ]
+ },
+ "historical_filter_off": {
+  "citations": [
+   "fixture-doc-session-state:000"
+  ],
+  "error": null,
+  "known_facts": [
+   {
+    "evidence": [
+     "fixture-doc-session-state:000"
+    ],
+    "statement": "Session State (fixture) Session State is a way to share variables between reruns, for each user session."
+   }
+  ],
+  "maintainer_summary": {
+   "environment": {
+    "known": {
+     "browser": "Chrome",
+     "streamlit_version": "1.31.1"
+    },
+    "unknown": [
+     "python_version",
+     "operating_system"
+    ]
+   },
+   "known_facts": [
+    {
+     "evidence": [
+      "fixture-doc-session-state:000"
+     ],
+     "statement": "Session State (fixture) Session State is a way to share variables between reruns, for each user session."
+    }
+   ],
+   "next_step": "Check whether this matches your setup.",
+   "open_questions": [],
+   "outcome": "answer",
+   "problem": "Session state is empty after browser refresh",
+   "sources": [
+    {
+     "chunk_id": "fixture-doc-session-state:000",
+     "type": "documentation",
+     "url": "https://docs.streamlit.io/fixture/session-state",
+     "version": "fixture-commit-0001"
+    }
+   ]
+  },
+  "mode": "offline",
+  "next_step": "Check whether this matches your setup.",
+  "open_questions": [],
+  "outcome": "answer",
+  "packet_hash": "b48f72be756777ead635d15ab10e93b6818fda31a86dafa081198692359782d0",
+  "pipeline": "baseline",
+  "retrieved": [
+   [
+    "fixture-doc-session-state:000",
+    "fixture-doc-session-state",
+    null,
+    1
+   ],
+   [
+    "fixture-comment-3:000",
+    "fixture-comment-3",
+    "fixture-issue-9001",
+    2
+   ],
+   [
+    "fixture-issue-9001:000",
+    "fixture-issue-9001",
+    null,
+    3
+   ],
+   [
+    "fixture-release-1.33.0:000",
+    "fixture-release-1.33.0",
+    "release:1.33.0",
+    4
+   ],
+   [
+    "fixture-comment-2:000",
+    "fixture-comment-2",
+    "fixture-issue-9001",
+    5
+   ],
+   [
+    "fixture-issue-9003:000",
+    "fixture-issue-9003",
+    null,
+    6
+   ]
+  ],
+  "scores": [
+   0.461566,
+   0.242536,
+   0.215166,
+   0.121716,
+   0.117851,
+   0.108148
+  ],
+  "trace": {
+   "attempts": [
+    {
+     "attempt": 0,
+     "status": "ok"
+    }
+   ],
+   "packet": [
+    {
+     "chunk_id": "fixture-doc-session-state:000",
+     "label": "S1"
+    },
+    {
+     "chunk_id": "fixture-comment-3:000",
+     "label": "S2"
+    },
+    {
+     "chunk_id": "fixture-issue-9001:000",
+     "label": "S3"
+    },
+    {
+     "chunk_id": "fixture-release-1.33.0:000",
+     "label": "S4"
+    },
+    {
+     "chunk_id": "fixture-comment-2:000",
+     "label": "S5"
+    },
+    {
+     "chunk_id": "fixture-issue-9003:000",
+     "label": "S6"
+    }
+   ],
+   "query_sha256": "666401c37cb544f7"
+  },
+  "usage": {
+   "cache_hits": 0,
+   "cached_input_tokens": 0,
+   "calls": 0,
+   "cost_usd": 0.0,
+   "failed_calls": 0,
+   "input_tokens": 405,
+   "latency_seconds": 0.0,
+   "output_tokens": 55,
+   "replayed_cost_usd": 0.0
+  },
+  "user_reply": "Related material suggests: Session State (fixture) Session State is a way to share variables between reruns, for each user session. [S1]",
+  "violations": []
+ },
+ "history_user_turns_only": {
+  "citations": [
+   "fixture-issue-9002:000"
+  ],
+  "error": null,
+  "known_facts": [
+   {
+    "evidence": [
+     "fixture-issue-9002:000"
+    ],
+    "statement": "Title: App stuck on loading spinner when deployed behind nginx Works locally but on the server the page stays on 'Please wait...'."
+   }
+  ],
+  "maintainer_summary": {
+   "environment": {
+    "known": {},
+    "unknown": [
+     "streamlit_version",
+     "python_version",
+     "operating_system",
+     "browser"
+    ]
+   },
+   "known_facts": [
+    {
+     "evidence": [
+      "fixture-issue-9002:000"
+     ],
+     "statement": "Title: App stuck on loading spinner when deployed behind nginx Works locally but on the server the page stays on 'Please wait...'."
+    }
+   ],
+   "next_step": "Check whether this matches your setup.",
+   "open_questions": [],
+   "outcome": "answer",
+   "problem": "App stuck on loading on my server",
+   "sources": [
+    {
+     "chunk_id": "fixture-issue-9002:000",
+     "type": "issue",
+     "url": "https://github.com/streamlit/streamlit/issues/9002",
+     "version": "1.30.0"
+    }
+   ]
+  },
+  "mode": "offline",
+  "next_step": "Check whether this matches your setup.",
+  "open_questions": [],
+  "outcome": "answer",
+  "packet_hash": "5acbfcaccdb9cdfda0cce4ddb65b818020401bbb3115288b9ab6eb8e2c9f404e",
+  "pipeline": "baseline",
+  "retrieved": [
+   [
+    "fixture-issue-9002:000",
+    "fixture-issue-9002",
+    null,
+    1
+   ],
+   [
+    "fixture-doc-deploy-proxy:000",
+    "fixture-doc-deploy-proxy",
+    null,
+    2
+   ],
+   [
+    "fixture-comment-4:000",
+    "fixture-comment-4",
+    "fixture-issue-9002",
+    3
+   ],
+   [
+    "fixture-issue-9003:000",
+    "fixture-issue-9003",
+    null,
+    4
+   ],
+   [
+    "fixture-issue-9001:000",
+    "fixture-issue-9001",
+    null,
+    5
+   ],
+   [
+    "fixture-comment-1:000",
+    "fixture-comment-1",
+    "fixture-issue-9001",
+    6
+   ]
+  ],
+  "scores": [
+   0.521286,
+   0.258023,
+   0.188982,
+   0.057354,
+   0.0,
+   0.0
+  ],
+  "trace": {
+   "attempts": [
+    {
+     "attempt": 0,
+     "status": "ok"
+    }
+   ],
+   "packet": [
+    {
+     "chunk_id": "fixture-issue-9002:000",
+     "label": "S1"
+    },
+    {
+     "chunk_id": "fixture-doc-deploy-proxy:000",
+     "label": "S2"
+    },
+    {
+     "chunk_id": "fixture-comment-4:000",
+     "label": "S3"
+    },
+    {
+     "chunk_id": "fixture-issue-9003:000",
+     "label": "S4"
+    },
+    {
+     "chunk_id": "fixture-issue-9001:000",
+     "label": "S5"
+    },
+    {
+     "chunk_id": "fixture-comment-1:000",
+     "label": "S6"
+    }
+   ],
+   "query_sha256": "51f605e06be7a3a8"
+  },
+  "usage": {
+   "cache_hits": 0,
+   "cached_input_tokens": 0,
+   "calls": 0,
+   "cost_usd": 0.0,
+   "failed_calls": 0,
+   "input_tokens": 375,
+   "latency_seconds": 0.0,
+   "output_tokens": 65,
+   "replayed_cost_usd": 0.0
+  },
+  "user_reply": "Related material suggests: Title: App stuck on loading spinner when deployed behind nginx Works locally but on the server the page stays on 'Please wait...'. [S1]",
+  "violations": []
+ },
+ "hybrid": {
+  "citations": [
+   "fixture-issue-9002:000"
+  ],
+  "error": null,
+  "known_facts": [
+   {
+    "evidence": [
+     "fixture-issue-9002:000"
+    ],
+    "statement": "Title: App stuck on loading spinner when deployed behind nginx Works locally but on the server the page stays on 'Please wait...'."
+   }
+  ],
+  "maintainer_summary": {
+   "environment": {
+    "known": {},
+    "unknown": [
+     "streamlit_version",
+     "python_version",
+     "operating_system",
+     "browser"
+    ]
+   },
+   "known_facts": [
+    {
+     "evidence": [
+      "fixture-issue-9002:000"
+     ],
+     "statement": "Title: App stuck on loading spinner when deployed behind nginx Works locally but on the server the page stays on 'Please wait...'."
+    }
+   ],
+   "next_step": "Check whether this matches your setup.",
+   "open_questions": [],
+   "outcome": "answer",
+   "problem": "App stuck on loading on my server but works locally",
+   "sources": [
+    {
+     "chunk_id": "fixture-issue-9002:000",
+     "type": "issue",
+     "url": "https://github.com/streamlit/streamlit/issues/9002",
+     "version": "1.30.0"
+    }
+   ]
+  },
+  "mode": "offline",
+  "next_step": "Check whether this matches your setup.",
+  "open_questions": [],
+  "outcome": "answer",
+  "packet_hash": "5e62f4a02ada9b42b93df8d63931a57bd1ec3882dfbcfb474ee319ee999c3a5e",
+  "pipeline": "baseline",
+  "retrieved": [
+   [
+    "fixture-issue-9002:000",
+    "fixture-issue-9002",
+    null,
+    1
+   ],
+   [
+    "fixture-doc-deploy-proxy:000",
+    "fixture-doc-deploy-proxy",
+    null,
+    2
+   ],
+   [
+    "fixture-comment-4:000",
+    "fixture-comment-4",
+    "fixture-issue-9002",
+    3
+   ],
+   [
+    "fixture-issue-9001:000",
+    "fixture-issue-9001",
+    null,
+    4
+   ],
+   [
+    "fixture-doc-session-state:000",
+    "fixture-doc-session-state",
+    null,
+    5
+   ],
+   [
+    "fixture-comment-3:000",
+    "fixture-comment-3",
+    "fixture-issue-9001",
+    6
+   ]
+  ],
+  "scores": [
+   0.032787,
+   0.032258,
+   0.031746,
+   0.030769,
+   0.03055,
+   0.029857
+  ],
+  "trace": {
+   "attempts": [
+    {
+     "attempt": 0,
+     "status": "ok"
+    }
+   ],
+   "packet": [
+    {
+     "chunk_id": "fixture-issue-9002:000",
+     "label": "S1"
+    },
+    {
+     "chunk_id": "fixture-doc-deploy-proxy:000",
+     "label": "S2"
+    },
+    {
+     "chunk_id": "fixture-comment-4:000",
+     "label": "S3"
+    },
+    {
+     "chunk_id": "fixture-issue-9001:000",
+     "label": "S4"
+    },
+    {
+     "chunk_id": "fixture-doc-session-state:000",
+     "label": "S5"
+    },
+    {
+     "chunk_id": "fixture-comment-3:000",
+     "label": "S6"
+    }
+   ],
+   "query_sha256": "49f490a141941eca"
+  },
+  "usage": {
+   "cache_hits": 0,
+   "cached_input_tokens": 0,
+   "calls": 0,
+   "cost_usd": 0.0,
+   "failed_calls": 0,
+   "input_tokens": 488,
+   "latency_seconds": 0.0,
+   "output_tokens": 65,
+   "replayed_cost_usd": 0.0
+  },
+  "user_reply": "Related material suggests: Title: App stuck on loading spinner when deployed behind nginx Works locally but on the server the page stays on 'Please wait...'. [S1]",
+  "violations": []
+ },
+ "request_info_no_citations": {
+  "citations": [],
+  "error": null,
+  "known_facts": [],
+  "maintainer_summary": {
+   "environment": {
+    "known": {
+     "browser": "Chrome",
+     "streamlit_version": "1.31.1"
+    },
+    "unknown": [
+     "python_version",
+     "operating_system"
+    ]
+   },
+   "known_facts": [],
+   "next_step": null,
+   "open_questions": [
+    "version?"
+   ],
+   "outcome": "request_info",
+   "problem": "Session state is empty after browser refresh",
+   "sources": []
+  },
+  "mode": "offline",
+  "next_step": null,
+  "open_questions": [
+   "version?"
+  ],
+  "outcome": "request_info",
+  "packet_hash": "b48f72be756777ead635d15ab10e93b6818fda31a86dafa081198692359782d0",
+  "pipeline": "baseline",
+  "retrieved": [
+   [
+    "fixture-doc-session-state:000",
+    "fixture-doc-session-state",
+    null,
+    1
+   ],
+   [
+    "fixture-comment-3:000",
+    "fixture-comment-3",
+    "fixture-issue-9001",
+    2
+   ],
+   [
+    "fixture-issue-9001:000",
+    "fixture-issue-9001",
+    null,
+    3
+   ],
+   [
+    "fixture-release-1.33.0:000",
+    "fixture-release-1.33.0",
+    "release:1.33.0",
+    4
+   ],
+   [
+    "fixture-comment-2:000",
+    "fixture-comment-2",
+    "fixture-issue-9001",
+    5
+   ],
+   [
+    "fixture-issue-9003:000",
+    "fixture-issue-9003",
+    null,
+    6
+   ]
+  ],
+  "scores": [
+   0.461566,
+   0.242536,
+   0.215166,
+   0.121716,
+   0.117851,
+   0.108148
+  ],
+  "trace": {
+   "attempts": [
+    {
+     "attempt": 0,
+     "status": "ok"
+    }
+   ],
+   "packet": [
+    {
+     "chunk_id": "fixture-doc-session-state:000",
+     "label": "S1"
+    },
+    {
+     "chunk_id": "fixture-comment-3:000",
+     "label": "S2"
+    },
+    {
+     "chunk_id": "fixture-issue-9001:000",
+     "label": "S3"
+    },
+    {
+     "chunk_id": "fixture-release-1.33.0:000",
+     "label": "S4"
+    },
+    {
+     "chunk_id": "fixture-comment-2:000",
+     "label": "S5"
+    },
+    {
+     "chunk_id": "fixture-issue-9003:000",
+     "label": "S6"
+    }
+   ],
+   "query_sha256": "666401c37cb544f7"
+  },
+  "usage": {
+   "cache_hits": 0,
+   "cached_input_tokens": 0,
+   "calls": 0,
+   "cost_usd": 0.0,
+   "failed_calls": 0,
+   "input_tokens": 405,
+   "latency_seconds": 0.0,
+   "output_tokens": 7,
+   "replayed_cost_usd": 0.0
+  },
+  "user_reply": "Which version?",
+  "violations": []
+ },
+ "retrieval_provider_error": {
+  "citations": [],
+  "error": "fake embedding provider unavailable",
+  "known_facts": [],
+  "maintainer_summary": {},
+  "mode": "offline",
+  "next_step": null,
+  "open_questions": [],
+  "outcome": "error",
+  "packet_hash": null,
+  "pipeline": "baseline",
+  "retrieved": [],
+  "scores": [],
+  "trace": {
+   "attempts": [],
+   "query_sha256": "666401c37cb544f7"
+  },
+  "usage": {
+   "cache_hits": 0,
+   "cached_input_tokens": 0,
+   "calls": 0,
+   "cost_usd": 0,
+   "failed_calls": 0,
+   "input_tokens": 0,
+   "latency_seconds": 0,
+   "output_tokens": 0,
+   "replayed_cost_usd": 0
+  },
+  "user_reply": null,
+  "violations": []
+ },
+ "sample:c-001": {
+  "citations": [
+   "fixture-doc-session-state:000"
+  ],
+  "error": null,
+  "known_facts": [
+   {
+    "evidence": [
+     "fixture-doc-session-state:000"
+    ],
+    "statement": "Session State (fixture) Session State is a way to share variables between reruns, for each user session."
+   }
+  ],
+  "maintainer_summary": {
+   "environment": {
+    "known": {
+     "browser": "Chrome",
+     "streamlit_version": "1.31.1"
+    },
+    "unknown": [
+     "python_version",
+     "operating_system"
+    ]
+   },
+   "known_facts": [
+    {
+     "evidence": [
+      "fixture-doc-session-state:000"
+     ],
+     "statement": "Session State (fixture) Session State is a way to share variables between reruns, for each user session."
+    }
+   ],
+   "next_step": "Check whether this matches your setup.",
+   "open_questions": [],
+   "outcome": "answer",
+   "problem": "Session state is empty after browser refresh",
+   "sources": [
+    {
+     "chunk_id": "fixture-doc-session-state:000",
+     "type": "documentation",
+     "url": "https://docs.streamlit.io/fixture/session-state",
+     "version": "fixture-commit-0001"
+    }
+   ]
+  },
+  "mode": "offline",
+  "next_step": "Check whether this matches your setup.",
+  "open_questions": [],
+  "outcome": "answer",
+  "packet_hash": "b48f72be756777ead635d15ab10e93b6818fda31a86dafa081198692359782d0",
+  "pipeline": "baseline",
+  "retrieved": [
+   [
+    "fixture-doc-session-state:000",
+    "fixture-doc-session-state",
+    null,
+    1
+   ],
+   [
+    "fixture-comment-3:000",
+    "fixture-comment-3",
+    "fixture-issue-9001",
+    2
+   ],
+   [
+    "fixture-issue-9001:000",
+    "fixture-issue-9001",
+    null,
+    3
+   ],
+   [
+    "fixture-release-1.33.0:000",
+    "fixture-release-1.33.0",
+    "release:1.33.0",
+    4
+   ],
+   [
+    "fixture-comment-2:000",
+    "fixture-comment-2",
+    "fixture-issue-9001",
+    5
+   ],
+   [
+    "fixture-issue-9003:000",
+    "fixture-issue-9003",
+    null,
+    6
+   ]
+  ],
+  "scores": [
+   0.458732,
+   0.23009,
+   0.204124,
+   0.11547,
+   0.111803,
+   0.102598
+  ],
+  "trace": {
+   "attempts": [
+    {
+     "attempt": 0,
+     "status": "ok"
+    }
+   ],
+   "packet": [
+    {
+     "chunk_id": "fixture-doc-session-state:000",
+     "label": "S1"
+    },
+    {
+     "chunk_id": "fixture-comment-3:000",
+     "label": "S2"
+    },
+    {
+     "chunk_id": "fixture-issue-9001:000",
+     "label": "S3"
+    },
+    {
+     "chunk_id": "fixture-release-1.33.0:000",
+     "label": "S4"
+    },
+    {
+     "chunk_id": "fixture-comment-2:000",
+     "label": "S5"
+    },
+    {
+     "chunk_id": "fixture-issue-9003:000",
+     "label": "S6"
+    }
+   ],
+   "query_sha256": "03f9bdf6e93ddebf"
+  },
+  "usage": {
+   "cache_hits": 0,
+   "cached_input_tokens": 0,
+   "calls": 0,
+   "cost_usd": 0.0,
+   "failed_calls": 0,
+   "input_tokens": 409,
+   "latency_seconds": 0.0,
+   "output_tokens": 55,
+   "replayed_cost_usd": 0.0
+  },
+  "user_reply": "Related material suggests: Session State (fixture) Session State is a way to share variables between reruns, for each user session. [S1]",
+  "violations": []
+ },
+ "sample:c-002": {
+  "citations": [
+   "fixture-issue-9002:000"
+  ],
+  "error": null,
+  "known_facts": [
+   {
+    "evidence": [
+     "fixture-issue-9002:000"
+    ],
+    "statement": "Title: App stuck on loading spinner when deployed behind nginx Works locally but on the server the page stays on 'Please wait...'."
+   }
+  ],
+  "maintainer_summary": {
+   "environment": {
+    "known": {},
+    "unknown": [
+     "streamlit_version",
+     "python_version",
+     "operating_system",
+     "browser"
+    ]
+   },
+   "known_facts": [
+    {
+     "evidence": [
+      "fixture-issue-9002:000"
+     ],
+     "statement": "Title: App stuck on loading spinner when deployed behind nginx Works locally but on the server the page stays on 'Please wait...'."
+    }
+   ],
+   "next_step": "Check whether this matches your setup.",
+   "open_questions": [],
+   "outcome": "answer",
+   "problem": "App stuck on loading on my server but works locally",
+   "sources": [
+    {
+     "chunk_id": "fixture-issue-9002:000",
+     "type": "issue",
+     "url": "https://github.com/streamlit/streamlit/issues/9002",
+     "version": "1.30.0"
+    }
+   ]
+  },
+  "mode": "offline",
+  "next_step": "Check whether this matches your setup.",
+  "open_questions": [],
+  "outcome": "answer",
+  "packet_hash": "7588be42dc97c568a2950d4eef6cab135fd0e4ef5c58d5c2a871d7a66c95628b",
+  "pipeline": "baseline",
+  "retrieved": [
+   [
+    "fixture-issue-9002:000",
+    "fixture-issue-9002",
+    null,
+    1
+   ],
+   [
+    "fixture-doc-deploy-proxy:000",
+    "fixture-doc-deploy-proxy",
+    null,
+    2
+   ],
+   [
+    "fixture-comment-4:000",
+    "fixture-comment-4",
+    "fixture-issue-9002",
+    3
+   ],
+   [
+    "fixture-comment-1:000",
+    "fixture-comment-1",
+    "fixture-issue-9001",
+    4
+   ],
+   [
+    "fixture-issue-9001:000",
+    "fixture-issue-9001",
+    null,
+    5
+   ],
+   [
+    "fixture-issue-9003:000",
+    "fixture-issue-9003",
+    null,
+    6
+   ]
+  ],
+  "scores": [
+   0.559503,
+   0.296721,
+   0.211289,
+   0.119523,
+   0.08165,
+   0.051299
+  ],
+  "trace": {
+   "attempts": [
+    {
+     "attempt": 0,
+     "status": "ok"
+    }
+   ],
+   "packet": [
+    {
+     "chunk_id": "fixture-issue-9002:000",
+     "label": "S1"
+    },
+    {
+     "chunk_id": "fixture-doc-deploy-proxy:000",
+     "label": "S2"
+    },
+    {
+     "chunk_id": "fixture-comment-4:000",
+     "label": "S3"
+    },
+    {
+     "chunk_id": "fixture-comment-1:000",
+     "label": "S4"
+    },
+    {
+     "chunk_id": "fixture-issue-9001:000",
+     "label": "S5"
+    },
+    {
+     "chunk_id": "fixture-issue-9003:000",
+     "label": "S6"
+    }
+   ],
+   "query_sha256": "49f490a141941eca"
+  },
+  "usage": {
+   "cache_hits": 0,
+   "cached_input_tokens": 0,
+   "calls": 0,
+   "cost_usd": 0.0,
+   "failed_calls": 0,
+   "input_tokens": 395,
+   "latency_seconds": 0.0,
+   "output_tokens": 65,
+   "replayed_cost_usd": 0.0
+  },
+  "user_reply": "Related material suggests: Title: App stuck on loading spinner when deployed behind nginx Works locally but on the server the page stays on 'Please wait...'. [S1]",
+  "violations": []
+ },
+ "sample:c-003": {
+  "citations": [
+   "fixture-doc-session-state:000"
+  ],
+  "error": null,
+  "known_facts": [
+   {
+    "evidence": [
+     "fixture-doc-session-state:000"
+    ],
+    "statement": "Session State (fixture) Session State is a way to share variables between reruns, for each user session."
+   }
+  ],
+  "maintainer_summary": {
+   "environment": {
+    "known": {
+     "browser": "Firefox",
+     "streamlit_version": "1.35.0"
+    },
+    "unknown": [
+     "python_version",
+     "operating_system"
+    ]
+   },
+   "known_facts": [
+    {
+     "evidence": [
+      "fixture-doc-session-state:000"
+     ],
+     "statement": "Session State (fixture) Session State is a way to share variables between reruns, for each user session."
+    }
+   ],
+   "next_step": "Check whether this matches your setup.",
+   "open_questions": [],
+   "outcome": "answer",
+   "problem": "st.data_editor crashes when used with a custom component",
+   "sources": [
+    {
+     "chunk_id": "fixture-doc-session-state:000",
+     "type": "documentation",
+     "url": "https://docs.streamlit.io/fixture/session-state",
+     "version": "fixture-commit-0001"
+    }
+   ]
+  },
+  "mode": "offline",
+  "next_step": "Check whether this matches your setup.",
+  "open_questions": [],
+  "outcome": "answer",
+  "packet_hash": "ab4d1bf3067ffc7d8353cf042e5cc696cef7c3ef4583d0e0b29c13b7097ecbe5",
+  "pipeline": "baseline",
+  "retrieved": [
+   [
+    "fixture-doc-session-state:000",
+    "fixture-doc-session-state",
+    null,
+    1
+   ],
+   [
+    "fixture-doc-deploy-proxy:000",
+    "fixture-doc-deploy-proxy",
+    null,
+    2
+   ],
+   [
+    "fixture-release-1.33.0:000",
+    "fixture-release-1.33.0",
+    "release:1.33.0",
+    3
+   ],
+   [
+    "fixture-issue-9003:000",
+    "fixture-issue-9003",
+    null,
+    4
+   ],
+   [
+    "fixture-comment-4:000",
+    "fixture-comment-4",
+    "fixture-issue-9002",
+    5
+   ],
+   [
+    "fixture-issue-9001:000",
+    "fixture-issue-9001",
+    null,
+    6
+   ]
+  ],
+  "scores": [
+   0.076139,
+   0.060193,
+   0.052705,
+   0.046829,
+   0.038576,
+   0.037268
+  ],
+  "trace": {
+   "attempts": [
+    {
+     "attempt": 0,
+     "status": "ok"
+    }
+   ],
+   "packet": [
+    {
+     "chunk_id": "fixture-doc-session-state:000",
+     "label": "S1"
+    },
+    {
+     "chunk_id": "fixture-doc-deploy-proxy:000",
+     "label": "S2"
+    },
+    {
+     "chunk_id": "fixture-release-1.33.0:000",
+     "label": "S3"
+    },
+    {
+     "chunk_id": "fixture-issue-9003:000",
+     "label": "S4"
+    },
+    {
+     "chunk_id": "fixture-comment-4:000",
+     "label": "S5"
+    },
+    {
+     "chunk_id": "fixture-issue-9001:000",
+     "label": "S6"
+    }
+   ],
+   "query_sha256": "ba532a0a0c47e44b"
+  },
+  "usage": {
+   "cache_hits": 0,
+   "cached_input_tokens": 0,
+   "calls": 0,
+   "cost_usd": 0.0,
+   "failed_calls": 0,
+   "input_tokens": 450,
+   "latency_seconds": 0.0,
+   "output_tokens": 55,
+   "replayed_cost_usd": 0.0
+  },
+  "user_reply": "Related material suggests: Session State (fixture) Session State is a way to share variables between reruns, for each user session. [S1]",
+  "violations": []
+ },
+ "top_k_2": {
+  "citations": [
+   "fixture-doc-session-state:000"
+  ],
+  "error": null,
+  "known_facts": [
+   {
+    "evidence": [
+     "fixture-doc-session-state:000"
+    ],
+    "statement": "Session State (fixture) Session State is a way to share variables between reruns, for each user session."
+   }
+  ],
+  "maintainer_summary": {
+   "environment": {
+    "known": {
+     "browser": "Chrome",
+     "streamlit_version": "1.31.1"
+    },
+    "unknown": [
+     "python_version",
+     "operating_system"
+    ]
+   },
+   "known_facts": [
+    {
+     "evidence": [
+      "fixture-doc-session-state:000"
+     ],
+     "statement": "Session State (fixture) Session State is a way to share variables between reruns, for each user session."
+    }
+   ],
+   "next_step": "Check whether this matches your setup.",
+   "open_questions": [],
+   "outcome": "answer",
+   "problem": "Session state is empty after browser refresh",
+   "sources": [
+    {
+     "chunk_id": "fixture-doc-session-state:000",
+     "type": "documentation",
+     "url": "https://docs.streamlit.io/fixture/session-state",
+     "version": "fixture-commit-0001"
+    }
+   ]
+  },
+  "mode": "offline",
+  "next_step": "Check whether this matches your setup.",
+  "open_questions": [],
+  "outcome": "answer",
+  "packet_hash": "43689d802478c45af59ae57e04191bc0da24574edcef8cc8550e43af872ebdf9",
+  "pipeline": "baseline",
+  "retrieved": [
+   [
+    "fixture-doc-session-state:000",
+    "fixture-doc-session-state",
+    null,
+    1
+   ],
+   [
+    "fixture-comment-3:000",
+    "fixture-comment-3",
+    "fixture-issue-9001",
+    2
+   ]
+  ],
+  "scores": [
+   0.461566,
+   0.242536
+  ],
+  "trace": {
+   "attempts": [
+    {
+     "attempt": 0,
+     "status": "ok"
+    }
+   ],
+   "packet": [
+    {
+     "chunk_id": "fixture-doc-session-state:000",
+     "label": "S1"
+    },
+    {
+     "chunk_id": "fixture-comment-3:000",
+     "label": "S2"
+    }
+   ],
+   "query_sha256": "666401c37cb544f7"
+  },
+  "usage": {
+   "cache_hits": 0,
+   "cached_input_tokens": 0,
+   "calls": 0,
+   "cost_usd": 0.0,
+   "failed_calls": 0,
+   "input_tokens": 256,
+   "latency_seconds": 0.0,
+   "output_tokens": 55,
+   "replayed_cost_usd": 0.0
+  },
+  "user_reply": "Related material suggests: Session State (fixture) Session State is a way to share variables between reruns, for each user session. [S1]",
+  "violations": []
+ },
+ "wrong_shape": {
+  "citations": [],
+  "error": "invalid_payload: outcome must be one of ('answer', 'request_info', 'escalate'), got 'solved'",
+  "known_facts": [],
+  "maintainer_summary": {},
+  "mode": "offline",
+  "next_step": null,
+  "open_questions": [],
+  "outcome": "error",
+  "packet_hash": "b48f72be756777ead635d15ab10e93b6818fda31a86dafa081198692359782d0",
+  "pipeline": "baseline",
+  "retrieved": [
+   [
+    "fixture-doc-session-state:000",
+    "fixture-doc-session-state",
+    null,
+    1
+   ],
+   [
+    "fixture-comment-3:000",
+    "fixture-comment-3",
+    "fixture-issue-9001",
+    2
+   ],
+   [
+    "fixture-issue-9001:000",
+    "fixture-issue-9001",
+    null,
+    3
+   ],
+   [
+    "fixture-release-1.33.0:000",
+    "fixture-release-1.33.0",
+    "release:1.33.0",
+    4
+   ],
+   [
+    "fixture-comment-2:000",
+    "fixture-comment-2",
+    "fixture-issue-9001",
+    5
+   ],
+   [
+    "fixture-issue-9003:000",
+    "fixture-issue-9003",
+    null,
+    6
+   ]
+  ],
+  "scores": [
+   0.461566,
+   0.242536,
+   0.215166,
+   0.121716,
+   0.117851,
+   0.108148
+  ],
+  "trace": {
+   "attempts": [],
+   "packet": [
+    {
+     "chunk_id": "fixture-doc-session-state:000",
+     "label": "S1"
+    },
+    {
+     "chunk_id": "fixture-comment-3:000",
+     "label": "S2"
+    },
+    {
+     "chunk_id": "fixture-issue-9001:000",
+     "label": "S3"
+    },
+    {
+     "chunk_id": "fixture-release-1.33.0:000",
+     "label": "S4"
+    },
+    {
+     "chunk_id": "fixture-comment-2:000",
+     "label": "S5"
+    },
+    {
+     "chunk_id": "fixture-issue-9003:000",
+     "label": "S6"
+    }
+   ],
+   "query_sha256": "666401c37cb544f7"
+  },
+  "usage": {
+   "cache_hits": 0,
+   "cached_input_tokens": 0,
+   "calls": 0,
+   "cost_usd": 0.0,
+   "failed_calls": 0,
+   "input_tokens": 405,
+   "latency_seconds": 0.0,
+   "output_tokens": 4,
+   "replayed_cost_usd": 0.0
+  },
+  "user_reply": null,
+  "violations": []
+ }
+}

@@ -1,0 +1,88 @@
+# Shared settings for every pipeline. Each pipeline's own values are in configs/pipelines/<name>.toml.
+#
+# Precedence (lowest -> highest): built-in defaults, this file, the pipeline profile,
+# $SUPPORTDESK_CONFIG, --config files, SUPPORTDESK__SECTION__KEY env vars, --set section.key=value.
+# `supportdesk config` shows every value in effect and where it came from.
+# Relative paths resolve against the directory you run from (the project root).
+# The API key never goes here: models.api_key_env names the environment variable that holds it.
+# Optional keys (base_url, candidate_k, max_chunks) are left out to keep their default.
+
+[run]
+mode = "offline"                 # offline | replay | live
+
+[models]
+chat = "gpt-4o-mini"             # must exist on the gateway AND be priced in configs/pricing.json
+embedding = "text-embedding-3-small"   # changing it requires re-indexing
+# base_url = "https://..."       # gateway URL (unset: the SDK reads $OPENAI_BASE_URL)
+api_key_env = "OPENAI_API_KEY"   # NAME of the env var holding the key; the key itself never goes in a file
+
+[prompts]
+system = "configs/prompts/answer_system.txt"
+output_format = "configs/prompts/answer_output_format.txt"
+
+[paths]
+data_dir = "data/processed"
+index_dir = "index"              # qdrant/ vector store, chunks.jsonl, manifest.json are written here
+artifacts_dir = "artifacts"      # runs/<run_id>/, reports/
+cache_path = "artifacts/cache.sqlite"
+ledger_path = "artifacts/cost_ledger.jsonl"
+pricing_path = "configs/pricing.json"
+
+[budget]
+ceiling_usd = 5.0                # live spending on this machine stops here (all runs together)
+reserve_usd = 0.25
+max_live_calls = 5000
+
+[chunking]                       # changing either requires re-indexing (`supportdesk index`)
+method = "fixed"
+max_tokens = 512
+overlap_tokens = 64
+
+[retrieval]
+top_k = 6                        # chunks returned by retrieval AND (by default) allowed in the prompt
+# candidate_k = 20               # candidates fetched before reranking (unset = top_k)
+historical_filter = true         # a case only sees material dated before it was filed
+embed_batch_size = 64
+bm25_k1 = 1.5
+bm25_b = 0.75
+hybrid_pool = 30
+rrf_k = 60
+
+[context]
+# max_chunks = 6                 # unset = follows retrieval.top_k; must be <= top_k
+max_tokens = 3200                # sized for 6 chunks of 512 tokens
+max_query_chars = 4000
+max_body_chars = 4000
+
+[generation]
+max_output_tokens = 900
+max_retries = 1                  # provider errors / non-JSON only; never for a validation failure
+temperature = 0.0
+timeout_seconds = 60.0
+
+[limits]
+max_input_chars = 60000
+
+[pipeline]
+name = "baseline"
+retriever = "dense"              # dense | bm25 | hybrid
+
+[eval]
+case_files = ["data/eval"]               # a folder of evaluation files, or case .jsonl files; `index` keeps their issues out of the index
+test_fraction = 0.5              # used by `supportdesk split`
+split_seed = 7
+recall_ks = [1, 3, 6, 10]          # 6 and 10: each pipeline at its own top_k
+leakage_overlap_threshold = 0.6
+leakage_shingle_tokens = 8
+
+[web]
+port = 8765
+max_request_bytes = 64000
+max_title_chars = 300
+max_body_chars = 8000
+max_created_at_chars = 40
+max_history_items = 20
+max_history_chars = 2000
+
+[case]
+review = "escalations"            # escalations: only escalations wait for a maintainer | all: every proposal does

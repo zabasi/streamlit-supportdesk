@@ -1,0 +1,25 @@
+# The baseline's own settings: the fixed reference every other pipeline is compared against.
+# Loaded automatically whenever pipeline.name = "baseline". It sits ABOVE configs/default.toml, so
+# changing a default for other pipelines cannot silently change the baseline.
+#
+# A profile may only set what defines how a pipeline retrieves and builds its prompt (chunking,
+# retrieval, context, pipeline.retriever, paths.index_dir). Models, budget, generation and paths
+# stay shared so comparisons are fair. These values equal the built-in defaults, which is what the
+# golden test (tests/test_golden_baseline.py) pins.
+
+[chunking]
+method = "fixed"
+max_tokens = 512
+overlap_tokens = 64
+
+[retrieval]
+top_k = 6                    # the baseline shows the model 6 chunks
+historical_filter = true
+
+[context]
+max_tokens = 3200            # 6 chunks x 512 tokens: enough room that the budget never drops a chunk
+max_query_chars = 4000
+max_body_chars = 4000
+
+[pipeline]
+retriever = "dense"
