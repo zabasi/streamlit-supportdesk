@@ -89,3 +89,10 @@ def build_clean_hybrid_split(retriever: Retriever, clients: Clients, settings: S
     stages = default_stages(retriever, clients, settings)
     stages["query"] = CleanQuery(settings.context.max_query_chars)
     return StagedPipeline(name="clean_hybrid_split", clients=clients, settings=settings, **stages)
+
+
+def build_clean_hybrid_doc_slots(retriever: Retriever, clients: Clients, settings: Settings) -> StagedPipeline:
+    """clean_doc_slots with hybrid search: both its lists merge dense and BM25 by rank fusion."""
+    stages = default_stages(retriever, clients, settings)
+    stages["query"] = CleanQuery(settings.context.max_query_chars)
+    return StagedPipeline(name="clean_hybrid_doc_slots", clients=clients, settings=settings, **stages)

@@ -1,0 +1,22 @@
+# Combination: clean_doc_slots with hybrid search. The cleaned query (CleanQuery); 3 of the 6 results
+# kept for documentation, taken from a hybrid search over documentation only; the rest from a hybrid
+# search over everything (dense and BM25 merged by rank fusion, retriever hybrid_doc_slots). Compare
+# with clean_doc_slots: dense against hybrid is the only difference. Shares the baseline's index.
+
+[chunking]
+method = "fixed"
+max_tokens = 512
+overlap_tokens = 128
+
+[retrieval]
+top_k = 6
+doc_slots = 3                # at least 3 of the 6 chunks are documentation
+historical_filter = true
+
+[context]
+max_tokens = 3200            # 6 chunks x 512 tokens: enough room that the budget never drops a chunk
+max_query_chars = 4000
+max_body_chars = 4000
+
+[pipeline]
+retriever = "hybrid_doc_slots"

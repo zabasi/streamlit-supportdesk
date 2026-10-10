@@ -140,6 +140,42 @@ class SplitHybridRetriever:
         return [Hit(h.chunk, h.score, rank, h.source) for rank, h in enumerate(merged, start=1)]
 
 
+class HybridDocSlotsRetriever:
+    """Hybrid search (dense and BM25 merged by rank fusion), with places kept for documentation."""
+
+    name = "hybrid_doc_slots"
+
+    def __init__(self, index: VectorIndex, embedder: EmbeddingClient, *, doc_slots: int, pool: int,
+                 rrf_k: int, bm25_k1: float, bm25_b: float):
+        self.index, self.embedder = index, embedder
+        self.bm25 = BM25(index.chunks, k1=bm25_k1, b=bm25_b)
+        self.doc_slots, self.pool, self.rrf_k = doc_slots, pool, rrf_k
+        self.by_id = {c.chunk_id: c for c in index.chunks}
+
+    def _dense(self, vector, as_of, docs_only: bool) -> list[str]:
+        limit = min(len(self.index.chunks), max(self.pool * 4, self.pool + 20))
+        found = dict(self.index.search(vector, limit=limit, as_of=as_of,
+                                       source_types=("documentation",) if docs_only else None))
+        order = sorted(found, key=lambda i: (-round(found[i], RANK_DECIMALS), i))[: self.pool]
+        return [self.index.chunks[i].chunk_id for i in order]
+
+    def _lexical(self, query, as_of, docs_only: bool) -> list[str]:
+        scores, mask = self.bm25.scores(query), visible_mask(self.index.chunks, as_of)
+        if docs_only:
+            mask = [ok and c.source_type == "documentation" for ok, c in zip(mask, self.index.chunks)]
+        return [self.index.chunks[i].chunk_id for i in _top(scores, mask, self.pool) if scores[i] > 0]
+
+    def search(self, query, *, k, as_of=None):
+        vec, _ = self.embedder.embed([query], stage="query")
+        docs = rrf([self._dense(vec[0], as_of, True), self._lexical(query, as_of, True)], k=self.rrf_k)
+        every = rrf([self._dense(vec[0], as_of, False), self._lexical(query, as_of, False)], k=self.rrf_k)
+        chosen = [cid for cid, _ in docs][: min(self.doc_slots, k)]  # the reserved places
+        chosen += [cid for cid, _ in every if cid not in chosen][: k - len(chosen)]  # the rest
+        scores = {**dict(docs), **dict(every)}  # a chunk's overall fused score where it has one
+        order = sorted(chosen, key=lambda cid: (-round(scores[cid], RANK_DECIMALS), cid))
+        return [Hit(self.by_id[cid], scores[cid], r, "hybrid") for r, cid in enumerate(order, start=1)]
+
+
 def fuse_hits(rankings: list[list[Hit]], k: int, *, rrf_k: int) -> list[Hit]:
     """Merge several per-query rankings into one with RRF (used when a query stage returns more
     than one query). The first occurrence of a chunk supplies the chunk object."""

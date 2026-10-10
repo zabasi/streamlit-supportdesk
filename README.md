@@ -27,7 +27,8 @@ per report:        intake -> query -> retrieve -> rerank -> packet -> generate -
   and keyword search, merged or side by side), `rerank_llm` (a model reorders 30 candidates),
   `rewrite_llm` and `split_llm` (a model writes one or several search queries) and
   `split_sentences` (several queries without a model). Combinations build on the cleaned query:
-  `clean_doc_slots`, `clean_rerank` and `clean_hybrid_split`. `supportdesk pipelines` lists them all.
+  `clean_doc_slots`, `clean_hybrid_doc_slots`, `clean_rerank` and `clean_hybrid_split`.
+  `supportdesk pipelines` lists them all.
 
 ## 2. Set up
 

@@ -102,7 +102,9 @@ def test_each_experiment_differs_from_the_baseline_in_exactly_one_way():
                            ("clean_doc_slots", {"pipeline.name", "pipeline.retriever", "retrieval.doc_slots"}),
                            ("clean_rerank", {"pipeline.name", "pipeline.retriever", "retrieval.doc_slots",
                                              "retrieval.candidate_k"}),
-                           ("clean_hybrid_split", {"pipeline.name", "pipeline.retriever", "retrieval.bm25_slots"})):
+                           ("clean_hybrid_split", {"pipeline.name", "pipeline.retriever", "retrieval.bm25_slots"}),
+                           ("clean_hybrid_doc_slots", {"pipeline.name", "pipeline.retriever",
+                                                       "retrieval.doc_slots"})):
         other = flat(name)
         assert {k for k in base if base[k] != other[k]} == expected, name
 
@@ -262,3 +264,35 @@ def test_the_combinations_use_the_clean_query_and_their_own_retrieval(index, cli
 
 def split_hybrid(index, clients):
     return SplitHybridRetriever(index, clients.embedding, bm25_slots=3, bm25_k1=1.5, bm25_b=0.75)
+
+
+def hybrid_slots(index, clients, slots):
+    from supportdesk.retrieval.retriever import HybridDocSlotsRetriever
+    return HybridDocSlotsRetriever(index, clients.embedding, doc_slots=slots, pool=30, rrf_k=60,
+                                   bm25_k1=1.5, bm25_b=0.75)
+
+
+def test_hybrid_doc_slots_keeps_places_for_documentation(index, clients):
+    hits = hybrid_slots(index, clients, 3).search("session state reset rerun page", k=6)
+    assert len({h.chunk.chunk_id for h in hits}) == 6 and [h.rank for h in hits] == list(range(1, 7))
+    assert sum(h.chunk.source_type == "documentation" for h in hits) >= 3
+    assert {h.source for h in hits} == {"hybrid"}
+    assert [h.score for h in hits] == sorted((h.score for h in hits), reverse=True)
+
+
+def test_hybrid_doc_slots_without_reserved_places_is_plain_hybrid(index, clients):
+    from supportdesk.retrieval.retriever import HybridRetriever
+    plain = HybridRetriever(index, clients.embedding, pool=30, rrf_k=60, bm25_k1=1.5, bm25_b=0.75)
+    for query in ("session state reset rerun page", "st.session_state is empty after refresh"):
+        assert [h.chunk.chunk_id for h in hybrid_slots(index, clients, 0).search(query, k=6)] == [
+            h.chunk.chunk_id for h in plain.search(query, k=6)]
+
+
+def test_clean_hybrid_doc_slots_differs_from_clean_doc_slots_only_in_its_retriever():
+    def flat(name):
+        d = Settings.load(env={}, overrides=[f"pipeline.name={name}"]).to_dict()
+        return {f"{section}.{key}": value for section, keys in d.items() for key, value in keys.items()}
+    a, b = flat("clean_doc_slots"), flat("clean_hybrid_doc_slots")
+    assert {k for k in a if a[k] != b[k]} == {"pipeline.name", "pipeline.retriever"}
+    from supportdesk.registry import PIPELINES
+    assert PIPELINES["clean_hybrid_doc_slots"].__doc__.startswith("clean_doc_slots with hybrid search")
