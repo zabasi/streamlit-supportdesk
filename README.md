@@ -71,6 +71,9 @@ Offline mode uses fake models: everything runs, but the answer text comes from a
 
 ## 5. Go live
 
+If you ran the offline try in this shell, leave the sample first: `unset SUPPORTDESK_CONFIG`.
+Otherwise every command, live ones included, keeps using the sample corpus and `index_sample/`.
+
 1. **Key:** `OPENAI_API_KEY` and `OPENAI_BASE_URL` in `.env`.
 2. **Prices:** put the real Metis prices in `configs/pricing.json` and set `"verified": true`. Live
    mode refuses to start until then, because the budget guard relies on them.
@@ -82,6 +85,9 @@ Offline mode uses fake models: everything runs, but the answer text comes from a
    corpus or the evaluation cases change.
 5. **Ask one question:** `supportdesk ask --mode live --title "..." --body "..."`. Commands refuse
    an index built with another embedding model, so an offline index has to be rebuilt first.
+6. **Stay live:** to stop typing `--mode live`, add `SUPPORTDESK__RUN__MODE=live` to `.env`. Every
+   command then runs live, and spends money, until you remove the line; `--mode offline` on a
+   command still overrides it.
 
 ## 6. Commands
 
