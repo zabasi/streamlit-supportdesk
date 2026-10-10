@@ -238,7 +238,8 @@ class StagedPipeline:
             packet = state["packet"]
             result.retrieved = [{"chunk_id": h["chunk"]["chunk_id"], "source_id": h["chunk"]["source_id"],
                                  "parent_source_id": h["chunk"]["parent_source_id"], "rank": h["rank"],
-                                 "score": round(h["score"], 6)} for h in state["hits"]]
+                                 "score": round(h["score"], 6), "found_by": h["source"]}
+                                for h in state["hits"]]
             result.packet_hash = packet["sha256"]
             result.trace["packet"] = [{"label": label, "chunk_id": cid} for label, cid in packet["labels"].items()]
         if "answer" in state:

@@ -10,7 +10,7 @@
   "src/supportdesk/pipelines/packet.py": "dab4a74e981a8f77",
   "src/supportdesk/pipelines/parsing.py": "5d121db2b2cc5514",
   "src/supportdesk/pipelines/prompts.py": "3e8b1b318e6d4e38",
-  "src/supportdesk/pipelines/staged.py": "436374e93bd30084",
+  "src/supportdesk/pipelines/staged.py": "eb1931c62bb69d09",
   "src/supportdesk/pipelines/stages/defaults.py": "8a8523311a207b94",
   "src/supportdesk/pipelines/stages/protocols.py": "b34fbd301bce7a04",
   "src/supportdesk/pipelines/state.py": "c60cc896f6c4527d",
