@@ -1,0 +1,19 @@
+# Experiment: the baseline with a cleaner query (stage CleanQuery). Every setting below is the
+# baseline's, so the query is the only difference. Shares the baseline's index.
+
+[chunking]
+method = "fixed"
+max_tokens = 512
+overlap_tokens = 128
+
+[retrieval]
+top_k = 6                    # the baseline shows the model 6 chunks
+historical_filter = true
+
+[context]
+max_tokens = 3200            # 6 chunks x 512 tokens: enough room that the budget never drops a chunk
+max_query_chars = 4000
+max_body_chars = 4000
+
+[pipeline]
+retriever = "dense"

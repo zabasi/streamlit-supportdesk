@@ -46,6 +46,7 @@ embed_batch_size = 64
 bm25_k1 = 1.5
 bm25_b = 0.75
 hybrid_pool = 30
+doc_slots = 0                    # places kept for documentation (dense_doc_slots retriever); 0 = none
 rrf_k = 60
 
 [context]

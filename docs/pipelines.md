@@ -112,6 +112,24 @@ identical output. If you change the baseline on purpose, regenerate with
 `PYTHONPATH=src:. python -m tests.golden.generate` and review the diff. Prefer adding stages to
 `advanced` over editing baseline stages.
 
+## Experiments
+
+An experiment is the baseline with exactly one change, in `pipelines/experiments.py` with its own
+profile in `configs/pipelines/`. Each shares the baseline's index, so measuring it costs only query
+embeddings:
+
+| Pipeline | The one change |
+|---|---|
+| `clean_query` | Query stage `CleanQuery`: the report without its template sections, checkboxes, links and debug info; from code, only the lines that call Streamlit or name an error |
+| `doc_slots` | Retriever `dense_doc_slots` with `retrieval.doc_slots = 3`: at least 3 of the 6 results are documentation, still ordered by relevance |
+
+```bash
+supportdesk eval-retrieval --pipeline clean_query --split dev
+supportdesk report <baseline run> <experiment run>
+```
+
+A change that helps moves into `advanced`.
+
 ## The case workflow
 
 `casework.py` extends the support graph for `supportdesk case`: after `summarize`, an answer or a

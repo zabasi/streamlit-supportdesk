@@ -152,8 +152,9 @@ def test_status_exposes_the_configured_defaults_not_alphabetical_ones(server):
     port, _ = server
     info = json.loads(call(port, "GET", "/api/status")[2])
     assert info["defaults"] == {"pipeline": "baseline", "retriever": "dense"}
-    assert info["pipelines"] == ["advanced", "baseline"]
-    assert info["retriever_by_pipeline"] == {"advanced": "dense", "baseline": "dense"}
+    from supportdesk.registry import PIPELINES
+    assert info["pipelines"] == sorted(PIPELINES)
+    assert {k: info["retriever_by_pipeline"][k] for k in ("advanced", "baseline")} == {"advanced": "dense", "baseline": "dense"}
     assert info["retrievers"][0] == "bm25"  # alphabetical first: the UI must not fall back to this
 
 

@@ -81,15 +81,19 @@ class VectorIndex:
     def dimension(self) -> int:
         return int(self.client.get_collection(COLLECTION).config.params.vectors.size)
 
-    def search(self, query_vector: list[float], *, limit: int, as_of: str | None) -> list[tuple[int, float]]:
+    def search(self, query_vector: list[float], *, limit: int, as_of: str | None,
+               source_types: tuple[str, ...] | None = None) -> list[tuple[int, float]]:
         """(position in self.chunks, cosine score) for the best ``limit`` chunks visible at ``as_of``:
-        undated, or dated strictly before it."""
+        undated, or dated strictly before it. ``source_types`` limits the search to those types."""
         if len(query_vector) != self.dimension:
             raise IndexUnusable(f"query width {len(query_vector)} != index width {self.dimension}")
         cutoff = parse_ts(as_of)
-        query_filter = None if cutoff is None else models.Filter(should=[
+        dated = None if cutoff is None else [
             models.FieldCondition(key="as_of_ts", range=models.Range(lt=cutoff.timestamp())),
-            models.IsEmptyCondition(is_empty=models.PayloadField(key="as_of_ts"))])
+            models.IsEmptyCondition(is_empty=models.PayloadField(key="as_of_ts"))]
+        typed = None if not source_types else [
+            models.FieldCondition(key="source_type", match=models.MatchAny(any=list(source_types)))]
+        query_filter = None if not (dated or typed) else models.Filter(should=dated, must=typed)
         found = self.client.query_points(COLLECTION, query=list(map(float, query_vector)),
                                          query_filter=query_filter, limit=limit, with_payload=["pos"])
         return [(int(p.payload["pos"]), float(p.score)) for p in found.points]

@@ -55,6 +55,27 @@ class DenseRetriever:
         return [Hit(self.index.chunks[i], found[i], r, "dense") for r, i in enumerate(order, start=1)]
 
 
+class DocSlotsRetriever:
+    """Embedding similarity, with places kept for documentation so similar issues cannot crowd it out."""
+
+    name = "dense_doc_slots"
+
+    def __init__(self, index: VectorIndex, embedder: EmbeddingClient, *, doc_slots: int):
+        self.index, self.embedder, self.doc_slots = index, embedder, doc_slots
+
+    def search(self, query, *, k, as_of=None):
+        vec, _ = self.embedder.embed([query], stage="query")
+        limit = min(len(self.index.chunks), max(k * 4, k + 20))
+        docs = dict(self.index.search(vec[0], limit=limit, as_of=as_of, source_types=("documentation",)))
+        every = dict(self.index.search(vec[0], limit=limit, as_of=as_of))
+        rank = lambda found: sorted(found, key=lambda i: (-round(found[i], RANK_DECIMALS), i))
+        chosen = rank(docs)[: min(self.doc_slots, k)]  # the reserved places
+        chosen += [i for i in rank(every) if i not in chosen][: k - len(chosen)]  # the rest, from everything
+        scores = {**every, **docs}
+        order = sorted(chosen, key=lambda i: (-round(scores[i], RANK_DECIMALS), i))  # best first, as usual
+        return [Hit(self.index.chunks[i], scores[i], r, "dense") for r, i in enumerate(order, start=1)]
+
+
 class BM25Retriever:
     """Keyword match (BM25); finds exact identifiers and error strings."""
 

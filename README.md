@@ -21,7 +21,9 @@ per report:        intake -> query -> retrieve -> rerank -> packet -> generate -
   escalations wait for a maintainer's approval (`case.review = all` makes every reply wait).
   `ask`, `eval` and the web page stop after summarize and post nothing.
 - **Pipelines:** `baseline` (dense search, 6 chunks) is the reference; `advanced` (hybrid search,
-  10 chunks) is where improvements go.
+  10 chunks) is where improvements go. Experiments each change one thing in the baseline, so their
+  effect can be measured alone: `clean_query` (the query without the issue template) and
+  `doc_slots` (3 of the 6 results kept for documentation). `supportdesk pipelines` lists them all.
 
 ## 2. Set up
 

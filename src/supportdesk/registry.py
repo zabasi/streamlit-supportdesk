@@ -6,14 +6,18 @@ from .config import ConfigError, Settings
 from .llm.factory import Clients
 from .pipelines.advanced import build_advanced
 from .pipelines.baseline import build_baseline
+from .pipelines.experiments import build_clean_query, build_doc_slots
 from .retrieval.index import VectorIndex
-from .retrieval.retriever import BM25Retriever, DenseRetriever, HybridRetriever
+from .retrieval.retriever import BM25Retriever, DenseRetriever, DocSlotsRetriever, HybridRetriever
 
 #: Pipelines by name: each builds the pipeline from (retriever, clients, settings); its docstring is its one-line description.
-PIPELINES = {"baseline": build_baseline, "advanced": build_advanced}
+PIPELINES = {"baseline": build_baseline, "advanced": build_advanced,
+             "clean_query": build_clean_query, "doc_slots": build_doc_slots}
 
 RETRIEVERS = {
     "dense": lambda index, clients, s: DenseRetriever(index, clients.embedding),
+    "dense_doc_slots": lambda index, clients, s: DocSlotsRetriever(
+        index, clients.embedding, doc_slots=s.retrieval.doc_slots),
     "bm25": lambda index, clients, s: BM25Retriever(
         index.chunks, k1=s.retrieval.bm25_k1, b=s.retrieval.bm25_b),
     "hybrid": lambda index, clients, s: HybridRetriever(
