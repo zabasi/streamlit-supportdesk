@@ -163,6 +163,7 @@ Defaults shown are the built-in ones. `*unset*` means the key is optional and no
 | `bm25_b` | `0.75` | BM25: how much longer chunks are penalised, from 0 (not at all) to 1 |
 | `hybrid_pool` | `30` | in hybrid search, how many candidates dense and BM25 search each contribute |
 | `doc_slots` | `0` | places in the results kept for documentation chunks, used by the dense_doc_slots retriever; 0 keeps none |
+| `bm25_slots` | `0` | places in the results filled by BM25 (keyword) search, the rest by dense search; used by the hybrid_split retriever |
 | `rrf_k` | `60` | Reciprocal Rank Fusion constant; higher values make rank differences count less |
 
 ### `[context]`

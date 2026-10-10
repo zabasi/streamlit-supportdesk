@@ -22,3 +22,15 @@ def build_doc_slots(retriever: Retriever, clients: Clients, settings: Settings) 
     """Baseline with places in the search results kept for documentation (retriever dense_doc_slots)."""
     return StagedPipeline(name="doc_slots", clients=clients, settings=settings,
                           **default_stages(retriever, clients, settings))
+
+
+def build_hybrid_rrf(retriever: Retriever, clients: Clients, settings: Settings) -> StagedPipeline:
+    """Baseline with hybrid search: dense and BM25 results merged by Reciprocal Rank Fusion."""
+    return StagedPipeline(name="hybrid_rrf", clients=clients, settings=settings,
+                          **default_stages(retriever, clients, settings))
+
+
+def build_hybrid_split(retriever: Retriever, clients: Clients, settings: Settings) -> StagedPipeline:
+    """Baseline with split hybrid search: half the results from dense, half from BM25, not merged."""
+    return StagedPipeline(name="hybrid_split", clients=clients, settings=settings,
+                          **default_stages(retriever, clients, settings))

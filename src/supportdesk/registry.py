@@ -6,16 +6,31 @@ from .config import ConfigError, Settings
 from .llm.factory import Clients
 from .pipelines.advanced import build_advanced
 from .pipelines.baseline import build_baseline
-from .pipelines.experiments import build_clean_query, build_doc_slots
+from .pipelines.experiments import (
+    build_clean_query,
+    build_doc_slots,
+    build_hybrid_rrf,
+    build_hybrid_split,
+)
 from .retrieval.index import VectorIndex
-from .retrieval.retriever import BM25Retriever, DenseRetriever, DocSlotsRetriever, HybridRetriever
+from .retrieval.retriever import (
+    BM25Retriever,
+    DenseRetriever,
+    DocSlotsRetriever,
+    HybridRetriever,
+    SplitHybridRetriever,
+)
 
 #: Pipelines by name: each builds the pipeline from (retriever, clients, settings); its docstring is its one-line description.
 PIPELINES = {"baseline": build_baseline, "advanced": build_advanced,
-             "clean_query": build_clean_query, "doc_slots": build_doc_slots}
+             "clean_query": build_clean_query, "doc_slots": build_doc_slots,
+             "hybrid_rrf": build_hybrid_rrf, "hybrid_split": build_hybrid_split}
 
 RETRIEVERS = {
     "dense": lambda index, clients, s: DenseRetriever(index, clients.embedding),
+    "hybrid_split": lambda index, clients, s: SplitHybridRetriever(
+        index, clients.embedding, bm25_slots=s.retrieval.bm25_slots,
+        bm25_k1=s.retrieval.bm25_k1, bm25_b=s.retrieval.bm25_b),
     "dense_doc_slots": lambda index, clients, s: DocSlotsRetriever(
         index, clients.embedding, doc_slots=s.retrieval.doc_slots),
     "bm25": lambda index, clients, s: BM25Retriever(

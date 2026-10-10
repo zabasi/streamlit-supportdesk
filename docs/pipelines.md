@@ -122,6 +122,8 @@ embeddings:
 |---|---|
 | `clean_query` | Query stage `CleanQuery`: the report without its template sections, checkboxes, links and debug info; from code, only the lines that call Streamlit or name an error |
 | `doc_slots` | Retriever `dense_doc_slots` with `retrieval.doc_slots = 3`: at least 3 of the 6 results are documentation, still ordered by relevance |
+| `hybrid_rrf` | Retriever `hybrid`: dense and BM25 each return their top `retrieval.hybrid_pool` results, merged by Reciprocal Rank Fusion; chunks both find rise to the top |
+| `hybrid_split` | Retriever `hybrid_split` with `retrieval.bm25_slots = 3`: 3 results from dense, 3 different ones from BM25, without merging scores; the two lists take turns by rank, and if one runs short the other fills in |
 
 ```bash
 supportdesk eval-retrieval --pipeline clean_query --split dev

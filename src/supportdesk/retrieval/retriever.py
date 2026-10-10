@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from itertools import zip_longest
 from typing import Protocol
 
 from ..llm.protocols import EmbeddingClient
@@ -108,6 +109,35 @@ class HybridRetriever:
         b = self.lexical.search(query, k=self.pool, as_of=as_of)
         fused = rrf([[h.chunk.chunk_id for h in d], [h.chunk.chunk_id for h in b]], k=self.rrf_k)[:k]
         return [Hit(self.by_id[cid], score, r, "hybrid") for r, (cid, score) in enumerate(fused, 1)]
+
+
+class SplitHybridRetriever:
+    """Dense and BM25 side by side: a fixed number of results from each, without merging scores."""
+
+    name = "hybrid_split"
+
+    def __init__(self, index: VectorIndex, embedder: EmbeddingClient, *, bm25_slots: int,
+                 bm25_k1: float, bm25_b: float):
+        self.dense = DenseRetriever(index, embedder)
+        self.lexical = BM25Retriever(index.chunks, k1=bm25_k1, b=bm25_b)
+        self.bm25_slots = bm25_slots
+
+    def search(self, query, *, k, as_of=None):
+        dense = self.dense.search(query, k=k, as_of=as_of)
+        lexical = self.lexical.search(query, k=k, as_of=as_of)
+        taken: set[str] = set()
+
+        def pick(hits: list[Hit], n: int) -> list[Hit]:
+            chosen = [h for h in hits if h.chunk.chunk_id not in taken][:n]
+            taken.update(h.chunk.chunk_id for h in chosen)
+            return chosen
+
+        from_dense = pick(dense, k - min(self.bm25_slots, k))
+        from_bm25 = pick(lexical, k - len(from_dense))  # BM25's slots, skipping what dense found
+        from_dense += pick(dense, k - len(from_dense) - len(from_bm25))  # if BM25 ran short
+        # Dense and BM25 scores are on different scales, so the two lists take turns by rank.
+        merged = [h for pair in zip_longest(from_dense, from_bm25) for h in pair if h is not None]
+        return [Hit(h.chunk, h.score, rank, h.source) for rank, h in enumerate(merged, start=1)]
 
 
 def fuse_hits(rankings: list[list[Hit]], k: int, *, rrf_k: int) -> list[Hit]:

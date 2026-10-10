@@ -128,6 +128,8 @@ class Retrieval:
     hybrid_pool: int = _opt("in hybrid search, how many candidates dense and BM25 search each contribute", 30)
     doc_slots: int = _opt("places in the results kept for documentation chunks, used by the "
                           "dense_doc_slots retriever; 0 keeps none", 0)
+    bm25_slots: int = _opt("places in the results filled by BM25 (keyword) search, the rest by dense "
+                           "search; used by the hybrid_split retriever", 0)
     rrf_k: int = _opt("Reciprocal Rank Fusion constant; higher values make rank differences count less", 60)
 
 
@@ -372,6 +374,8 @@ class Settings:
             (self.case.review in REVIEW_POLICIES,
              f"case.review must be one of {REVIEW_POLICIES}, got {self.case.review!r}"),
             (r.top_k >= 1, "retrieval.top_k must be >= 1"),
+            (0 <= r.bm25_slots <= r.top_k,
+             f"retrieval.bm25_slots ({r.bm25_slots}) must be between 0 and retrieval.top_k ({r.top_k})"),
             (0 <= r.doc_slots <= r.top_k,
              f"retrieval.doc_slots ({r.doc_slots}) must be between 0 and retrieval.top_k ({r.top_k})"),
             (r.candidate_k is None or r.candidate_k >= r.top_k,

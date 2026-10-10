@@ -1,0 +1,21 @@
+# Experiment: the baseline with split hybrid search. 3 of the 6 results come from dense search and
+# 3 from BM25, without merging their scores; the two lists take turns by rank. Every other setting
+# is the baseline's. Shares the baseline's index.
+
+[chunking]
+method = "fixed"
+max_tokens = 512
+overlap_tokens = 128
+
+[retrieval]
+top_k = 6
+bm25_slots = 3               # 3 of the 6 from BM25, the other 3 from dense
+historical_filter = true
+
+[context]
+max_tokens = 3200            # 6 chunks x 512 tokens: enough room that the budget never drops a chunk
+max_query_chars = 4000
+max_body_chars = 4000
+
+[pipeline]
+retriever = "hybrid_split"
