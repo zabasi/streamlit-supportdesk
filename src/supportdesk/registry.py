@@ -7,7 +7,10 @@ from .llm.factory import Clients
 from .pipelines.advanced import build_advanced
 from .pipelines.baseline import build_baseline
 from .pipelines.experiments import (
+    build_clean_doc_slots,
+    build_clean_hybrid_split,
     build_clean_query,
+    build_clean_rerank,
     build_doc_slots,
     build_hybrid_rrf,
     build_hybrid_split,
@@ -30,7 +33,9 @@ PIPELINES = {"baseline": build_baseline, "advanced": build_advanced,
              "clean_query": build_clean_query, "doc_slots": build_doc_slots,
              "hybrid_rrf": build_hybrid_rrf, "hybrid_split": build_hybrid_split,
              "rerank_llm": build_rerank_llm, "rewrite_llm": build_rewrite_llm,
-             "split_llm": build_split_llm, "split_sentences": build_split_sentences}
+             "split_llm": build_split_llm, "split_sentences": build_split_sentences,
+             "clean_doc_slots": build_clean_doc_slots, "clean_rerank": build_clean_rerank,
+             "clean_hybrid_split": build_clean_hybrid_split}
 
 RETRIEVERS = {
     "dense": lambda index, clients, s: DenseRetriever(index, clients.embedding),

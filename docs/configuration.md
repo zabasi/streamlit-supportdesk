@@ -164,7 +164,7 @@ Defaults shown are the built-in ones. `*unset*` means the key is optional and no
 | `bm25_k1` | `1.5` | BM25: how quickly repeating a word stops raising the score |
 | `bm25_b` | `0.75` | BM25: how much longer chunks are penalised, from 0 (not at all) to 1 |
 | `hybrid_pool` | `30` | in hybrid search, how many candidates dense and BM25 search each contribute |
-| `doc_slots` | `0` | places in the results kept for documentation chunks, used by the dense_doc_slots retriever; 0 keeps none |
+| `doc_slots` | `0` | places among the candidates kept for documentation chunks, used by the dense_doc_slots retriever; 0 keeps none |
 | `max_queries` | `1` | most search queries a query stage may return; their results are merged by rank fusion |
 | `rerank_snippet_chars` | `600` | characters of each candidate shown to the model by the LLMReranker |
 | `bm25_slots` | `0` | places in the results filled by BM25 (keyword) search, the rest by dense search; used by the hybrid_split retriever |

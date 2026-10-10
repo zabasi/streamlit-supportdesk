@@ -1,0 +1,20 @@
+# Combination: the cleaned query (CleanQuery) with 3 of the 6 results kept for documentation
+# (retriever dense_doc_slots). Every other setting is the baseline's. Shares the baseline's index.
+
+[chunking]
+method = "fixed"
+max_tokens = 512
+overlap_tokens = 128
+
+[retrieval]
+top_k = 6
+doc_slots = 3                # at least 3 of the 6 chunks are documentation
+historical_filter = true
+
+[context]
+max_tokens = 3200            # 6 chunks x 512 tokens: enough room that the budget never drops a chunk
+max_query_chars = 4000
+max_body_chars = 4000
+
+[pipeline]
+retriever = "dense_doc_slots"

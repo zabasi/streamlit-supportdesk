@@ -98,14 +98,21 @@ def test_each_experiment_differs_from_the_baseline_in_exactly_one_way():
                            ("rerank_llm", {"pipeline.name", "retrieval.candidate_k"}),
                            ("rewrite_llm", {"pipeline.name"}),
                            ("split_llm", {"pipeline.name", "retrieval.max_queries"}),
-                           ("split_sentences", {"pipeline.name", "retrieval.max_queries"})):
+                           ("split_sentences", {"pipeline.name", "retrieval.max_queries"}),
+                           ("clean_doc_slots", {"pipeline.name", "pipeline.retriever", "retrieval.doc_slots"}),
+                           ("clean_rerank", {"pipeline.name", "pipeline.retriever", "retrieval.doc_slots",
+                                             "retrieval.candidate_k"}),
+                           ("clean_hybrid_split", {"pipeline.name", "pipeline.retriever", "retrieval.bm25_slots"})):
         other = flat(name)
         assert {k for k in base if base[k] != other[k]} == expected, name
 
 
-def test_doc_slots_cannot_exceed_top_k():
+def test_doc_slots_can_fill_the_candidates_but_not_more():
     with pytest.raises(ConfigError, match="retrieval.doc_slots"):
-        Settings.load(env={}, overrides=["retrieval.doc_slots=7"])
+        Settings.load(env={}, overrides=["retrieval.doc_slots=7"])  # 6 candidates without candidate_k
+    assert Settings.load(env={}, overrides=["retrieval.candidate_k=30", "retrieval.doc_slots=10"]).retrieval.doc_slots == 10
+    with pytest.raises(ConfigError, match="retrieval.doc_slots"):
+        Settings.load(env={}, overrides=["retrieval.candidate_k=30", "retrieval.doc_slots=31"])
 
 
 def split(index, clients, slots):
@@ -218,3 +225,40 @@ def test_rerank_and_split_pipelines_run_end_to_end(index, clients, settings):
     clients.chat.script[clients.chat.calls + 2] = answer
     result = split.run(case)
     assert result.trace["n_queries"] == 3 and result.outcome == "request_info"
+
+
+def test_the_combinations_use_the_clean_query_and_their_own_retrieval(index, clients, settings):
+    import dataclasses
+    import json
+
+    from supportdesk.pipelines.experiments import (
+        build_clean_doc_slots,
+        build_clean_hybrid_split,
+        build_clean_rerank,
+    )
+    case = CaseInput(case_id="c", title="Session state lost", body=REPORT)
+    answer = json.dumps({"outcome": "request_info", "user_reply": "Which version?", "citations": []})
+
+    slots = dataclasses.replace(settings, retrieval=dataclasses.replace(settings.retrieval, doc_slots=3))
+    run = build_clean_doc_slots(DocSlotsRetriever(index, clients.embedding, doc_slots=3), clients, slots)
+    assert run.describe()["query"] == "CleanQuery"
+    retrieval = run.retrieve(case)
+    assert retrieval.queries[0].startswith("Session state lost\n") and "Checklist" not in retrieval.queries[0]
+    assert sum(h.chunk.source_type == "documentation" for h in retrieval.hits) >= 3
+
+    pool = dataclasses.replace(settings, retrieval=dataclasses.replace(
+        settings.retrieval, candidate_k=12, doc_slots=3))
+    rerank = build_clean_rerank(DocSlotsRetriever(index, clients.embedding, doc_slots=3), clients, pool)
+    scripted(clients, json.dumps({"ranking": ["C2", "C1"]}))
+    clients.chat.script[clients.chat.calls + 2] = answer
+    result = rerank.run(case)
+    assert result.outcome == "request_info" and len(result.retrieved) == 6
+    assert result.trace["stages"]["reranker"] == "LLMReranker" and result.trace["stages"]["query"] == "CleanQuery"
+
+    split = dataclasses.replace(settings, retrieval=dataclasses.replace(settings.retrieval, bm25_slots=3))
+    hybrid = build_clean_hybrid_split(split_retriever := split_hybrid(index, clients), clients, split)
+    assert hybrid.describe()["retriever"] == type(split_retriever).__name__ and len(hybrid.retrieve(case).hits) == 6
+
+
+def split_hybrid(index, clients):
+    return SplitHybridRetriever(index, clients.embedding, bm25_slots=3, bm25_k1=1.5, bm25_b=0.75)

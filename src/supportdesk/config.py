@@ -129,7 +129,7 @@ class Retrieval:
     bm25_k1: float = _opt("BM25: how quickly repeating a word stops raising the score", 1.5)
     bm25_b: float = _opt("BM25: how much longer chunks are penalised, from 0 (not at all) to 1", 0.75)
     hybrid_pool: int = _opt("in hybrid search, how many candidates dense and BM25 search each contribute", 30)
-    doc_slots: int = _opt("places in the results kept for documentation chunks, used by the "
+    doc_slots: int = _opt("places among the candidates kept for documentation chunks, used by the "
                           "dense_doc_slots retriever; 0 keeps none", 0)
     max_queries: int = _opt("most search queries a query stage may return; their results are merged by "
                             "rank fusion", 1)
@@ -384,8 +384,9 @@ class Settings:
             (r.rerank_snippet_chars >= 100, "retrieval.rerank_snippet_chars must be >= 100"),
             (0 <= r.bm25_slots <= r.top_k,
              f"retrieval.bm25_slots ({r.bm25_slots}) must be between 0 and retrieval.top_k ({r.top_k})"),
-            (0 <= r.doc_slots <= r.top_k,
-             f"retrieval.doc_slots ({r.doc_slots}) must be between 0 and retrieval.top_k ({r.top_k})"),
+            (0 <= r.doc_slots <= (r.candidate_k or r.top_k),
+             (f"retrieval.doc_slots ({r.doc_slots}) must be between 0 and the candidates fetched "
+              f"(retrieval.candidate_k, else retrieval.top_k: {r.candidate_k or r.top_k})")),
             (r.candidate_k is None or r.candidate_k >= r.top_k,
              f"retrieval.candidate_k ({r.candidate_k}) must be >= retrieval.top_k ({r.top_k})"),
             (r.embed_batch_size >= 1, "retrieval.embed_batch_size must be >= 1"),

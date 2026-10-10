@@ -129,6 +129,14 @@ embeddings:
 | `split_llm` | `QueryRewriter` with `retrieval.max_queries = 3`: the model writes up to 3 focused queries; each is searched and the results are merged by rank fusion. Compare with `rewrite_llm` |
 | `split_sentences` | Query stage `SentenceSplitQuery` with `retrieval.max_queries = 4`: the cleaned report as the title, its Streamlit calls and its sentences, without a model; results merged by rank fusion. Compare with `clean_query` |
 
+Combinations put the strongest single change, the cleaned query, together with another:
+
+| Pipeline | Built from |
+|---|---|
+| `clean_doc_slots` | `CleanQuery` + retriever `dense_doc_slots` with `retrieval.doc_slots = 3` |
+| `clean_rerank` | `CleanQuery` + `dense_doc_slots` returning 30 candidates (`candidate_k = 30`) of which at least 10 are documentation (`doc_slots = 10`) + `LLMReranker`, best 6 kept |
+| `clean_hybrid_split` | `CleanQuery` + retriever `hybrid_split` with `retrieval.bm25_slots = 3` |
+
 The model-based stages fall back safely: unusable model output means the cleaned report (rewriting)
 or the retriever's order (reranking), never a failed case. Their prompts are
 `configs/prompts/rewrite_system.txt` and `configs/prompts/rerank_system.txt`, and their calls are

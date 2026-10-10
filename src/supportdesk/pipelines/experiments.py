@@ -65,3 +65,27 @@ def build_split_sentences(retriever: Retriever, clients: Clients, settings: Sett
     stages = default_stages(retriever, clients, settings)
     stages["query"] = SentenceSplitQuery(settings.context.max_query_chars, settings.retrieval.max_queries)
     return StagedPipeline(name="split_sentences", clients=clients, settings=settings, **stages)
+
+
+# ---- combinations: built on the cleaned query, the strongest single change ----
+
+def build_clean_doc_slots(retriever: Retriever, clients: Clients, settings: Settings) -> StagedPipeline:
+    """Cleaned query with 3 of the 6 results kept for documentation (clean_query + doc_slots)."""
+    stages = default_stages(retriever, clients, settings)
+    stages["query"] = CleanQuery(settings.context.max_query_chars)
+    return StagedPipeline(name="clean_doc_slots", clients=clients, settings=settings, **stages)
+
+
+def build_clean_rerank(retriever: Retriever, clients: Clients, settings: Settings) -> StagedPipeline:
+    """Cleaned query, 30 candidates with 10 kept for documentation, reordered by a model call; best 6 kept."""
+    stages = default_stages(retriever, clients, settings)
+    stages["query"] = CleanQuery(settings.context.max_query_chars)
+    stages["reranker"] = LLMReranker(clients, settings)
+    return StagedPipeline(name="clean_rerank", clients=clients, settings=settings, **stages)
+
+
+def build_clean_hybrid_split(retriever: Retriever, clients: Clients, settings: Settings) -> StagedPipeline:
+    """Cleaned query with split hybrid search: 3 results from dense, 3 from BM25 (clean_query + hybrid_split)."""
+    stages = default_stages(retriever, clients, settings)
+    stages["query"] = CleanQuery(settings.context.max_query_chars)
+    return StagedPipeline(name="clean_hybrid_split", clients=clients, settings=settings, **stages)
