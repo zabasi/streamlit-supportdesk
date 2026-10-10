@@ -58,9 +58,12 @@ in `configs/default.toml`, then `python scripts/gen_config_docs.py`.
 
 ## Rules
 
-1. **The baseline does not change by accident.** `tests/test_golden_baseline.py` pins its exact
-   output. Change `advanced` instead. If a change to the baseline is intended, regenerate with
-   `PYTHONPATH=src:. python -m tests.golden.generate` and check that only the fields you meant changed.
+1. **The baseline does not change by accident.** Two tests guard it: the golden test pins its exact
+   output (`tests/golden/baseline_results.json`), and the fingerprint test records everything that
+   defines it, meaning its code, profile, prompts and setting values
+   (`tests/golden/baseline_fingerprint.json`), and names whatever changed. Put improvements in
+   `advanced` or an experiment instead. If a change to the baseline is intended, regenerate both
+   with `PYTHONPATH=src:. python -m tests.golden.generate` and review their diff.
 2. **Every model call goes through `clients`** (`clients.chat.complete(..., stage="name")`,
    `clients.embedding.embed(..., stage="name")`), so the budget guard, cache and cost ledger see it.
    Never create OpenAI or LangChain model clients directly; use the adapters in

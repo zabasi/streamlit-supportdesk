@@ -1,18 +1,30 @@
-"""The refactored baseline must reproduce the pre-refactor outputs exactly.
+"""The baseline must reproduce its recorded outputs exactly, and nothing that defines it may change
+without the golden files being regenerated on purpose.
 
 Scores are compared with a tolerance (float32 matmul can differ in the last digit across CPUs);
-everything else is exact. If this fails after an *intended* behaviour change, regenerate with
-``PYTHONPATH=src:. python -m tests.golden.generate`` and review the diff.
+everything else is exact. If this fails after an *intended* change to the baseline, regenerate with
+``PYTHONPATH=src:. python -m tests.golden.generate`` and review the diff of both golden files.
 """
 import json
 
 import pytest
 
 from supportdesk.pipelines.baseline import build_baseline
+from tests.golden.fingerprint import FINGERPRINT, baseline_fingerprint, changes
 from tests.golden.scenarios import GOLDEN, run_scenarios
 
 GOLD = json.loads(GOLDEN.read_text())
 ACTUAL = run_scenarios(build_baseline)
+
+
+def test_nothing_that_defines_the_baseline_changed():
+    """The baseline is the fixed reference: its code, profile, prompts and settings may only change
+    deliberately. Improvements go into other pipelines (advanced, experiments)."""
+    changed = changes(json.loads(FINGERPRINT.read_text()), baseline_fingerprint())
+    assert not changed, (
+        "These define the baseline and have changed:\n  " + "\n  ".join(changed) +
+        "\nPut the change in another pipeline instead. If changing the baseline is intended, run "
+        "`PYTHONPATH=src:. python -m tests.golden.generate` and review the diff of both golden files.")
 
 
 def test_same_scenarios():
