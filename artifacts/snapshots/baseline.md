@@ -2,12 +2,12 @@
 
 | | |
 |---|---|
-| Taken | 2026-10-10T08:07:29+00:00 |
+| Taken | 2026-10-10T10:50:33+00:00 |
 | Profile | configs/pipelines/baseline.toml |
 | Mode | live |
 | Retriever | `dense` |
 | Models | chat `gpt-4o-mini`, embedding `text-embedding-3-small` |
-| Config fingerprint | `7f4782abadd71892` |
+| Config fingerprint | `9b6b6fce55a12136` |
 
 ## Stages
 
@@ -79,8 +79,8 @@ browser = `chrome`, operating_system = `mac`, python_version = `3.10.5`, streaml
 |---|---|---|---|---|---|
 | 1 | 0.7049 | issue:4651 | issue | `issue:4651:000` |  |
 | 2 | 0.6517 | issue:7084 | issue | `issue:7084:000` |  |
-| 3 | 0.6480 | issue:10007 | issue | `issue:10007:000` |  |
-| 4 | 0.6479 | issue:6370 | issue | `issue:6370:000` |  |
+| 3 | 0.6482 | issue:10007 | issue | `issue:10007:000` |  |
+| 4 | 0.6478 | issue:6370 | issue | `issue:6370:000` |  |
 | 5 | 0.6396 | issue:7862 | issue | `issue:7862:000` |  |
 | 6 | 0.6294 | issue:7087 | issue | `issue:7087:000` |  |
 
@@ -109,7 +109,7 @@ Attempts: ok. Proposed outcome: **request_info**. Raw model output:
 {
   "outcome": "request_info",
   "confidence": "medium",
-  "user_reply": "It seems that the issue you're experiencing may be related to how the session state is updated when a blocking operation occurs. Can you confirm if the button press is causing any blocking operation (like sleep or a long-running task) before the expander is opened? This information will help narrow down the cause of the problem.",
+  "user_reply": "It seems that the behavior you're experiencing may be related to how the session state is updated when a blocking operation occurs. Can you confirm if the button press is causing any blocking operation (like sleep or a long-running task) before the expander is opened? This information will help narrow down the cause of the issue.",
   "known_facts": [
     {
       "statement": "User inputs on st.text_area are not saved in st.session_state when blocking happens after a button click.",
@@ -121,7 +121,7 @@ Attempts: ok. Proposed outcome: **request_info**. Raw model output:
   "open_questions": [
     "Is the button press causing any blocking operation before the expander is opened?"
   ],
-  "next_step": "Please check if there is any blocking operation occurring after the button press.",
+  "next_step": "Please check if there is any blocking operation occurring after the button press and before expanding the expander.",
   "citations": []
 }
 ```
@@ -157,7 +157,7 @@ Violations: none.
   "open_questions": [
     "Is the button press causing any blocking operation before the expander is opened?"
   ],
-  "next_step": "Please check if there is any blocking operation occurring after the button press.",
+  "next_step": "Please check if there is any blocking operation occurring after the button press and before expanding the expander.",
   "sources": [
     {
       "chunk_id": "issue:7862:000",
@@ -175,7 +175,7 @@ Outcome: **request_info**
 
 Reply to the reporter:
 
-> It seems that the issue you're experiencing may be related to how the session state is updated when a blocking operation occurs. Can you confirm if the button press is causing any blocking operation (like sleep or a long-running task) before the expander is opened? This information will help narrow down the cause of the problem.
+> It seems that the behavior you're experiencing may be related to how the session state is updated when a blocking operation occurs. Can you confirm if the button press is causing any blocking operation (like sleep or a long-running task) before the expander is opened? This information will help narrow down the cause of the issue.
 
 Citations: none
 
@@ -184,25 +184,25 @@ Model calls during this run:
 | stage | type | mode | tokens in | tokens out | cost (USD) | status |
 |---|---|---|---|---|---|---|
 | query | embedding | cache | 0 | 0 | 0.000000 | ok |
-| answer | chat | cache | 4597 | 186 | 0.000000 | ok |
+| answer | chat | cache | 4597 | 192 | 0.000000 | ok |
 
-Time: 0.024s
+Time: 0.029s
 
 ## Latest evaluation results
 
-**full** run `baseline-dev-20261010-080355` (2026-10-10T08:04:50+00:00, mode live):
+**full** run `baseline-dev-20261010-104836` (2026-10-10T10:50:18+00:00, mode live):
 
 ```
 cases: 15 (ambiguous 6, answerable 6, escalation 3)
 evidence   recall @1 0.00  @3 0.00  @6 0.03  @10 0.03   MRR 0.01
-           answers cite gold evidence 0.25
-decisions  outcome accuracy 0.33   (ambiguous 0.33  answerable 0.17  escalation 0.67)
+           answers cite gold evidence 0.20
+decisions  outcome accuracy 0.47   (ambiguous 0.50  answerable 0.33  escalation 0.67)
 grounding  citation violations 0.00   answers without citation 0.00   errors 0.00   budget stops 0
-cost       $0.0116   15 live calls, 15 cache hits   tokens in/out 66446/2751
-time       mean 3.638s   p95 8.564s
+cost       $0.0116   15 live calls, 15 cache hits   tokens in/out 66653/2707
+time       mean 6.787s   p95 29.261s
 ```
 
-**retrieval** run `baseline-retrieval-dev-20261010-080126` (2026-10-10T08:01:56+00:00, mode live):
+**retrieval** run `baseline-retrieval-dev-20261010-104739` (2026-10-10T10:48:12+00:00, mode live):
 
 ```
 cases: 15 (ambiguous 6, answerable 6, escalation 3)
@@ -213,5 +213,5 @@ evidence   recall @1 0.00  @3 0.00  @6 0.03  @10 0.03   MRR 0.01
            answerable  recall@10 0.08  (n=6)
            escalation  recall@10 0.00  (n=3)
 cost       $0.0001   15 live calls, 0 cache hits   tokens in/out 7110/0
-time       mean 1.935s   p95 10.851s
+time       mean 2.169s   p95 16.014s
 ```

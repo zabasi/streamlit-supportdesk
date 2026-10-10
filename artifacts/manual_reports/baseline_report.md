@@ -8,8 +8,8 @@ Run on 2026-10-10, live mode, 15 development cases (6 answerable, 6 ambiguous, 3
 | Models | chat `gpt-4o-mini`, embedding `text-embedding-3-small` |
 | Chunking | fixed, 512 tokens, 128 overlap; evidence budget 3,200 tokens |
 | Query | the report as written (up to 4,000 characters) |
-| Runs | `baseline-retrieval-dev-20261010-080126`, `baseline-dev-20261010-080355` |
-| Config fingerprint | `7f4782abadd71892` |
+| Runs | `baseline-retrieval-dev-20261010-104739`, `baseline-dev-20261010-104836` |
+| Config fingerprint | `9b6b6fce55a12136` |
 
 ## Results
 
@@ -19,10 +19,10 @@ Run on 2026-10-10, live mode, 15 development cases (6 answerable, 6 ambiguous, 3
 | | Recall@1 / @3 / @6 / @10 | 0.00 / 0.00 / 0.03 / 0.03 |
 | | MRR | 0.01 |
 | | Gold evidence in the prompt | 0.03 |
-| Decisions | Outcome accuracy | **0.33** (answerable 0.17, ambiguous 0.33, escalation 0.67) |
+| Decisions | Outcome accuracy | **0.47** (answerable 0.33, ambiguous 0.50, escalation 0.67) |
 | Grounding | Citation violations / answers without citation | 0.00 / 0.00 |
-| | Answers that cite gold evidence | 0.25 |
-| Cost and time | Full run | $0.0116 (15 calls, about 4,400 input tokens each), mean 3.6 s per case |
+| | Answers that cite gold evidence | 0.20 |
+| Cost and time | Full run | $0.0116 (15 calls, about 4,400 input tokens each), mean 6.8 s per case (p95 29 s) |
 | | Retrieval-only run | $0.0001 |
 
 ## What it shows
@@ -34,11 +34,29 @@ Run on 2026-10-10, live mode, 15 development cases (6 answerable, 6 ambiguous, 3
   an expander doesn't load from session state"), all 6 retrieved chunks are issues and neither
   gold documentation page appears.
 - **Generation behaves safely.** No invented citations, and the model rarely answers without
-  evidence: answerable cases mostly end as questions or escalations, which is why answerable
-  accuracy is low (0.17) while escalation is high (0.67).
+  evidence: answerable cases often end as questions or escalations, which is why answerable
+  accuracy (0.33) is the lowest and escalation (0.67) the highest.
 - **It is cheap.** Retrieval experiments cost about $0.0001 each, so they can be run often.
 
-With 15 cases, one case moves a rate by about 7 points; the retrieval result is clear regardless.
+## Run-to-run variation
+
+The same configuration was run twice the same day. Retrieval was identical; the model's decisions
+were not:
+
+| | Run 08:03 | Run 10:48 (this report) |
+|---|---|---|
+| Hit@6 / Recall@10 | 0.07 / 0.03 | 0.07 / 0.03 |
+| Outcome accuracy | 0.33 | 0.47 |
+| answerable / ambiguous / escalation | 0.17 / 0.33 / 0.67 | 0.33 / 0.50 / 0.67 |
+| Answers that cite gold evidence | 0.25 | 0.20 |
+
+`gpt-4o-mini` does not give identical answers on every call, even at temperature 0, and with 15
+cases one case moves a rate by about 7 points. So:
+
+- **Retrieval metrics are stable** (same index, same queries, same scores) and can be compared
+  from a single run.
+- **Decision metrics vary by about two cases between runs.** When comparing pipelines on them,
+  run each three times (about $0.035 per pipeline) and compare the averages.
 
 ## Next steps
 

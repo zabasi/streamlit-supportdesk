@@ -19,3 +19,4 @@ artifacts_sample/
 artifacts/*.sqlite
 artifacts/cost_ledger.jsonl
 htmlcov/
+**/.DS_Store
