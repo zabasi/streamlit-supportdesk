@@ -127,6 +127,7 @@ embeddings:
 | `rewrite_llm` | Query stage `QueryRewriter`: one model call turns the cleaned report into one documentation-style search query |
 | `split_llm` | `QueryRewriter` with `retrieval.max_queries = 3`: the model writes up to 3 focused queries; each is searched and the results are merged by rank fusion. Compare with `rewrite_llm` |
 | `split_sentences` | Query stage `SentenceSplitQuery` with `retrieval.max_queries = 4`: the cleaned report as the title, its Streamlit calls and its sentences, without a model; results merged by rank fusion. Compare with `clean_query` |
+| `retrieve_loop` | After each search of 6 chunks, one model call answers yes or no. A no rewrites the query and searches again, at most `retrieval.max_loops` (3) times. Yes, or the third try, sends those 6 chunks to the generator. Same index and dense retriever as the baseline. No web search. |
 
 Combinations put the strongest single change, the cleaned query, together with another:
 
