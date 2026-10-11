@@ -106,3 +106,19 @@ noise. Report counts next to percentages, and read the per-case table in the rep
 - **Claim-level support:** today, citations are only checked to point at retrieved chunks.
 - **`missing_info`:** scoring whether the reply asked for the right missing information.
 - **Multi-turn scenarios:** running the staged scenarios against the case workflow.
+
+## Where gold passages are lost
+
+`scripts/diagnose_passages.py` traces every gold passage through a pipeline's retrieval and reports
+where it ends up: in the prompt; among the candidates but dropped by the reranker; its page among
+the candidates but through another chunk; or its page not among the candidates at all. For each
+passage it also gives the rank of the chunk that holds it in a search over all documentation, which
+shows whether a wider documentation pool could reach it.
+
+```bash
+python scripts/diagnose_passages.py --mode live --output docs/reports/passage-funnel.md
+python scripts/diagnose_passages.py --pipeline clean_doc_slots --mode live
+```
+
+It changes nothing; after an `eval-retrieval` run of the same pipeline its embeddings and model calls
+come from the cache.
