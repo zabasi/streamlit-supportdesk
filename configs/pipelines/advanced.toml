@@ -1,27 +1,38 @@
 # Settings for the advanced pipeline (--pipeline advanced). Every key here overrides
 # configs/default.toml for this pipeline only; --config and --set still override it.
+#
+# The best retrieval found on the development cases (experiment clean_doc_slots_rerank_docs_prompt):
+# the cleaned query (CleanQuery); 15 candidates, 10 of them documentation (retriever
+# dense_doc_slots); one model call ranks them with configs/prompts/rerank_docs_system.txt
+# (LLMReranker); the best 6 are kept, with at least 3 documentation chunks. Like the baseline it shows
+# the model 6 chunks within 3,200 tokens, so the comparison is about better evidence, not more.
+
+[chunking]
+method = "fixed"
+max_tokens = 512
+overlap_tokens = 128
 
 [retrieval]
-top_k = 10                   # more evidence than the baseline's 6
-candidate_k = 30             # fetch 30, rerank, keep top_k
+top_k = 6                    # the model sees 6 chunks, as in the baseline
+candidate_k = 15             # 10 documentation candidates and the 5 best other chunks
+doc_slots = 10               # documentation among the 15 candidates
+rerank_keep_docs = 3         # documentation kept in the final 6 after reranking
+rerank_snippet_chars = 400   # characters of each candidate the reranker sees
 historical_filter = true
 
 [context]
-max_tokens = 5400            # 10 chunks x 512 tokens; otherwise this budget silently caps them
+max_tokens = 3200            # the baseline's evidence budget
 
 [pipeline]
-retriever = "hybrid"
+retriever = "dense_doc_slots"
 
+[prompts]
+rerank = "configs/prompts/rerank_docs_system.txt"
 # Its own answer prompt (copy and edit configs/prompts/answer_system.txt):
-# [prompts]
 # system = "configs/prompts/advanced_system.txt"
 
 # If advanced uses different chunking, give it its own index so the two never collide
 # (an index built with other chunking is refused). Then build it with:
 #   supportdesk index --pipeline advanced
-# [chunking]
-# method = "fixed"           # or a new chunker registered in data/chunking.py (for example an LLM chunker)
-# max_tokens = 256
-# overlap_tokens = 32
 # [paths]
 # index_dir = "index/advanced"

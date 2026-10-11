@@ -624,11 +624,14 @@ def test_shipped_advanced_template_is_valid_and_differs_from_the_baseline(monkey
     monkeypatch.chdir(ROOT)
     adv = Settings.load(env={}, overrides=["pipeline.name=advanced"])
     assert adv.profile == "configs/pipelines/advanced.toml"
-    assert adv.retrieval.top_k > Settings.load(env={}).retrieval.top_k and adv.pool_size > adv.retrieval.top_k
+    base = Settings.load(env={})
+    # the same amount of evidence as the baseline, chosen differently: a fair comparison
+    assert (adv.retrieval.top_k, adv.context.max_tokens) == (base.retrieval.top_k, base.context.max_tokens)
+    assert adv.pipeline.retriever != base.pipeline.retriever and adv.pool_size > adv.retrieval.top_k
 
 
 def test_cli_shows_each_pipelines_own_chunk_count_and_where_it_comes_from(capsys, monkeypatch):
-    """The scenario: 6 chunks for the baseline, more for advanced, from separate files."""
+    """Each pipeline's chunk counts come from its own profile, and the CLI shows where."""
     monkeypatch.chdir(ROOT)
     assert main(["config", "--pipeline", "baseline"]) == 0
     base = capsys.readouterr().out
@@ -636,9 +639,9 @@ def test_cli_shows_each_pipelines_own_chunk_count_and_where_it_comes_from(capsys
     assert "chunks allowed in the prompt = 6" in base and "pipeline: baseline | retriever: dense | top_k: 6" in base
     assert main(["config", "--pipeline", "advanced"]) == 0
     adv = capsys.readouterr().out
-    assert re.search(r"top_k\s+= 10\s+\(file:configs/pipelines/advanced\.toml\)", adv)
-    assert "chunks allowed in the prompt = 10" in adv and "retrieval pool = 30" in adv
-    assert re.search(r"retriever\s+= hybrid\s+\(file:configs/pipelines/advanced\.toml\)", adv)
+    assert re.search(r"top_k\s+= 6\s+\(file:configs/pipelines/advanced\.toml\)", adv)
+    assert "chunks allowed in the prompt = 6" in adv and "retrieval pool = 15" in adv
+    assert re.search(r"retriever\s+= dense_doc_slots\s+\(file:configs/pipelines/advanced\.toml\)", adv)
     # ...and the shared settings are the same for both
     assert re.search(r"chat\s+= gpt-4o-mini\s+\(file:configs/default\.toml\)", adv)
     assert main(["ask", "--pipeline", "nope", "--title", "t", "--body", "b"]) == 1

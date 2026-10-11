@@ -20,8 +20,9 @@ per report:        intake -> query -> retrieve -> rerank -> packet -> generate -
 - **`supportdesk case`** then acts: answers and questions are posted to the local tracker;
   escalations wait for a maintainer's approval (`case.review = all` makes every reply wait).
   `ask`, `eval` and the web page stop after summarize and post nothing.
-- **Pipelines:** `baseline` (dense search, 6 chunks) is the reference; `advanced` (hybrid search,
-  10 chunks) is where improvements go. Experiments each change one thing in the baseline, so their
+- **Pipelines:** `baseline` (dense search, 6 chunks) is the reference. `advanced` is the best found
+  on the development cases: the cleaned query, 15 candidates of which 10 are documentation, ranked by
+  one model call, the best 6 kept with at least 3 documentation chunks. Experiments each change one thing in the baseline, so their
   effect can be measured alone: `clean_query` (the query without the issue template),
   `doc_slots` (3 of the 6 results kept for documentation), `hybrid_rrf` and `hybrid_split` (dense
   and keyword search, merged or side by side), `rewrite_llm` and `split_llm` (a model writes one or several search queries) and

@@ -17,7 +17,7 @@ def test_override_is_detected_only_when_the_retriever_differs_from_the_pipelines
     assert Settings.load(env={}).retriever_override() is None
     assert Settings.load(env={}, overrides=["pipeline.name=advanced"]).retriever_override() is None
     swapped = Settings.load(env={}, overrides=["pipeline.name=advanced", "pipeline.retriever=dense"])
-    assert swapped.own_retriever() == "hybrid" and swapped.retriever_override() == "hybrid"
+    assert swapped.own_retriever() == "dense_doc_slots" and swapped.retriever_override() == "dense_doc_slots"
     # the same choice made through the environment is still an override
     via_env = Settings.load(env={"SUPPORTDESK__PIPELINE__RETRIEVER": "bm25"})
     assert via_env.retriever_override() == "dense"

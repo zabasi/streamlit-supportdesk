@@ -29,11 +29,12 @@ supportdesk pipelines                     # the pipelines side by side
 
 ## Per-pipeline profiles
 
-Each pipeline loads its own profile, so the baseline keeps 6 chunks while `advanced` uses 10:
+Each pipeline loads its own profile, so pipelines can differ while sharing everything else:
 
 ```
 configs/pipelines/baseline.toml   pinned reference values (these equal the defaults the golden test pins)
-configs/pipelines/advanced.toml   10 chunks, a pool of 30 candidates, hybrid search, a 5400-token budget
+configs/pipelines/advanced.toml   6 chunks like the baseline, from 15 candidates (10 documentation),
+                                  reranked by a model call with its own prompt
 ```
 
 - **What a profile may set:** `chunking`, `retrieval`, `context`, `prompts`, `pipeline.retriever`, `paths.index_dir`. Anything else in a profile is an error.

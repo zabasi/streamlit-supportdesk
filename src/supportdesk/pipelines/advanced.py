@@ -18,10 +18,14 @@ from ..llm.factory import Clients
 from ..retrieval.retriever import Retriever
 from .staged import StagedPipeline
 from .stages import default_stages
+from .stages.clean_query import CleanQuery
+from .stages.llm_rerank import LLMReranker
 
 
 def build_advanced(retriever: Retriever, clients: Clients, settings: Settings) -> StagedPipeline:
-    """Improved: the baseline's stages with its own profile (more chunks, hybrid search)."""
+    """Improved: cleaned query, 10 doc candidates of 15, reranked by one model call; best 6 kept (3+ docs)."""
     stages = default_stages(retriever, clients, settings)
+    stages["query"] = CleanQuery(settings.context.max_query_chars)
+    stages["reranker"] = LLMReranker(clients, settings)
     extra_nodes: list = []
     return StagedPipeline(name="advanced", clients=clients, settings=settings, extra_nodes=extra_nodes, **stages)
