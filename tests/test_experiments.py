@@ -495,3 +495,73 @@ def test_the_hybrid_candidates_variant_runs_end_to_end(index, clients, settings)
     assert {h["found_by"] for h in result.retrieved} == {"hybrid"}
     docs = {c.chunk_id for c in index.chunks if c.source_type == "documentation"}
     assert sum(h["chunk_id"] in docs for h in result.retrieved) >= 3
+
+
+PAGE = """# Session State
+
+Session State is a way to share variables between reruns, for each user session.
+
+### Serializable Session State
+
+Serialization refers to the process of converting an object into a pickle stream for storage.
+
+### Caveats and limitations
+
+- Setting the state of button-like widgets via the Session State API is not allowed.
+- A text_area inside an expander keeps its value only when it has a key.
+"""
+
+
+def test_report_words_are_weighted_by_rarity_among_the_candidates():
+    from supportdesk.pipelines.stages.llm_rerank import term_weights
+    weights = term_weights("session state lost in an expander after 3 reruns", [PAGE, "Session state API reference."])
+    assert weights["session"] == 0.0  # in every candidate: cannot tell them apart
+    assert weights["expander"] > 0  # only in one
+    assert "3" not in weights  # bare numbers are ignored
+
+
+def test_the_focused_snippet_is_the_best_matching_window_with_its_heading():
+    from supportdesk.pipelines.stages.llm_rerank import focused_snippet, term_weights
+    weights = term_weights("text_area inside an expander is empty, button pressed", [PAGE, "Other text."])
+    snippet = focused_snippet(PAGE, weights, 120)
+    assert snippet.startswith("### Caveats and limitations") and "button-like widgets" in snippet
+    assert not snippet.endswith(("-", "Sessi"))  # never cut in the middle of a word
+    plain = focused_snippet(PAGE, {}, 120)  # nothing matches: the earliest window
+    assert plain.startswith("# Session State")
+
+
+def test_the_reranker_shows_focused_snippets_when_asked(clients, settings):
+    import dataclasses
+    import json
+
+    from supportdesk.pipelines.stages.llm_rerank import LLMReranker
+    from supportdesk.retrieval.retriever import Hit
+    from supportdesk.types import Chunk
+    hit = Hit(Chunk(chunk_id="p:000", source_id="p", source_type="documentation", title="Session State",
+                    text=PAGE, url="u"), score=0.5, rank=1, source="dense")
+    other = _hit(2, "issue")
+    case = CaseInput(case_id="c", title="text_area in expander loses value",
+                     body="The text_area inside an expander is empty after a button press.")
+    for mode, expected in (("start", "Session State is a way"), ("focused", "### Caveats and limitations")):
+        s = dataclasses.replace(settings, retrieval=dataclasses.replace(
+            settings.retrieval, rerank_snippet=mode, rerank_snippet_chars=150))
+        scripted(clients, json.dumps({"ranking": ["C1", "C2"]}))
+        LLMReranker(clients, s)(case, "q", [hit, other])
+        assert expected in clients.chat.seen[-1][1]["content"], mode
+
+
+def test_the_snippet_experiments_each_change_only_the_snippet():
+    def flat(name):
+        d = Settings.load(env={}, overrides=[f"pipeline.name={name}"]).to_dict()
+        return {f"{section}.{key}": value for section, keys in d.items() for key, value in keys.items()}
+    for parent in ("clean_doc_slots_rerank_docs_prompt", "clean_hybrid_doc_slots_rerank_docs_prompt"):
+        base, focused, long_ = flat(parent), flat(f"{parent}_focused"), flat(f"{parent}_long")
+        assert {k for k in base if base[k] != focused[k]} == {"pipeline.name", "retrieval.rerank_snippet"}
+        assert focused["retrieval.rerank_snippet"] == "focused" and focused["retrieval.rerank_snippet_chars"] == 400
+        assert {k for k in base if base[k] != long_[k]} == {"pipeline.name", "retrieval.rerank_snippet_chars"}
+        assert long_["retrieval.rerank_snippet_chars"] == 1200 and long_["retrieval.rerank_snippet"] == "start"
+
+
+def test_rerank_snippet_must_be_start_or_focused():
+    with pytest.raises(ConfigError, match="retrieval.rerank_snippet"):
+        Settings.load(env={}, overrides=["retrieval.rerank_snippet=middle"])

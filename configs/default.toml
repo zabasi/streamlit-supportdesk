@@ -53,6 +53,7 @@ hybrid_pool = 30
 doc_slots = 0                    # places kept for documentation (dense_doc_slots retriever); 0 = none
 max_queries = 1                  # most search queries per report (query stages that return several)
 rerank_snippet_chars = 600       # characters of each candidate the LLM reranker sees
+rerank_snippet = "start"         # start: the first rerank_snippet_chars | focused: the best-matching window
 # rerank_keep_docs = 3           # documentation the LLM reranker keeps in the final top_k (unset: doc_slots)
 rerank_doc_places = 0            # documentation places the model fills (DocPlacesReranker)
 bm25_slots = 0                   # places filled by BM25 in the hybrid_split retriever; the rest are dense

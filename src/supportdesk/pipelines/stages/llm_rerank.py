@@ -1,16 +1,51 @@
 """Reranking with one model call: the candidates most useful for the report come first."""
 from __future__ import annotations
 
+import math
 import re
 from dataclasses import replace
 from pathlib import Path
 
 from ...retrieval.retriever import Hit
+from ...tokenizer import lexical_tokens
 from ...types import CaseInput
 from ..parsing import NotJson, extract_json
 from .clean_query import CleanQuery
 
 _LABEL = re.compile(r"^C(\d+)$")
+_HEADING = re.compile(r"^#{1,6} .+$", re.MULTILINE)
+
+
+def term_weights(report: str, texts: list[str]) -> dict[str, float]:
+    """Each report word, weighted by how rare it is among the candidates: a word every candidate
+    contains cannot tell them apart and weighs 0 (the IDF idea of BM25, over these candidates)."""
+    sets = [set(lexical_tokens(t)) for t in texts]
+    weights = {}
+    for term in set(lexical_tokens(report)):
+        if term.replace(".", "").isdigit():  # a bare number ("1", "3") says nothing about the topic
+            continue
+        df = sum(term in words for words in sets)
+        if df:
+            weights[term] = math.log(len(sets) / df)
+    return weights
+
+
+def focused_snippet(text: str, weights: dict[str, float], size: int) -> str:
+    """The ``size``-character window of ``text`` (starting at a line) whose report words weigh most,
+    with the nearest section heading above it. Ties go to the earliest window."""
+    starts = [0] + [i + 1 for i, ch in enumerate(text) if ch == "\n" and i + 1 < len(text)]
+    best, best_score = 0, -1.0
+    for start in starts:
+        window = text[start:start + size]
+        score = sum(weights.get(t, 0.0) for t in set(lexical_tokens(window)))
+        if score > best_score:
+            best, best_score = start, score
+    window = text[best:best + size]
+    if best + size < len(text) and " " in window:
+        window = window.rsplit(" ", 1)[0]  # do not end in the middle of a word
+    headings = [m.group(0) for m in _HEADING.finditer(text, 0, best)]
+    heading = headings[-1][:80] + " … " if headings and not window.lstrip().startswith("#") else ""
+    return heading + " ".join(window.split())
 
 
 def model_ranking(text: str, count: int) -> list[int]:
@@ -50,6 +85,7 @@ class LLMReranker:
 
     def __init__(self, clients, settings):
         self.clients, self.snippet = clients, settings.retrieval.rerank_snippet_chars
+        self.snippet_mode = settings.retrieval.rerank_snippet  # start | focused
         # documentation kept in the final top_k: retrieval.rerank_keep_docs, else retrieval.doc_slots
         keep = settings.retrieval.rerank_keep_docs
         self.top_k = settings.retrieval.top_k
@@ -59,10 +95,15 @@ class LLMReranker:
 
     def model_order(self, case: CaseInput, hits: list[Hit]) -> list[int]:
         """One model call: positions in ``hits``, most useful first; [] if the output is unusable."""
-        listing = "\n\n".join(
-            f"C{n}: [{h.chunk.source_type}] {h.chunk.title}\n{' '.join(h.chunk.text.split())[: self.snippet]}"
-            for n, h in enumerate(hits, start=1))
-        content = f"## Report\n{self.clean(case, {})[0]}\n\n## Candidates\n{listing}"
+        report = self.clean(case, {})[0]
+        if self.snippet_mode == "focused":
+            weights = term_weights(report, [h.chunk.text for h in hits])
+            snippets = [focused_snippet(h.chunk.text, weights, self.snippet) for h in hits]
+        else:
+            snippets = [" ".join(h.chunk.text.split())[: self.snippet] for h in hits]
+        listing = "\n\n".join(f"C{n}: [{h.chunk.source_type}] {h.chunk.title}\n{snippet}"
+                                for n, (h, snippet) in enumerate(zip(hits, snippets), start=1))
+        content = f"## Report\n{report}\n\n## Candidates\n{listing}"
         text, _ = self.clients.chat.complete([{"role": "system", "content": self.prompt},
                                               {"role": "user", "content": content}],
                                              stage="rerank", json_mode=True)

@@ -1,0 +1,29 @@
+# clean_hybrid_doc_slots_rerank_docs_prompt where the reranker sees, for each candidate, the 400-character window that best
+# matches the report (report words weighted by how rare they are among the candidates), with the
+# nearest section heading, instead of the candidate's first 400 characters.
+# The snippet is the only difference. Shares the baseline's index.
+
+[chunking]
+method = "fixed"
+max_tokens = 512
+overlap_tokens = 128
+
+[retrieval]
+top_k = 6
+candidate_k = 15             # candidates the reranker orders
+rerank_snippet_chars = 400   # characters of each candidate the reranker sees
+rerank_snippet = "focused"   # the best-matching window, with its section heading
+doc_slots = 10               # documentation among the 15 candidates
+rerank_keep_docs = 3         # documentation kept in the final 6 after reranking
+historical_filter = true
+
+[context]
+max_tokens = 3200            # 6 chunks x 512 tokens: enough room that the budget never drops a chunk
+max_query_chars = 4000
+max_body_chars = 4000
+
+[pipeline]
+retriever = "hybrid_doc_slots"
+
+[prompts]
+rerank = "configs/prompts/rerank_docs_system.txt"

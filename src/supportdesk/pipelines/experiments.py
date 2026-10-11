@@ -154,3 +154,32 @@ def build_clean_doc_slots_rerank_docs_prompt_wide(retriever: Retriever, clients:
     stages["reranker"] = LLMReranker(clients, settings)
     return StagedPipeline(name="clean_doc_slots_rerank_docs_prompt_wide", clients=clients, settings=settings,
                           **stages)
+
+
+# ---- what the reranker sees: query-focused or longer snippets ----
+
+def _clean_rerank(name: str, retriever: Retriever, clients: Clients, settings: Settings) -> StagedPipeline:
+    stages = default_stages(retriever, clients, settings)
+    stages["query"] = CleanQuery(settings.context.max_query_chars)
+    stages["reranker"] = LLMReranker(clients, settings)
+    return StagedPipeline(name=name, clients=clients, settings=settings, **stages)
+
+
+def build_clean_doc_slots_rerank_docs_prompt_focused(retriever, clients, settings):
+    """clean_doc_slots_rerank_docs_prompt where the reranker sees each candidate's best-matching window."""
+    return _clean_rerank("clean_doc_slots_rerank_docs_prompt_focused", retriever, clients, settings)
+
+
+def build_clean_hybrid_doc_slots_rerank_docs_prompt_focused(retriever, clients, settings):
+    """clean_hybrid_doc_slots_rerank_docs_prompt where the reranker sees each candidate's best-matching window."""
+    return _clean_rerank("clean_hybrid_doc_slots_rerank_docs_prompt_focused", retriever, clients, settings)
+
+
+def build_clean_doc_slots_rerank_docs_prompt_long(retriever, clients, settings):
+    """clean_doc_slots_rerank_docs_prompt where the reranker sees the first 1,200 characters of each candidate."""
+    return _clean_rerank("clean_doc_slots_rerank_docs_prompt_long", retriever, clients, settings)
+
+
+def build_clean_hybrid_doc_slots_rerank_docs_prompt_long(retriever, clients, settings):
+    """clean_hybrid_doc_slots_rerank_docs_prompt where the reranker sees the first 1,200 characters of each candidate."""
+    return _clean_rerank("clean_hybrid_doc_slots_rerank_docs_prompt_long", retriever, clients, settings)

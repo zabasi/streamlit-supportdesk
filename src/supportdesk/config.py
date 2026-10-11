@@ -138,6 +138,9 @@ class Retrieval:
     max_queries: int = _opt("most search queries a query stage may return; their results are merged by "
                             "rank fusion", 1)
     rerank_snippet_chars: int = _opt("characters of each candidate shown to the model by the LLMReranker", 600)
+    rerank_snippet: str = _opt("which part of each candidate the LLMReranker shows: start (its first "
+                               "rerank_snippet_chars) | focused (the window that best matches the report, "
+                               "with its section heading)", "start")
     rerank_keep_docs: int | None = _opt("documentation chunks the LLMReranker keeps in the final top_k; "
                                         "unset: retrieval.doc_slots", None)
     rerank_doc_places: int = _opt("documentation places filled by the model's choice among the documentation "
@@ -394,6 +397,8 @@ class Settings:
             (r.top_k >= 1, "retrieval.top_k must be >= 1"),
             (1 <= r.max_queries <= 8, f"retrieval.max_queries ({r.max_queries}) must be between 1 and 8"),
             (r.rerank_snippet_chars >= 100, "retrieval.rerank_snippet_chars must be >= 100"),
+            (r.rerank_snippet in ("start", "focused"),
+             f"retrieval.rerank_snippet must be start or focused, got {r.rerank_snippet!r}"),
             (r.rerank_keep_docs is None or 0 <= r.rerank_keep_docs <= r.top_k,
              f"retrieval.rerank_keep_docs ({r.rerank_keep_docs}) must be between 0 and retrieval.top_k"),
             (0 <= r.rerank_doc_places <= r.top_k,

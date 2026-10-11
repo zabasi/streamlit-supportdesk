@@ -149,6 +149,8 @@ Reranking on the two best retrieval combinations:
 | `clean_doc_slots_rerank_docs_prompt` | Both: 10 documentation candidates and the 5 best other chunks (`candidate_k = 15`, `doc_slots = 10`); the fixed prompt ranks all 15; the best 6 are kept in the model's order with at least 3 documentation chunks (`rerank_keep_docs = 3`) |
 | `clean_hybrid_doc_slots_rerank_docs_prompt` | `clean_doc_slots_rerank_docs_prompt` (the design `advanced` uses) with hybrid candidates: retriever `hybrid_doc_slots` (dense and BM25 merged by rank fusion) instead of dense |
 | `clean_doc_slots_rerank_docs_prompt_wide` | `clean_doc_slots_rerank_docs_prompt` with a wider pool: 20 candidates, 15 of them documentation (`candidate_k = 20`, `doc_slots = 15`) |
+| `…rerank_docs_prompt_focused` (dense and hybrid) | The reranker sees each candidate's best-matching 400-character window, with its section heading, instead of its first 400 characters (`retrieval.rerank_snippet = "focused"`). Report words are weighted by how rare they are among the candidates, so a word every candidate contains does not count |
+| `…rerank_docs_prompt_long` (dense and hybrid) | The reranker sees the first 1,200 characters of each candidate instead of 400 (`retrieval.rerank_snippet_chars = 1200`) |
 
 With documentation places, the reranker keeps them (`retrieval.rerank_keep_docs`, or
 `retrieval.doc_slots` when it is unset): after the model's order,
