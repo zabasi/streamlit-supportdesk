@@ -1,1 +1,0 @@
-Write one new search query for an internal Streamlit documentation and GitHub corpus. Keep the original problem. Do not repeat a previous query. Reply with the query only.

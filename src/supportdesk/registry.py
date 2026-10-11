@@ -26,7 +26,6 @@ from .pipelines.experiments import (
     build_split_llm,
     build_split_sentences,
 )
-from .pipelines.retrieve_loop import build_retrieve_loop
 from .retrieval.index import VectorIndex
 from .retrieval.retriever import (
     BM25Retriever,
@@ -40,7 +39,6 @@ from .retrieval.retriever import (
 
 #: Pipelines by name: each builds the pipeline from (retriever, clients, settings); its docstring is its one-line description.
 PIPELINES = {"baseline": build_baseline, "advanced": build_advanced,
-             "retrieve_loop": build_retrieve_loop,
              "clean_query": build_clean_query, "doc_slots": build_doc_slots,
              "hybrid_rrf": build_hybrid_rrf, "hybrid_split": build_hybrid_split,
              "rewrite_llm": build_rewrite_llm,

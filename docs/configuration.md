@@ -126,8 +126,6 @@ Defaults shown are the built-in ones. `*unset*` means the key is optional and no
 | `output_format` | `configs/prompts/answer_output_format.txt` | JSON shape the answer must follow |
 | `rewrite` | `configs/prompts/rewrite_system.txt` | system prompt of the query-rewriting call (QueryRewriter) |
 | `rerank` | `configs/prompts/rerank_system.txt` | system prompt of the reranking call (LLMReranker) |
-| `judge` | `configs/prompts/judge_system.txt` | system prompt of the retrieve_loop sufficiency check (yes or no) |
-| `loop_rewrite` | `configs/prompts/loop_rewrite_system.txt` | system prompt of the retrieve_loop query rewrite |
 
 ### `[paths]`
 
@@ -152,7 +150,7 @@ Defaults shown are the built-in ones. `*unset*` means the key is optional and no
 
 | Key | Default | What it does |
 |---|---|---|
-| `method` | `fixed` | which chunker the indexing graph's chunk node runs: fixed \| structure \| token_structure |
+| `method` | `fixed` | which chunker the indexing graph's chunk node runs: fixed |
 | `max_tokens` | `512` | chunk size in tokens (the project's tokenizer); changing it means building the index again |
 | `overlap_tokens` | `128` | tokens shared by consecutive chunks; must be smaller than max_tokens |
 
@@ -174,7 +172,6 @@ Defaults shown are the built-in ones. `*unset*` means the key is optional and no
 | `rerank_doc_places` | `0` | documentation places filled by the model's choice among the documentation candidates (DocPlacesReranker) |
 | `bm25_slots` | `0` | places in the results filled by BM25 (keyword) search, the rest by dense search; used by the hybrid_split retriever |
 | `rrf_k` | `60` | Reciprocal Rank Fusion constant; higher values make rank differences count less |
-| `max_loops` | `3` | retrieve-and-judge tries in the retrieve_loop pipeline; the last chunks are used once this many tries have run |
 
 ### `[context]`
 

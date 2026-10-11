@@ -70,7 +70,7 @@ def _opt(help_text: str, default=None):
 
 
 #: Chunkers the indexing graph can run (see data/chunking.py: CHUNKERS).
-CHUNKING_METHODS = ("fixed", "structure", "token_structure")
+CHUNKING_METHODS = ("fixed",)
 
 
 @dataclass(frozen=True)
@@ -93,10 +93,6 @@ class Prompts:
     rewrite: Path = _opt("system prompt of the query-rewriting call (QueryRewriter)",
                          Path("configs/prompts/rewrite_system.txt"))
     rerank: Path = _opt("system prompt of the reranking call (LLMReranker)", Path("configs/prompts/rerank_system.txt"))
-    judge: Path = _opt("system prompt of the retrieve_loop sufficiency check (yes or no)",
-                       Path("configs/prompts/judge_system.txt"))
-    loop_rewrite: Path = _opt("system prompt of the retrieve_loop query rewrite",
-                              Path("configs/prompts/loop_rewrite_system.txt"))
 
 
 @dataclass(frozen=True)
@@ -145,8 +141,6 @@ class Retrieval:
     bm25_slots: int = _opt("places in the results filled by BM25 (keyword) search, the rest by dense "
                            "search; used by the hybrid_split retriever", 0)
     rrf_k: int = _opt("Reciprocal Rank Fusion constant; higher values make rank differences count less", 60)
-    max_loops: int = _opt("retrieve-and-judge tries in the retrieve_loop pipeline; the last chunks "
-                          "are used once this many tries have run", 3)
 
 
 @dataclass(frozen=True)
@@ -411,8 +405,6 @@ class Settings:
             (r.hybrid_pool >= r.top_k,
              f"retrieval.hybrid_pool ({r.hybrid_pool}) must be >= retrieval.top_k ({r.top_k})"),
             (r.rrf_k >= 1, "retrieval.rrf_k must be >= 1"),
-            (1 <= r.max_loops <= 3,
-             f"retrieval.max_loops ({r.max_loops}) must be between 1 and 3"),
             (c.max_chunks is None or 1 <= c.max_chunks <= r.top_k,
              (f"context.max_chunks ({c.max_chunks}) must be between 1 and retrieval.top_k "
               f"({r.top_k}): only top_k chunks are ever retrieved, so a larger value could never "

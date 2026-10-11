@@ -29,8 +29,7 @@ per report:        intake -> query -> retrieve -> rerank -> packet -> generate -
   `split_sentences` (several queries without a model). Combinations build on the cleaned query:
   `clean_doc_slots`, `clean_hybrid_doc_slots`, `clean_split_doc_slots` and `clean_hybrid_split`;
   `clean_doc_slots_rerank` and `clean_hybrid_doc_slots_rerank` add a reranking model call to the two best.
-  `retrieve_loop` judges the 6 retrieved chunks and may search again, at most 3 times, still inside
-  the corpus. `supportdesk pipelines` lists them all.
+  `supportdesk pipelines` lists them all.
 
 ## 2. Set up
 
