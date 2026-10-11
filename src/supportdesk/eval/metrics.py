@@ -130,6 +130,16 @@ def passage_recall(chunks: list[dict], spans: list[dict], threshold: float) -> f
     return sum(c >= threshold for c in covered) / len(covered) if covered else None
 
 
+def passage_reciprocal_rank(chunks: list[dict], spans: list[dict], threshold: float) -> float | None:
+    """1 / the first rank at which the chunks so far cover a gold passage; 0 if none ever does."""
+    if not spans:
+        return None
+    for rank in range(1, len(chunks) + 1):
+        if passage_recall(chunks[:rank], spans, threshold):
+            return 1.0 / rank
+    return 0.0
+
+
 def _mean_coverage(chunks: list[dict], spans: list[dict]) -> float | None:
     return _mean(passage_coverage(chunks, s) for s in spans)
 
@@ -141,7 +151,8 @@ def evaluate_retrieval(pairs: list[tuple[EvalCase, dict]], ks: tuple[int, ...], 
     recall@k: share of gold sources in the top k (a comment counts as its parent issue); hit@k: any
     gold in the top k; mrr: 1/rank of the first gold; packet_recall: recall over the chunks that
     actually reach the prompt. With ``passage_threshold`` and gold passages (evidence_spans) the same
-    is measured per passage: passage_recall_at_k, passage_coverage_at_k and packet_passage_recall.
+    is measured per passage: passage_recall_at_k, passage_hit_at_k, passage_mrr,
+    passage_coverage_at_k and packet_passage_recall.
     """
     with_gold = [(c, r) for c, r in pairs if c.gold_evidence]
 
@@ -168,6 +179,11 @@ def evaluate_retrieval(pairs: list[tuple[EvalCase, dict]], ks: tuple[int, ...], 
                                     for k in ks},
             "passage_coverage_at_k": {str(k): _mean(_mean_coverage(r["retrieved"][:k], c.evidence_spans)
                                                     for c, r in spans) for k in ks},
+            "passage_hit_at_k": {str(k): _mean(float((passage_recall(r["retrieved"][:k], c.evidence_spans,
+                                                                     passage_threshold) or 0) > 0)
+                                               for c, r in spans) for k in ks},
+            "passage_mrr": _mean(passage_reciprocal_rank(r["retrieved"], c.evidence_spans, passage_threshold)
+                                 for c, r in spans),
             "packet_passage_recall": _mean(passage_recall(r["packet"], c.evidence_spans, passage_threshold)
                                            for c, r in spans),
         }
@@ -202,7 +218,9 @@ def format_metrics(m: dict) -> str:
         if m.get("passage_recall_at_k"):
             pr = "  ".join(f"@{k} {_f(m['passage_recall_at_k'].get(k))}" for k in ks)
             top = ks[-1] if ks else None
-            lines.append(f"passages   recall {pr}   coverage@{top} {_f(m['passage_coverage_at_k'].get(top))}"
+            lines.append(f"passages   recall {pr}   MRR {_f(m.get('passage_mrr'))}")
+            ph = "  ".join(f"@{k} {_f(m['passage_hit_at_k'].get(k))}" for k in ks)
+            lines.append(f"           hit    {ph}   coverage@{top} {_f(m['passage_coverage_at_k'].get(top))}"
                          f"   in the prompt packet {_f(m.get('packet_passage_recall'))}")
         for cat, b in m.get("by_category", {}).items():
             top = ks[-1] if ks else None

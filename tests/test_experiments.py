@@ -461,3 +461,37 @@ def test_the_combination_differs_from_rerank_prompt_only_in_its_documentation_se
 def test_rerank_keep_docs_cannot_exceed_top_k():
     with pytest.raises(ConfigError, match="retrieval.rerank_keep_docs"):
         Settings.load(env={}, overrides=["retrieval.rerank_keep_docs=7"])
+
+
+def test_the_variants_of_the_advanced_design_each_change_one_thing():
+    def flat(name):
+        d = Settings.load(env={}, overrides=[f"pipeline.name={name}"]).to_dict()
+        return {f"{section}.{key}": value for section, keys in d.items() for key, value in keys.items()}
+    base = flat("clean_doc_slots_rerank_docs_prompt")
+    hybrid, wide = flat("clean_hybrid_doc_slots_rerank_docs_prompt"), flat("clean_doc_slots_rerank_docs_prompt_wide")
+    assert {k for k in base if base[k] != hybrid[k]} == {"pipeline.name", "pipeline.retriever"}
+    assert hybrid["pipeline.retriever"] == "hybrid_doc_slots"
+    assert {k for k in base if base[k] != wide[k]} == {"pipeline.name", "retrieval.candidate_k", "retrieval.doc_slots"}
+    assert (wide["retrieval.candidate_k"], wide["retrieval.doc_slots"], wide["retrieval.rerank_keep_docs"]) == (20, 15, 3)
+    advanced = flat("advanced")  # advanced is this design: only the name differs
+    assert {k for k in base if base[k] != advanced[k]} == {"pipeline.name"}
+
+
+def test_the_hybrid_candidates_variant_runs_end_to_end(index, clients, settings):
+    import dataclasses
+    import json
+
+    from supportdesk.pipelines.experiments import build_clean_hybrid_doc_slots_rerank_docs_prompt
+    s = dataclasses.replace(settings, retrieval=dataclasses.replace(
+        settings.retrieval, candidate_k=12, doc_slots=3, rerank_keep_docs=3))
+    retriever = hybrid_slots(index, clients, 3)
+    pipeline = build_clean_hybrid_doc_slots_rerank_docs_prompt(retriever, clients, s)
+    case = CaseInput(case_id="c", title="Session state lost", body=REPORT)
+    scripted(clients, json.dumps({"ranking": ["C12", "C11"]}))
+    clients.chat.script[clients.chat.calls + 2] = json.dumps(
+        {"outcome": "request_info", "user_reply": "Which version?", "citations": []})
+    result = pipeline.run(case)
+    assert result.trace["stages"]["retriever"] == "HybridDocSlotsRetriever" and len(result.retrieved) == 6
+    assert {h["found_by"] for h in result.retrieved} == {"hybrid"}
+    docs = {c.chunk_id for c in index.chunks if c.source_type == "documentation"}
+    assert sum(h["chunk_id"] in docs for h in result.retrieved) >= 3

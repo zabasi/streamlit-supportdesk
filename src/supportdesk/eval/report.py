@@ -118,6 +118,8 @@ def render_report(run_dirs: list[Path]) -> str:
     hit_ks = sorted({int(k) for r in runs for k in r["summary"]["metrics"].get("hit_at_k", {})})
     passage_ks = sorted({int(k) for r in runs for k in r["summary"]["metrics"].get("passage_recall_at_k", {})})
     passage_rows = ([(f"Passage recall@{k}", ("passage_recall_at_k", str(k)), "pct") for k in passage_ks]
+                    + [(f"Passage hit@{k}", ("passage_hit_at_k", str(k)), "pct") for k in passage_ks]
+                    + ([("Passage MRR", ("passage_mrr",), "num")] if passage_ks else [])
                     + [(f"Passage coverage@{k}", ("passage_coverage_at_k", str(k)), "pct") for k in passage_ks[-1:]]
                     + ([("Gold passages in the prompt packet", ("packet_passage_recall",), "pct")]
                        if passage_ks else []))

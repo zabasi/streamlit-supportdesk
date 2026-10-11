@@ -132,3 +132,25 @@ def build_clean_doc_slots_rerank_docs_prompt(retriever: Retriever, clients: Clie
     stages["query"] = CleanQuery(settings.context.max_query_chars)
     stages["reranker"] = LLMReranker(clients, settings)
     return StagedPipeline(name="clean_doc_slots_rerank_docs_prompt", clients=clients, settings=settings, **stages)
+
+
+# ---- variants of clean_doc_slots_rerank_docs_prompt (the design advanced uses) ----
+
+def build_clean_hybrid_doc_slots_rerank_docs_prompt(retriever: Retriever, clients: Clients,
+                                                    settings: Settings) -> StagedPipeline:
+    """clean_doc_slots_rerank_docs_prompt with hybrid candidates (dense and BM25 merged by RRF)."""
+    stages = default_stages(retriever, clients, settings)
+    stages["query"] = CleanQuery(settings.context.max_query_chars)
+    stages["reranker"] = LLMReranker(clients, settings)
+    return StagedPipeline(name="clean_hybrid_doc_slots_rerank_docs_prompt", clients=clients, settings=settings,
+                          **stages)
+
+
+def build_clean_doc_slots_rerank_docs_prompt_wide(retriever: Retriever, clients: Clients,
+                                                  settings: Settings) -> StagedPipeline:
+    """clean_doc_slots_rerank_docs_prompt with a wider pool: 20 candidates, 15 of them documentation."""
+    stages = default_stages(retriever, clients, settings)
+    stages["query"] = CleanQuery(settings.context.max_query_chars)
+    stages["reranker"] = LLMReranker(clients, settings)
+    return StagedPipeline(name="clean_doc_slots_rerank_docs_prompt_wide", clients=clients, settings=settings,
+                          **stages)
