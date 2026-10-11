@@ -565,3 +565,36 @@ def test_the_snippet_experiments_each_change_only_the_snippet():
 def test_rerank_snippet_must_be_start_or_focused():
     with pytest.raises(ConfigError, match="retrieval.rerank_snippet"):
         Settings.load(env={}, overrides=["retrieval.rerank_snippet=middle"])
+
+
+def test_the_keep_and_top8_variants_change_only_what_reaches_the_model():
+    def flat(name):
+        d = Settings.load(env={}, overrides=[f"pipeline.name={name}"]).to_dict()
+        return {f"{section}.{key}": value for section, keys in d.items() for key, value in keys.items()}
+    base = flat("clean_doc_slots_rerank_docs_prompt")
+    for n in (4, 5):
+        keep = flat(f"clean_doc_slots_rerank_docs_prompt_keep{n}")
+        assert {k for k in base if base[k] != keep[k]} == {"pipeline.name", "retrieval.rerank_keep_docs"}
+        assert keep["retrieval.rerank_keep_docs"] == n
+    top8 = flat("clean_doc_slots_rerank_docs_prompt_top8")
+    assert {k for k in base if base[k] != top8[k]} == {"pipeline.name", "retrieval.top_k", "context.max_tokens"}
+    assert (top8["retrieval.top_k"], top8["context.max_tokens"]) == (8, 4300)
+
+
+def test_the_variants_ask_the_reranker_exactly_the_same_question(index, clients, settings):
+    """Same candidates, same prompt: their reranking calls come from the cache of the parent's run."""
+    import dataclasses
+    import json
+
+    from supportdesk.pipelines.stages.llm_rerank import LLMReranker
+    hits = DocSlotsRetriever(index, clients.embedding, doc_slots=3).search("session state reset rerun page", k=12)
+    case = CaseInput(case_id="c", title="Session state lost", body=REPORT)
+    asked = []
+    for retrieval in ({"rerank_keep_docs": 3}, {"rerank_keep_docs": 5}, {"rerank_keep_docs": 3, "top_k": 8}):
+        s = dataclasses.replace(settings, retrieval=dataclasses.replace(settings.retrieval, **retrieval))
+        scripted(clients, json.dumps({"ranking": ["C1"]}))
+        kept = LLMReranker(clients, s)(case, "q", hits)[: s.retrieval.top_k]
+        asked.append(clients.chat.seen[-1])
+        docs = sum(h.chunk.source_type == "documentation" for h in kept)
+        assert docs >= min(s.retrieval.rerank_keep_docs, sum(h.chunk.source_type == "documentation" for h in hits))
+    assert asked[0] == asked[1] == asked[2]

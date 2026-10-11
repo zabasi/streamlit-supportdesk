@@ -151,6 +151,8 @@ Reranking on the two best retrieval combinations:
 | `clean_doc_slots_rerank_docs_prompt_wide` | `clean_doc_slots_rerank_docs_prompt` with a wider pool: 20 candidates, 15 of them documentation (`candidate_k = 20`, `doc_slots = 15`) |
 | `…rerank_docs_prompt_focused` (dense and hybrid) | The reranker sees each candidate's best-matching 400-character window, with its section heading, instead of its first 400 characters (`retrieval.rerank_snippet = "focused"`). Report words are weighted by how rare they are among the candidates, so a word every candidate contains does not count |
 | `…rerank_docs_prompt_long` (dense and hybrid) | The reranker sees the first 1,200 characters of each candidate instead of 400 (`retrieval.rerank_snippet_chars = 1200`) |
+| `clean_doc_slots_rerank_docs_prompt_keep4`, `…_keep5` | Keep at least 4 or 5 documentation chunks in the final 6 after reranking (`rerank_keep_docs`), instead of 3. The reranker's call is unchanged |
+| `clean_doc_slots_rerank_docs_prompt_top8` | Show the model 8 chunks instead of 6 (`top_k = 8`, `context.max_tokens = 4300`). The reranker's call is unchanged |
 
 With documentation places, the reranker keeps them (`retrieval.rerank_keep_docs`, or
 `retrieval.doc_slots` when it is unset): after the model's order,

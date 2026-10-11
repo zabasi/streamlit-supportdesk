@@ -183,3 +183,20 @@ def build_clean_doc_slots_rerank_docs_prompt_long(retriever, clients, settings):
 def build_clean_hybrid_doc_slots_rerank_docs_prompt_long(retriever, clients, settings):
     """clean_hybrid_doc_slots_rerank_docs_prompt where the reranker sees the first 1,200 characters of each candidate."""
     return _clean_rerank("clean_hybrid_doc_slots_rerank_docs_prompt_long", retriever, clients, settings)
+
+
+# ---- how much documentation, and how many chunks, reach the model ----
+
+def build_clean_doc_slots_rerank_docs_prompt_keep4(retriever, clients, settings):
+    """clean_doc_slots_rerank_docs_prompt keeping at least 4 documentation chunks after reranking."""
+    return _clean_rerank("clean_doc_slots_rerank_docs_prompt_keep4", retriever, clients, settings)
+
+
+def build_clean_doc_slots_rerank_docs_prompt_keep5(retriever, clients, settings):
+    """clean_doc_slots_rerank_docs_prompt keeping at least 5 documentation chunks after reranking."""
+    return _clean_rerank("clean_doc_slots_rerank_docs_prompt_keep5", retriever, clients, settings)
+
+
+def build_clean_doc_slots_rerank_docs_prompt_top8(retriever, clients, settings):
+    """clean_doc_slots_rerank_docs_prompt showing the model 8 chunks instead of 6."""
+    return _clean_rerank("clean_doc_slots_rerank_docs_prompt_top8", retriever, clients, settings)
