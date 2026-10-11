@@ -1,0 +1,24 @@
+# Reranking on clean_hybrid_doc_slots: its retriever returns 15 candidates (with at least 3 documentation), one model
+# call (LLMReranker, prompt configs/prompts/rerank_system.txt) orders them, and the best 6 are kept,
+# still with at least 3 documentation chunks. Compare with clean_hybrid_doc_slots: reranking is the only difference.
+# Shares the baseline's index.
+
+[chunking]
+method = "fixed"
+max_tokens = 512
+overlap_tokens = 128
+
+[retrieval]
+top_k = 6
+candidate_k = 15             # candidates the reranker orders
+rerank_snippet_chars = 400   # characters of each candidate the reranker sees
+doc_slots = 3                # at least 3 of the 6 chunks are documentation
+historical_filter = true
+
+[context]
+max_tokens = 3200            # 6 chunks x 512 tokens: enough room that the budget never drops a chunk
+max_query_chars = 4000
+max_body_chars = 4000
+
+[pipeline]
+retriever = "hybrid_doc_slots"

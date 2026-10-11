@@ -137,9 +137,18 @@ Combinations put the strongest single change, the cleaned query, together with a
 | `clean_hybrid_doc_slots` | `CleanQuery` + retriever `hybrid_doc_slots` with `retrieval.doc_slots = 3`: like `clean_doc_slots`, but both lists come from hybrid search (dense and BM25 merged by rank fusion), the reserved places from documentation only |
 | `clean_split_doc_slots` | `CleanQuery` + retriever `split_doc_slots` with `retrieval.doc_slots = 3` and `retrieval.bm25_slots = 3`: half the results from dense, half from BM25, at least 3 documentation; the reserved places are filled first, the two methods taking turns, then the rest the same way; scores are not merged. Compare with `clean_hybrid_doc_slots` (merged by rank fusion) |
 
-A reranking stage, `LLMReranker` (prompt `configs/prompts/rerank_system.txt`), is available in
-`pipelines/stages/llm_rerank.py` for a pipeline whose retrieval already finds the right candidates:
-`stages["reranker"] = LLMReranker(clients, settings)` with `retrieval.candidate_k` set above `top_k`.
+Reranking on the two best retrieval combinations:
+
+| Pipeline | Built from |
+|---|---|
+| `clean_doc_slots_rerank` | `clean_doc_slots` + `LLMReranker`: the retriever returns 15 candidates (`candidate_k = 15`), one model call orders them (`rerank_snippet_chars = 400`), the best 6 are kept |
+| `clean_hybrid_doc_slots_rerank` | `clean_hybrid_doc_slots` + the same reranking |
+
+With documentation places (`retrieval.doc_slots`), the reranker keeps them: after the model's order,
+the best-ranked documentation below the cut replaces the lowest-ranked other chunks until the top
+`top_k` hold at least `doc_slots` documentation chunks. The same applies when the model's output is
+unusable. The stage is `LLMReranker` in `pipelines/stages/llm_rerank.py`; add it to any pipeline with
+`stages["reranker"] = LLMReranker(clients, settings)` and `retrieval.candidate_k` above `top_k`.
 
 The model-based stages fall back safely: unusable model output means the cleaned report (rewriting)
 or the retriever's order (reranking), never a failed case. Their prompts are

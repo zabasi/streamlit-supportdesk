@@ -28,11 +28,30 @@ def model_ranking(text: str, count: int) -> list[int]:
     return order
 
 
+def keep_doc_places(ranked: list[Hit], top_k: int, min_docs: int) -> list[Hit]:
+    """Make sure the first ``top_k`` hold at least ``min_docs`` documentation chunks, promoting the
+    best-ranked documentation from below the cut in place of the lowest-ranked other chunks."""
+    head, tail = list(ranked[:top_k]), list(ranked[top_k:])
+    is_doc = lambda h: h.chunk.source_type == "documentation"
+    for doc in [h for h in tail if is_doc(h)]:
+        if sum(map(is_doc, head)) >= min_docs:
+            break
+        out = next((j for j in range(len(head) - 1, -1, -1) if not is_doc(head[j])), None)
+        if out is None:
+            break
+        tail.insert(0, head.pop(out))
+        head.append(doc)
+        tail.remove(doc)
+    return head + tail
+
+
 class LLMReranker:
     """Reorders the candidates with one model call: the most useful for the report first."""
 
     def __init__(self, clients, settings):
         self.clients, self.snippet = clients, settings.retrieval.rerank_snippet_chars
+        # with documentation places (retrieval.doc_slots), they survive reranking
+        self.top_k, self.min_docs = settings.retrieval.top_k, settings.retrieval.doc_slots
         self.clean = CleanQuery(settings.context.max_query_chars)
         self.prompt = Path(settings.prompts.rerank).read_text(encoding="utf-8")
 
@@ -47,7 +66,10 @@ class LLMReranker:
                                               {"role": "user", "content": content}],
                                              stage="rerank", json_mode=True)
         order = model_ranking(text, len(hits))
-        if not order:  # unusable output: keep the retriever's order
+        ranked = ([hits[i] for i in order] + [h for i, h in enumerate(hits) if i not in set(order)]
+                  if order else list(hits))  # unusable output: the retriever's order
+        if self.min_docs:
+            ranked = keep_doc_places(ranked, self.top_k, self.min_docs)
+        if ranked == list(hits):
             return hits
-        ranked = [hits[i] for i in order] + [h for i, h in enumerate(hits) if i not in set(order)]
         return [replace(h, rank=n) for n, h in enumerate(ranked, start=1)]

@@ -9,6 +9,7 @@ from ..retrieval.retriever import Retriever
 from .staged import StagedPipeline
 from .stages import default_stages
 from .stages.clean_query import CleanQuery
+from .stages.llm_rerank import LLMReranker
 from .stages.rewrite_query import QueryRewriter
 from .stages.split_query import SentenceSplitQuery
 
@@ -89,3 +90,21 @@ def build_clean_split_doc_slots(retriever: Retriever, clients: Clients, settings
     stages = default_stages(retriever, clients, settings)
     stages["query"] = CleanQuery(settings.context.max_query_chars)
     return StagedPipeline(name="clean_split_doc_slots", clients=clients, settings=settings, **stages)
+
+
+# ---- reranking on the best retrieval ----
+
+def build_clean_doc_slots_rerank(retriever: Retriever, clients: Clients, settings: Settings) -> StagedPipeline:
+    """clean_doc_slots with reranking: 15 candidates ordered by one model call; at least 3 docs kept."""
+    stages = default_stages(retriever, clients, settings)
+    stages["query"] = CleanQuery(settings.context.max_query_chars)
+    stages["reranker"] = LLMReranker(clients, settings)
+    return StagedPipeline(name="clean_doc_slots_rerank", clients=clients, settings=settings, **stages)
+
+
+def build_clean_hybrid_doc_slots_rerank(retriever: Retriever, clients: Clients, settings: Settings) -> StagedPipeline:
+    """clean_hybrid_doc_slots with reranking: 15 candidates ordered by one model call; at least 3 docs kept."""
+    stages = default_stages(retriever, clients, settings)
+    stages["query"] = CleanQuery(settings.context.max_query_chars)
+    stages["reranker"] = LLMReranker(clients, settings)
+    return StagedPipeline(name="clean_hybrid_doc_slots_rerank", clients=clients, settings=settings, **stages)

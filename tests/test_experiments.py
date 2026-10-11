@@ -324,3 +324,66 @@ def test_retrieval_runs_record_which_method_found_each_chunk(tmp_path, capsys):
     rows = [json.loads(line) for line in (tmp_path / "art" / "runs" / "r" / "results.jsonl").read_text().splitlines()]
     found = {h["found_by"] for row in rows for h in row["retrieved"]}
     assert found and found <= {"dense", "bm25"}
+
+
+def _hit(n, kind):
+    from supportdesk.retrieval.retriever import Hit
+    from supportdesk.types import Chunk
+    return Hit(Chunk(chunk_id=f"{kind}-{n}", source_id=f"{kind}-{n}", source_type=kind, title="t", text="x",
+                     url="u"), score=1.0 / n, rank=n, source="dense")
+
+
+def test_reranking_keeps_the_documentation_places():
+    from supportdesk.pipelines.stages.llm_rerank import keep_doc_places
+    ranked = [_hit(n, "issue") for n in range(1, 7)] + [_hit(7, "documentation"), _hit(8, "issue"),
+                                                        _hit(9, "documentation"), _hit(10, "documentation")]
+    kept = keep_doc_places(ranked, top_k=6, min_docs=3)
+    ids = [h.chunk.chunk_id for h in kept]
+    assert ids[:6] == ["issue-1", "issue-2", "issue-3", "documentation-7", "documentation-9", "documentation-10"]
+    assert sorted(ids) == sorted(h.chunk.chunk_id for h in ranked)  # nothing lost, only moved
+    already = [_hit(1, "documentation")] * 3 + ranked[:3]
+    assert keep_doc_places(already, top_k=6, min_docs=3) == already
+
+
+def test_the_reranker_keeps_three_docs_even_when_the_model_prefers_issues(index, clients, settings):
+    import dataclasses
+    import json
+
+    from supportdesk.pipelines.stages.llm_rerank import LLMReranker
+    slots = dataclasses.replace(settings, retrieval=dataclasses.replace(settings.retrieval, doc_slots=3))
+    case = CaseInput(case_id="c", title="Session state lost", body=REPORT)
+    hits = DocSlotsRetriever(index, clients.embedding, doc_slots=3).search("session state reset rerun page", k=12)
+    issues_first = [f"C{n}" for n, h in enumerate(hits, start=1) if h.chunk.source_type != "documentation"]
+    for output in (json.dumps({"ranking": issues_first}), "not json"):
+        scripted(clients, output)
+        top = LLMReranker(clients, slots)(case, "q", hits)[:6]
+        assert sum(h.chunk.source_type == "documentation" for h in top) >= 3, output
+
+
+def test_the_reranking_experiments_differ_from_their_base_only_in_reranking():
+    def flat(name):
+        d = Settings.load(env={}, overrides=[f"pipeline.name={name}"]).to_dict()
+        return {f"{section}.{key}": value for section, keys in d.items() for key, value in keys.items()}
+    from supportdesk.registry import PIPELINES
+    for base in ("clean_doc_slots", "clean_hybrid_doc_slots"):
+        a, b = flat(base), flat(f"{base}_rerank")
+        assert {k for k in a if a[k] != b[k]} == {"pipeline.name", "retrieval.candidate_k",
+                                                    "retrieval.rerank_snippet_chars"}, base
+        assert PIPELINES[f"{base}_rerank"].__doc__.startswith(f"{base} with reranking")
+
+
+def test_clean_doc_slots_rerank_runs_end_to_end(index, clients, settings):
+    import dataclasses
+    import json
+
+    from supportdesk.pipelines.experiments import build_clean_doc_slots_rerank
+    s = dataclasses.replace(settings, retrieval=dataclasses.replace(settings.retrieval, doc_slots=3, candidate_k=12))
+    pipeline = build_clean_doc_slots_rerank(DocSlotsRetriever(index, clients.embedding, doc_slots=3), clients, s)
+    case = CaseInput(case_id="c", title="Session state lost", body=REPORT)
+    scripted(clients, json.dumps({"ranking": ["C12", "C11", "C10"]}))
+    clients.chat.script[clients.chat.calls + 2] = json.dumps(
+        {"outcome": "request_info", "user_reply": "Which version?", "citations": []})
+    result = pipeline.run(case)
+    assert result.trace["stages"]["reranker"] == "LLMReranker" and len(result.retrieved) == 6
+    docs = {c.chunk_id for c in index.chunks if c.source_type == "documentation"}
+    assert sum(h["chunk_id"] in docs for h in result.retrieved) >= 3
