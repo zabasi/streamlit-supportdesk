@@ -80,6 +80,7 @@ case_files = ["data/eval"]               # a folder of evaluation files, or case
 test_fraction = 0.5              # used by `supportdesk split`
 split_seed = 7
 recall_ks = [1, 3, 6, 10]          # 6 and 10: each pipeline at its own top_k
+passage_found_fraction = 0.8      # a gold passage is found when chunks cover this much of it
 leakage_overlap_threshold = 0.6
 leakage_shingle_tokens = 8
 

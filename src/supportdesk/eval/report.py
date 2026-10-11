@@ -116,8 +116,13 @@ def render_report(run_dirs: list[Path]) -> str:
     out.append(f"<h2>Metrics</h2><table><tr><th>Metric</th>{head}</tr>")
     ks = sorted({int(k) for r in runs for k in r["summary"]["metrics"].get("recall_at_k", {})})
     hit_ks = sorted({int(k) for r in runs for k in r["summary"]["metrics"].get("hit_at_k", {})})
+    passage_ks = sorted({int(k) for r in runs for k in r["summary"]["metrics"].get("passage_recall_at_k", {})})
+    passage_rows = ([(f"Passage recall@{k}", ("passage_recall_at_k", str(k)), "pct") for k in passage_ks]
+                    + [(f"Passage coverage@{k}", ("passage_coverage_at_k", str(k)), "pct") for k in passage_ks[-1:]]
+                    + ([("Gold passages in the prompt packet", ("packet_passage_recall",), "pct")]
+                       if passage_ks else []))
     rows = (ROWS[:3] + [(f"Recall@{k}", ("recall_at_k", str(k)), "pct") for k in ks]
-            + [(f"Hit@{k}", ("hit_at_k", str(k)), "pct") for k in hit_ks] + ROWS[3:])
+            + [(f"Hit@{k}", ("hit_at_k", str(k)), "pct") for k in hit_ks] + passage_rows + ROWS[3:])
     for label, path, kind in rows:
         cells = "".join(f"<td class=num>{_fmt(_dig(r['summary']['metrics'], path), kind)}</td>" for r in runs)
         out.append(f"<tr><td>{escape(label)}</td>{cells}</tr>")

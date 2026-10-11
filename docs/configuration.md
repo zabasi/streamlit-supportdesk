@@ -212,6 +212,7 @@ Defaults shown are the built-in ones. `*unset*` means the key is optional and no
 | `test_fraction` | `0.5` | share of families assigned to the test split by `supportdesk split` |
 | `split_seed` | `7` | seed for `supportdesk split` |
 | `recall_ks` | `[1, 3, 6, 10]` | k values reported for Recall@k |
+| `passage_found_fraction` | `0.8` | a gold passage counts as found when the retrieved chunks cover at least this fraction of it |
 | `leakage_overlap_threshold` | `0.6` | warn when a chunk repeats this fraction of an evaluation case's text |
 | `leakage_shingle_tokens` | `8` | length, in words, of the word sequences the leakage check compares |
 

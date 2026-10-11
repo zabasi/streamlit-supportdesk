@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import statistics
 
+from ..tokenizer import tokenize_with_spans
 from .cases import EvalCase
 
 
@@ -104,12 +105,43 @@ def cost_summary(usage: list[dict]) -> dict:
     return out
 
 
-def evaluate_retrieval(pairs: list[tuple[EvalCase, dict]], ks: tuple[int, ...]) -> dict:
+def passage_coverage(chunks: list[dict], span: dict) -> float | None:
+    """How much of one gold passage the chunks cover, from 0 to 1. Measured over the passage's words
+    (a leading heading mark or a closing code fence just outside a chunk does not count against it)."""
+    words = tokenize_with_spans(span["text"])
+    if not words:
+        return None
+    start, end = span["start_char"] + words[0][1], span["start_char"] + words[-1][2]
+    parts = sorted((max(start, c["start_char"]), min(end, c["end_char"])) for c in chunks
+                   if c.get("source_id") == span["source_id"] and c.get("start_char") is not None
+                   and c.get("end_char") is not None)
+    covered, reached = 0, start
+    for lo, hi in parts:
+        lo = max(lo, reached)
+        if hi > lo:
+            covered, reached = covered + hi - lo, hi
+    return covered / (end - start)
+
+
+def passage_recall(chunks: list[dict], spans: list[dict], threshold: float) -> float | None:
+    """Share of a case's gold passages that the chunks cover at least ``threshold`` of."""
+    covered = [passage_coverage(chunks, s) for s in spans]
+    covered = [c for c in covered if c is not None]
+    return sum(c >= threshold for c in covered) / len(covered) if covered else None
+
+
+def _mean_coverage(chunks: list[dict], spans: list[dict]) -> float | None:
+    return _mean(passage_coverage(chunks, s) for s in spans)
+
+
+def evaluate_retrieval(pairs: list[tuple[EvalCase, dict]], ks: tuple[int, ...], *,
+                       passage_threshold: float | None = None) -> dict:
     """Retrieval-only metrics over (case, row) pairs; only cases with gold evidence count.
 
     recall@k: share of gold sources in the top k (a comment counts as its parent issue); hit@k: any
     gold in the top k; mrr: 1/rank of the first gold; packet_recall: recall over the chunks that
-    actually reach the prompt.
+    actually reach the prompt. With ``passage_threshold`` and gold passages (evidence_spans) the same
+    is measured per passage: passage_recall_at_k, passage_coverage_at_k and packet_passage_recall.
     """
     with_gold = [(c, r) for c, r in pairs if c.gold_evidence]
 
@@ -123,6 +155,21 @@ def evaluate_retrieval(pairs: list[tuple[EvalCase, dict]], ks: tuple[int, ...]) 
             "mrr": _mean(reciprocal_rank(r["retrieved"], c.gold_evidence) for c, r in sub),
             "packet_recall": _mean(recall_at_k(r["packet"], c.gold_evidence, max(len(r["packet"]), 1))
                                    for c, r in sub),
+            **(passages(sub) if passage_threshold is not None else {}),
+        }
+
+    def passages(sub):
+        spans = [(c, r) for c, r in sub if getattr(c, "evidence_spans", None)]
+        if not spans:
+            return {}
+        return {
+            "passage_recall_at_k": {str(k): _mean(passage_recall(r["retrieved"][:k], c.evidence_spans,
+                                                                 passage_threshold) for c, r in spans)
+                                    for k in ks},
+            "passage_coverage_at_k": {str(k): _mean(_mean_coverage(r["retrieved"][:k], c.evidence_spans)
+                                                    for c, r in spans) for k in ks},
+            "packet_passage_recall": _mean(passage_recall(r["packet"], c.evidence_spans, passage_threshold)
+                                           for c, r in spans),
         }
     out = {"kind": "retrieval", "n_cases": len(pairs), "n_with_gold": len(with_gold),
            "n_without_gold": len(pairs) - len(with_gold), **block(with_gold)}
@@ -152,6 +199,11 @@ def format_metrics(m: dict) -> str:
     if m.get("kind") == "retrieval":
         hit = "  ".join(f"@{k} {_f(m['hit_at_k'][k])}" for k in ks)
         lines.append(f"           hit    {hit}   gold in the prompt packet {_f(m.get('packet_recall'))}")
+        if m.get("passage_recall_at_k"):
+            pr = "  ".join(f"@{k} {_f(m['passage_recall_at_k'].get(k))}" for k in ks)
+            top = ks[-1] if ks else None
+            lines.append(f"passages   recall {pr}   coverage@{top} {_f(m['passage_coverage_at_k'].get(top))}"
+                         f"   in the prompt packet {_f(m.get('packet_passage_recall'))}")
         for cat, b in m.get("by_category", {}).items():
             top = ks[-1] if ks else None
             lines.append(f"           {cat:<11} recall@{top} {_f(b['recall_at_k'].get(top))}  (n={b['n']})")

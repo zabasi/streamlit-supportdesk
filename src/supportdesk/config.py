@@ -189,6 +189,8 @@ class EvalCfg:
     test_fraction: float = _opt("share of families assigned to the test split by `supportdesk split`", 0.5)
     split_seed: int = _opt("seed for `supportdesk split`", 7)
     recall_ks: tuple[int, ...] = _opt("k values reported for Recall@k", (1, 3, 6, 10))
+    passage_found_fraction: float = _opt("a gold passage counts as found when the retrieved chunks cover at "
+                                         "least this fraction of it", 0.8)
     leakage_overlap_threshold: float = _opt("warn when a chunk repeats this fraction of an evaluation case's text", 0.6)
     leakage_shingle_tokens: int = _opt("length, in words, of the word sequences the leakage check compares", 8)
 
@@ -428,6 +430,7 @@ class Settings:
              "pipeline.name and pipeline.retriever must not be empty"),
             (len(e.case_files) >= 1, "eval.case_files must list at least one file"),
             (0 < e.test_fraction < 1, "eval.test_fraction must be between 0 and 1 (exclusive)"),
+            (0 < e.passage_found_fraction <= 1, "eval.passage_found_fraction must be in (0, 1]"),
             (len(e.recall_ks) >= 1 and all(k >= 1 for k in e.recall_ks),
              "eval.recall_ks must be a non-empty list of integers >= 1"),
             (0 < e.leakage_overlap_threshold <= 1, "eval.leakage_overlap_threshold must be in (0, 1]"),

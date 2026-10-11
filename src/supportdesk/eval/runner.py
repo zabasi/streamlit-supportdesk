@@ -87,9 +87,12 @@ def run_retrieval_eval(pipeline: StagedPipeline, cases: list[EvalCase], clients:
                 r = pipeline.retrieve(case.input)
                 row["retrieved"] = [{"chunk_id": h.chunk.chunk_id, "source_id": h.chunk.source_id,
                                      "parent_source_id": h.chunk.parent_source_id, "rank": h.rank,
-                                     "score": round(h.score, 6), "found_by": h.source} for h in r.hits]
+                                     "score": round(h.score, 6), "found_by": h.source,
+                                     "start_char": h.chunk.start_char, "end_char": h.chunk.end_char}
+                                    for h in r.hits]
                 row["packet"] = [{"chunk_id": c.chunk_id, "source_id": c.source_id,
-                                  "parent_source_id": c.parent_source_id} for c in r.packet.chunks]
+                                  "parent_source_id": c.parent_source_id, "start_char": c.start_char,
+                                  "end_char": c.end_char} for c in r.packet.chunks]
                 row["n_queries"] = len(r.queries)
             except (BudgetExhausted, CallLimitReached) as exc:
                 stopped = True
@@ -102,4 +105,5 @@ def run_retrieval_eval(pipeline: StagedPipeline, cases: list[EvalCase], clients:
                   clients=clients, settings=settings, run_id=run_id, index_manifest=index_manifest,
                   case_files=case_files, warnings=warnings, ledger_mark=run_mark,
                   note="retrieval only: no answers were generated, so decision metrics are absent",
-                  metrics=evaluate_retrieval(pairs, settings.eval.recall_ks))
+                  metrics=evaluate_retrieval(pairs, settings.eval.recall_ks,
+                                             passage_threshold=settings.eval.passage_found_fraction))
