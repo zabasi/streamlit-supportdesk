@@ -169,6 +169,7 @@ Defaults shown are the built-in ones. `*unset*` means the key is optional and no
 | `hybrid_pool` | `30` | in hybrid search, how many candidates dense and BM25 search each contribute |
 | `doc_slots` | `0` | places among the candidates kept for documentation chunks, used by the dense_doc_slots retriever; 0 keeps none |
 | `max_queries` | `1` | most search queries a query stage may return; their results are merged by rank fusion |
+| `keep_report_query` | `False` | query stages that write several queries (QueryRewriter, SentenceSplitQuery) also search with the cleaned report itself |
 | `rerank_snippet_chars` | `600` | characters of each candidate shown to the model by the LLMReranker |
 | `rerank_snippet` | `start` | which part of each candidate the LLMReranker shows: start (its first rerank_snippet_chars) | focused (the window that best matches the report, with its section heading) |
 | `rerank_keep_docs` | *unset* | documentation chunks the LLMReranker keeps in the final top_k; unset: retrieval.doc_slots |

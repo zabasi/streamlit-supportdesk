@@ -11,10 +11,13 @@ from .pipelines.experiments import (
     build_clean_doc_slots_rerank,
     build_clean_doc_slots_rerank_docs,
     build_clean_doc_slots_rerank_docs_prompt,
+    build_clean_doc_slots_rerank_docs_prompt_decompose,
     build_clean_doc_slots_rerank_docs_prompt_focused,
     build_clean_doc_slots_rerank_docs_prompt_keep4,
     build_clean_doc_slots_rerank_docs_prompt_keep5,
     build_clean_doc_slots_rerank_docs_prompt_long,
+    build_clean_doc_slots_rerank_docs_prompt_rewrite,
+    build_clean_doc_slots_rerank_docs_prompt_sentences,
     build_clean_doc_slots_rerank_docs_prompt_top8,
     build_clean_doc_slots_rerank_docs_prompt_wide,
     build_clean_doc_slots_rerank_prompt,
@@ -69,7 +72,10 @@ PIPELINES = {"baseline": build_baseline, "advanced": build_advanced,
              "clean_hybrid_doc_slots_rerank_docs_prompt_long": build_clean_hybrid_doc_slots_rerank_docs_prompt_long,
              "clean_doc_slots_rerank_docs_prompt_keep4": build_clean_doc_slots_rerank_docs_prompt_keep4,
              "clean_doc_slots_rerank_docs_prompt_keep5": build_clean_doc_slots_rerank_docs_prompt_keep5,
-             "clean_doc_slots_rerank_docs_prompt_top8": build_clean_doc_slots_rerank_docs_prompt_top8}
+             "clean_doc_slots_rerank_docs_prompt_top8": build_clean_doc_slots_rerank_docs_prompt_top8,
+             "clean_doc_slots_rerank_docs_prompt_rewrite": build_clean_doc_slots_rerank_docs_prompt_rewrite,
+             "clean_doc_slots_rerank_docs_prompt_decompose": build_clean_doc_slots_rerank_docs_prompt_decompose,
+             "clean_doc_slots_rerank_docs_prompt_sentences": build_clean_doc_slots_rerank_docs_prompt_sentences}
 
 RETRIEVERS = {
     "dense": lambda index, clients, s: DenseRetriever(index, clients.embedding),

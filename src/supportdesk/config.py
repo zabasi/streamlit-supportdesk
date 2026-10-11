@@ -137,6 +137,8 @@ class Retrieval:
                           "dense_doc_slots retriever; 0 keeps none", 0)
     max_queries: int = _opt("most search queries a query stage may return; their results are merged by "
                             "rank fusion", 1)
+    keep_report_query: bool = _opt("query stages that write several queries (QueryRewriter, SentenceSplitQuery) "
+                                    "also search with the cleaned report itself", False)
     rerank_snippet_chars: int = _opt("characters of each candidate shown to the model by the LLMReranker", 600)
     rerank_snippet: str = _opt("which part of each candidate the LLMReranker shows: start (its first "
                                "rerank_snippet_chars) | focused (the window that best matches the report, "

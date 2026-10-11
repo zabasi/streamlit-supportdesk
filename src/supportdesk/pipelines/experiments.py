@@ -200,3 +200,31 @@ def build_clean_doc_slots_rerank_docs_prompt_keep5(retriever, clients, settings)
 def build_clean_doc_slots_rerank_docs_prompt_top8(retriever, clients, settings):
     """clean_doc_slots_rerank_docs_prompt showing the model 8 chunks instead of 6."""
     return _clean_rerank("clean_doc_slots_rerank_docs_prompt_top8", retriever, clients, settings)
+
+
+# ---- better queries: the cleaned report plus written or split queries, on the advanced design ----
+
+def _with_queries(name: str, query, retriever: Retriever, clients: Clients, settings: Settings) -> StagedPipeline:
+    stages = default_stages(retriever, clients, settings)
+    stages["query"] = query
+    stages["reranker"] = LLMReranker(clients, settings)
+    return StagedPipeline(name=name, clients=clients, settings=settings, **stages)
+
+
+def build_clean_doc_slots_rerank_docs_prompt_rewrite(retriever, clients, settings):
+    """The advanced design searching with the cleaned report and one query naming the concept behind it."""
+    return _with_queries("clean_doc_slots_rerank_docs_prompt_rewrite", QueryRewriter(clients, settings),
+                         retriever, clients, settings)
+
+
+def build_clean_doc_slots_rerank_docs_prompt_decompose(retriever, clients, settings):
+    """The advanced design searching with the cleaned report and up to 3 queries, one per concept involved."""
+    return _with_queries("clean_doc_slots_rerank_docs_prompt_decompose", QueryRewriter(clients, settings),
+                         retriever, clients, settings)
+
+
+def build_clean_doc_slots_rerank_docs_prompt_sentences(retriever, clients, settings):
+    """The advanced design searching with the cleaned report and its pieces (title, code, sentences)."""
+    query = SentenceSplitQuery(settings.context.max_query_chars, settings.retrieval.max_queries,
+                               settings.retrieval.keep_report_query)
+    return _with_queries("clean_doc_slots_rerank_docs_prompt_sentences", query, retriever, clients, settings)

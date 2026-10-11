@@ -27,6 +27,7 @@ class QueryRewriter:
     def __init__(self, clients, settings):
         self.clients = clients
         self.max_queries = settings.retrieval.max_queries
+        self.keep_report = settings.retrieval.keep_report_query
         self.clean = CleanQuery(settings.context.max_query_chars)
         self.prompt = Path(settings.prompts.rewrite).read_text(encoding="utf-8").replace(
             "{max_queries}", str(self.max_queries))
@@ -35,4 +36,7 @@ class QueryRewriter:
         report = self.clean(case, env)[0]
         messages = [{"role": "system", "content": self.prompt}, {"role": "user", "content": report}]
         text, _ = self.clients.chat.complete(messages, stage="rewrite", json_mode=True)
-        return model_queries(text, self.max_queries) or [report]  # unusable output: the cleaned report
+        written = model_queries(text, self.max_queries)
+        if self.keep_report:  # the report itself, then the model's queries
+            return [report] + [q for q in written if q != report]
+        return written or [report]  # unusable output: the cleaned report

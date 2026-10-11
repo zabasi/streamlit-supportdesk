@@ -598,3 +598,61 @@ def test_the_variants_ask_the_reranker_exactly_the_same_question(index, clients,
         docs = sum(h.chunk.source_type == "documentation" for h in kept)
         assert docs >= min(s.retrieval.rerank_keep_docs, sum(h.chunk.source_type == "documentation" for h in hits))
     assert asked[0] == asked[1] == asked[2]
+
+
+def test_the_rewriter_can_keep_the_report_next_to_its_queries(clients, settings):
+    import dataclasses
+    import json
+
+    from supportdesk.pipelines.stages.rewrite_query import QueryRewriter
+    s = dataclasses.replace(settings, retrieval=dataclasses.replace(
+        settings.retrieval, max_queries=2, keep_report_query=True))
+    case = CaseInput(case_id="c", title="Expander loses state", body=REPORT)
+    report = CleanQuery(s.context.max_query_chars)(case, {})[0]
+    scripted(clients, json.dumps({"queries": ["how widgets keep their values across reruns", "callback order"]}))
+    assert QueryRewriter(clients, s)(case, {}) == [report, "how widgets keep their values across reruns",
+                                                   "callback order"]
+    scripted(clients, "not json")
+    assert QueryRewriter(clients, s)(case, {}) == [report]
+
+
+def test_the_sentence_splitter_can_keep_the_report_first():
+    from supportdesk.pipelines.stages.split_query import SentenceSplitQuery
+    case = CaseInput(case_id="c", title="Expander loses state", body=REPORT)
+    report = CleanQuery(4000)(case, {})[0]
+    queries = SentenceSplitQuery(4000, 3, keep_report=True)(case, {})
+    assert queries[0] == report and queries[1] == "Expander loses state" and len(queries) == 4
+    assert SentenceSplitQuery(4000, 3)(case, {})[0] == "Expander loses state"  # unchanged without it
+
+
+def test_the_query_experiments_change_only_the_query():
+    def flat(name):
+        d = Settings.load(env={}, overrides=[f"pipeline.name={name}"]).to_dict()
+        return {f"{section}.{key}": value for section, keys in d.items() for key, value in keys.items()}
+    base = flat("clean_doc_slots_rerank_docs_prompt")
+    for name, changed in (("rewrite", {"retrieval.keep_report_query", "prompts.rewrite"}),
+                          ("decompose", {"retrieval.keep_report_query", "retrieval.max_queries", "prompts.rewrite"}),
+                          ("sentences", {"retrieval.keep_report_query", "retrieval.max_queries"})):
+        other = flat(f"clean_doc_slots_rerank_docs_prompt_{name}")
+        assert {k for k in base if base[k] != other[k]} == {"pipeline.name", *changed}, name
+    assert str(flat("clean_doc_slots_rerank_docs_prompt_rewrite")["prompts.rewrite"]).endswith(
+        "rewrite_concepts_system.txt")
+
+
+def test_the_rewrite_experiment_searches_with_two_queries_then_reranks(index, clients, settings):
+    import dataclasses
+    import json
+
+    from supportdesk.pipelines.experiments import build_clean_doc_slots_rerank_docs_prompt_rewrite
+    s = dataclasses.replace(settings, retrieval=dataclasses.replace(
+        settings.retrieval, keep_report_query=True, max_queries=1, candidate_k=12, doc_slots=3, rerank_keep_docs=3))
+    pipeline = build_clean_doc_slots_rerank_docs_prompt_rewrite(
+        DocSlotsRetriever(index, clients.embedding, doc_slots=3), clients, s)
+    case = CaseInput(case_id="c", title="Session state lost", body=REPORT)
+    scripted(clients, json.dumps({"queries": ["how session state keeps values across reruns"]}))
+    clients.chat.script[clients.chat.calls + 2] = json.dumps({"ranking": ["C2", "C1"]})
+    retrieval = pipeline.retrieve(case)
+    assert len(retrieval.queries) == 2 and retrieval.queries[1] == "how session state keeps values across reruns"
+    assert len(retrieval.hits) == 6
+    docs = {c.chunk_id for c in index.chunks if c.source_type == "documentation"}
+    assert sum(h.chunk.chunk_id in docs for h in retrieval.hits) >= 3
