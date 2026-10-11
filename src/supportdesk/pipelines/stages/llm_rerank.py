@@ -55,9 +55,8 @@ class LLMReranker:
         self.clean = CleanQuery(settings.context.max_query_chars)
         self.prompt = Path(settings.prompts.rerank).read_text(encoding="utf-8")
 
-    def __call__(self, case: CaseInput, query: str, hits: list[Hit]) -> list[Hit]:
-        if len(hits) < 2:
-            return hits
+    def model_order(self, case: CaseInput, hits: list[Hit]) -> list[int]:
+        """One model call: positions in ``hits``, most useful first; [] if the output is unusable."""
         listing = "\n\n".join(
             f"C{n}: [{h.chunk.source_type}] {h.chunk.title}\n{' '.join(h.chunk.text.split())[: self.snippet]}"
             for n, h in enumerate(hits, start=1))
@@ -65,11 +64,36 @@ class LLMReranker:
         text, _ = self.clients.chat.complete([{"role": "system", "content": self.prompt},
                                               {"role": "user", "content": content}],
                                              stage="rerank", json_mode=True)
-        order = model_ranking(text, len(hits))
+        return model_ranking(text, len(hits))
+
+    def __call__(self, case: CaseInput, query: str, hits: list[Hit]) -> list[Hit]:
+        if len(hits) < 2:
+            return hits
+        order = self.model_order(case, hits)
         ranked = ([hits[i] for i in order] + [h for i, h in enumerate(hits) if i not in set(order)]
                   if order else list(hits))  # unusable output: the retriever's order
         if self.min_docs:
             ranked = keep_doc_places(ranked, self.top_k, self.min_docs)
         if ranked == list(hits):
             return hits
+        return [replace(h, rank=n) for n, h in enumerate(ranked, start=1)]
+
+
+class DocPlacesReranker:
+    """The model chooses which documentation fills the documentation places; the rest as retrieved."""
+
+    def __init__(self, clients, settings):
+        self.ranker = LLMReranker(clients, settings)
+        self.top_k, self.places = settings.retrieval.top_k, settings.retrieval.rerank_doc_places
+
+    def __call__(self, case: CaseInput, query: str, hits: list[Hit]) -> list[Hit]:
+        docs = [h for h in hits if h.chunk.source_type == "documentation"]
+        order = self.ranker.model_order(case, docs) if len(docs) > 1 else []
+        by_model = [docs[i] for i in order] + [d for i, d in enumerate(docs) if i not in set(order)]
+        chosen = by_model[: self.places]  # the documentation places, as the model judged them
+        ids = {h.chunk.chunk_id for h in chosen}
+        rest = [h for h in hits if h.chunk.chunk_id not in ids][: self.top_k - len(chosen)]
+        shown = sorted(chosen + rest, key=lambda h: h.rank)  # the retriever's order (similarity)
+        kept = {h.chunk.chunk_id for h in shown}
+        ranked = shown + [h for h in hits if h.chunk.chunk_id not in kept]
         return [replace(h, rank=n) for n, h in enumerate(ranked, start=1)]

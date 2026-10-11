@@ -1,0 +1,26 @@
+# clean_doc_slots where the model chooses the documentation: the retriever returns 10 documentation
+# candidates and the 3 best other chunks; one model call (DocPlacesReranker, prompt
+# configs/prompts/rerank_system.txt) orders the documentation candidates and the best 3 fill the
+# documentation places; the other 3 places are the best remaining by similarity, as in
+# clean_doc_slots, and the 6 keep the similarity order. Shares the baseline's index.
+
+[chunking]
+method = "fixed"
+max_tokens = 512
+overlap_tokens = 128
+
+[retrieval]
+top_k = 6
+candidate_k = 13             # 10 documentation candidates and the 3 best other chunks
+doc_slots = 10               # documentation candidates the model chooses from
+rerank_doc_places = 3        # documentation places filled by the model's choice
+rerank_snippet_chars = 400   # characters of each candidate the model sees
+historical_filter = true
+
+[context]
+max_tokens = 3200            # 6 chunks x 512 tokens: enough room that the budget never drops a chunk
+max_query_chars = 4000
+max_body_chars = 4000
+
+[pipeline]
+retriever = "dense_doc_slots"

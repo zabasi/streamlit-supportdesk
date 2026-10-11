@@ -134,6 +134,8 @@ class Retrieval:
     max_queries: int = _opt("most search queries a query stage may return; their results are merged by "
                             "rank fusion", 1)
     rerank_snippet_chars: int = _opt("characters of each candidate shown to the model by the LLMReranker", 600)
+    rerank_doc_places: int = _opt("documentation places filled by the model's choice among the documentation "
+                                  "candidates (DocPlacesReranker)", 0)
     bm25_slots: int = _opt("places in the results filled by BM25 (keyword) search, the rest by dense "
                            "search; used by the hybrid_split retriever", 0)
     rrf_k: int = _opt("Reciprocal Rank Fusion constant; higher values make rank differences count less", 60)
@@ -382,6 +384,8 @@ class Settings:
             (r.top_k >= 1, "retrieval.top_k must be >= 1"),
             (1 <= r.max_queries <= 8, f"retrieval.max_queries ({r.max_queries}) must be between 1 and 8"),
             (r.rerank_snippet_chars >= 100, "retrieval.rerank_snippet_chars must be >= 100"),
+            (0 <= r.rerank_doc_places <= r.top_k,
+             f"retrieval.rerank_doc_places ({r.rerank_doc_places}) must be between 0 and retrieval.top_k"),
             (0 <= r.bm25_slots <= r.top_k,
              f"retrieval.bm25_slots ({r.bm25_slots}) must be between 0 and retrieval.top_k ({r.top_k})"),
             (0 <= r.doc_slots <= (r.candidate_k or r.top_k),

@@ -387,3 +387,44 @@ def test_clean_doc_slots_rerank_runs_end_to_end(index, clients, settings):
     assert result.trace["stages"]["reranker"] == "LLMReranker" and len(result.retrieved) == 6
     docs = {c.chunk_id for c in index.chunks if c.source_type == "documentation"}
     assert sum(h["chunk_id"] in docs for h in result.retrieved) >= 3
+
+
+def test_the_model_chooses_which_documentation_fills_the_places(clients, settings):
+    import dataclasses
+    import json
+
+    from supportdesk.pipelines.stages.llm_rerank import DocPlacesReranker
+    s = dataclasses.replace(settings, retrieval=dataclasses.replace(settings.retrieval, rerank_doc_places=3))
+    reranker = DocPlacesReranker(clients, s)
+    docs = [_hit(n, "documentation") for n in range(1, 11)]  # 10 documentation candidates, ranks 1-10
+    others = [_hit(n, "issue") for n in range(11, 14)]          # the 3 best other chunks
+    hits = sorted(docs + others, key=lambda h: h.rank)
+    case = CaseInput(case_id="c", title="Session state lost", body=REPORT)
+    scripted(clients, json.dumps({"ranking": ["C9", "C4", "C7"]}))  # labels within the doc candidates
+    ranked = reranker(case, "q", hits)
+    top = [h.chunk.chunk_id for h in ranked[:6]]
+    assert {"documentation-9", "documentation-4", "documentation-7"} <= set(top)  # the model's choice
+    assert top == sorted(top, key=lambda cid: [h.chunk.chunk_id for h in hits].index(cid))  # similarity order
+    assert [h.rank for h in ranked] == list(range(1, len(hits) + 1))
+    shown = clients.chat.seen[-1][1]["content"]
+    assert "C10:" in shown and "C11:" not in shown  # the model saw only the 10 documentation candidates
+    scripted(clients, "not json")
+    fallback = [h.chunk.chunk_id for h in reranker(case, "q", hits)[:6]]
+    assert fallback[:3] == ["documentation-1", "documentation-2", "documentation-3"]
+
+
+def test_the_option_experiments_differ_from_their_comparison_only_as_intended():
+    def flat(name):
+        d = Settings.load(env={}, overrides=[f"pipeline.name={name}"]).to_dict()
+        return {f"{section}.{key}": value for section, keys in d.items() for key, value in keys.items()}
+    a, b = flat("clean_doc_slots"), flat("clean_doc_slots_rerank_docs")
+    assert {k for k in a if a[k] != b[k]} == {"pipeline.name", "retrieval.candidate_k", "retrieval.doc_slots",
+                                                "retrieval.rerank_doc_places", "retrieval.rerank_snippet_chars"}
+    a, b = flat("clean_doc_slots_rerank"), flat("clean_doc_slots_rerank_prompt")
+    assert {k for k in a if a[k] != b[k]} == {"pipeline.name", "prompts.rerank"}
+    assert str(b["prompts.rerank"]).endswith("rerank_docs_system.txt")
+
+
+def test_rerank_doc_places_cannot_exceed_top_k():
+    with pytest.raises(ConfigError, match="retrieval.rerank_doc_places"):
+        Settings.load(env={}, overrides=["retrieval.rerank_doc_places=7"])
