@@ -21,6 +21,8 @@ system = "configs/prompts/answer_system.txt"
 output_format = "configs/prompts/answer_output_format.txt"
 rewrite = "configs/prompts/rewrite_system.txt"
 rerank = "configs/prompts/rerank_system.txt"
+judge = "configs/prompts/judge_system.txt"
+loop_rewrite = "configs/prompts/loop_rewrite_system.txt"
 
 [paths]
 data_dir = "data/processed"
@@ -55,6 +57,7 @@ rerank_snippet_chars = 600       # characters of each candidate the LLM reranker
 rerank_doc_places = 0            # documentation places the model fills (DocPlacesReranker)
 bm25_slots = 0                   # places filled by BM25 in the hybrid_split retriever; the rest are dense
 rrf_k = 60
+max_loops = 3                    # retrieve_loop only: judge, then rewrite, at most this many searches
 
 [context]
 # max_chunks = 6                 # unset = follows retrieval.top_k; must be <= top_k

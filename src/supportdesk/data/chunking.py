@@ -7,6 +7,8 @@ from dataclasses import dataclass, field
 from ..tokenizer import tokenize_with_spans
 from ..types import Chunk
 from .corpus import SourceRecord
+from .structure_chunker import structure_spans
+from .token_structure_chunker import token_structure_spans
 
 
 @dataclass(frozen=True)
@@ -64,6 +66,43 @@ class FixedTokenChunker:
                 for i, (piece, first, last) in enumerate(pieces) if piece]
 
 
+def _span_chunks(record: SourceRecord, pieces: list[tuple[str, int, int]],
+                 paths: list[tuple[str, ...]] | None = None) -> list[Chunk]:
+    """Same chunk records as the fixed chunker, built from exact source slices."""
+    chunks = []
+    for i, (piece, start, end) in enumerate(pieces):
+        meta = dict(record.meta)
+        if paths and paths[i]:
+            meta["heading_path"] = list(paths[i])
+        chunks.append(Chunk(chunk_id=f"{record.source_id}:{i:03d}", source_id=record.source_id,
+                            source_type=record.source_type, title=record.title, text=piece,
+                            url=record.url, parent_source_id=record.parent_source_id,
+                            issue_number=record.issue_number, version=record.version,
+                            as_of=record.as_of, meta=meta, start_char=start, end_char=end,
+                            source_text_sha256=record.text_sha256))
+    return chunks
+
+
+class StructureChunker:
+    """Heading- and fence-aware chunks: h1-h3, 2,000 characters, short sections merged forward."""
+
+    def __call__(self, record: SourceRecord) -> list[Chunk]:
+        spans = [(record.text[start:end], start, end, path)
+                 for start, end, path in structure_spans(record.text) if record.text[start:end]]
+        return _span_chunks(record, [(piece, start, end) for piece, start, end, _ in spans],
+                            [path for _, _, _, path in spans])
+
+
+class TokenStructureChunker:
+    """Candidate A: structural blocks, target 500 tokens, soft max 700, overlap up to 60."""
+
+    def __call__(self, record: SourceRecord) -> list[Chunk]:
+        pieces = [(record.text[start:end], start, end)
+                  for start, end in token_structure_spans(record.text, record.source_type)
+                  if record.text[start:end]]
+        return _span_chunks(record, pieces)
+
+
 class ChunkContractError(ValueError):
     """A chunker produced a chunk that is not an exact, anchored span of its source."""
 
@@ -103,6 +142,8 @@ def sources_without_chunks(records: list[SourceRecord], chunks: list[Chunk],
 CHUNKERS = {
     "fixed": lambda settings: FixedTokenChunker(max_tokens=settings.chunking.max_tokens,
                                                 overlap_tokens=settings.chunking.overlap_tokens),
+    "structure": lambda settings: StructureChunker(),
+    "token_structure": lambda settings: TokenStructureChunker(),
 }
 
 
