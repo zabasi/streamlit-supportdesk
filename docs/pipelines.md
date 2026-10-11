@@ -124,7 +124,6 @@ embeddings:
 | `doc_slots` | Retriever `dense_doc_slots` with `retrieval.doc_slots = 3`: at least 3 of the 6 results are documentation, still ordered by relevance |
 | `hybrid_rrf` | Retriever `hybrid`: dense and BM25 each return their top `retrieval.hybrid_pool` results, merged by Reciprocal Rank Fusion; chunks both find rise to the top |
 | `hybrid_split` | Retriever `hybrid_split` with `retrieval.bm25_slots = 3`: 3 results from dense, 3 different ones from BM25, without merging scores; the two lists take turns by rank, and if one runs short the other fills in |
-| `rerank_llm` | Reranker `LLMReranker` with `retrieval.candidate_k = 30`: dense search returns 30 candidates, one model call orders them by usefulness for the report, the best 6 are kept |
 | `rewrite_llm` | Query stage `QueryRewriter`: one model call turns the cleaned report into one documentation-style search query |
 | `split_llm` | `QueryRewriter` with `retrieval.max_queries = 3`: the model writes up to 3 focused queries; each is searched and the results are merged by rank fusion. Compare with `rewrite_llm` |
 | `split_sentences` | Query stage `SentenceSplitQuery` with `retrieval.max_queries = 4`: the cleaned report as the title, its Streamlit calls and its sentences, without a model; results merged by rank fusion. Compare with `clean_query` |
@@ -134,9 +133,13 @@ Combinations put the strongest single change, the cleaned query, together with a
 | Pipeline | Built from |
 |---|---|
 | `clean_doc_slots` | `CleanQuery` + retriever `dense_doc_slots` with `retrieval.doc_slots = 3` |
-| `clean_rerank` | `CleanQuery` + `dense_doc_slots` returning 30 candidates (`candidate_k = 30`) of which at least 10 are documentation (`doc_slots = 10`) + `LLMReranker`, best 6 kept |
 | `clean_hybrid_split` | `CleanQuery` + retriever `hybrid_split` with `retrieval.bm25_slots = 3` |
 | `clean_hybrid_doc_slots` | `CleanQuery` + retriever `hybrid_doc_slots` with `retrieval.doc_slots = 3`: like `clean_doc_slots`, but both lists come from hybrid search (dense and BM25 merged by rank fusion), the reserved places from documentation only |
+| `clean_split_doc_slots` | `CleanQuery` + retriever `split_doc_slots` with `retrieval.doc_slots = 3` and `retrieval.bm25_slots = 3`: half the results from dense, half from BM25, at least 3 documentation; the reserved places are filled first, the two methods taking turns, then the rest the same way; scores are not merged. Compare with `clean_hybrid_doc_slots` (merged by rank fusion) |
+
+A reranking stage, `LLMReranker` (prompt `configs/prompts/rerank_system.txt`), is available in
+`pipelines/stages/llm_rerank.py` for a pipeline whose retrieval already finds the right candidates:
+`stages["reranker"] = LLMReranker(clients, settings)` with `retrieval.candidate_k` set above `top_k`.
 
 The model-based stages fall back safely: unusable model output means the cleaned report (rewriting)
 or the retriever's order (reranking), never a failed case. Their prompts are

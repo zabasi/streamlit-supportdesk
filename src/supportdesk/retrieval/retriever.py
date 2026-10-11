@@ -176,6 +176,75 @@ class HybridDocSlotsRetriever:
         return [Hit(self.by_id[cid], scores[cid], r, "hybrid") for r, cid in enumerate(order, start=1)]
 
 
+class SplitDocSlotsRetriever:
+    """Dense and BM25 side by side, with places kept for documentation, without merging scores."""
+
+    name = "split_doc_slots"
+
+    def __init__(self, index: VectorIndex, embedder: EmbeddingClient, *, doc_slots: int, bm25_slots: int,
+                 bm25_k1: float, bm25_b: float):
+        self.index, self.embedder = index, embedder
+        self.bm25 = BM25(index.chunks, k1=bm25_k1, b=bm25_b)
+        self.doc_slots, self.bm25_slots = doc_slots, bm25_slots
+
+    def _dense(self, vector, as_of, limit, docs_only: bool) -> dict[int, float]:
+        found = dict(self.index.search(vector, limit=limit, as_of=as_of,
+                                       source_types=("documentation",) if docs_only else None))
+        order = sorted(found, key=lambda i: (-round(found[i], RANK_DECIMALS), i))
+        return {i: found[i] for i in order}
+
+    def _lexical(self, scores, as_of, limit, docs_only: bool) -> dict[int, float]:
+        mask = visible_mask(self.index.chunks, as_of)
+        if docs_only:
+            mask = [ok and c.source_type == "documentation" for ok, c in zip(mask, self.index.chunks)]
+        return {i: float(scores[i]) for i in _top(scores, mask, limit) if scores[i] > 0}
+
+    def search(self, query, *, k, as_of=None):
+        vec, _ = self.embedder.embed([query], stage="query")
+        limit = min(len(self.index.chunks), max(k * 4, k + 20))
+        scores = self.bm25.scores(query)
+        lists = {"docs": {"dense": self._dense(vec[0], as_of, limit, True),
+                          "bm25": self._lexical(scores, as_of, limit, True)},
+                 "every": {"dense": self._dense(vec[0], as_of, limit, False),
+                           "bm25": self._lexical(scores, as_of, limit, False)}}
+        target = {"bm25": min(self.bm25_slots, k)}
+        target["dense"] = k - target["bm25"]
+        picked: dict[str, list[int]] = {"dense": [], "bm25": []}
+        taken: set[int] = set()
+
+        def next_from(source: dict[int, float]) -> int | None:
+            return next((i for i in source if i not in taken), None)
+
+        def fill(places: int, pool: str) -> None:
+            for _ in range(places):
+                # the side furthest below its share goes first; dense on a tie
+                sides = sorted(("dense", "bm25"), key=lambda s: (len(picked[s]) / max(target[s], 1), s != "dense"))
+                for side in sides:
+                    if target[side] == 0 and any(target.values()):
+                        continue
+                    i = next_from(lists[pool][side])
+                    if i is not None:
+                        picked[side].append(i)
+                        taken.add(i)
+                        break
+
+        fill(min(self.doc_slots, k), "docs")  # the reserved places, taking turns
+        fill(k - len(taken), "every")  # the rest, taking turns until each side has its share
+        if len(taken) < k:  # both sides short of their share: let either fill
+            for side in ("dense", "bm25"):
+                while len(taken) < k and (i := next_from(lists["every"][side])) is not None:
+                    picked[side].append(i)
+                    taken.add(i)
+        dense_score = {**lists["docs"]["dense"], **lists["every"]["dense"]}
+        bm25_score = {**lists["docs"]["bm25"], **lists["every"]["bm25"]}
+        by_dense = sorted(picked["dense"], key=lambda i: (-round(dense_score[i], RANK_DECIMALS), i))
+        by_bm25 = sorted(picked["bm25"], key=lambda i: (-round(bm25_score[i], RANK_DECIMALS), i))
+        merged = [(i, "dense") if n % 2 == 0 else (i, "bm25")
+                  for pair in zip_longest(by_dense, by_bm25) for n, i in enumerate(pair) if i is not None]
+        return [Hit(self.index.chunks[i], dense_score[i] if found == "dense" else bm25_score[i], rank, found)
+                for rank, (i, found) in enumerate(merged, start=1)]
+
+
 def fuse_hits(rankings: list[list[Hit]], k: int, *, rrf_k: int) -> list[Hit]:
     """Merge several per-query rankings into one with RRF (used when a query stage returns more
     than one query). The first occurrence of a chunk supplies the chunk object."""

@@ -24,10 +24,9 @@ per report:        intake -> query -> retrieve -> rerank -> packet -> generate -
   10 chunks) is where improvements go. Experiments each change one thing in the baseline, so their
   effect can be measured alone: `clean_query` (the query without the issue template),
   `doc_slots` (3 of the 6 results kept for documentation), `hybrid_rrf` and `hybrid_split` (dense
-  and keyword search, merged or side by side), `rerank_llm` (a model reorders 30 candidates),
-  `rewrite_llm` and `split_llm` (a model writes one or several search queries) and
+  and keyword search, merged or side by side), `rewrite_llm` and `split_llm` (a model writes one or several search queries) and
   `split_sentences` (several queries without a model). Combinations build on the cleaned query:
-  `clean_doc_slots`, `clean_hybrid_doc_slots`, `clean_rerank` and `clean_hybrid_split`.
+  `clean_doc_slots`, `clean_hybrid_doc_slots`, `clean_split_doc_slots` and `clean_hybrid_split`.
   `supportdesk pipelines` lists them all.
 
 ## 2. Set up

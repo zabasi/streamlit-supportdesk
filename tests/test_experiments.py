@@ -95,16 +95,15 @@ def test_each_experiment_differs_from_the_baseline_in_exactly_one_way():
                            ("doc_slots", {"pipeline.name", "pipeline.retriever", "retrieval.doc_slots"}),
                            ("hybrid_rrf", {"pipeline.name", "pipeline.retriever"}),
                            ("hybrid_split", {"pipeline.name", "pipeline.retriever", "retrieval.bm25_slots"}),
-                           ("rerank_llm", {"pipeline.name", "retrieval.candidate_k"}),
                            ("rewrite_llm", {"pipeline.name"}),
                            ("split_llm", {"pipeline.name", "retrieval.max_queries"}),
                            ("split_sentences", {"pipeline.name", "retrieval.max_queries"}),
                            ("clean_doc_slots", {"pipeline.name", "pipeline.retriever", "retrieval.doc_slots"}),
-                           ("clean_rerank", {"pipeline.name", "pipeline.retriever", "retrieval.doc_slots",
-                                             "retrieval.candidate_k"}),
                            ("clean_hybrid_split", {"pipeline.name", "pipeline.retriever", "retrieval.bm25_slots"}),
                            ("clean_hybrid_doc_slots", {"pipeline.name", "pipeline.retriever",
-                                                       "retrieval.doc_slots"})):
+                                                       "retrieval.doc_slots"}),
+                           ("clean_split_doc_slots", {"pipeline.name", "pipeline.retriever",
+                                                      "retrieval.doc_slots", "retrieval.bm25_slots"})):
         other = flat(name)
         assert {k for k in base if base[k] != other[k]} == expected, name
 
@@ -207,20 +206,13 @@ def test_the_reranker_applies_the_models_order_and_keeps_the_original_when_unusa
     assert reranker(case, "q", hits) == hits
 
 
-def test_rerank_and_split_pipelines_run_end_to_end(index, clients, settings):
+def test_the_model_split_pipeline_runs_end_to_end(index, clients, settings):
     import dataclasses
     import json
 
-    from supportdesk.pipelines.experiments import build_rerank_llm, build_split_llm
+    from supportdesk.pipelines.experiments import build_split_llm
     answer = json.dumps({"outcome": "request_info", "user_reply": "Which version?", "citations": []})
-    wide = dataclasses.replace(settings, retrieval=dataclasses.replace(settings.retrieval, candidate_k=12))
-    rerank = build_rerank_llm(DenseRetriever(index, clients.embedding), clients, wide)
     case = CaseInput(case_id="c", title="Session state lost", body="st.session_state empty after F5")
-    scripted(clients, json.dumps({"ranking": ["C12", "C11"]}))
-    clients.chat.script[clients.chat.calls + 2] = answer
-    result = rerank.run(case)
-    assert result.outcome == "request_info" and len(result.retrieved) == 6
-    assert result.trace["stages"]["reranker"] == "LLMReranker"
     three = dataclasses.replace(settings, retrieval=dataclasses.replace(settings.retrieval, max_queries=3))
     split = build_split_llm(DenseRetriever(index, clients.embedding), clients, three)
     scripted(clients, json.dumps({"queries": ["session state reset", "st.session_state refresh", "F5 loses values"]}))
@@ -231,31 +223,15 @@ def test_rerank_and_split_pipelines_run_end_to_end(index, clients, settings):
 
 def test_the_combinations_use_the_clean_query_and_their_own_retrieval(index, clients, settings):
     import dataclasses
-    import json
 
-    from supportdesk.pipelines.experiments import (
-        build_clean_doc_slots,
-        build_clean_hybrid_split,
-        build_clean_rerank,
-    )
+    from supportdesk.pipelines.experiments import build_clean_doc_slots, build_clean_hybrid_split
     case = CaseInput(case_id="c", title="Session state lost", body=REPORT)
-    answer = json.dumps({"outcome": "request_info", "user_reply": "Which version?", "citations": []})
-
     slots = dataclasses.replace(settings, retrieval=dataclasses.replace(settings.retrieval, doc_slots=3))
     run = build_clean_doc_slots(DocSlotsRetriever(index, clients.embedding, doc_slots=3), clients, slots)
     assert run.describe()["query"] == "CleanQuery"
     retrieval = run.retrieve(case)
     assert retrieval.queries[0].startswith("Session state lost\n") and "Checklist" not in retrieval.queries[0]
     assert sum(h.chunk.source_type == "documentation" for h in retrieval.hits) >= 3
-
-    pool = dataclasses.replace(settings, retrieval=dataclasses.replace(
-        settings.retrieval, candidate_k=12, doc_slots=3))
-    rerank = build_clean_rerank(DocSlotsRetriever(index, clients.embedding, doc_slots=3), clients, pool)
-    scripted(clients, json.dumps({"ranking": ["C2", "C1"]}))
-    clients.chat.script[clients.chat.calls + 2] = answer
-    result = rerank.run(case)
-    assert result.outcome == "request_info" and len(result.retrieved) == 6
-    assert result.trace["stages"]["reranker"] == "LLMReranker" and result.trace["stages"]["query"] == "CleanQuery"
 
     split = dataclasses.replace(settings, retrieval=dataclasses.replace(settings.retrieval, bm25_slots=3))
     hybrid = build_clean_hybrid_split(split_retriever := split_hybrid(index, clients), clients, split)
@@ -296,3 +272,55 @@ def test_clean_hybrid_doc_slots_differs_from_clean_doc_slots_only_in_its_retriev
     assert {k for k in a if a[k] != b[k]} == {"pipeline.name", "pipeline.retriever"}
     from supportdesk.registry import PIPELINES
     assert PIPELINES["clean_hybrid_doc_slots"].__doc__.startswith("clean_doc_slots with hybrid search")
+
+
+def split_slots(index, clients, docs, bm25):
+    from supportdesk.retrieval.retriever import SplitDocSlotsRetriever
+    return SplitDocSlotsRetriever(index, clients.embedding, doc_slots=docs, bm25_slots=bm25,
+                                  bm25_k1=1.5, bm25_b=0.75)
+
+
+def test_split_doc_slots_takes_half_from_each_method_and_keeps_documentation_places(index, clients):
+    hits = split_slots(index, clients, 3, 3).search("session state reset rerun page", k=6)
+    assert len({h.chunk.chunk_id for h in hits}) == 6 and [h.rank for h in hits] == list(range(1, 7))
+    assert [h.source for h in hits] == ["dense", "bm25"] * 3  # half each, taking turns
+    assert sum(h.chunk.source_type == "documentation" for h in hits) >= 3
+    for method in ("dense", "bm25"):  # each method's picks keep their own score order
+        own = [h.score for h in hits if h.source == method]
+        assert own == sorted(own, reverse=True)
+
+
+def test_split_doc_slots_lets_dense_fill_when_bm25_finds_nothing(index, clients):
+    hits = split_slots(index, clients, 3, 3).search("zzqx wvvq", k=6)
+    assert len(hits) == 6 and {h.source for h in hits} == {"dense"}
+    assert sum(h.chunk.source_type == "documentation" for h in hits) >= 3
+
+
+def test_split_doc_slots_without_bm25_places_matches_dense_doc_slots(index, clients):
+    query = "session state reset rerun page"
+    plain = DocSlotsRetriever(index, clients.embedding, doc_slots=3).search(query, k=6)
+    mine = split_slots(index, clients, 3, 0).search(query, k=6)
+    assert sorted(h.chunk.chunk_id for h in mine) == sorted(h.chunk.chunk_id for h in plain)
+
+
+def test_clean_split_doc_slots_differs_from_clean_hybrid_doc_slots_only_in_how_it_combines():
+    def flat(name):
+        d = Settings.load(env={}, overrides=[f"pipeline.name={name}"]).to_dict()
+        return {f"{section}.{key}": value for section, keys in d.items() for key, value in keys.items()}
+    a, b = flat("clean_hybrid_doc_slots"), flat("clean_split_doc_slots")
+    assert {k for k in a if a[k] != b[k]} == {"pipeline.name", "pipeline.retriever", "retrieval.bm25_slots"}
+
+
+def test_retrieval_runs_record_which_method_found_each_chunk(tmp_path, capsys):
+    import json
+
+    from supportdesk.cli import main
+    from tests.helpers import ROOT, SAMPLE
+    base = ["--data-dir", str(SAMPLE), "--index-dir", str(tmp_path / "idx"), "--artifacts-dir",
+            str(tmp_path / "art"), "--mode", "offline", "--cases", str(ROOT / "data" / "eval" / "sample_cases.jsonl")]
+    assert main(["index", *base]) == 0
+    assert main(["eval-retrieval", *base, "--pipeline", "clean_split_doc_slots", "--run-id", "r"]) == 0
+    capsys.readouterr()
+    rows = [json.loads(line) for line in (tmp_path / "art" / "runs" / "r" / "results.jsonl").read_text().splitlines()]
+    found = {h["found_by"] for row in rows for h in row["retrieved"]}
+    assert found and found <= {"dense", "bm25"}

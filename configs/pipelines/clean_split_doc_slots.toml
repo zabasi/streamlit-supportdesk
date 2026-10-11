@@ -1,0 +1,24 @@
+# Combination: clean_doc_slots with split hybrid search. The cleaned query (CleanQuery); 3 of the 6
+# results kept for documentation; half of the 6 from dense search and half from BM25, without merging
+# their scores (retriever split_doc_slots). The reserved places are filled first, the two methods
+# taking turns; the rest is filled the same way until each has its share. Compare with
+# clean_hybrid_doc_slots (merged by rank fusion). Shares the baseline's index.
+
+[chunking]
+method = "fixed"
+max_tokens = 512
+overlap_tokens = 128
+
+[retrieval]
+top_k = 6
+doc_slots = 3                # at least 3 of the 6 chunks are documentation
+bm25_slots = 3               # half of the 6 from BM25, half from dense
+historical_filter = true
+
+[context]
+max_tokens = 3200            # 6 chunks x 512 tokens: enough room that the budget never drops a chunk
+max_query_chars = 4000
+max_body_chars = 4000
+
+[pipeline]
+retriever = "split_doc_slots"

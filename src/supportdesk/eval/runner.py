@@ -87,7 +87,7 @@ def run_retrieval_eval(pipeline: StagedPipeline, cases: list[EvalCase], clients:
                 r = pipeline.retrieve(case.input)
                 row["retrieved"] = [{"chunk_id": h.chunk.chunk_id, "source_id": h.chunk.source_id,
                                      "parent_source_id": h.chunk.parent_source_id, "rank": h.rank,
-                                     "score": round(h.score, 6)} for h in r.hits]
+                                     "score": round(h.score, 6), "found_by": h.source} for h in r.hits]
                 row["packet"] = [{"chunk_id": c.chunk_id, "source_id": c.source_id,
                                   "parent_source_id": c.parent_source_id} for c in r.packet.chunks]
                 row["n_queries"] = len(r.queries)

@@ -11,11 +11,10 @@ from .pipelines.experiments import (
     build_clean_hybrid_doc_slots,
     build_clean_hybrid_split,
     build_clean_query,
-    build_clean_rerank,
+    build_clean_split_doc_slots,
     build_doc_slots,
     build_hybrid_rrf,
     build_hybrid_split,
-    build_rerank_llm,
     build_rewrite_llm,
     build_split_llm,
     build_split_sentences,
@@ -27,6 +26,7 @@ from .retrieval.retriever import (
     DocSlotsRetriever,
     HybridDocSlotsRetriever,
     HybridRetriever,
+    SplitDocSlotsRetriever,
     SplitHybridRetriever,
 )
 
@@ -34,11 +34,12 @@ from .retrieval.retriever import (
 PIPELINES = {"baseline": build_baseline, "advanced": build_advanced,
              "clean_query": build_clean_query, "doc_slots": build_doc_slots,
              "hybrid_rrf": build_hybrid_rrf, "hybrid_split": build_hybrid_split,
-             "rerank_llm": build_rerank_llm, "rewrite_llm": build_rewrite_llm,
+             "rewrite_llm": build_rewrite_llm,
              "split_llm": build_split_llm, "split_sentences": build_split_sentences,
-             "clean_doc_slots": build_clean_doc_slots, "clean_rerank": build_clean_rerank,
+             "clean_doc_slots": build_clean_doc_slots,
              "clean_hybrid_split": build_clean_hybrid_split,
-             "clean_hybrid_doc_slots": build_clean_hybrid_doc_slots}
+             "clean_hybrid_doc_slots": build_clean_hybrid_doc_slots,
+             "clean_split_doc_slots": build_clean_split_doc_slots}
 
 RETRIEVERS = {
     "dense": lambda index, clients, s: DenseRetriever(index, clients.embedding),
@@ -48,6 +49,9 @@ RETRIEVERS = {
     "hybrid_doc_slots": lambda index, clients, s: HybridDocSlotsRetriever(
         index, clients.embedding, doc_slots=s.retrieval.doc_slots, pool=s.retrieval.hybrid_pool,
         rrf_k=s.retrieval.rrf_k, bm25_k1=s.retrieval.bm25_k1, bm25_b=s.retrieval.bm25_b),
+    "split_doc_slots": lambda index, clients, s: SplitDocSlotsRetriever(
+        index, clients.embedding, doc_slots=s.retrieval.doc_slots, bm25_slots=s.retrieval.bm25_slots,
+        bm25_k1=s.retrieval.bm25_k1, bm25_b=s.retrieval.bm25_b),
     "dense_doc_slots": lambda index, clients, s: DocSlotsRetriever(
         index, clients.embedding, doc_slots=s.retrieval.doc_slots),
     "bm25": lambda index, clients, s: BM25Retriever(
