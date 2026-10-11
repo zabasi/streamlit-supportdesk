@@ -10,6 +10,7 @@ from .pipelines.experiments import (
     build_clean_doc_slots,
     build_clean_doc_slots_rerank,
     build_clean_doc_slots_rerank_docs,
+    build_clean_doc_slots_rerank_docs_prompt,
     build_clean_doc_slots_rerank_prompt,
     build_clean_hybrid_doc_slots,
     build_clean_hybrid_doc_slots_rerank,
@@ -47,7 +48,8 @@ PIPELINES = {"baseline": build_baseline, "advanced": build_advanced,
              "clean_doc_slots_rerank": build_clean_doc_slots_rerank,
              "clean_hybrid_doc_slots_rerank": build_clean_hybrid_doc_slots_rerank,
              "clean_doc_slots_rerank_docs": build_clean_doc_slots_rerank_docs,
-             "clean_doc_slots_rerank_prompt": build_clean_doc_slots_rerank_prompt}
+             "clean_doc_slots_rerank_prompt": build_clean_doc_slots_rerank_prompt,
+             "clean_doc_slots_rerank_docs_prompt": build_clean_doc_slots_rerank_docs_prompt}
 
 RETRIEVERS = {
     "dense": lambda index, clients, s: DenseRetriever(index, clients.embedding),

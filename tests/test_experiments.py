@@ -428,3 +428,36 @@ def test_the_option_experiments_differ_from_their_comparison_only_as_intended():
 def test_rerank_doc_places_cannot_exceed_top_k():
     with pytest.raises(ConfigError, match="retrieval.rerank_doc_places"):
         Settings.load(env={}, overrides=["retrieval.rerank_doc_places=7"])
+
+
+def test_rerank_keep_docs_sets_the_documentation_kept_after_reranking(clients, settings):
+    import dataclasses
+    import json
+
+    from supportdesk.pipelines.stages.llm_rerank import LLMReranker
+    hits = [_hit(n, "documentation") for n in range(1, 11)] + [_hit(n, "issue") for n in range(11, 16)]
+    issues_first = [f"C{n}" for n in range(11, 16)] + [f"C{n}" for n in range(1, 11)]
+    case = CaseInput(case_id="c", title="Session state lost", body=REPORT)
+
+    def top6(**retrieval):
+        s = dataclasses.replace(settings, retrieval=dataclasses.replace(settings.retrieval, **retrieval))
+        scripted(clients, json.dumps({"ranking": issues_first}))
+        return [h.chunk.source_type for h in LLMReranker(clients, s)(case, "q", hits)[:6]]
+
+    keep3 = top6(doc_slots=10, candidate_k=15, rerank_keep_docs=3)
+    assert keep3 == ["issue", "issue", "issue", "documentation", "documentation", "documentation"]
+    assert top6(doc_slots=10, candidate_k=15) == ["documentation"] * 6  # unset: doc_slots (10) decides
+
+
+def test_the_combination_differs_from_rerank_prompt_only_in_its_documentation_settings():
+    def flat(name):
+        d = Settings.load(env={}, overrides=[f"pipeline.name={name}"]).to_dict()
+        return {f"{section}.{key}": value for section, keys in d.items() for key, value in keys.items()}
+    a, b = flat("clean_doc_slots_rerank_prompt"), flat("clean_doc_slots_rerank_docs_prompt")
+    assert {k for k in a if a[k] != b[k]} == {"pipeline.name", "retrieval.doc_slots", "retrieval.rerank_keep_docs"}
+    assert (b["retrieval.doc_slots"], b["retrieval.rerank_keep_docs"], b["retrieval.candidate_k"]) == (10, 3, 15)
+
+
+def test_rerank_keep_docs_cannot_exceed_top_k():
+    with pytest.raises(ConfigError, match="retrieval.rerank_keep_docs"):
+        Settings.load(env={}, overrides=["retrieval.rerank_keep_docs=7"])

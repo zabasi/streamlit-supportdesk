@@ -124,3 +124,11 @@ def build_clean_doc_slots_rerank_prompt(retriever: Retriever, clients: Clients, 
     stages["query"] = CleanQuery(settings.context.max_query_chars)
     stages["reranker"] = LLMReranker(clients, settings)
     return StagedPipeline(name="clean_doc_slots_rerank_prompt", clients=clients, settings=settings, **stages)
+
+
+def build_clean_doc_slots_rerank_docs_prompt(retriever: Retriever, clients: Clients, settings: Settings) -> StagedPipeline:
+    """Both reranking options: 10 doc candidates, the fixed prompt ranks all 15, best 6 kept (3+ docs)."""
+    stages = default_stages(retriever, clients, settings)
+    stages["query"] = CleanQuery(settings.context.max_query_chars)
+    stages["reranker"] = LLMReranker(clients, settings)
+    return StagedPipeline(name="clean_doc_slots_rerank_docs_prompt", clients=clients, settings=settings, **stages)

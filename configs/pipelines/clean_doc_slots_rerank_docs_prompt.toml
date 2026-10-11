@@ -1,0 +1,29 @@
+# Both reranking options on clean_doc_slots: the retriever returns 10 documentation candidates and
+# the 5 best other chunks; one model call with the fixed prompt (configs/prompts/rerank_docs_system.txt)
+# ranks all 15; the best 6 are kept in the model's order, with at least 3 documentation chunks.
+# Compare with clean_doc_slots_rerank_prompt (3 documentation candidates) and
+# clean_doc_slots_rerank_docs (model-chosen docs, similarity order). Shares the baseline's index.
+
+[chunking]
+method = "fixed"
+max_tokens = 512
+overlap_tokens = 128
+
+[retrieval]
+top_k = 6
+candidate_k = 15             # candidates the reranker orders
+rerank_snippet_chars = 400   # characters of each candidate the reranker sees
+doc_slots = 10               # documentation among the 15 candidates
+rerank_keep_docs = 3         # documentation kept in the final 6 after reranking
+historical_filter = true
+
+[context]
+max_tokens = 3200            # 6 chunks x 512 tokens: enough room that the budget never drops a chunk
+max_query_chars = 4000
+max_body_chars = 4000
+
+[pipeline]
+retriever = "dense_doc_slots"
+
+[prompts]
+rerank = "configs/prompts/rerank_docs_system.txt"

@@ -50,8 +50,10 @@ class LLMReranker:
 
     def __init__(self, clients, settings):
         self.clients, self.snippet = clients, settings.retrieval.rerank_snippet_chars
-        # with documentation places (retrieval.doc_slots), they survive reranking
-        self.top_k, self.min_docs = settings.retrieval.top_k, settings.retrieval.doc_slots
+        # documentation kept in the final top_k: retrieval.rerank_keep_docs, else retrieval.doc_slots
+        keep = settings.retrieval.rerank_keep_docs
+        self.top_k = settings.retrieval.top_k
+        self.min_docs = settings.retrieval.doc_slots if keep is None else keep
         self.clean = CleanQuery(settings.context.max_query_chars)
         self.prompt = Path(settings.prompts.rerank).read_text(encoding="utf-8")
 
