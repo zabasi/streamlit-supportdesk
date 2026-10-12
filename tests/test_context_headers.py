@@ -166,3 +166,22 @@ def test_the_new_chunking_settings_are_validated():
                 ["chunking.token_target=800", "chunking.token_soft_max=700"]):
         with pytest.raises(ConfigError):
             Settings.load(env={}, overrides=bad)
+
+
+def test_more_small_structure_chunks_keep_the_budget_and_index():
+    from supportdesk.config import Settings
+    def flat(name):
+        d = Settings.load(env={}, overrides=[f"pipeline.name={name}"]).to_dict()
+        return {f"{section}.{key}": value for section, keys in d.items() for key, value in keys.items()}
+    changed = {"pipeline.name", "retrieval.top_k", "retrieval.candidate_k", "retrieval.doc_slots",
+               "retrieval.rerank_keep_docs"}
+    for parent in ("clean_doc_slots_rerank_docs_prompt_decompose_structure",
+                   "clean_doc_slots_rerank_docs_prompt_decompose_structure_ctx"):
+        base = flat(parent)
+        for k, numbers in ((12, (25, 18, 6)), (15, (30, 20, 8))):
+            other = flat(f"{parent}_top{k}")
+            assert {key for key in base if base[key] != other[key]} == changed
+            assert (other["retrieval.top_k"], other["retrieval.candidate_k"], other["retrieval.doc_slots"],
+                    other["retrieval.rerank_keep_docs"]) == (k, *numbers)
+            assert other["context.max_tokens"] == base["context.max_tokens"] == 3200  # same evidence budget
+            assert other["paths.index_dir"] == base["paths.index_dir"]  # same index

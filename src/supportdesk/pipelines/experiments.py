@@ -384,3 +384,26 @@ def build_clean_doc_slots_rerank_docs_prompt_decompose_token_structure_large_ctx
 def build_clean_doc_slots_rerank_docs_prompt_decompose_token_structure_large_ctx_all(retriever, clients, settings):
     """decompose on large token_structure chunks, with context headers naming every section."""
     return _with_queries("clean_doc_slots_rerank_docs_prompt_decompose_token_structure_large_ctx_all", QueryRewriter(clients, settings), retriever, clients, settings)
+
+
+# ---- more small structure chunks within the same evidence budget ----
+
+
+def build_clean_doc_slots_rerank_docs_prompt_decompose_structure_top12(retriever, clients, settings):
+    """clean_doc_slots_rerank_docs_prompt_decompose_structure showing the model 12 small sections within the same 3,200-token budget."""
+    return _with_queries("clean_doc_slots_rerank_docs_prompt_decompose_structure_top12", QueryRewriter(clients, settings), retriever, clients, settings)
+
+
+def build_clean_doc_slots_rerank_docs_prompt_decompose_structure_top15(retriever, clients, settings):
+    """clean_doc_slots_rerank_docs_prompt_decompose_structure showing the model 15 small sections within the same 3,200-token budget."""
+    return _with_queries("clean_doc_slots_rerank_docs_prompt_decompose_structure_top15", QueryRewriter(clients, settings), retriever, clients, settings)
+
+
+def build_clean_doc_slots_rerank_docs_prompt_decompose_structure_ctx_top12(retriever, clients, settings):
+    """clean_doc_slots_rerank_docs_prompt_decompose_structure_ctx showing the model 12 small sections within the same 3,200-token budget."""
+    return _with_queries("clean_doc_slots_rerank_docs_prompt_decompose_structure_ctx_top12", QueryRewriter(clients, settings), retriever, clients, settings)
+
+
+def build_clean_doc_slots_rerank_docs_prompt_decompose_structure_ctx_top15(retriever, clients, settings):
+    """clean_doc_slots_rerank_docs_prompt_decompose_structure_ctx showing the model 15 small sections within the same 3,200-token budget."""
+    return _with_queries("clean_doc_slots_rerank_docs_prompt_decompose_structure_ctx_top15", QueryRewriter(clients, settings), retriever, clients, settings)

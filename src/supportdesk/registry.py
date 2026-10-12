@@ -18,10 +18,14 @@ from .pipelines.experiments import (
     build_clean_doc_slots_rerank_docs_prompt_decompose_structure,
     build_clean_doc_slots_rerank_docs_prompt_decompose_structure_ctx,
     build_clean_doc_slots_rerank_docs_prompt_decompose_structure_ctx_top8_keep4,
+    build_clean_doc_slots_rerank_docs_prompt_decompose_structure_ctx_top12,
+    build_clean_doc_slots_rerank_docs_prompt_decompose_structure_ctx_top15,
     build_clean_doc_slots_rerank_docs_prompt_decompose_structure_large,
     build_clean_doc_slots_rerank_docs_prompt_decompose_structure_large_ctx,
     build_clean_doc_slots_rerank_docs_prompt_decompose_structure_large_ctx_all,
     build_clean_doc_slots_rerank_docs_prompt_decompose_structure_top8_keep4,
+    build_clean_doc_slots_rerank_docs_prompt_decompose_structure_top12,
+    build_clean_doc_slots_rerank_docs_prompt_decompose_structure_top15,
     build_clean_doc_slots_rerank_docs_prompt_decompose_token_structure,
     build_clean_doc_slots_rerank_docs_prompt_decompose_token_structure_ctx,
     build_clean_doc_slots_rerank_docs_prompt_decompose_token_structure_ctx_top8_keep4,
@@ -129,7 +133,11 @@ PIPELINES = {"baseline": build_baseline, "advanced": build_advanced,
              "clean_doc_slots_rerank_docs_prompt_decompose_structure_large_ctx_all": build_clean_doc_slots_rerank_docs_prompt_decompose_structure_large_ctx_all,
              "clean_doc_slots_rerank_docs_prompt_decompose_token_structure_large": build_clean_doc_slots_rerank_docs_prompt_decompose_token_structure_large,
              "clean_doc_slots_rerank_docs_prompt_decompose_token_structure_large_ctx": build_clean_doc_slots_rerank_docs_prompt_decompose_token_structure_large_ctx,
-             "clean_doc_slots_rerank_docs_prompt_decompose_token_structure_large_ctx_all": build_clean_doc_slots_rerank_docs_prompt_decompose_token_structure_large_ctx_all}
+             "clean_doc_slots_rerank_docs_prompt_decompose_token_structure_large_ctx_all": build_clean_doc_slots_rerank_docs_prompt_decompose_token_structure_large_ctx_all,
+             "clean_doc_slots_rerank_docs_prompt_decompose_structure_top12": build_clean_doc_slots_rerank_docs_prompt_decompose_structure_top12,
+             "clean_doc_slots_rerank_docs_prompt_decompose_structure_top15": build_clean_doc_slots_rerank_docs_prompt_decompose_structure_top15,
+             "clean_doc_slots_rerank_docs_prompt_decompose_structure_ctx_top12": build_clean_doc_slots_rerank_docs_prompt_decompose_structure_ctx_top12,
+             "clean_doc_slots_rerank_docs_prompt_decompose_structure_ctx_top15": build_clean_doc_slots_rerank_docs_prompt_decompose_structure_ctx_top15}
 
 RETRIEVERS = {
     "dense": lambda index, clients, s: DenseRetriever(index, clients.embedding),
