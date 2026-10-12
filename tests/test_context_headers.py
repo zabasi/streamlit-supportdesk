@@ -68,10 +68,24 @@ def test_the_header_experiments_change_only_the_header_and_its_index():
     def flat(name):
         d = Settings.load(env={}, overrides=[f"pipeline.name={name}"]).to_dict()
         return {f"{section}.{key}": value for section, keys in d.items() for key, value in keys.items()}
-    prefix = "clean_doc_slots_rerank_docs_prompt_decompose"
+    for prefix in ("clean_doc_slots_rerank_docs_prompt", "clean_doc_slots_rerank_docs_prompt_decompose"):
+        check_header_variants(flat, prefix)
+
+
+def check_header_variants(flat, prefix):
     for parent, child in (("", "_ctx"), ("_structure", "_structure_ctx"), ("_token_structure", "_token_structure_ctx"),
                           ("_structure_top8_keep4", "_structure_ctx_top8_keep4"),
                           ("_token_structure_top8_keep4", "_token_structure_ctx_top8_keep4")):
         base, other = flat(prefix + parent), flat(prefix + child)
         assert {k for k in base if base[k] != other[k]} == {"pipeline.name", "chunking.context_header", "paths.index_dir"}
         assert other["chunking.context_header"] is True and str(other["paths.index_dir"]).endswith("_ctx")
+
+
+def test_both_designs_share_the_header_indexes():
+    from supportdesk.config import Settings
+    def index_of(name):
+        return Settings.load(env={}, overrides=[f"pipeline.name={name}"]).paths.index_dir
+    a, d = "clean_doc_slots_rerank_docs_prompt", "clean_doc_slots_rerank_docs_prompt_decompose"
+    for suffix in ("_ctx", "_structure_ctx", "_token_structure_ctx", "_structure_ctx_top8_keep4",
+                   "_token_structure_ctx_top8_keep4"):
+        assert index_of(a + suffix) == index_of(d + suffix)
