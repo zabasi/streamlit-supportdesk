@@ -170,3 +170,21 @@ def test_the_drop_experiment_changes_only_the_extraction_settings():
                                                 "prompts.extract"}
     assert (b["retrieval.extract_mode"], b["retrieval.extract_show_concepts"], b["retrieval.extract_protect_top"]) == (
         "drop", True, 1)
+
+
+def test_the_smaller_fixed_chunk_experiments_change_only_size_room_and_index():
+    from supportdesk.config import Settings
+    def flat(name):
+        d = Settings.load(env={}, overrides=[f"pipeline.name={name}"]).to_dict()
+        return {f"{section}.{key}": value for section, keys in d.items() for key, value in keys.items()}
+    d = "clean_doc_slots_rerank_docs_prompt_decompose"
+    base = flat(f"{d}_merged")
+    size_keys = {"pipeline.name", "chunking.max_tokens", "chunking.overlap_tokens", "paths.index_dir"}
+    for size, overlap, k in ((320, 80, 9), (384, 96, 8)):
+        six, more = flat(f"{d}_merged_fixed{size}"), flat(f"{d}_merged_fixed{size}_top{k}")
+        assert {key for key in base if base[key] != six[key]} == size_keys
+        assert (six["chunking.max_tokens"], six["chunking.overlap_tokens"]) == (size, overlap)
+        assert {key for key in base if base[key] != more[key]} == size_keys | {
+            "retrieval.top_k", "retrieval.candidate_k", "retrieval.doc_slots"}
+        assert (more["retrieval.top_k"], more["context.max_tokens"]) == (k, 3200)
+        assert six["paths.index_dir"] == more["paths.index_dir"]

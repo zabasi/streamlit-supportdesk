@@ -468,3 +468,38 @@ def build_clean_doc_slots_rerank_docs_prompt_decompose_merged_extract_drop(retri
     stages["query"] = QueryRewriter(clients, settings)
     stages["reranker"] = ExtractingReranker(clients, settings, _index_chunks(retriever))
     return StagedPipeline(name="clean_doc_slots_rerank_docs_prompt_decompose_merged_extract_drop", clients=clients, settings=settings, **stages)
+
+
+# ---- smaller fixed chunks on decompose_merged ----
+
+
+def build_clean_doc_slots_rerank_docs_prompt_decompose_merged_fixed320(retriever, clients, settings):
+    """decompose_merged on 320-token fixed chunks, 6 chunks to the model."""
+    stages = default_stages(retriever, clients, settings)
+    stages["query"] = QueryRewriter(clients, settings)
+    stages["reranker"] = MergedReranker(clients, settings, _index_chunks(retriever))
+    return StagedPipeline(name="clean_doc_slots_rerank_docs_prompt_decompose_merged_fixed320", clients=clients, settings=settings, **stages)
+
+
+def build_clean_doc_slots_rerank_docs_prompt_decompose_merged_fixed320_top9(retriever, clients, settings):
+    """decompose_merged on 320-token fixed chunks, 9 chunks to the model."""
+    stages = default_stages(retriever, clients, settings)
+    stages["query"] = QueryRewriter(clients, settings)
+    stages["reranker"] = MergedReranker(clients, settings, _index_chunks(retriever))
+    return StagedPipeline(name="clean_doc_slots_rerank_docs_prompt_decompose_merged_fixed320_top9", clients=clients, settings=settings, **stages)
+
+
+def build_clean_doc_slots_rerank_docs_prompt_decompose_merged_fixed384(retriever, clients, settings):
+    """decompose_merged on 384-token fixed chunks, 6 chunks to the model."""
+    stages = default_stages(retriever, clients, settings)
+    stages["query"] = QueryRewriter(clients, settings)
+    stages["reranker"] = MergedReranker(clients, settings, _index_chunks(retriever))
+    return StagedPipeline(name="clean_doc_slots_rerank_docs_prompt_decompose_merged_fixed384", clients=clients, settings=settings, **stages)
+
+
+def build_clean_doc_slots_rerank_docs_prompt_decompose_merged_fixed384_top8(retriever, clients, settings):
+    """decompose_merged on 384-token fixed chunks, 8 chunks to the model."""
+    stages = default_stages(retriever, clients, settings)
+    stages["query"] = QueryRewriter(clients, settings)
+    stages["reranker"] = MergedReranker(clients, settings, _index_chunks(retriever))
+    return StagedPipeline(name="clean_doc_slots_rerank_docs_prompt_decompose_merged_fixed384_top8", clients=clients, settings=settings, **stages)
