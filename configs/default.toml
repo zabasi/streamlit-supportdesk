@@ -21,6 +21,7 @@ system = "configs/prompts/answer_system.txt"
 output_format = "configs/prompts/answer_output_format.txt"
 rewrite = "configs/prompts/rewrite_system.txt"
 rerank = "configs/prompts/rerank_system.txt"
+extract = "configs/prompts/extract_system.txt"
 judge = "configs/prompts/judge_system.txt"
 loop_rewrite = "configs/prompts/loop_rewrite_system.txt"
 

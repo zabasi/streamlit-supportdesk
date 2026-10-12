@@ -69,3 +69,51 @@ def test_the_merged_and_graded_experiments_change_only_their_stage():
     g = flat(f"{d}_graded")
     assert {k for k in base if base[k] != g[k]} == {"pipeline.name", "prompts.rerank"}
     assert str(g["prompts.rerank"]).endswith("rerank_graded_system.txt") and g["retrieval.min_chunks"] == 2
+
+
+SECTIONED = ("Session State\n\nIntro text.\n\n## Initialize values\n\nSet defaults first, before widgets.\n\n"
+             "## Caveats\n\nButtons cannot be set through Session State.\n\n## Serialization\n\nPickle rules apply.\n")
+
+
+def extractor(clients, settings, output):
+    from supportdesk.pipelines.stages.evidence import ExtractingReranker
+    page = Chunk(chunk_id="doc:s:0", source_id="doc:s", source_type="documentation", title="Session State",
+                 text=SECTIONED, url="u", start_char=0, end_char=len(SECTIONED))
+    issue = Chunk(chunk_id="issue:1:0", source_id="issue:1", source_type="issue", title="t", text="Issue body.",
+                  url="u", start_char=0, end_char=11)
+    s = dataclasses.replace(settings, retrieval=dataclasses.replace(settings.retrieval, top_k=6, doc_slots=0))
+    stage = ExtractingReranker(clients, s, [page])
+    hits = [Hit(page, 0.9, 1, "dense"), Hit(issue, 0.5, 2, "dense")]
+    clients.chat.script[clients.chat.calls + 1] = json.dumps({"ranking": ["C1", "C2"]})  # the reranking call
+    clients.chat.script[clients.chat.calls + 2] = output                                 # the extraction call
+    case = CaseInput(case_id="c", title="Button state", body="Setting a button through session state fails")
+    return stage, stage(case, "q", hits)
+
+
+def test_the_model_keeps_only_the_parts_that_help(clients, settings):
+    _, kept = extractor(clients, settings, json.dumps({"keep": ["P3", "P5"]}))
+    shown = clients.chat.seen[-1][1]["content"]
+    assert "P5: [issue]" in shown and "Pickle rules apply." in shown  # full text of every part
+    assert [h.chunk.text.strip().splitlines()[0] for h in kept] == ["## Caveats", "Issue body."]
+    caveats = kept[0].chunk
+    assert SECTIONED[caveats.start_char:caveats.end_char] == caveats.text  # exact offsets
+
+
+def test_neighbouring_kept_parts_are_joined_and_unusable_output_keeps_everything(clients, settings):
+    _, kept = extractor(clients, settings, json.dumps({"keep": ["P2", "P3"]}))
+    assert len(kept) == 1 and kept[0].chunk.text.startswith("## Initialize values") and "## Caveats" in kept[0].chunk.text
+    for output in ("not json", json.dumps({"keep": []})):
+        _, kept = extractor(clients, settings, output)
+        assert [h.chunk.chunk_id for h in kept] == ["doc:s:0", "issue:1:0"]  # as merged would give
+
+
+def test_the_extract_experiment_differs_from_merged_only_in_its_stage():
+    from supportdesk.config import Settings
+    from supportdesk.registry import PIPELINES
+    def flat(name):
+        d = Settings.load(env={}, overrides=[f"pipeline.name={name}"]).to_dict()
+        return {f"{section}.{key}": value for section, keys in d.items() for key, value in keys.items()}
+    d = "clean_doc_slots_rerank_docs_prompt_decompose"
+    a, b = flat(f"{d}_merged"), flat(f"{d}_merged_extract")
+    assert {k for k in a if a[k] != b[k]} == {"pipeline.name"}
+    assert PIPELINES[f"{d}_merged_extract"].__doc__.startswith("decompose_merged, then one model call")

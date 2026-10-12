@@ -8,12 +8,16 @@ retrieval.min_chunks). The documentation minimum applies only to chunks not grad
 """
 from __future__ import annotations
 
+import re
 from dataclasses import replace
+from pathlib import Path
 
 from ...retrieval.retriever import Hit
 from ...types import CaseInput, Chunk
+from ..parsing import NotJson, extract_json
+from .clean_query import CleanQuery
 from .llm_rerank import LLMReranker, keep_doc_places, model_grades, model_ranking
-from .sections import page_texts
+from .sections import Sections, page_texts
 
 
 def merge_overlaps(hits: list[Hit], pages: dict[str, str]) -> list[Hit]:
@@ -85,3 +89,61 @@ class GradedReranker:
         if self.min_docs and docs_available:
             chosen = keep_doc_places(chosen + others, len(chosen), min(self.min_docs, docs_available))[: len(chosen)]
         return [replace(h, rank=n) for n, h in enumerate(chosen, start=1)]
+
+
+_PART = re.compile(r"^P(\d+)$")
+
+
+def kept_parts(text: str, count: int) -> list[int]:
+    """Positions (0-based) of the parts the model kept, in order; [] if the output is unusable."""
+    try:
+        payload = extract_json(text)
+    except (NotJson, ValueError):
+        return []
+    labels = payload.get("keep") if isinstance(payload, dict) else None
+    found = []
+    for label in labels if isinstance(labels, list) else []:
+        match = _PART.match(str(label).strip())
+        if match and 1 <= int(match.group(1)) <= count and int(match.group(1)) - 1 not in found:
+            found.append(int(match.group(1)) - 1)
+    return sorted(found)
+
+
+class ExtractingReranker:
+    """MergedReranker's chunks, then one model call keeps only the parts that help with the report.
+    Documentation chunks are split into their sections (clipped to the chunk, so nothing is added);
+    issues and comments stay whole. The model sees each part's full text. Kept neighbouring parts of a
+    page are joined again. Unusable output, or nothing kept, keeps everything."""
+
+    def __init__(self, clients, settings, chunks: list[Chunk]):
+        self.merged, self.sections = MergedReranker(clients, settings, chunks), Sections(chunks)
+        self.clients, self.clean = clients, CleanQuery(settings.context.max_query_chars)
+        self.prompt = Path(settings.prompts.extract).read_text(encoding="utf-8")
+
+    def parts(self, hit: Hit) -> list[Hit]:
+        c = hit.chunk
+        if c.source_id not in self.sections.pages:
+            return [hit]
+        page, found = self.sections.pages[c.source_id], []
+        for a, b in self.sections.spans[c.source_id]:
+            lo, hi = max(a, c.start_char), min(b, c.end_char)
+            if hi > lo and page[lo:hi].strip():
+                found.append(replace(hit, chunk=replace(c, chunk_id=f"{c.source_id}#{lo}-{hi}", text=page[lo:hi],
+                                                        start_char=lo, end_char=hi)))
+        return found or [hit]
+
+    def __call__(self, case: CaseInput, query: str, hits: list[Hit]) -> list[Hit]:
+        kept = self.merged(case, query, hits)
+        parts = [p for h in kept for p in self.parts(h)]
+        if len(parts) < 2:
+            return kept
+        listing = "\n\n".join(f"P{n}: [{p.chunk.source_type}] {p.chunk.title}\n{p.chunk.text.strip()}"
+                                for n, p in enumerate(parts, start=1))
+        content = f"## Report\n{self.clean(case, {})[0]}\n\n## Parts\n{listing}"
+        text, _ = self.clients.chat.complete([{"role": "system", "content": self.prompt},
+                                              {"role": "user", "content": content}],
+                                             stage="extract", json_mode=True)
+        chosen = kept_parts(text, len(parts))
+        if not chosen:  # unusable output, or nothing kept: keep everything
+            return kept
+        return merge_overlaps([parts[i] for i in chosen], self.sections.pages)

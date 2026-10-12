@@ -93,6 +93,8 @@ class Prompts:
     rewrite: Path = _opt("system prompt of the query-rewriting call (QueryRewriter)",
                          Path("configs/prompts/rewrite_system.txt"))
     rerank: Path = _opt("system prompt of the reranking call (LLMReranker)", Path("configs/prompts/rerank_system.txt"))
+    extract: Path = _opt("system prompt of the call that keeps the relevant parts of the chosen chunks "
+                         "(ExtractingReranker)", Path("configs/prompts/extract_system.txt"))
     judge: Path = _opt("system prompt of the retrieve_loop sufficiency check (yes or no)",
                        Path("configs/prompts/judge_system.txt"))
     loop_rewrite: Path = _opt("system prompt of the retrieve_loop query rewrite",
