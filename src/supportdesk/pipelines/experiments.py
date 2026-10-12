@@ -351,3 +351,36 @@ def build_clean_doc_slots_rerank_docs_prompt_structure_ctx_top8_keep4(retriever,
 def build_clean_doc_slots_rerank_docs_prompt_token_structure_ctx_top8_keep4(retriever, clients, settings):
     """clean_doc_slots_rerank_docs_prompt_token_structure_top8_keep4 with contextual chunk headers in the embeddings (its own index)."""
     return _clean_rerank("clean_doc_slots_rerank_docs_prompt_token_structure_ctx_top8_keep4", retriever, clients, settings)
+
+
+# ---- large structured chunks, without and with context headers, on decompose ----
+
+
+def build_clean_doc_slots_rerank_docs_prompt_decompose_structure_large(retriever, clients, settings):
+    """decompose on large structure chunks."""
+    return _with_queries("clean_doc_slots_rerank_docs_prompt_decompose_structure_large", QueryRewriter(clients, settings), retriever, clients, settings)
+
+
+def build_clean_doc_slots_rerank_docs_prompt_decompose_structure_large_ctx(retriever, clients, settings):
+    """decompose on large structure chunks, with context headers."""
+    return _with_queries("clean_doc_slots_rerank_docs_prompt_decompose_structure_large_ctx", QueryRewriter(clients, settings), retriever, clients, settings)
+
+
+def build_clean_doc_slots_rerank_docs_prompt_decompose_structure_large_ctx_all(retriever, clients, settings):
+    """decompose on large structure chunks, with context headers naming every section."""
+    return _with_queries("clean_doc_slots_rerank_docs_prompt_decompose_structure_large_ctx_all", QueryRewriter(clients, settings), retriever, clients, settings)
+
+
+def build_clean_doc_slots_rerank_docs_prompt_decompose_token_structure_large(retriever, clients, settings):
+    """decompose on large token_structure chunks."""
+    return _with_queries("clean_doc_slots_rerank_docs_prompt_decompose_token_structure_large", QueryRewriter(clients, settings), retriever, clients, settings)
+
+
+def build_clean_doc_slots_rerank_docs_prompt_decompose_token_structure_large_ctx(retriever, clients, settings):
+    """decompose on large token_structure chunks, with context headers."""
+    return _with_queries("clean_doc_slots_rerank_docs_prompt_decompose_token_structure_large_ctx", QueryRewriter(clients, settings), retriever, clients, settings)
+
+
+def build_clean_doc_slots_rerank_docs_prompt_decompose_token_structure_large_ctx_all(retriever, clients, settings):
+    """decompose on large token_structure chunks, with context headers naming every section."""
+    return _with_queries("clean_doc_slots_rerank_docs_prompt_decompose_token_structure_large_ctx_all", QueryRewriter(clients, settings), retriever, clients, settings)

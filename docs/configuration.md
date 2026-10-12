@@ -156,6 +156,12 @@ Defaults shown are the built-in ones. `*unset*` means the key is optional and no
 | `max_tokens` | `512` | chunk size in tokens (the project's tokenizer); changing it means building the index again |
 | `overlap_tokens` | `128` | tokens shared by consecutive chunks; must be smaller than max_tokens |
 | `context_header` | `False` | embed each documentation chunk with its page title and heading path in front (the stored text is unchanged); needs its own index |
+| `context_header_scope` | `start` | which headings the context header names: start (the path where the chunk starts) or all (that path plus every section heading inside the chunk) |
+| `structure_min_chars` | `150` | structure chunker: sections shorter than this many characters are merged into the next |
+| `structure_max_chars` | `2000` | structure chunker: sections longer than this many characters are split at block boundaries |
+| `token_target` | `500` | token_structure chunker: the chunk size it aims for, in tokens |
+| `token_soft_max` | `700` | token_structure chunker: the most tokens a chunk may grow to before it is cut |
+| `token_min_section` | `150` | token_structure chunker: a section of at least this many tokens starts a new chunk; smaller ones are packed together |
 
 ### `[retrieval]`
 

@@ -8,7 +8,7 @@ from ..tokenizer import tokenize_with_spans
 from ..types import Chunk
 from .corpus import SourceRecord
 from .structure_chunker import structure_spans
-from .token_structure_chunker import token_structure_spans
+from .token_structure_chunker import CANDIDATE_A, token_structure_spans
 
 
 @dataclass(frozen=True)
@@ -84,21 +84,29 @@ def _span_chunks(record: SourceRecord, pieces: list[tuple[str, int, int]],
 
 
 class StructureChunker:
-    """Heading- and fence-aware chunks: h1-h3, 2,000 characters, short sections merged forward."""
+    """Heading- and fence-aware chunks: h1-h3; short sections merged forward, long ones split."""
+
+    def __init__(self, min_chars: int = 150, max_chars: int = 2000):
+        self.min_chars, self.max_chars = min_chars, max_chars
 
     def __call__(self, record: SourceRecord) -> list[Chunk]:
         spans = [(record.text[start:end], start, end, path)
-                 for start, end, path in structure_spans(record.text) if record.text[start:end]]
+                 for start, end, path in structure_spans(record.text, max_chars=self.max_chars,
+                                                         min_chars=self.min_chars) if record.text[start:end]]
         return _span_chunks(record, [(piece, start, end) for piece, start, end, _ in spans],
                             [path for _, _, _, path in spans])
 
 
 class TokenStructureChunker:
-    """Candidate A: structural blocks, target 500 tokens, soft max 700, overlap up to 60."""
+    """Candidate A: structural blocks packed to a token target (by default 500, soft max 700)."""
+
+    def __init__(self, target: int = 500, soft_max: int = 700, min_section: int = 150):
+        self.config = {**CANDIDATE_A, "target_tokens": target, "soft_max_tokens": soft_max,
+                       "minimum_section_tokens": min_section}
 
     def __call__(self, record: SourceRecord) -> list[Chunk]:
         pieces = [(record.text[start:end], start, end)
-                  for start, end in token_structure_spans(record.text, record.source_type)
+                  for start, end in token_structure_spans(record.text, record.source_type, self.config)
                   if record.text[start:end]]
         return _span_chunks(record, pieces)
 
@@ -142,8 +150,11 @@ def sources_without_chunks(records: list[SourceRecord], chunks: list[Chunk],
 CHUNKERS = {
     "fixed": lambda settings: FixedTokenChunker(max_tokens=settings.chunking.max_tokens,
                                                 overlap_tokens=settings.chunking.overlap_tokens),
-    "structure": lambda settings: StructureChunker(),
-    "token_structure": lambda settings: TokenStructureChunker(),
+    "structure": lambda settings: StructureChunker(settings.chunking.structure_min_chars,
+                                                   settings.chunking.structure_max_chars),
+    "token_structure": lambda settings: TokenStructureChunker(settings.chunking.token_target,
+                                                              settings.chunking.token_soft_max,
+                                                              settings.chunking.token_min_section),
 }
 
 

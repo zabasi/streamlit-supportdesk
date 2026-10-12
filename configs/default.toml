@@ -42,6 +42,12 @@ method = "fixed"
 max_tokens = 512
 overlap_tokens = 128
 context_header = false          # embed documentation chunks with "page title › headings" in front
+context_header_scope = "start"  # start: the path where the chunk starts | all: plus every section inside it
+structure_min_chars = 150       # structure chunker: shorter sections are merged into the next
+structure_max_chars = 2000      # structure chunker: longer sections are split at block boundaries
+token_target = 500              # token_structure chunker: the size it aims for
+token_soft_max = 700            # token_structure chunker: the most a chunk may grow to
+token_min_section = 150         # token_structure chunker: a section this big starts a new chunk
 
 [retrieval]
 top_k = 6                        # chunks returned by retrieval AND (by default) allowed in the prompt

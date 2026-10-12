@@ -124,6 +124,29 @@ class Chunking:
     overlap_tokens: int = _opt("tokens shared by consecutive chunks; must be smaller than max_tokens", 128)
     context_header: bool = _opt("embed each documentation chunk with its page title and heading path in front "
                                 "(the stored text is unchanged); needs its own index", False)
+    context_header_scope: str = _opt("which headings the context header names: start (the path where the chunk "
+                                     "starts) or all (that path plus every section heading inside the chunk)", "start")
+    structure_min_chars: int = _opt("structure chunker: sections shorter than this many characters are merged "
+                                    "into the next", 150)
+    structure_max_chars: int = _opt("structure chunker: sections longer than this many characters are split at "
+                                    "block boundaries", 2000)
+    token_target: int = _opt("token_structure chunker: the chunk size it aims for, in tokens", 500)
+    token_soft_max: int = _opt("token_structure chunker: the most tokens a chunk may grow to before it is cut", 700)
+    token_min_section: int = _opt("token_structure chunker: a section of at least this many tokens starts a new "
+                                  "chunk; smaller ones are packed together", 150)
+
+    def extras(self) -> dict:
+        """The chunking settings beyond method, sizes and the header switch that change an index: they are
+        recorded in it, and an index built with other values is refused."""
+        found = {}
+        if self.method == "structure":
+            found.update(structure_min_chars=self.structure_min_chars, structure_max_chars=self.structure_max_chars)
+        if self.method == "token_structure":
+            found.update(token_target=self.token_target, token_soft_max=self.token_soft_max,
+                         token_min_section=self.token_min_section)
+        if self.context_header:
+            found["context_header_scope"] = self.context_header_scope
+        return found
 
 
 @dataclass(frozen=True)
@@ -429,6 +452,12 @@ class Settings:
             (c.max_tokens >= 1, "context.max_tokens must be >= 1"),
             (c.max_query_chars >= 1 and c.max_body_chars >= 1, "context.max_*_chars must be >= 1"),
             (ch.max_tokens >= 1, "chunking.max_tokens must be >= 1"),
+            (ch.context_header_scope in ("start", "all"),
+             f"chunking.context_header_scope must be start or all, got {ch.context_header_scope!r}"),
+            (0 <= ch.structure_min_chars < ch.structure_max_chars,
+             "chunking.structure_min_chars must be >= 0 and smaller than chunking.structure_max_chars"),
+            (1 <= ch.token_target <= ch.token_soft_max and 0 <= ch.token_min_section,
+             "chunking.token_target must be >= 1 and <= token_soft_max, and token_min_section >= 0"),
             (ch.method in CHUNKING_METHODS,
              f"chunking.method {ch.method!r} is unknown; choose from {', '.join(CHUNKING_METHODS)}"),
             (0 <= ch.overlap_tokens < ch.max_tokens,

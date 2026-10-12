@@ -49,23 +49,49 @@ def _after_leading_headings(chunk: Chunk) -> int:
     return start + offset
 
 
-def context_header(chunk: Chunk, source_text: str) -> str:
-    """"<page title> › <headings above the chunk>" for a documentation chunk; "" for other chunks."""
+def headings_inside(chunk: Chunk) -> list[str]:
+    """The level 1-3 section headings inside the chunk's own text, after its leading ones (fences skipped)."""
+    skip = _after_leading_headings(chunk) - (chunk.start_char or 0)
+    found, fence = [], None
+    for line in chunk.text[skip:].splitlines():
+        opener = _FENCE.match(line)
+        if fence:
+            if opener and opener.group(1)[0] == fence:
+                fence = None
+            continue
+        if opener:
+            fence = opener.group(1)[0]
+            continue
+        heading = _HEADING.match(line)
+        if heading:
+            found.append(heading.group(2).strip())
+    return found
+
+
+def context_header(chunk: Chunk, source_text: str, scope: str = "start") -> str:
+    """"<page title> › <headings above the chunk>" for a documentation chunk; "" for other chunks.
+    With scope "all", the section headings inside the chunk follow, separated by "; "."""
     if chunk.source_type != "documentation":
         return ""
     parts = [chunk.title.strip()] if chunk.title and chunk.title.strip() else []
     for heading in heading_path(source_text, _after_leading_headings(chunk)):
         if not parts or heading != parts[-1]:
             parts.append(heading)
-    return SEPARATOR.join(parts)
+    header = SEPARATOR.join(parts)
+    if scope == "all":
+        inside = [h for h in headings_inside(chunk) if h not in parts]
+        if inside:
+            header = "; ".join([header, *dict.fromkeys(inside)]) if header else "; ".join(dict.fromkeys(inside))
+    return header
 
 
-def embedding_texts(chunks: list[Chunk], sources: dict[str, str], enabled: bool) -> list[str]:
+def embedding_texts(chunks: list[Chunk], sources: dict[str, str], enabled: bool,
+                    scope: str = "start") -> list[str]:
     """What the indexer embeds: the chunk text, with its context header in front when ``enabled``."""
     if not enabled:
         return [c.text for c in chunks]
     texts = []
     for c in chunks:
-        header = context_header(c, sources.get(c.source_id, ""))
+        header = context_header(c, sources.get(c.source_id, ""), scope)
         texts.append(f"{header}\n\n{c.text}" if header else c.text)
     return texts

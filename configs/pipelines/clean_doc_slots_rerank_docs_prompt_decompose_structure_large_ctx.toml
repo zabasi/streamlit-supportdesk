@@ -1,0 +1,37 @@
+# decompose (the current advanced) on large structure chunks, with the context header (heading path where the chunk starts).
+# Large chunks pack small neighbouring sections together (sizes below). It has its own index, built once:
+#   supportdesk index --pipeline clean_doc_slots_rerank_docs_prompt_decompose_structure_large_ctx
+
+[chunking]
+method = "structure"
+max_tokens = 512
+overlap_tokens = 128
+structure_min_chars = 2000     # merge sections shorter than 2,000 characters (default 150)
+structure_max_chars = 4000     # split sections longer than 4,000 characters (default 2,000)
+context_header = true          # embed documentation chunks with "page title › headings" in front
+context_header_scope = "start" # the heading path where the chunk starts
+
+[retrieval]
+top_k = 6
+candidate_k = 15             # candidates the reranker orders
+rerank_snippet_chars = 400   # characters of each candidate the reranker sees
+keep_report_query = true     # search with the cleaned report too
+max_queries = 3              # up to 3 model-written queries
+doc_slots = 10               # documentation among the 15 candidates
+rerank_keep_docs = 3         # documentation kept in the final 6 after reranking
+historical_filter = true
+
+[context]
+max_tokens = 3200            # 6 chunks x 512 tokens: enough room that the budget never drops a chunk
+max_query_chars = 4000
+max_body_chars = 4000
+
+[pipeline]
+retriever = "dense_doc_slots"
+
+[prompts]
+rewrite = "configs/prompts/rewrite_concepts_system.txt"
+rerank = "configs/prompts/rerank_docs_system.txt"
+
+[paths]
+index_dir = "index/structure_large_ctx"     # its own index: supportdesk index --pipeline clean_doc_slots_rerank_docs_prompt_decompose_structure_large_ctx

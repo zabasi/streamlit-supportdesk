@@ -69,7 +69,8 @@ def build_indexing_graph(settings: Settings, clients: Clients, *, cases: list, e
         if not state["chunks"]:
             raise IndexUnusable("nothing to index")
         sources = {r.source_id: r.text for r in state["records"]}
-        texts = embedding_texts(state["chunks"], sources, settings.chunking.context_header)
+        texts = embedding_texts(state["chunks"], sources, settings.chunking.context_header,
+                                settings.chunking.context_header_scope)
         vectors, _ = clients.embedding.embed(texts, stage="index")
         return {"vectors": vectors}
 

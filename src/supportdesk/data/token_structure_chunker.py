@@ -213,9 +213,10 @@ def ranges(text, config, source_type="documentation"):
     return result, blocks, fences, headings
 
 
-def token_structure_spans(text: str, source_type: str = "documentation") -> list[tuple[int, int]]:
-    """Return (start, end) spans for candidate A. ``text[start:end]`` is the chunk text."""
+def token_structure_spans(text: str, source_type: str = "documentation",
+                          config: dict | None = None) -> list[tuple[int, int]]:
+    """Return (start, end) spans for candidate A (or ``config``). ``text[start:end]`` is the chunk text."""
     if not text:
         return []
-    spans, _, _, _ = ranges(text, CANDIDATE_A, source_type)
+    spans, _, _, _ = ranges(text, config or CANDIDATE_A, source_type)
     return [(a, b) for a, b, _reason in spans if b > a]
