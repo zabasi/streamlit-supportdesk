@@ -15,6 +15,8 @@ from .pipelines.experiments import (
     build_clean_doc_slots_rerank_docs_prompt_decompose,
     build_clean_doc_slots_rerank_docs_prompt_decompose_ctx,
     build_clean_doc_slots_rerank_docs_prompt_decompose_focused,
+    build_clean_doc_slots_rerank_docs_prompt_decompose_graded,
+    build_clean_doc_slots_rerank_docs_prompt_decompose_merged,
     build_clean_doc_slots_rerank_docs_prompt_decompose_sections,
     build_clean_doc_slots_rerank_docs_prompt_decompose_structure,
     build_clean_doc_slots_rerank_docs_prompt_decompose_structure_ctx,
@@ -141,7 +143,9 @@ PIPELINES = {"baseline": build_baseline, "advanced": build_advanced,
              "clean_doc_slots_rerank_docs_prompt_decompose_structure_ctx_top12": build_clean_doc_slots_rerank_docs_prompt_decompose_structure_ctx_top12,
              "clean_doc_slots_rerank_docs_prompt_decompose_structure_ctx_top15": build_clean_doc_slots_rerank_docs_prompt_decompose_structure_ctx_top15,
              "clean_doc_slots_rerank_docs_prompt_decompose_sections": build_clean_doc_slots_rerank_docs_prompt_decompose_sections,
-             "clean_doc_slots_rerank_docs_prompt_decompose_trimmed": build_clean_doc_slots_rerank_docs_prompt_decompose_trimmed}
+             "clean_doc_slots_rerank_docs_prompt_decompose_trimmed": build_clean_doc_slots_rerank_docs_prompt_decompose_trimmed,
+             "clean_doc_slots_rerank_docs_prompt_decompose_merged": build_clean_doc_slots_rerank_docs_prompt_decompose_merged,
+             "clean_doc_slots_rerank_docs_prompt_decompose_graded": build_clean_doc_slots_rerank_docs_prompt_decompose_graded}
 
 RETRIEVERS = {
     "dense": lambda index, clients, s: DenseRetriever(index, clients.embedding),

@@ -57,6 +57,8 @@ def model_ranking(text: str, count: int) -> list[int]:
     labels = payload.get("ranking") if isinstance(payload, dict) else None
     order = []
     for label in labels if isinstance(labels, list) else []:
+        if isinstance(label, dict):
+            label = label.get("label", "")
         match = _LABEL.match(str(label).strip())
         if match and 1 <= int(match.group(1)) <= count and int(match.group(1)) - 1 not in order:
             order.append(int(match.group(1)) - 1)
@@ -80,6 +82,27 @@ def keep_doc_places(ranked: list[Hit], top_k: int, min_docs: int) -> list[Hit]:
     return head + tail
 
 
+GRADES = ("relevant", "partly", "not")
+
+
+def model_grades(text: str, count: int) -> dict[int, str]:
+    """Positions (0-based) the model graded, with their grade; {} if unusable or ungraded."""
+    try:
+        payload = extract_json(text)
+    except (NotJson, ValueError):
+        return {}
+    entries = payload.get("ranking") if isinstance(payload, dict) else None
+    grades = {}
+    for entry in entries if isinstance(entries, list) else []:
+        if not isinstance(entry, dict):
+            continue
+        match = _LABEL.match(str(entry.get("label", "")).strip())
+        grade = str(entry.get("grade", "")).strip().lower()
+        if match and 1 <= int(match.group(1)) <= count and grade in GRADES:
+            grades.setdefault(int(match.group(1)) - 1, grade)
+    return grades
+
+
 class LLMReranker:
     """Reorders the candidates with one model call: the most useful for the report first."""
 
@@ -95,6 +118,10 @@ class LLMReranker:
 
     def model_order(self, case: CaseInput, hits: list[Hit]) -> list[int]:
         """One model call: positions in ``hits``, most useful first; [] if the output is unusable."""
+        return model_ranking(self.model_text(case, hits), len(hits))
+
+    def model_text(self, case: CaseInput, hits: list[Hit]) -> str:
+        """The model's raw answer to the reranking request for ``hits``."""
         report = self.clean(case, {})[0]
         if self.snippet_mode == "focused":
             weights = term_weights(report, [h.chunk.text for h in hits])
@@ -107,7 +134,7 @@ class LLMReranker:
         text, _ = self.clients.chat.complete([{"role": "system", "content": self.prompt},
                                               {"role": "user", "content": content}],
                                              stage="rerank", json_mode=True)
-        return model_ranking(text, len(hits))
+        return text
 
     def __call__(self, case: CaseInput, query: str, hits: list[Hit]) -> list[Hit]:
         if len(hits) < 2:

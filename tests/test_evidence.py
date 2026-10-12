@@ -1,0 +1,71 @@
+"""Less noise without cutting chunks: merge overlapping chunks, keep only chunks graded relevant."""
+import dataclasses
+import json
+
+from supportdesk.pipelines.stages.evidence import GradedReranker, merge_overlaps
+from supportdesk.retrieval.retriever import Hit
+from supportdesk.types import CaseInput, Chunk
+
+PAGE = "".join(f"Line {n} of the page about session state.\n" for n in range(40))
+
+
+def hit(a, b, rank, kind="documentation", source="doc:p"):
+    text = PAGE[a:b] if source == "doc:p" else "Issue text."
+    return Hit(Chunk(chunk_id=f"{source}:{a}", source_id=source, source_type=kind, title="t", text=text, url="u",
+                     start_char=a, end_char=b), 1.0 / rank, rank, "dense")
+
+
+def test_overlapping_or_touching_chunks_of_a_page_become_one_span():
+    pages = {"doc:p": PAGE}
+    first, overlapping, touching = hit(0, 400, 1), hit(300, 700, 3), hit(700, 900, 4)
+    apart, issue = hit(1200, 1500, 2), hit(0, 11, 5, kind="issue", source="issue:1")
+    merged = merge_overlaps([first, apart, overlapping, touching, issue], pages)
+    spans = [(h.chunk.source_id, h.chunk.start_char, h.chunk.end_char) for h in merged]
+    assert spans == [("doc:p", 0, 900), ("doc:p", 1200, 1500), ("issue:1", 0, 11)]
+    assert merged[0].chunk.text == PAGE[0:900] and [h.rank for h in merged] == [1, 2, 3]
+    total_before = sum(h.chunk.end_char - h.chunk.start_char for h in (first, overlapping, touching))
+    assert merged[0].chunk.end_char - merged[0].chunk.start_char < total_before  # the shared text once
+
+
+def graded(clients, settings, ranking, **retrieval):
+    s = dataclasses.replace(settings, retrieval=dataclasses.replace(
+        settings.retrieval, **{"top_k": 6, "min_chunks": 2, "rerank_keep_docs": 1, **retrieval}))
+    hits = [hit(n * 100, n * 100 + 90, n + 1, kind="documentation" if n < 3 else "issue",
+                source="doc:p" if n < 3 else f"issue:{n}") for n in range(8)]
+    clients.chat.script[clients.chat.calls + 1] = json.dumps({"ranking": ranking}) if ranking else "not json"
+    case = CaseInput(case_id="c", title="Session state lost", body="st.session_state is empty")
+    return hits, GradedReranker(clients, s)(case, "q", hits)
+
+
+def test_chunks_graded_not_relevant_are_dropped(clients, settings):
+    ranking = [{"label": "C4", "grade": "relevant"}, {"label": "C1", "grade": "relevant"},
+               {"label": "C5", "grade": "partly"}] + [{"label": f"C{n}", "grade": "not"} for n in (2, 3, 6, 7, 8)]
+    hits, kept = graded(clients, settings, ranking)
+    assert [h.chunk.chunk_id for h in kept] == [hits[3].chunk.chunk_id, hits[0].chunk.chunk_id, hits[4].chunk.chunk_id]
+
+
+def test_the_floor_and_the_documentation_minimum_never_bring_back_irrelevant_docs(clients, settings):
+    ranking = [{"label": "C5", "grade": "relevant"}] + [{"label": f"C{n}", "grade": "not"} for n in (1, 2, 3, 4, 6, 7, 8)]
+    hits, kept = graded(clients, settings, ranking, rerank_keep_docs=3)
+    assert len(kept) == 2 and kept[0].chunk.chunk_id == hits[4].chunk.chunk_id  # floor of 2, filled by rank
+    assert kept[1].chunk.chunk_id == hits[0].chunk.chunk_id  # the next in the ranking, not a promoted doc
+
+
+def test_unusable_or_ungraded_output_behaves_like_the_plain_reranker(clients, settings):
+    _, kept = graded(clients, settings, None)
+    assert len(kept) == 6
+    _, kept = graded(clients, settings, ["C2", "C1"])  # a ranking without grades
+    assert len(kept) == 6 and kept[0].chunk.chunk_id.endswith(":100")
+
+
+def test_the_merged_and_graded_experiments_change_only_their_stage():
+    from supportdesk.config import Settings
+    def flat(name):
+        d = Settings.load(env={}, overrides=[f"pipeline.name={name}"]).to_dict()
+        return {f"{section}.{key}": value for section, keys in d.items() for key, value in keys.items()}
+    d = "clean_doc_slots_rerank_docs_prompt_decompose"
+    base = flat(d)
+    assert {k for k in base if base[k] != flat(f"{d}_merged")[k]} == {"pipeline.name"}
+    g = flat(f"{d}_graded")
+    assert {k for k in base if base[k] != g[k]} == {"pipeline.name", "prompts.rerank"}
+    assert str(g["prompts.rerank"]).endswith("rerank_graded_system.txt") and g["retrieval.min_chunks"] == 2

@@ -164,6 +164,8 @@ Reranking on the two best retrieval combinations:
 | `…_decompose_structure_top12`, `…_top15`, and the same on `…_decompose_structure_ctx` | Small structure chunks, more of them within the same 3,200-token budget: 12 chunks from 25 candidates (18 documentation, at least 6 kept) or 15 from 30 (20 documentation, at least 8 kept). Same index as the parent |
 | `…_decompose_sections` | Search exactly as `decompose` (fixed chunks), then the reranker ranks **whole page sections**: each candidate documentation chunk is replaced by the sections it overlaps (a `##` section with its `###` subsections; a section bigger than its chunk is cut to the chunk), at most 30 units (`retrieval.section_candidates`); the best 8 go to the model within 3,200 tokens |
 | `…_decompose_trimmed` | `decompose` unchanged up to the reranker (same reranking call); each kept documentation chunk is then cut down to its one section that best matches the report |
+| `…_decompose_merged` | `decompose` unchanged up to the reranker (same reranking call); kept chunks of one page that overlap or touch are merged into one span, so shared text appears once. Nothing is cut |
+| `…_decompose_graded` | The reranker also grades each candidate as relevant, partly or not (prompt `configs/prompts/rerank_graded_system.txt`); chunks graded "not" are dropped, so the model gets as many chunks as are relevant, up to 6 and at least `retrieval.min_chunks` (2). The documentation minimum applies only to chunks not graded "not"; ungraded or unusable output behaves like `decompose` |
 
 With documentation places, the reranker keeps them (`retrieval.rerank_keep_docs`, or
 `retrieval.doc_slots` when it is unset): after the model's order,

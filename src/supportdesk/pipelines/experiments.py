@@ -9,6 +9,7 @@ from ..retrieval.retriever import Retriever
 from .staged import StagedPipeline
 from .stages import default_stages
 from .stages.clean_query import CleanQuery
+from .stages.evidence import GradedReranker, MergedReranker
 from .stages.llm_rerank import DocPlacesReranker, LLMReranker
 from .stages.rewrite_query import QueryRewriter
 from .stages.sections import SectionReranker, SectionTrimmer
@@ -431,3 +432,21 @@ def build_clean_doc_slots_rerank_docs_prompt_decompose_trimmed(retriever, client
     stages["query"] = QueryRewriter(clients, settings)
     stages["reranker"] = SectionTrimmer(clients, settings, _index_chunks(retriever))
     return StagedPipeline(name="clean_doc_slots_rerank_docs_prompt_decompose_trimmed", clients=clients, settings=settings, **stages)
+
+
+# ---- less noise without cutting chunks: merge overlaps, or keep only chunks graded relevant ----
+
+def build_clean_doc_slots_rerank_docs_prompt_decompose_merged(retriever, clients, settings):
+    """decompose where kept chunks of one page that overlap or touch are merged, so shared text appears once."""
+    stages = default_stages(retriever, clients, settings)
+    stages["query"] = QueryRewriter(clients, settings)
+    stages["reranker"] = MergedReranker(clients, settings, _index_chunks(retriever))
+    return StagedPipeline(name="clean_doc_slots_rerank_docs_prompt_decompose_merged", clients=clients, settings=settings, **stages)
+
+
+def build_clean_doc_slots_rerank_docs_prompt_decompose_graded(retriever, clients, settings):
+    """decompose where the reranker also grades candidates and those graded not relevant are dropped."""
+    stages = default_stages(retriever, clients, settings)
+    stages["query"] = QueryRewriter(clients, settings)
+    stages["reranker"] = GradedReranker(clients, settings)
+    return StagedPipeline(name="clean_doc_slots_rerank_docs_prompt_decompose_graded", clients=clients, settings=settings, **stages)

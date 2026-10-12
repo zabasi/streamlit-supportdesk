@@ -63,6 +63,7 @@ keep_report_query = false        # also search with the cleaned report (QueryRew
 rerank_snippet_chars = 600       # characters of each candidate the LLM reranker sees
 rerank_snippet = "start"         # start: the first rerank_snippet_chars | focused: the best-matching window
 # rerank_keep_docs = 3           # documentation the LLM reranker keeps in the final top_k (unset: doc_slots)
+min_chunks = 2                   # fewest chunks the GradedReranker keeps
 section_candidates = 30          # most sections and other candidates the SectionReranker ranks
 rerank_doc_places = 0            # documentation places the model fills (DocPlacesReranker)
 bm25_slots = 0                   # places filled by BM25 in the hybrid_split retriever; the rest are dense
