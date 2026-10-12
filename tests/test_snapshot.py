@@ -99,3 +99,18 @@ def test_latest_runs_picks_the_newest_run_of_each_kind_by_date_not_name(tmp_path
     found = latest_runs(tmp_path, "baseline")
     assert found["full"][0] == "zzz-new" and found["retrieval"][0] == "aaa-ret-new"
     assert latest_runs(tmp_path, "nothing") == {}
+
+
+def test_snapshot_all_skips_pipelines_whose_own_index_is_not_built(tmp_path, capsys):
+    """A pipeline with other chunking needs its own index; --all reports it as skipped, not failed."""
+    from supportdesk.cli import main
+    from tests.helpers import ROOT, SAMPLE
+    base = ["--data-dir", str(SAMPLE), "--index-dir", str(tmp_path / "idx"), "--artifacts-dir",
+            str(tmp_path / "art"), "--mode", "offline", "--cases", str(ROOT / "data" / "eval" / "sample_cases.jsonl")]
+    assert main(["index", *base]) == 0
+    capsys.readouterr()
+    assert main(["snapshot", *base, "--all"]) == 0
+    err = capsys.readouterr().err
+    assert "clean_doc_slots_rerank_docs_prompt_structure: skipped:" in err and "pipeline(s) skipped" in err
+    one = ["snapshot", *base, "--pipeline", "clean_doc_slots_rerank_docs_prompt_structure"]
+    assert main(one) == 1  # asked for by name: an unusable index is still an error

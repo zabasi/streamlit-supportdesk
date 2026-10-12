@@ -248,3 +248,27 @@ def build_clean_doc_slots_rerank_docs_prompt_decompose_top8_focused(retriever, c
     """decompose with 8 chunks and focused snippets for the reranker."""
     return _with_queries("clean_doc_slots_rerank_docs_prompt_decompose_top8_focused",
                          QueryRewriter(clients, settings), retriever, clients, settings)
+
+
+# ---- the teammate's structure-aware chunkers, on the two best designs ----
+
+def build_clean_doc_slots_rerank_docs_prompt_structure(retriever, clients, settings):
+    """clean_doc_slots_rerank_docs_prompt on structure chunks (headings, code fences), with its own index."""
+    return _clean_rerank("clean_doc_slots_rerank_docs_prompt_structure", retriever, clients, settings)
+
+
+def build_clean_doc_slots_rerank_docs_prompt_token_structure(retriever, clients, settings):
+    """clean_doc_slots_rerank_docs_prompt on token-budgeted structure chunks, with its own index."""
+    return _clean_rerank("clean_doc_slots_rerank_docs_prompt_token_structure", retriever, clients, settings)
+
+
+def build_clean_doc_slots_rerank_docs_prompt_decompose_structure(retriever, clients, settings):
+    """decompose on structure chunks (headings, code fences), with its own index."""
+    return _with_queries("clean_doc_slots_rerank_docs_prompt_decompose_structure",
+                         QueryRewriter(clients, settings), retriever, clients, settings)
+
+
+def build_clean_doc_slots_rerank_docs_prompt_decompose_token_structure(retriever, clients, settings):
+    """decompose on token-budgeted structure chunks, with its own index."""
+    return _with_queries("clean_doc_slots_rerank_docs_prompt_decompose_token_structure",
+                         QueryRewriter(clients, settings), retriever, clients, settings)

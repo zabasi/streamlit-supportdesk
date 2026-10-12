@@ -670,3 +670,27 @@ def test_the_decompose_variants_change_only_room_and_snippets():
         assert other["retrieval.rerank_keep_docs"] == 3 and other["retrieval.max_queries"] == 3
     both = flat("clean_doc_slots_rerank_docs_prompt_decompose_top8_focused")
     assert (both["retrieval.top_k"], both["context.max_tokens"], both["retrieval.rerank_snippet"]) == (8, 4300, "focused")
+
+
+def test_the_chunking_experiments_change_only_the_chunker_and_its_index():
+    def flat(name):
+        d = Settings.load(env={}, overrides=[f"pipeline.name={name}"]).to_dict()
+        return {f"{section}.{key}": value for section, keys in d.items() for key, value in keys.items()}
+    for parent in ("clean_doc_slots_rerank_docs_prompt", "clean_doc_slots_rerank_docs_prompt_decompose"):
+        base = flat(parent)
+        for method in ("structure", "token_structure"):
+            other = flat(f"{parent}_{method}")
+            assert {k for k in base if base[k] != other[k]} == {"pipeline.name", "chunking.method", "paths.index_dir"}
+            assert other["chunking.method"] == method and str(other["paths.index_dir"]).endswith(f"index/{method}")
+
+
+def test_a_structure_chunking_experiment_indexes_and_evaluates(tmp_path, capsys):
+    from supportdesk.cli import main
+    from tests.helpers import ROOT, SAMPLE
+    base = ["--data-dir", str(SAMPLE), "--index-dir", str(tmp_path / "idx"), "--artifacts-dir",
+            str(tmp_path / "art"), "--mode", "offline", "--cases", str(ROOT / "data" / "eval" / "sample_cases.jsonl"),
+            "--pipeline", "clean_doc_slots_rerank_docs_prompt_structure"]
+    assert main(["index", *base]) == 0
+    assert main(["eval-retrieval", *base, "--run-id", "r"]) == 0
+    capsys.readouterr()
+    assert (tmp_path / "art" / "runs" / "r" / "results.jsonl").read_text().strip()

@@ -13,6 +13,8 @@ from .pipelines.experiments import (
     build_clean_doc_slots_rerank_docs_prompt,
     build_clean_doc_slots_rerank_docs_prompt_decompose,
     build_clean_doc_slots_rerank_docs_prompt_decompose_focused,
+    build_clean_doc_slots_rerank_docs_prompt_decompose_structure,
+    build_clean_doc_slots_rerank_docs_prompt_decompose_token_structure,
     build_clean_doc_slots_rerank_docs_prompt_decompose_top8,
     build_clean_doc_slots_rerank_docs_prompt_decompose_top8_focused,
     build_clean_doc_slots_rerank_docs_prompt_focused,
@@ -21,6 +23,8 @@ from .pipelines.experiments import (
     build_clean_doc_slots_rerank_docs_prompt_long,
     build_clean_doc_slots_rerank_docs_prompt_rewrite,
     build_clean_doc_slots_rerank_docs_prompt_sentences,
+    build_clean_doc_slots_rerank_docs_prompt_structure,
+    build_clean_doc_slots_rerank_docs_prompt_token_structure,
     build_clean_doc_slots_rerank_docs_prompt_top8,
     build_clean_doc_slots_rerank_docs_prompt_wide,
     build_clean_doc_slots_rerank_prompt,
@@ -81,7 +85,11 @@ PIPELINES = {"baseline": build_baseline, "advanced": build_advanced,
              "clean_doc_slots_rerank_docs_prompt_sentences": build_clean_doc_slots_rerank_docs_prompt_sentences,
              "clean_doc_slots_rerank_docs_prompt_decompose_top8": build_clean_doc_slots_rerank_docs_prompt_decompose_top8,
              "clean_doc_slots_rerank_docs_prompt_decompose_focused": build_clean_doc_slots_rerank_docs_prompt_decompose_focused,
-             "clean_doc_slots_rerank_docs_prompt_decompose_top8_focused": build_clean_doc_slots_rerank_docs_prompt_decompose_top8_focused}
+             "clean_doc_slots_rerank_docs_prompt_decompose_top8_focused": build_clean_doc_slots_rerank_docs_prompt_decompose_top8_focused,
+             "clean_doc_slots_rerank_docs_prompt_structure": build_clean_doc_slots_rerank_docs_prompt_structure,
+             "clean_doc_slots_rerank_docs_prompt_token_structure": build_clean_doc_slots_rerank_docs_prompt_token_structure,
+             "clean_doc_slots_rerank_docs_prompt_decompose_structure": build_clean_doc_slots_rerank_docs_prompt_decompose_structure,
+             "clean_doc_slots_rerank_docs_prompt_decompose_token_structure": build_clean_doc_slots_rerank_docs_prompt_decompose_token_structure}
 
 RETRIEVERS = {
     "dense": lambda index, clients, s: DenseRetriever(index, clients.embedding),

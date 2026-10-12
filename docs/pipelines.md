@@ -157,6 +157,7 @@ Reranking on the two best retrieval combinations:
 | `clean_doc_slots_rerank_docs_prompt_decompose` | The same with up to 3 model-written queries, one per concept involved (`max_queries = 3`) |
 | `clean_doc_slots_rerank_docs_prompt_sentences` | Search with the cleaned report and up to 3 of its pieces, without a model (`SentenceSplitQuery`: the title, the Streamlit calls, the sentences) |
 | `…_decompose_top8`, `…_decompose_focused`, `…_decompose_top8_focused` | `decompose` with 8 chunks (`top_k = 8`, budget 4,300 tokens, at least 3 documentation), with focused snippets for the reranker, or with both |
+| `…_structure`, `…_token_structure` (on `clean_doc_slots_rerank_docs_prompt` and on `…_decompose`) | The same design on structure-aware chunks: `chunking.method = "structure"` (cut at headings of levels 1-3, never inside code blocks) or `"token_structure"` (structure boundaries packed to about 500 tokens). Other chunking needs its own index (`paths.index_dir = "index/structure"` or `"index/token_structure"`); build it once with `supportdesk index --pipeline <name>` |
 
 With documentation places, the reranker keeps them (`retrieval.rerank_keep_docs`, or
 `retrieval.doc_slots` when it is unset): after the model's order,

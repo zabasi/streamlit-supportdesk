@@ -274,13 +274,23 @@ def cmd_snapshot(args) -> int:
     """One Markdown file per pipeline: stages, settings, a stage-by-stage run, latest results."""
     base = _settings(args)
     names = list(PIPELINES) if args.all else [base.pipeline.name]
-    failed = 0
+    failed = skipped = 0
     for name in names:
         try:
             print(f"wrote {_snapshot_one(args, _settings(args, name) if args.all else base)}\n")
-        except (ConfigError, DataError, IndexUnusable) as exc:
+        except IndexUnusable as exc:
+            if not args.all:  # the one pipeline asked for: its index must be usable
+                failed += 1
+                print(f"{name}: error: {config.redact(exc)}", file=sys.stderr)
+            else:  # --all: a pipeline whose own index is not built here is skipped, not an error
+                skipped += 1
+                print(f"{name}: skipped: {config.redact(exc)}", file=sys.stderr)
+        except (ConfigError, DataError) as exc:
             failed += 1
             print(f"{name}: error: {config.redact(exc)}", file=sys.stderr)
+    if skipped:
+        print(f"{skipped} pipeline(s) skipped: build their index with `supportdesk index --pipeline NAME`",
+              file=sys.stderr)
     return 1 if failed else 0
 
 
