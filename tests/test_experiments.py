@@ -656,3 +656,17 @@ def test_the_rewrite_experiment_searches_with_two_queries_then_reranks(index, cl
     assert len(retrieval.hits) == 6
     docs = {c.chunk_id for c in index.chunks if c.source_type == "documentation"}
     assert sum(h.chunk.chunk_id in docs for h in retrieval.hits) >= 3
+
+
+def test_the_decompose_variants_change_only_room_and_snippets():
+    def flat(name):
+        d = Settings.load(env={}, overrides=[f"pipeline.name={name}"]).to_dict()
+        return {f"{section}.{key}": value for section, keys in d.items() for key, value in keys.items()}
+    base = flat("clean_doc_slots_rerank_docs_prompt_decompose")
+    room, snip = {"retrieval.top_k", "context.max_tokens"}, {"retrieval.rerank_snippet"}
+    for suffix, changed in (("top8", room), ("focused", snip), ("top8_focused", room | snip)):
+        other = flat(f"clean_doc_slots_rerank_docs_prompt_decompose_{suffix}")
+        assert {k for k in base if base[k] != other[k]} == {"pipeline.name", *changed}, suffix
+        assert other["retrieval.rerank_keep_docs"] == 3 and other["retrieval.max_queries"] == 3
+    both = flat("clean_doc_slots_rerank_docs_prompt_decompose_top8_focused")
+    assert (both["retrieval.top_k"], both["context.max_tokens"], both["retrieval.rerank_snippet"]) == (8, 4300, "focused")

@@ -228,3 +228,23 @@ def build_clean_doc_slots_rerank_docs_prompt_sentences(retriever, clients, setti
     query = SentenceSplitQuery(settings.context.max_query_chars, settings.retrieval.max_queries,
                                settings.retrieval.keep_report_query)
     return _with_queries("clean_doc_slots_rerank_docs_prompt_sentences", query, retriever, clients, settings)
+
+
+# ---- variants of decompose: more room and focused snippets ----
+
+def build_clean_doc_slots_rerank_docs_prompt_decompose_top8(retriever, clients, settings):
+    """decompose showing the model 8 chunks instead of 6."""
+    return _with_queries("clean_doc_slots_rerank_docs_prompt_decompose_top8", QueryRewriter(clients, settings),
+                         retriever, clients, settings)
+
+
+def build_clean_doc_slots_rerank_docs_prompt_decompose_focused(retriever, clients, settings):
+    """decompose where the reranker sees each candidate's best-matching window."""
+    return _with_queries("clean_doc_slots_rerank_docs_prompt_decompose_focused", QueryRewriter(clients, settings),
+                         retriever, clients, settings)
+
+
+def build_clean_doc_slots_rerank_docs_prompt_decompose_top8_focused(retriever, clients, settings):
+    """decompose with 8 chunks and focused snippets for the reranker."""
+    return _with_queries("clean_doc_slots_rerank_docs_prompt_decompose_top8_focused",
+                         QueryRewriter(clients, settings), retriever, clients, settings)

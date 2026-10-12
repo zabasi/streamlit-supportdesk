@@ -156,6 +156,7 @@ Reranking on the two best retrieval combinations:
 | `clean_doc_slots_rerank_docs_prompt_rewrite` | Search with the cleaned report **and** one model-written query naming the Streamlit concept behind the problem (`QueryRewriter`, `keep_report_query = true`, prompt `configs/prompts/rewrite_concepts_system.txt`); results merged by rank fusion, then reranked |
 | `clean_doc_slots_rerank_docs_prompt_decompose` | The same with up to 3 model-written queries, one per concept involved (`max_queries = 3`) |
 | `clean_doc_slots_rerank_docs_prompt_sentences` | Search with the cleaned report and up to 3 of its pieces, without a model (`SentenceSplitQuery`: the title, the Streamlit calls, the sentences) |
+| `…_decompose_top8`, `…_decompose_focused`, `…_decompose_top8_focused` | `decompose` with 8 chunks (`top_k = 8`, budget 4,300 tokens, at least 3 documentation), with focused snippets for the reranker, or with both |
 
 With documentation places, the reranker keeps them (`retrieval.rerank_keep_docs`, or
 `retrieval.doc_slots` when it is unset): after the model's order,
