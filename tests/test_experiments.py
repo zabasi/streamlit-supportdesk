@@ -694,3 +694,16 @@ def test_a_structure_chunking_experiment_indexes_and_evaluates(tmp_path, capsys)
     assert main(["eval-retrieval", *base, "--run-id", "r"]) == 0
     capsys.readouterr()
     assert (tmp_path / "art" / "runs" / "r" / "results.jsonl").read_text().strip()
+
+
+def test_the_8_chunk_chunking_experiments_change_only_room_and_documentation_kept():
+    def flat(name):
+        d = Settings.load(env={}, overrides=[f"pipeline.name={name}"]).to_dict()
+        return {f"{section}.{key}": value for section, keys in d.items() for key, value in keys.items()}
+    for design in ("clean_doc_slots_rerank_docs_prompt", "clean_doc_slots_rerank_docs_prompt_decompose"):
+        for method in ("structure", "token_structure"):
+            base, other = flat(f"{design}_{method}"), flat(f"{design}_{method}_top8_keep4")
+            assert {k for k in base if base[k] != other[k]} == {
+                "pipeline.name", "retrieval.top_k", "context.max_tokens", "retrieval.rerank_keep_docs"}
+            assert (other["retrieval.top_k"], other["context.max_tokens"], other["retrieval.rerank_keep_docs"]) == (8, 4300, 4)
+            assert other["paths.index_dir"] == base["paths.index_dir"]  # same index
