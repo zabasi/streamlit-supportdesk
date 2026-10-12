@@ -1,0 +1,35 @@
+# decompose_merged_extract, revised: the model sees the concept queries decompose wrote ("Mechanisms
+# involved"), is asked only which parts are clearly unrelated and may be removed (prompt
+# configs/prompts/extract_drop_system.txt), and parts of the top-ranked chunk are never removed.
+# Uses the default index.
+
+[chunking]
+method = "fixed"
+max_tokens = 512
+overlap_tokens = 128
+
+[retrieval]
+top_k = 6
+candidate_k = 15             # candidates the reranker orders
+rerank_snippet_chars = 400   # characters of each candidate the reranker sees
+extract_mode = "drop"         # the model lists only the parts to remove
+extract_show_concepts = true  # and sees the concept queries decompose wrote
+extract_protect_top = 1       # parts of the top-ranked chunk are never removed
+keep_report_query = true     # search with the cleaned report too
+max_queries = 3              # up to 3 model-written queries
+doc_slots = 10               # documentation among the 15 candidates
+rerank_keep_docs = 3         # documentation kept in the final 6 after reranking
+historical_filter = true
+
+[context]
+max_tokens = 3200            # 6 chunks x 512 tokens: enough room that the budget never drops a chunk
+max_query_chars = 4000
+max_body_chars = 4000
+
+[pipeline]
+retriever = "dense_doc_slots"
+
+[prompts]
+extract = "configs/prompts/extract_drop_system.txt"
+rewrite = "configs/prompts/rewrite_concepts_system.txt"
+rerank = "configs/prompts/rerank_docs_system.txt"

@@ -182,6 +182,9 @@ Defaults shown are the built-in ones. `*unset*` means the key is optional and no
 | `rerank_snippet` | `start` | which part of each candidate the LLMReranker shows: start (its first rerank_snippet_chars) \| focused (the window that best matches the report, with its section heading) |
 | `rerank_keep_docs` | *unset* | documentation chunks the LLMReranker keeps in the final top_k; unset: retrieval.doc_slots |
 | `min_chunks` | `2` | fewest chunks the GradedReranker keeps, even when fewer are graded relevant |
+| `extract_mode` | `keep` | ExtractingReranker: the model lists the parts to keep, or the parts to drop |
+| `extract_show_concepts` | `False` | ExtractingReranker: show the model the concept queries the query stage wrote |
+| `extract_protect_top` | `0` | ExtractingReranker: never drop parts of this many top-ranked chunks |
 | `section_candidates` | `30` | most sections and other candidates the SectionReranker ranks |
 | `rerank_doc_places` | `0` | documentation places filled by the model's choice among the documentation candidates (DocPlacesReranker) |
 | `bm25_slots` | `0` | places in the results filled by BM25 (keyword) search, the rest by dense search; used by the hybrid_split retriever |

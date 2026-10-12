@@ -173,6 +173,10 @@ class Retrieval:
     rerank_keep_docs: int | None = _opt("documentation chunks the LLMReranker keeps in the final top_k; "
                                         "unset: retrieval.doc_slots", None)
     min_chunks: int = _opt("fewest chunks the GradedReranker keeps, even when fewer are graded relevant", 2)
+    extract_mode: str = _opt("ExtractingReranker: the model lists the parts to keep, or the parts to drop", "keep")
+    extract_show_concepts: bool = _opt("ExtractingReranker: show the model the concept queries the query stage wrote",
+                                       False)
+    extract_protect_top: int = _opt("ExtractingReranker: never drop parts of this many top-ranked chunks", 0)
     section_candidates: int = _opt("most sections and other candidates the SectionReranker ranks", 30)
     rerank_doc_places: int = _opt("documentation places filled by the model's choice among the documentation "
                                   "candidates (DocPlacesReranker)", 0)
@@ -434,6 +438,8 @@ class Settings:
              f"retrieval.rerank_keep_docs ({r.rerank_keep_docs}) must be between 0 and retrieval.top_k"),
             (r.section_candidates >= 1, "retrieval.section_candidates must be >= 1"),
             (r.min_chunks >= 1, "retrieval.min_chunks must be >= 1"),
+            (r.extract_mode in ("keep", "drop"), f"retrieval.extract_mode must be keep or drop, got {r.extract_mode!r}"),
+            (r.extract_protect_top >= 0, "retrieval.extract_protect_top must be >= 0"),
             (0 <= r.rerank_doc_places <= r.top_k,
              f"retrieval.rerank_doc_places ({r.rerank_doc_places}) must be between 0 and retrieval.top_k"),
             (0 <= r.bm25_slots <= r.top_k,

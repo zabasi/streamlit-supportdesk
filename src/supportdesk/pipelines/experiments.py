@@ -459,3 +459,12 @@ def build_clean_doc_slots_rerank_docs_prompt_decompose_merged_extract(retriever,
     stages["query"] = QueryRewriter(clients, settings)
     stages["reranker"] = ExtractingReranker(clients, settings, _index_chunks(retriever))
     return StagedPipeline(name="clean_doc_slots_rerank_docs_prompt_decompose_merged_extract", clients=clients, settings=settings, **stages)
+
+
+
+def build_clean_doc_slots_rerank_docs_prompt_decompose_merged_extract_drop(retriever, clients, settings):
+    """decompose_merged_extract asking what to drop, with the concept queries shown and the top chunk kept."""
+    stages = default_stages(retriever, clients, settings)
+    stages["query"] = QueryRewriter(clients, settings)
+    stages["reranker"] = ExtractingReranker(clients, settings, _index_chunks(retriever))
+    return StagedPipeline(name="clean_doc_slots_rerank_docs_prompt_decompose_merged_extract_drop", clients=clients, settings=settings, **stages)

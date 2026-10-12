@@ -94,19 +94,26 @@ class GradedReranker:
 _PART = re.compile(r"^P(\d+)$")
 
 
-def kept_parts(text: str, count: int) -> list[int]:
-    """Positions (0-based) of the parts the model kept, in order; [] if the output is unusable."""
+def listed_parts(text: str, key: str, count: int) -> list[int] | None:
+    """Positions (0-based) of the parts the model listed under ``key``, in order; None if unusable."""
     try:
         payload = extract_json(text)
     except (NotJson, ValueError):
-        return []
-    labels = payload.get("keep") if isinstance(payload, dict) else None
+        return None
+    labels = payload.get(key) if isinstance(payload, dict) else None
+    if not isinstance(labels, list):
+        return None
     found = []
     for label in labels if isinstance(labels, list) else []:
         match = _PART.match(str(label).strip())
         if match and 1 <= int(match.group(1)) <= count and int(match.group(1)) - 1 not in found:
             found.append(int(match.group(1)) - 1)
     return sorted(found)
+
+
+def kept_parts(text: str, count: int) -> list[int]:
+    """Positions (0-based) of the parts the model kept, in order; [] if the output is unusable."""
+    return listed_parts(text, "keep", count) or []
 
 
 class ExtractingReranker:
@@ -119,6 +126,12 @@ class ExtractingReranker:
         self.merged, self.sections = MergedReranker(clients, settings, chunks), Sections(chunks)
         self.clients, self.clean = clients, CleanQuery(settings.context.max_query_chars)
         self.prompt = Path(settings.prompts.extract).read_text(encoding="utf-8")
+        r = settings.retrieval
+        self.mode, self.protect_top = r.extract_mode, r.extract_protect_top
+        self.concepts = None
+        if r.extract_show_concepts:  # the query stage's concept queries (its call replays from the cache)
+            from .rewrite_query import QueryRewriter
+            self.concepts, self.skip = QueryRewriter(clients, settings), 1 if r.keep_report_query else 0
 
     def parts(self, hit: Hit) -> list[Hit]:
         c = hit.chunk
@@ -134,16 +147,29 @@ class ExtractingReranker:
 
     def __call__(self, case: CaseInput, query: str, hits: list[Hit]) -> list[Hit]:
         kept = self.merged(case, query, hits)
-        parts = [p for h in kept for p in self.parts(h)]
+        owned = [(i, p) for i, h in enumerate(kept) for p in self.parts(h)]
+        parts = [p for _, p in owned]
         if len(parts) < 2:
             return kept
+        protected = {n for n, (i, _) in enumerate(owned) if i < self.protect_top}
         listing = "\n\n".join(f"P{n}: [{p.chunk.source_type}] {p.chunk.title}\n{p.chunk.text.strip()}"
                                 for n, p in enumerate(parts, start=1))
-        content = f"## Report\n{self.clean(case, {})[0]}\n\n## Parts\n{listing}"
+        content = f"## Report\n{self.clean(case, {})[0]}\n\n"
+        if self.concepts is not None:
+            mechanisms = self.concepts(case, {})[self.skip:]
+            if mechanisms:
+                content += "## Mechanisms involved\n" + "\n".join(f"- {m}" for m in mechanisms) + "\n\n"
+        content += f"## Parts\n{listing}"
         text, _ = self.clients.chat.complete([{"role": "system", "content": self.prompt},
                                               {"role": "user", "content": content}],
                                              stage="extract", json_mode=True)
-        chosen = kept_parts(text, len(parts))
-        if not chosen:  # unusable output, or nothing kept: keep everything
+        listed = listed_parts(text, self.mode, len(parts))
+        if listed is None:  # unusable output: keep everything
+            return kept
+        if self.mode == "drop":
+            chosen = [n for n in range(len(parts)) if n not in set(listed) or n in protected]
+        else:
+            chosen = sorted(set(listed) | protected)
+        if not chosen:  # nothing kept: keep everything
             return kept
         return merge_overlaps([parts[i] for i in chosen], self.sections.pages)

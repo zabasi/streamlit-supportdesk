@@ -117,3 +117,56 @@ def test_the_extract_experiment_differs_from_merged_only_in_its_stage():
     a, b = flat(f"{d}_merged"), flat(f"{d}_merged_extract")
     assert {k for k in a if a[k] != b[k]} == {"pipeline.name"}
     assert PIPELINES[f"{d}_merged_extract"].__doc__.startswith("decompose_merged, then one model call")
+
+
+def extractor_v2(clients, settings, output, *, protect=1, concepts=True):
+    from supportdesk.pipelines.stages.evidence import ExtractingReranker
+    page = Chunk(chunk_id="doc:s:0", source_id="doc:s", source_type="documentation", title="Session State",
+                 text=SECTIONED, url="u", start_char=0, end_char=len(SECTIONED))
+    issue = Chunk(chunk_id="issue:1:0", source_id="issue:1", source_type="issue", title="t", text="Issue body.",
+                  url="u", start_char=0, end_char=11)
+    s = dataclasses.replace(settings, retrieval=dataclasses.replace(
+        settings.retrieval, top_k=6, doc_slots=0, extract_mode="drop", extract_protect_top=protect,
+        extract_show_concepts=concepts, keep_report_query=True, max_queries=2))
+    stage = ExtractingReranker(clients, s, [page])
+    hits = [Hit(page, 0.9, 1, "dense"), Hit(issue, 0.5, 2, "dense")]
+    calls = clients.chat.calls
+    clients.chat.script[calls + 1] = json.dumps({"ranking": ["C2", "C1"]})  # reranking: the issue first
+    if concepts:
+        clients.chat.script[calls + 2] = json.dumps({"queries": ["widget initialization from session state",
+                                                                 "button state cannot be set"]})
+    clients.chat.script[calls + (3 if concepts else 2)] = output
+    case = CaseInput(case_id="c", title="Button state", body="Setting a button through session state fails")
+    return stage(case, "q", hits)
+
+
+def test_drop_mode_keeps_everything_but_the_dropped_parts(clients, settings):
+    kept = extractor_v2(clients, settings, json.dumps({"drop": ["P5"]}), protect=0)
+    shown = clients.chat.seen[-1][1]["content"]
+    assert "## Mechanisms involved\n- widget initialization from session state" in shown
+    starts = [h.chunk.text.strip().splitlines()[0] for h in kept]
+    assert starts == ["Issue body.", "Session State"]  # the issue, then the page minus Serialization, joined
+    assert "## Serialization" not in kept[1].chunk.text and "## Caveats" in kept[1].chunk.text
+
+
+def test_parts_of_the_top_chunk_are_never_dropped_and_unusable_output_keeps_all(clients, settings):
+    kept = extractor_v2(clients, settings, json.dumps({"drop": ["P1", "P5"]}))  # P1 is the top-ranked issue
+    assert kept[0].chunk.text == "Issue body."
+    kept = extractor_v2(clients, settings, "not json")
+    assert [h.chunk.chunk_id for h in kept] == ["issue:1:0", "doc:s:0"]
+    kept = extractor_v2(clients, settings, json.dumps({"drop": []}), concepts=False)
+    assert "Mechanisms involved" not in clients.chat.seen[-1][1]["content"] and len(kept) == 2
+
+
+def test_the_drop_experiment_changes_only_the_extraction_settings():
+    from supportdesk.config import Settings
+    def flat(name):
+        d = Settings.load(env={}, overrides=[f"pipeline.name={name}"]).to_dict()
+        return {f"{section}.{key}": value for section, keys in d.items() for key, value in keys.items()}
+    d = "clean_doc_slots_rerank_docs_prompt_decompose"
+    a, b = flat(f"{d}_merged_extract"), flat(f"{d}_merged_extract_drop")
+    assert {k for k in a if a[k] != b[k]} == {"pipeline.name", "retrieval.extract_mode",
+                                                "retrieval.extract_show_concepts", "retrieval.extract_protect_top",
+                                                "prompts.extract"}
+    assert (b["retrieval.extract_mode"], b["retrieval.extract_show_concepts"], b["retrieval.extract_protect_top"]) == (
+        "drop", True, 1)
