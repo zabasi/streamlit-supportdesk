@@ -127,6 +127,13 @@ class VectorIndex:
             raise IndexUnusable(
                 f"index was built with chunking {have[0]} {have[1]}/{have[2]} (method max_tokens/overlap) "
                 f"but the configuration says {want[0]} {want[1]}/{want[2]}; rebuild it with `supportdesk index`")
+        headers_built = bool(built.get("context_header", False))  # indexes from before the option: none
+        headers_wanted = bool(getattr(expect_chunking, "context_header", False))
+        if expect_chunking is not None and headers_built != headers_wanted:
+            raise IndexUnusable(
+                f"index was built {'with' if headers_built else 'without'} context headers but the "
+                f"configuration says chunking.context_header = {str(headers_wanted).lower()}; "
+                f"rebuild it with `supportdesk index`")
         if not (d / "qdrant").exists():
             raise IndexUnusable(f"index at {d} has no vector store; "
                                 "rebuild it with `supportdesk index`")
@@ -165,7 +172,8 @@ def index_from_vectors(chunks: list[Chunk], vectors: list, *, embedding_model: s
         "chunk_count": len(chunks), "chunks_by_type": dict(Counter(c.source_type for c in chunks)),
         "chunk_ids_sha256": ids_digest,
         "chunking": {"method": chunking.method, "max_tokens": chunking.max_tokens,
-                     "overlap_tokens": chunking.overlap_tokens},
+                     "overlap_tokens": chunking.overlap_tokens,
+                     "context_header": getattr(chunking, "context_header", False)},
         "exclusions": exclusions.digest() if exclusions else {},
         "corpus": corpus.manifest() if corpus else {},
         **(notes or {}),

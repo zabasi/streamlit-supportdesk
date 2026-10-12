@@ -1,0 +1,35 @@
+# clean_doc_slots_rerank_docs_prompt_decompose_structure_top8_keep4 with contextual chunk headers: each documentation chunk is embedded with its page title
+# and heading path in front ("Session State › Caveats and limitations"). The stored chunk text is
+# unchanged. Headers are the only difference, so it has its own index (index/structure_ctx); build it once:
+#   supportdesk index --pipeline clean_doc_slots_rerank_docs_prompt_decompose_structure_ctx_top8_keep4
+
+[chunking]
+method = "structure"
+max_tokens = 512
+overlap_tokens = 128
+context_header = true        # embed documentation chunks with "page title › headings" in front
+
+[retrieval]
+top_k = 8                    # the model sees 8 chunks instead of 6
+candidate_k = 15             # candidates the reranker orders
+rerank_snippet_chars = 400   # characters of each candidate the reranker sees
+keep_report_query = true     # search with the cleaned report too
+max_queries = 3              # up to 3 model-written queries
+doc_slots = 10               # documentation among the 15 candidates
+rerank_keep_docs = 4         # at least 4 documentation chunks in the final 8
+historical_filter = true
+
+[context]
+max_tokens = 4300            # room for 8 chunks
+max_query_chars = 4000
+max_body_chars = 4000
+
+[pipeline]
+retriever = "dense_doc_slots"
+
+[prompts]
+rewrite = "configs/prompts/rewrite_concepts_system.txt"
+rerank = "configs/prompts/rerank_docs_system.txt"
+
+[paths]
+index_dir = "index/structure_ctx"     # its own index: supportdesk index --pipeline clean_doc_slots_rerank_docs_prompt_decompose_structure_ctx_top8_keep4

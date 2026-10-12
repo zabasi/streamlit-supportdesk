@@ -22,6 +22,7 @@ from .data.chunking import (
     sources_without_chunks,
 )
 from .data.clean import sensitive_findings
+from .data.context import embedding_texts
 from .data.corpus import load_corpus
 from .eval.leakage import check_leakage
 from .llm.factory import Clients
@@ -67,7 +68,9 @@ def build_indexing_graph(settings: Settings, clients: Clients, *, cases: list, e
     def embed(state):
         if not state["chunks"]:
             raise IndexUnusable("nothing to index")
-        vectors, _ = clients.embedding.embed([c.text for c in state["chunks"]], stage="index")
+        sources = {r.source_id: r.text for r in state["records"]}
+        texts = embedding_texts(state["chunks"], sources, settings.chunking.context_header)
+        vectors, _ = clients.embedding.embed(texts, stage="index")
         return {"vectors": vectors}
 
     def store(state):

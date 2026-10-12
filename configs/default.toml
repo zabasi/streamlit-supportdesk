@@ -41,6 +41,7 @@ max_live_calls = 5000
 method = "fixed"
 max_tokens = 512
 overlap_tokens = 128
+context_header = false          # embed documentation chunks with "page title › headings" in front
 
 [retrieval]
 top_k = 6                        # chunks returned by retrieval AND (by default) allowed in the prompt

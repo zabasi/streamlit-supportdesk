@@ -295,3 +295,31 @@ def build_clean_doc_slots_rerank_docs_prompt_decompose_structure_top8_keep4(retr
 def build_clean_doc_slots_rerank_docs_prompt_decompose_token_structure_top8_keep4(retriever, clients, settings):
     """clean_doc_slots_rerank_docs_prompt_decompose_token_structure showing the model 8 chunks, at least 4 of them documentation."""
     return _with_queries("clean_doc_slots_rerank_docs_prompt_decompose_token_structure_top8_keep4", QueryRewriter(clients, settings), retriever, clients, settings)
+
+
+# ---- contextual chunk headers: chunks embedded with "page title › headings" in front ----
+
+
+def build_clean_doc_slots_rerank_docs_prompt_decompose_ctx(retriever, clients, settings):
+    """clean_doc_slots_rerank_docs_prompt_decompose with contextual chunk headers in the embeddings (its own index)."""
+    return _with_queries("clean_doc_slots_rerank_docs_prompt_decompose_ctx", QueryRewriter(clients, settings), retriever, clients, settings)
+
+
+def build_clean_doc_slots_rerank_docs_prompt_decompose_structure_ctx(retriever, clients, settings):
+    """clean_doc_slots_rerank_docs_prompt_decompose_structure with contextual chunk headers in the embeddings (its own index)."""
+    return _with_queries("clean_doc_slots_rerank_docs_prompt_decompose_structure_ctx", QueryRewriter(clients, settings), retriever, clients, settings)
+
+
+def build_clean_doc_slots_rerank_docs_prompt_decompose_token_structure_ctx(retriever, clients, settings):
+    """clean_doc_slots_rerank_docs_prompt_decompose_token_structure with contextual chunk headers in the embeddings (its own index)."""
+    return _with_queries("clean_doc_slots_rerank_docs_prompt_decompose_token_structure_ctx", QueryRewriter(clients, settings), retriever, clients, settings)
+
+
+def build_clean_doc_slots_rerank_docs_prompt_decompose_structure_ctx_top8_keep4(retriever, clients, settings):
+    """clean_doc_slots_rerank_docs_prompt_decompose_structure_top8_keep4 with contextual chunk headers in the embeddings (its own index)."""
+    return _with_queries("clean_doc_slots_rerank_docs_prompt_decompose_structure_ctx_top8_keep4", QueryRewriter(clients, settings), retriever, clients, settings)
+
+
+def build_clean_doc_slots_rerank_docs_prompt_decompose_token_structure_ctx_top8_keep4(retriever, clients, settings):
+    """clean_doc_slots_rerank_docs_prompt_decompose_token_structure_top8_keep4 with contextual chunk headers in the embeddings (its own index)."""
+    return _with_queries("clean_doc_slots_rerank_docs_prompt_decompose_token_structure_ctx_top8_keep4", QueryRewriter(clients, settings), retriever, clients, settings)

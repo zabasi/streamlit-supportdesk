@@ -155,6 +155,7 @@ Defaults shown are the built-in ones. `*unset*` means the key is optional and no
 | `method` | `fixed` | which chunker the indexing graph's chunk node runs: fixed \| structure \| token_structure |
 | `max_tokens` | `512` | chunk size in tokens (the project's tokenizer); changing it means building the index again |
 | `overlap_tokens` | `128` | tokens shared by consecutive chunks; must be smaller than max_tokens |
+| `context_header` | `False` | embed each documentation chunk with its page title and heading path in front (the stored text is unchanged); needs its own index |
 
 ### `[retrieval]`
 

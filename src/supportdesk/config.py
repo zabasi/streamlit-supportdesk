@@ -122,6 +122,8 @@ class Chunking:
                        "fixed")
     max_tokens: int = _opt("chunk size in tokens (the project's tokenizer); changing it means building the index again", 512)
     overlap_tokens: int = _opt("tokens shared by consecutive chunks; must be smaller than max_tokens", 128)
+    context_header: bool = _opt("embed each documentation chunk with its page title and heading path in front "
+                                "(the stored text is unchanged); needs its own index", False)
 
 
 @dataclass(frozen=True)

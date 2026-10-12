@@ -249,7 +249,7 @@ def test_chunking_settings_change_the_chunks_and_are_recorded_in_the_index(tmp_p
     clients = build_clients(s_small)
     idx = build_index(small, clients.embedding, embedding_model="fake-embedding",
                       chunking=s_small.chunking)
-    assert idx.manifest["chunking"] == {"method": "fixed", "max_tokens": 20, "overlap_tokens": 5}
+    assert idx.manifest["chunking"] == {"method": "fixed", "max_tokens": 20, "overlap_tokens": 5, "context_header": False}
 
 
 def test_an_index_built_with_other_chunking_is_refused(tmp_path, cases):
@@ -412,7 +412,8 @@ def test_cli_index_reports_where_it_wrote_and_status_agrees(tmp_path, capsys):
     status = json.loads(capsys.readouterr().out)
     assert status["index_exists"] is True and status["paths"]["index_dir"] == str(tmp_path / "idx")
     manifest = json.loads((tmp_path / "idx" / "manifest.json").read_text())
-    assert manifest["chunking"] == {"method": "fixed", "max_tokens": 512, "overlap_tokens": 128}
+    assert manifest["chunking"] == {"method": "fixed", "max_tokens": 512, "overlap_tokens": 128,
+                                    "context_header": False}
     assert manifest["sources_without_chunks"] == [] and len(manifest["config_sha256"]) == 16
 
 
