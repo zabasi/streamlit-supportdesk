@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import re
 from dataclasses import dataclass
+from itertools import pairwise
 
 _FENCE_OPEN = re.compile(r"^ {0,3}(`{3,}|~{3,})(.*)$")
 _FENCE_CLOSE = re.compile(r"^ {0,3}(`{3,}|~{3,})[ \t]*$")
@@ -69,7 +70,7 @@ def _sections(text: str, level: int, headings):
             stack.pop()
         stack.append((lv, title))
         path_at[s] = tuple(t for _, t in stack)
-    return [[a, b, path_at.get(a, ())] for a, b in zip(bounds, bounds[1:]) if b > a]
+    return [[a, b, path_at.get(a, ())] for a, b in pairwise(bounds) if b > a]
 
 
 def _merge_small(secs, text: str, min_chars: int):
