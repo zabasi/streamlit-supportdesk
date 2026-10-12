@@ -2,13 +2,14 @@
 # configs/default.toml for this pipeline only; --config and --set still override it.
 #
 # The best retrieval found on the development cases (experiment
-# clean_doc_slots_rerank_docs_prompt_decompose): the cleaned report plus up to 3 model-written queries,
-# one per Streamlit concept involved (QueryRewriter, prompt configs/prompts/rewrite_concepts_system.txt);
+# clean_doc_slots_rerank_docs_prompt_decompose_merged): the cleaned report plus up to 3 model-written
+# queries, one per Streamlit concept involved (QueryRewriter, prompt configs/prompts/rewrite_concepts_system.txt);
 # each query returns 15 candidates, 10 of them documentation (retriever dense_doc_slots); the lists
-# are merged by rank fusion; one model call ranks the 15 with configs/prompts/rerank_docs_system.txt
-# (LLMReranker); the best 6 are kept, with at least 3 documentation chunks. Like the baseline it shows
-# the model 6 chunks within 3,200 tokens, so the comparison is about better evidence, not more.
-# Per case it makes two model calls for retrieval: the rewrite and the reranking.
+# are merged by rank fusion; one model call ranks the 15 with configs/prompts/rerank_docs_system.txt;
+# the best 6 are kept, with at least 3 documentation chunks, and kept chunks of one page that overlap
+# or touch are merged into one span, so their shared text appears once (MergedReranker). The model
+# sees at most 6 pieces within 3,200 tokens (6 chunks of up to 512 tokens always fit, so nothing is
+# dropped). Per case it makes two model calls for retrieval: the rewrite and the reranking.
 
 [chunking]
 method = "fixed"

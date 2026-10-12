@@ -473,8 +473,8 @@ def test_the_variants_of_the_advanced_design_each_change_one_thing():
     assert hybrid["pipeline.retriever"] == "hybrid_doc_slots"
     assert {k for k in base if base[k] != wide[k]} == {"pipeline.name", "retrieval.candidate_k", "retrieval.doc_slots"}
     assert (wide["retrieval.candidate_k"], wide["retrieval.doc_slots"], wide["retrieval.rerank_keep_docs"]) == (20, 15, 3)
-    decompose, advanced = flat("clean_doc_slots_rerank_docs_prompt_decompose"), flat("advanced")
-    assert {k for k in decompose if decompose[k] != advanced[k]} == {"pipeline.name"}  # advanced is decompose
+    merged, advanced = flat("clean_doc_slots_rerank_docs_prompt_decompose_merged"), flat("advanced")
+    assert {k for k in merged if merged[k] != advanced[k]} == {"pipeline.name"}  # advanced is decompose_merged
 
 
 def test_the_hybrid_candidates_variant_runs_end_to_end(index, clients, settings):
@@ -707,3 +707,11 @@ def test_the_8_chunk_chunking_experiments_change_only_room_and_documentation_kep
                 "pipeline.name", "retrieval.top_k", "context.max_tokens", "retrieval.rerank_keep_docs"}
             assert (other["retrieval.top_k"], other["context.max_tokens"], other["retrieval.rerank_keep_docs"]) == (8, 4300, 4)
             assert other["paths.index_dir"] == base["paths.index_dir"]  # same index
+
+
+
+def test_advanced_merges_overlapping_chunks(index, clients, settings):
+    from supportdesk.pipelines.advanced import build_advanced
+    from supportdesk.pipelines.stages.evidence import MergedReranker
+    pipeline = build_advanced(DocSlotsRetriever(index, clients.embedding, doc_slots=3), clients, settings)
+    assert isinstance(pipeline.reranker, MergedReranker) and pipeline.describe()["reranker"] == "MergedReranker"
