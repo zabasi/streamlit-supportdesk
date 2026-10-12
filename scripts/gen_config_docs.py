@@ -18,6 +18,11 @@ DOC = ROOT / "docs" / "configuration.md"
 MARKER = "## Reference"
 
 
+def _cell(text: str) -> str:
+    """Text safe inside a Markdown table cell: a bare | would start a new column."""
+    return str(text).replace("|", "\\|")
+
+
 def reference() -> str:
     defaults = Settings.from_dict({})
     rows = []
@@ -29,7 +34,7 @@ def reference() -> str:
                 shown = "*unset*"
             else:
                 shown = f"`{list(value) if isinstance(value, tuple) else value}`"
-            rows.append(f"| `{f.name}` | {shown} | {f.metadata.get('help', '')} |")
+            rows.append(f"| `{f.name}` | {_cell(shown)} | {_cell(f.metadata.get('help', ''))} |")
     return "\n".join(rows)
 
 
