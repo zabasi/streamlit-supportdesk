@@ -1,0 +1,32 @@
+# decompose (the current advanced) searching exactly as before with fixed chunks, but the reranker ranks
+# whole page sections: each candidate documentation chunk is replaced by the sections it overlaps
+# (a ## section with its ### subsections), at most 30 units, and the best 8 go to the model within the
+# same 3,200-token budget. Uses the default index.
+
+[chunking]
+method = "fixed"
+max_tokens = 512
+overlap_tokens = 128
+
+[retrieval]
+top_k = 8                    # 8 sections to the model (sections are smaller than chunks)
+candidate_k = 15             # candidates the reranker orders
+rerank_snippet_chars = 400   # characters of each candidate the reranker sees
+section_candidates = 30      # most sections (and other candidates) the reranker orders
+keep_report_query = true     # search with the cleaned report too
+max_queries = 3              # up to 3 model-written queries
+doc_slots = 10               # documentation among the 15 candidates
+rerank_keep_docs = 3         # documentation kept in the final 6 after reranking
+historical_filter = true
+
+[context]
+max_tokens = 3200            # 6 chunks x 512 tokens: enough room that the budget never drops a chunk
+max_query_chars = 4000
+max_body_chars = 4000
+
+[pipeline]
+retriever = "dense_doc_slots"
+
+[prompts]
+rewrite = "configs/prompts/rewrite_concepts_system.txt"
+rerank = "configs/prompts/rerank_docs_system.txt"

@@ -123,6 +123,34 @@ def passage_coverage(chunks: list[dict], span: dict) -> float | None:
     return covered / (end - start)
 
 
+def _union(ranges: list[tuple[int, int]]) -> list[tuple[int, int]]:
+    merged = []
+    for lo, hi in sorted(ranges):
+        if merged and lo <= merged[-1][1]:
+            merged[-1] = (merged[-1][0], max(merged[-1][1], hi))
+        elif hi > lo:
+            merged.append((lo, hi))
+    return merged
+
+
+def gold_share(chunks: list[dict], spans: list[dict]) -> float | None:
+    """How much of the evidence text is gold: characters inside a gold passage over all characters of
+    the chunks (overlapping chunks counted once)."""
+    by_source: dict[str, list[tuple[int, int]]] = {}
+    for c in chunks:
+        if c.get("start_char") is not None and c.get("end_char") is not None:
+            by_source.setdefault(c["source_id"], []).append((c["start_char"], c["end_char"]))
+    total = sum(hi - lo for ranges in by_source.values() for lo, hi in _union(ranges))
+    if not total:
+        return None
+    gold = 0
+    for source_id, ranges in by_source.items():
+        golds = _union([(sp["start_char"], sp["end_char"]) for sp in spans if sp["source_id"] == source_id])
+        for lo, hi in _union(ranges):
+            gold += sum(max(0, min(hi, g1) - max(lo, g0)) for g0, g1 in golds)
+    return gold / total
+
+
 def passage_recall(chunks: list[dict], spans: list[dict], threshold: float) -> float | None:
     """Share of a case's gold passages that the chunks cover at least ``threshold`` of."""
     covered = [passage_coverage(chunks, s) for s in spans]
@@ -167,7 +195,15 @@ def evaluate_retrieval(pairs: list[tuple[EvalCase, dict]], ks: tuple[int, ...], 
             "packet_recall": _mean(recall_at_k(r["packet"], c.gold_evidence, max(len(r["packet"]), 1))
                                    for c, r in sub),
             **(passages(sub) if passage_threshold is not None else {}),
+            **evidence_size(sub),
         }
+
+    def evidence_size(sub):
+        tokens = [r["packet_tokens"] for _, r in sub if r.get("packet_tokens") is not None]
+        if not tokens:
+            return {}
+        return {"packet_tokens_median": float(statistics.median(tokens)),
+                "packet_chunks_mean": round(statistics.mean(len(r["packet"]) for _, r in sub), 2)}
 
     def passages(sub):
         spans = [(c, r) for c, r in sub if getattr(c, "evidence_spans", None)]
@@ -186,6 +222,7 @@ def evaluate_retrieval(pairs: list[tuple[EvalCase, dict]], ks: tuple[int, ...], 
                                  for c, r in spans),
             "packet_passage_recall": _mean(passage_recall(r["packet"], c.evidence_spans, passage_threshold)
                                            for c, r in spans),
+            "packet_gold_share": _mean(gold_share(r["packet"], c.evidence_spans) for c, r in spans),
         }
     out = {"kind": "retrieval", "n_cases": len(pairs), "n_with_gold": len(with_gold),
            "n_without_gold": len(pairs) - len(with_gold), **block(with_gold)}

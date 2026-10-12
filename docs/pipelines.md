@@ -162,6 +162,8 @@ Reranking on the two best retrieval combinations:
 | `…_ctx`, `…_structure_ctx`, `…_token_structure_ctx` and their `_ctx_top8_keep4` versions (on `clean_doc_slots_rerank_docs_prompt` and on `…_decompose`) | Contextual chunk headers (`chunking.context_header = true`): each documentation chunk is embedded with its page title and heading path in front ("Session State › Caveats and limitations"); the stored chunk text, its offsets and what the model reads are unchanged. Each has its own index (`index/<chunking>_ctx`); an index records whether it was built with headers and is refused by a pipeline configured otherwise |
 | `…_decompose_structure_large`, `…_decompose_token_structure_large`, each also `_ctx` and `_ctx_all` | `decompose` on large structured chunks that pack small neighbouring sections: `structure` with `structure_min_chars = 2000`, `structure_max_chars = 4000` (median about 400 tokens), `token_structure` with `token_target = 600`, `token_soft_max = 900`, `token_min_section = 300` (median about 320); without a context header, with the usual one (`context_header_scope = "start"`), or with one that also names every section inside the chunk (`"all"`). Each has its own index |
 | `…_decompose_structure_top12`, `…_top15`, and the same on `…_decompose_structure_ctx` | Small structure chunks, more of them within the same 3,200-token budget: 12 chunks from 25 candidates (18 documentation, at least 6 kept) or 15 from 30 (20 documentation, at least 8 kept). Same index as the parent |
+| `…_decompose_sections` | Search exactly as `decompose` (fixed chunks), then the reranker ranks **whole page sections**: each candidate documentation chunk is replaced by the sections it overlaps (a `##` section with its `###` subsections; a section bigger than its chunk is cut to the chunk), at most 30 units (`retrieval.section_candidates`); the best 8 go to the model within 3,200 tokens |
+| `…_decompose_trimmed` | `decompose` unchanged up to the reranker (same reranking call); each kept documentation chunk is then cut down to its one section that best matches the report |
 
 With documentation places, the reranker keeps them (`retrieval.rerank_keep_docs`, or
 `retrieval.doc_slots` when it is unset): after the model's order,
@@ -180,7 +182,10 @@ supportdesk eval-retrieval --pipeline clean_query --split dev
 supportdesk report <baseline run> <experiment run>
 ```
 
-A change that helps moves into `advanced`.
+A change that helps moves into `advanced`. Retrieval runs also report the evidence the model
+receives: its median size in tokens, the mean number of chunks, and its gold share (how much of the
+evidence text lies inside a gold passage), so variants that show the model more or noisier text can be
+compared fairly.
 
 ## The case workflow
 

@@ -121,8 +121,12 @@ def render_report(run_dirs: list[Path]) -> str:
                     + [(f"Passage hit@{k}", ("passage_hit_at_k", str(k)), "pct") for k in passage_ks]
                     + ([("Passage MRR", ("passage_mrr",), "num")] if passage_ks else [])
                     + [(f"Passage coverage@{k}", ("passage_coverage_at_k", str(k)), "pct") for k in passage_ks[-1:]]
-                    + ([("Gold passages in the prompt packet", ("packet_passage_recall",), "pct")]
-                       if passage_ks else []))
+                    + ([("Gold passages in the prompt packet", ("packet_passage_recall",), "pct"),
+                        ("Gold share of the prompt", ("packet_gold_share",), "pct")]
+                       if passage_ks else [])
+                    + ([("Evidence tokens in the prompt (median)", ("packet_tokens_median",), "num"),
+                        ("Chunks in the prompt (mean)", ("packet_chunks_mean",), "num")]
+                       if any("packet_tokens_median" in r["summary"]["metrics"] for r in runs) else []))
     rows = (ROWS[:3] + [(f"Recall@{k}", ("recall_at_k", str(k)), "pct") for k in ks]
             + [(f"Hit@{k}", ("hit_at_k", str(k)), "pct") for k in hit_ks] + passage_rows + ROWS[3:])
     for label, path, kind in rows:

@@ -94,6 +94,7 @@ def run_retrieval_eval(pipeline: StagedPipeline, cases: list[EvalCase], clients:
                                   "parent_source_id": c.parent_source_id, "start_char": c.start_char,
                                   "end_char": c.end_char} for c in r.packet.chunks]
                 row["n_queries"] = len(r.queries)
+                row["packet_tokens"] = r.packet.token_count
             except (BudgetExhausted, CallLimitReached) as exc:
                 stopped = True
                 row.update(outcome="budget_stopped", error=redact(exc))

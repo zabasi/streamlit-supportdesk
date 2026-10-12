@@ -11,6 +11,7 @@ from .stages import default_stages
 from .stages.clean_query import CleanQuery
 from .stages.llm_rerank import DocPlacesReranker, LLMReranker
 from .stages.rewrite_query import QueryRewriter
+from .stages.sections import SectionReranker, SectionTrimmer
 from .stages.split_query import SentenceSplitQuery
 
 
@@ -407,3 +408,26 @@ def build_clean_doc_slots_rerank_docs_prompt_decompose_structure_ctx_top12(retri
 def build_clean_doc_slots_rerank_docs_prompt_decompose_structure_ctx_top15(retriever, clients, settings):
     """clean_doc_slots_rerank_docs_prompt_decompose_structure_ctx showing the model 15 small sections within the same 3,200-token budget."""
     return _with_queries("clean_doc_slots_rerank_docs_prompt_decompose_structure_ctx_top15", QueryRewriter(clients, settings), retriever, clients, settings)
+
+
+# ---- search with fixed chunks, give the model whole sections ----
+
+def _index_chunks(retriever) -> list:
+    index = getattr(retriever, "index", None)
+    return list(index.chunks) if index is not None else []
+
+
+def build_clean_doc_slots_rerank_docs_prompt_decompose_sections(retriever, clients, settings):
+    """decompose where the reranker ranks whole sections of the candidates instead of fixed chunks."""
+    stages = default_stages(retriever, clients, settings)
+    stages["query"] = QueryRewriter(clients, settings)
+    stages["reranker"] = SectionReranker(clients, settings, _index_chunks(retriever))
+    return StagedPipeline(name="clean_doc_slots_rerank_docs_prompt_decompose_sections", clients=clients, settings=settings, **stages)
+
+
+def build_clean_doc_slots_rerank_docs_prompt_decompose_trimmed(retriever, clients, settings):
+    """decompose where each kept chunk is cut down to its one section that best matches the report."""
+    stages = default_stages(retriever, clients, settings)
+    stages["query"] = QueryRewriter(clients, settings)
+    stages["reranker"] = SectionTrimmer(clients, settings, _index_chunks(retriever))
+    return StagedPipeline(name="clean_doc_slots_rerank_docs_prompt_decompose_trimmed", clients=clients, settings=settings, **stages)

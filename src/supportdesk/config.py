@@ -170,6 +170,7 @@ class Retrieval:
                                "with its section heading)", "start")
     rerank_keep_docs: int | None = _opt("documentation chunks the LLMReranker keeps in the final top_k; "
                                         "unset: retrieval.doc_slots", None)
+    section_candidates: int = _opt("most sections and other candidates the SectionReranker ranks", 30)
     rerank_doc_places: int = _opt("documentation places filled by the model's choice among the documentation "
                                   "candidates (DocPlacesReranker)", 0)
     bm25_slots: int = _opt("places in the results filled by BM25 (keyword) search, the rest by dense "
@@ -428,6 +429,7 @@ class Settings:
              f"retrieval.rerank_snippet must be start or focused, got {r.rerank_snippet!r}"),
             (r.rerank_keep_docs is None or 0 <= r.rerank_keep_docs <= r.top_k,
              f"retrieval.rerank_keep_docs ({r.rerank_keep_docs}) must be between 0 and retrieval.top_k"),
+            (r.section_candidates >= 1, "retrieval.section_candidates must be >= 1"),
             (0 <= r.rerank_doc_places <= r.top_k,
              f"retrieval.rerank_doc_places ({r.rerank_doc_places}) must be between 0 and retrieval.top_k"),
             (0 <= r.bm25_slots <= r.top_k,
