@@ -1,4 +1,4 @@
-# clean_doc_slots_rerank_docs_prompt (the design advanced uses) showing the model 8 chunks instead of 6,
+# clean_doc_slots_rerank_docs_prompt (the earlier advanced design) showing the model 8 chunks instead of 6,
 # with the evidence budget raised to 4,300 tokens so they fit. The reranker's call is unchanged.
 # The number of chunks is the only difference. Shares the baseline's index.
 

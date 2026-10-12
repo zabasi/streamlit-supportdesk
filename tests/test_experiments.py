@@ -473,8 +473,8 @@ def test_the_variants_of_the_advanced_design_each_change_one_thing():
     assert hybrid["pipeline.retriever"] == "hybrid_doc_slots"
     assert {k for k in base if base[k] != wide[k]} == {"pipeline.name", "retrieval.candidate_k", "retrieval.doc_slots"}
     assert (wide["retrieval.candidate_k"], wide["retrieval.doc_slots"], wide["retrieval.rerank_keep_docs"]) == (20, 15, 3)
-    advanced = flat("advanced")  # advanced is this design: only the name differs
-    assert {k for k in base if base[k] != advanced[k]} == {"pipeline.name"}
+    decompose, advanced = flat("clean_doc_slots_rerank_docs_prompt_decompose"), flat("advanced")
+    assert {k for k in decompose if decompose[k] != advanced[k]} == {"pipeline.name"}  # advanced is decompose
 
 
 def test_the_hybrid_candidates_variant_runs_end_to_end(index, clients, settings):

@@ -1,4 +1,4 @@
-# clean_doc_slots_rerank_docs_prompt (the design advanced uses) with a wider pool: 20 candidates, 15 of
+# clean_doc_slots_rerank_docs_prompt (the earlier advanced design) with a wider pool: 20 candidates, 15 of
 # them documentation, instead of 15 with 10; the fixed-prompt reranker then keeps the best 6 with at
 # least 3 documentation chunks. The pool size is the only difference. Shares the baseline's index.
 

@@ -134,7 +134,7 @@ def build_clean_doc_slots_rerank_docs_prompt(retriever: Retriever, clients: Clie
     return StagedPipeline(name="clean_doc_slots_rerank_docs_prompt", clients=clients, settings=settings, **stages)
 
 
-# ---- variants of clean_doc_slots_rerank_docs_prompt (the design advanced uses) ----
+# ---- variants of clean_doc_slots_rerank_docs_prompt (the earlier advanced design) ----
 
 def build_clean_hybrid_doc_slots_rerank_docs_prompt(retriever: Retriever, clients: Clients,
                                                     settings: Settings) -> StagedPipeline:

@@ -33,8 +33,8 @@ Each pipeline loads its own profile, so pipelines can differ while sharing every
 
 ```
 configs/pipelines/baseline.toml   pinned reference values (these equal the defaults the golden test pins)
-configs/pipelines/advanced.toml   6 chunks like the baseline, from 15 candidates (10 documentation),
-                                  reranked by a model call with its own prompt
+configs/pipelines/advanced.toml   6 chunks like the baseline; the report plus up to 3 concept queries,
+                                  15 candidates each (10 documentation), reranked by a model call
 ```
 
 - **What a profile may set:** `chunking`, `retrieval`, `context`, `prompts`, `pipeline.retriever`, `paths.index_dir`. Anything else in a profile is an error.
