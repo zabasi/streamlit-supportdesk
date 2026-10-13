@@ -18,15 +18,17 @@ from ..llm.factory import Clients
 from ..retrieval.retriever import Retriever
 from .staged import StagedPipeline
 from .stages import default_stages
-from .stages.evidence import MergedReranker
+from .stages.evidence import ExpandingReranker
 from .stages.rewrite_query import QueryRewriter
 
 
 def build_advanced(retriever: Retriever, clients: Clients, settings: Settings) -> StagedPipeline:
-    """Improved: the report plus up to 3 concept queries, reranked; best 6 kept, overlapping ones merged."""
+    """Improved: report + concept queries; reranked on focused snippets with the concepts; best 6 merged."""
     stages = default_stages(retriever, clients, settings)
     stages["query"] = QueryRewriter(clients, settings)
     index = getattr(retriever, "index", None)  # pages are rebuilt from the index's chunks for merging
-    stages["reranker"] = MergedReranker(clients, settings, list(index.chunks) if index is not None else [])
+    # ExpandingReranker with retrieval.expand = none is MergedReranker; --set retrieval.expand=page|section
+    # tries expansion on the same design
+    stages["reranker"] = ExpandingReranker(clients, settings, list(index.chunks) if index is not None else [])
     extra_nodes: list = []
     return StagedPipeline(name="advanced", clients=clients, settings=settings, extra_nodes=extra_nodes, **stages)
