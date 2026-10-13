@@ -1,0 +1,120 @@
+{"case_id": "SCOPE-B001", "label": "IN_SCOPE", "title": "Session state disappears after rerun", "body": "My st.session_state['user'] value is gone when the script reruns.", "category": "explicit_api", "difficulty": "easy"}
+{"case_id": "SCOPE-B002", "label": "IN_SCOPE", "title": "Button callback not firing", "body": "In my Streamlit app, st.button with on_click does not update the state.", "category": "explicit_api", "difficulty": "easy"}
+{"case_id": "SCOPE-B003", "label": "IN_SCOPE", "title": "data_editor changes not saved", "body": "Rows edited in st.data_editor revert after the next interaction.", "category": "explicit_api", "difficulty": "easy"}
+{"case_id": "SCOPE-B004", "label": "IN_SCOPE", "title": "Form submit behavior", "body": "st.form_submit_button runs but my values look stale.", "category": "explicit_api", "difficulty": "easy"}
+{"case_id": "SCOPE-B005", "label": "IN_SCOPE", "title": "Cache returns old dataframe", "body": "st.cache_data gives me an older result after changing the file.", "category": "explicit_api", "difficulty": "easy"}
+{"case_id": "SCOPE-B006", "label": "IN_SCOPE", "title": "Fragment reruns repeatedly", "body": "st.fragment(run_every=...) keeps changing state when I navigate away.", "category": "explicit_api", "difficulty": "easy"}
+{"case_id": "SCOPE-B007", "label": "IN_SCOPE", "title": "Number input outside max", "body": "I assign st.session_state.n above the max_value of st.number_input.", "category": "explicit_api", "difficulty": "easy"}
+{"case_id": "SCOPE-B008", "label": "IN_SCOPE", "title": "Selectbox reset", "body": "My st.selectbox goes back to its default after a page change.", "category": "explicit_api", "difficulty": "easy"}
+{"case_id": "SCOPE-B009", "label": "IN_SCOPE", "title": "Text input default conflict", "body": "st.text_input value= and the same session_state key behave strangely.", "category": "explicit_api", "difficulty": "easy"}
+{"case_id": "SCOPE-B010", "label": "IN_SCOPE", "title": "Rerun loop", "body": "Calling st.rerun after a callback creates a loop.", "category": "explicit_api", "difficulty": "easy"}
+{"case_id": "SCOPE-B011", "label": "IN_SCOPE", "title": "Navigation API question", "body": "How should I preserve values when using st.navigation and st.Page?", "category": "explicit_api", "difficulty": "easy"}
+{"case_id": "SCOPE-B012", "label": "IN_SCOPE", "title": "File uploader state", "body": "st.file_uploader becomes None after another widget interaction.", "category": "explicit_api", "difficulty": "easy"}
+{"case_id": "SCOPE-B013", "label": "IN_SCOPE", "title": "Chat input state", "body": "st.chat_input clears and I need to retain the submitted value.", "category": "explicit_api", "difficulty": "easy"}
+{"case_id": "SCOPE-B014", "label": "IN_SCOPE", "title": "Plot rerendering", "body": "My st.plotly_chart selection disappears on rerun.", "category": "explicit_api", "difficulty": "easy"}
+{"case_id": "SCOPE-B015", "label": "IN_SCOPE", "title": "Download button rerun", "body": "Does st.download_button cause a rerun and reset widget state?", "category": "explicit_api", "difficulty": "easy"}
+{"case_id": "SCOPE-B016", "label": "IN_SCOPE", "title": "Widget loses value between pages", "body": "When I move to another page and come back, the dropdown returns to its default.", "category": "implicit_streamlit", "difficulty": "hard"}
+{"case_id": "SCOPE-B017", "label": "IN_SCOPE", "title": "Hidden widget forgets selection", "body": "I conditionally hide a select box; when it appears again its previous value is gone.", "category": "implicit_streamlit", "difficulty": "hard"}
+{"case_id": "SCOPE-B018", "label": "IN_SCOPE", "title": "Callback runs before expected", "body": "The submit callback fires and the UI shows the previous value until the next rerun.", "category": "implicit_streamlit", "difficulty": "hard"}
+{"case_id": "SCOPE-B019", "label": "IN_SCOPE", "title": "Page switch resets controls", "body": "Switching pages in my multipage app resets the controls even though I gave them keys.", "category": "implicit_streamlit", "difficulty": "hard"}
+{"case_id": "SCOPE-B020", "label": "IN_SCOPE", "title": "Browser tab session remains", "body": "After closing the app tab the server-side session appears alive for a while.", "category": "implicit_streamlit", "difficulty": "hard"}
+{"case_id": "SCOPE-B021", "label": "IN_SCOPE", "title": "Widget key recreated", "body": "I delete a widget key from session state but the old frontend value comes back.", "category": "implicit_streamlit", "difficulty": "hard"}
+{"case_id": "SCOPE-B022", "label": "IN_SCOPE", "title": "Dynamic widget vanishes", "body": "A control is rendered only for one branch; when I render it again the saved value is missing.", "category": "implicit_streamlit", "difficulty": "hard"}
+{"case_id": "SCOPE-B023", "label": "IN_SCOPE", "title": "Same key collision", "body": "I write to a state key and also use that exact key for an editable widget; it raises an error.", "category": "implicit_streamlit", "difficulty": "hard"}
+{"case_id": "SCOPE-B024", "label": "IN_SCOPE", "title": "Sidebar control persistence", "body": "A sidebar setting should persist across pages but it keeps resetting.", "category": "implicit_streamlit", "difficulty": "hard"}
+{"case_id": "SCOPE-B025", "label": "IN_SCOPE", "title": "Form values batch unexpectedly", "body": "Edits inside a form do not reach Python until I click submit. Is that expected?", "category": "implicit_streamlit", "difficulty": "hard"}
+{"case_id": "SCOPE-B026", "label": "IN_SCOPE", "title": "Only Streamlit code", "body": "import streamlit as st\nst.text_input('Name', key='name')", "category": "code_only", "difficulty": "hard"}
+{"case_id": "SCOPE-B027", "label": "IN_SCOPE", "title": "Code: widget callback", "body": "import streamlit as st\ndef update(): st.session_state.x += 1\nst.button('Go', on_click=update)", "category": "code_only", "difficulty": "hard"}
+{"case_id": "SCOPE-B028", "label": "IN_SCOPE", "title": "Code: form", "body": "import streamlit as st\nwith st.form('f'):\n    x=st.text_input('x')\n    st.form_submit_button('save')", "category": "code_only", "difficulty": "hard"}
+{"case_id": "SCOPE-B029", "label": "IN_SCOPE", "title": "Code: navigation", "body": "import streamlit as st\npg=st.navigation([st.Page('a.py'), st.Page('b.py')])\npg.run()", "category": "code_only", "difficulty": "hard"}
+{"case_id": "SCOPE-B030", "label": "IN_SCOPE", "title": "Code: cache", "body": "import streamlit as st\n@st.cache_data\ndef load(path): return open(path).read()", "category": "code_only", "difficulty": "hard"}
+{"case_id": "SCOPE-B031", "label": "IN_SCOPE", "title": "Code: editor", "body": "import streamlit as st\nedited=st.data_editor(df, key='editor')", "category": "code_only", "difficulty": "hard"}
+{"case_id": "SCOPE-B032", "label": "IN_SCOPE", "title": "Code: fragment", "body": "import streamlit as st\n@st.fragment(run_every='5s')\ndef tick(): st.write('x')", "category": "code_only", "difficulty": "hard"}
+{"case_id": "SCOPE-B033", "label": "IN_SCOPE", "title": "Code: session key", "body": "import streamlit as st\ndel st.session_state['foo']\nst.text_input('Foo', key='foo')", "category": "code_only", "difficulty": "hard"}
+{"case_id": "SCOPE-B034", "label": "IN_SCOPE", "title": "Code: rerun", "body": "import streamlit as st\nif st.button('again'): st.rerun()", "category": "code_only", "difficulty": "hard"}
+{"case_id": "SCOPE-B035", "label": "IN_SCOPE", "title": "Code: number input", "body": "import streamlit as st\nst.session_state['n']=99\nst.number_input('n',0,10,key='n')", "category": "code_only", "difficulty": "hard"}
+{"case_id": "SCOPE-B036", "label": "IN_SCOPE", "title": "Streamlit 1.23.1 same-key error", "body": "On 1.23.1, assigning a widget's session_state key raises an exception. Was this expected?", "category": "historical_version", "difficulty": "hard"}
+{"case_id": "SCOPE-B037", "label": "IN_SCOPE", "title": "Streamlit 1.18.1 tab close", "body": "In Streamlit 1.18.1 session state remains after the browser tab closes for several seconds.", "category": "historical_version", "difficulty": "hard"}
+{"case_id": "SCOPE-B038", "label": "IN_SCOPE", "title": "Streamlit 1.0 slider state", "body": "On version 1.0.0, changing the slider key in session state does not move the GUI.", "category": "historical_version", "difficulty": "hard"}
+{"case_id": "SCOPE-B039", "label": "IN_SCOPE", "title": "Old pages-directory app", "body": "In an older pages/ multipage app, widget state is lost when switching scripts.", "category": "historical_version", "difficulty": "hard"}
+{"case_id": "SCOPE-B040", "label": "IN_SCOPE", "title": "Version 1.43 number_input", "body": "In 1.43 a number input can be set outside bounds through Session State. What changed later?", "category": "historical_version", "difficulty": "hard"}
+{"case_id": "SCOPE-B041", "label": "IN_SCOPE", "title": "Version 1.59 delete widget key", "body": "On 1.59.2 deleting a widget key does not restore the default value.", "category": "historical_version", "difficulty": "hard"}
+{"case_id": "SCOPE-B042", "label": "IN_SCOPE", "title": "Legacy st.experimental_rerun", "body": "My old app uses st.experimental_rerun and state changes twice.", "category": "historical_version", "difficulty": "hard"}
+{"case_id": "SCOPE-B043", "label": "IN_SCOPE", "title": "Deprecated cache API", "body": "An old app using st.cache behaves differently after migration to cache_data.", "category": "historical_version", "difficulty": "hard"}
+{"case_id": "SCOPE-B044", "label": "IN_SCOPE", "title": "Historical session state docs", "body": "Was session state tied to the WebSocket connection in older Streamlit releases?", "category": "historical_version", "difficulty": "hard"}
+{"case_id": "SCOPE-B045", "label": "IN_SCOPE", "title": "Old widget lifecycle", "body": "Did changing a widget's parameters reset identity in previous Streamlit versions?", "category": "historical_version", "difficulty": "hard"}
+{"case_id": "SCOPE-B046", "label": "IN_SCOPE", "title": "Streamlit Community Cloud restart", "body": "My deployed Streamlit app loses in-memory state after sleeping/restarting.", "category": "deployment", "difficulty": "medium"}
+{"case_id": "SCOPE-B047", "label": "IN_SCOPE", "title": "WebSocket disconnect", "body": "The Streamlit frontend reconnects and my session is replaced.", "category": "deployment", "difficulty": "medium"}
+{"case_id": "SCOPE-B048", "label": "IN_SCOPE", "title": "Custom component rerender", "body": "A Streamlit custom component returns None on the first rerun.", "category": "component", "difficulty": "hard"}
+{"case_id": "SCOPE-B049", "label": "IN_SCOPE", "title": "Query params rerun", "body": "Changing st.query_params triggers behavior I did not expect.", "category": "explicit_api", "difficulty": "medium"}
+{"case_id": "SCOPE-B050", "label": "IN_SCOPE", "title": "Dialog state", "body": "A st.dialog interaction reruns more of the app than I expected.", "category": "explicit_api", "difficulty": "medium"}
+{"case_id": "SCOPE-B051", "label": "IN_SCOPE", "title": "Column widget key", "body": "Two widgets in different columns report DuplicateWidgetID.", "category": "widget_identity", "difficulty": "medium"}
+{"case_id": "SCOPE-B052", "label": "IN_SCOPE", "title": "Duplicate key in tabs", "body": "The same widget key in separate tabs raises a duplicate-key error.", "category": "widget_identity", "difficulty": "medium"}
+{"case_id": "SCOPE-B053", "label": "IN_SCOPE", "title": "Spinner and rerun", "body": "My Streamlit spinner disappears while a cached function is still running.", "category": "runtime", "difficulty": "medium"}
+{"case_id": "SCOPE-B054", "label": "IN_SCOPE", "title": "Uploaded file and state", "body": "I want an uploaded file to persist while navigating a Streamlit multipage app.", "category": "deployment", "difficulty": "medium"}
+{"case_id": "SCOPE-B055", "label": "IN_SCOPE", "title": "Typos in product name", "body": "stremlit sesion_state resets when i click another widgit", "category": "noisy_text", "difficulty": "hard"}
+{"case_id": "SCOPE-B056", "label": "IN_SCOPE", "title": "Mixed support request", "body": "Python works, but only the Streamlit UI keeps resetting my selectbox after each click.", "category": "mixed_topic", "difficulty": "hard"}
+{"case_id": "SCOPE-B057", "label": "IN_SCOPE", "title": "Generic error with explicit app", "body": "KeyError happens only after a rerun in my Streamlit app when reading session_state.", "category": "mixed_topic", "difficulty": "hard"}
+{"case_id": "SCOPE-B058", "label": "IN_SCOPE", "title": "Markdown question inside Streamlit", "body": "st.markdown renders my HTML differently after rerun; is unsafe_allow_html involved?", "category": "explicit_api", "difficulty": "medium"}
+{"case_id": "SCOPE-B059", "label": "IN_SCOPE", "title": "Third-party component question", "body": "A third-party component embedded in Streamlit loses its value after the script reruns.", "category": "component", "difficulty": "hard"}
+{"case_id": "SCOPE-B060", "label": "IN_SCOPE", "title": "Session state typo + code hint", "body": "my stremlit app forgets value\nimport streamlit as st\nst.write(st.session_state)", "category": "noisy_text", "difficulty": "hard"}
+{"case_id": "SCOPE-B061", "label": "OUT_OF_SCOPE", "title": "سلام", "body": "", "category": "greeting", "difficulty": "easy"}
+{"case_id": "SCOPE-B062", "label": "OUT_OF_SCOPE", "title": "Hello there", "body": "", "category": "greeting", "difficulty": "easy"}
+{"case_id": "SCOPE-B063", "label": "OUT_OF_SCOPE", "title": "Thanks!", "body": "", "category": "greeting", "difficulty": "easy"}
+{"case_id": "SCOPE-B064", "label": "OUT_OF_SCOPE", "title": "Good morning", "body": "", "category": "greeting", "difficulty": "easy"}
+{"case_id": "SCOPE-B065", "label": "OUT_OF_SCOPE", "title": "Can you help me?", "body": "", "category": "chitchat", "difficulty": "easy"}
+{"case_id": "SCOPE-B066", "label": "OUT_OF_SCOPE", "title": "What can you do?", "body": "", "category": "chitchat", "difficulty": "easy"}
+{"case_id": "SCOPE-B067", "label": "OUT_OF_SCOPE", "title": "Tell me a joke", "body": "", "category": "chitchat", "difficulty": "easy"}
+{"case_id": "SCOPE-B068", "label": "OUT_OF_SCOPE", "title": "Bye", "body": "", "category": "chitchat", "difficulty": "easy"}
+{"case_id": "SCOPE-B069", "label": "OUT_OF_SCOPE", "title": "How do I sort a Python list?", "body": "", "category": "generic_python", "difficulty": "easy"}
+{"case_id": "SCOPE-B070", "label": "OUT_OF_SCOPE", "title": "Why does dict.get return None?", "body": "", "category": "generic_python", "difficulty": "easy"}
+{"case_id": "SCOPE-B071", "label": "OUT_OF_SCOPE", "title": "Create a Python virtual environment", "body": "", "category": "generic_python", "difficulty": "easy"}
+{"case_id": "SCOPE-B072", "label": "OUT_OF_SCOPE", "title": "Explain Python decorators", "body": "", "category": "generic_python", "difficulty": "easy"}
+{"case_id": "SCOPE-B073", "label": "OUT_OF_SCOPE", "title": "My Python script has KeyError", "body": "d={'a':1}\nprint(d['b'])", "category": "generic_python", "difficulty": "easy"}
+{"case_id": "SCOPE-B074", "label": "OUT_OF_SCOPE", "title": "How do I catch exceptions in Python?", "body": "", "category": "generic_python", "difficulty": "easy"}
+{"case_id": "SCOPE-B075", "label": "OUT_OF_SCOPE", "title": "How do I read a CSV with Python?", "body": "", "category": "generic_python", "difficulty": "easy"}
+{"case_id": "SCOPE-B076", "label": "OUT_OF_SCOPE", "title": "What does async await mean in Python?", "body": "", "category": "generic_python", "difficulty": "easy"}
+{"case_id": "SCOPE-B077", "label": "OUT_OF_SCOPE", "title": "How do I serialize a dataclass?", "body": "", "category": "generic_python", "difficulty": "easy"}
+{"case_id": "SCOPE-B078", "label": "OUT_OF_SCOPE", "title": "Why is my list comprehension slow?", "body": "", "category": "generic_python", "difficulty": "easy"}
+{"case_id": "SCOPE-B079", "label": "OUT_OF_SCOPE", "title": "How do I install a pip package?", "body": "", "category": "generic_python", "difficulty": "easy"}
+{"case_id": "SCOPE-B080", "label": "OUT_OF_SCOPE", "title": "How do I upgrade Python on macOS?", "body": "", "category": "generic_python", "difficulty": "easy"}
+{"case_id": "SCOPE-B081", "label": "OUT_OF_SCOPE", "title": "Flask route returns 404", "body": "My @app.route('/x') endpoint is not found.", "category": "other_framework", "difficulty": "hard"}
+{"case_id": "SCOPE-B082", "label": "OUT_OF_SCOPE", "title": "Django form does not validate", "body": "form.is_valid() stays false.", "category": "other_framework", "difficulty": "hard"}
+{"case_id": "SCOPE-B083", "label": "OUT_OF_SCOPE", "title": "FastAPI dependency injection", "body": "Depends() is not resolving my service.", "category": "other_framework", "difficulty": "hard"}
+{"case_id": "SCOPE-B084", "label": "OUT_OF_SCOPE", "title": "React state resets on route change", "body": "useState returns the initial value after navigation.", "category": "other_framework", "difficulty": "hard"}
+{"case_id": "SCOPE-B085", "label": "OUT_OF_SCOPE", "title": "Next.js server component error", "body": "I cannot use useState in a server component.", "category": "other_framework", "difficulty": "hard"}
+{"case_id": "SCOPE-B086", "label": "OUT_OF_SCOPE", "title": "Vue input loses value", "body": "v-model resets after component remount.", "category": "other_framework", "difficulty": "hard"}
+{"case_id": "SCOPE-B087", "label": "OUT_OF_SCOPE", "title": "Svelte store question", "body": "My writable store resets after navigation.", "category": "other_framework", "difficulty": "hard"}
+{"case_id": "SCOPE-B088", "label": "OUT_OF_SCOPE", "title": "Tkinter Entry resets", "body": "My Entry widget loses text when I switch frames.", "category": "other_framework", "difficulty": "hard"}
+{"case_id": "SCOPE-B089", "label": "OUT_OF_SCOPE", "title": "PyQt widget signal", "body": "A QLineEdit signal fires twice.", "category": "other_framework", "difficulty": "hard"}
+{"case_id": "SCOPE-B090", "label": "OUT_OF_SCOPE", "title": "Jupyter ipywidget resets", "body": "Dropdown value resets when I rerun a notebook cell.", "category": "other_framework", "difficulty": "hard"}
+{"case_id": "SCOPE-B091", "label": "OUT_OF_SCOPE", "title": "Dash callback not firing", "body": "My Plotly Dash callback has the wrong Input.", "category": "other_framework", "difficulty": "hard"}
+{"case_id": "SCOPE-B092", "label": "OUT_OF_SCOPE", "title": "Gradio state issue", "body": "gr.State is cleared after submit.", "category": "other_framework", "difficulty": "hard"}
+{"case_id": "SCOPE-B093", "label": "OUT_OF_SCOPE", "title": "Shiny reactive value", "body": "My reactive value invalidates too often.", "category": "other_framework", "difficulty": "hard"}
+{"case_id": "SCOPE-B094", "label": "OUT_OF_SCOPE", "title": "Panel widget value", "body": "A Panel Select widget resets between views.", "category": "other_framework", "difficulty": "hard"}
+{"case_id": "SCOPE-B095", "label": "OUT_OF_SCOPE", "title": "NiceGUI button", "body": "My NiceGUI button callback cannot access the client state.", "category": "other_framework", "difficulty": "hard"}
+{"case_id": "SCOPE-B096", "label": "OUT_OF_SCOPE", "title": "Merge pandas dataframes", "body": "How do I left join df1 and df2?", "category": "data_science", "difficulty": "easy"}
+{"case_id": "SCOPE-B097", "label": "OUT_OF_SCOPE", "title": "NumPy broadcasting", "body": "Why can't shapes (3,1) and (4,) broadcast?", "category": "data_science", "difficulty": "easy"}
+{"case_id": "SCOPE-B098", "label": "OUT_OF_SCOPE", "title": "Matplotlib labels", "body": "How do I rotate x-axis labels?", "category": "data_science", "difficulty": "easy"}
+{"case_id": "SCOPE-B099", "label": "OUT_OF_SCOPE", "title": "Polars groupby", "body": "How do I group rows by date in Polars?", "category": "data_science", "difficulty": "easy"}
+{"case_id": "SCOPE-B100", "label": "OUT_OF_SCOPE", "title": "Scikit-learn split", "body": "How should I use train_test_split?", "category": "data_science", "difficulty": "easy"}
+{"case_id": "SCOPE-B101", "label": "OUT_OF_SCOPE", "title": "XGBoost overfitting", "body": "Which parameters reduce overfitting?", "category": "data_science", "difficulty": "easy"}
+{"case_id": "SCOPE-B102", "label": "OUT_OF_SCOPE", "title": "SQL monthly sales", "body": "Write a SQL GROUP BY month query.", "category": "data_science", "difficulty": "easy"}
+{"case_id": "SCOPE-B103", "label": "OUT_OF_SCOPE", "title": "Excel lookup", "body": "How do I use XLOOKUP between two sheets?", "category": "data_science", "difficulty": "easy"}
+{"case_id": "SCOPE-B104", "label": "OUT_OF_SCOPE", "title": "Power BI measure", "body": "Write a DAX measure for year-over-year growth.", "category": "data_science", "difficulty": "easy"}
+{"case_id": "SCOPE-B105", "label": "OUT_OF_SCOPE", "title": "Jupyter kernel crash", "body": "My notebook kernel dies when loading a huge dataframe.", "category": "data_science", "difficulty": "easy"}
+{"case_id": "SCOPE-B106", "label": "OUT_OF_SCOPE", "title": "Center a div", "body": "How do I center a div with CSS grid?", "category": "web_dev", "difficulty": "easy"}
+{"case_id": "SCOPE-B107", "label": "OUT_OF_SCOPE", "title": "Nginx reverse proxy", "body": "How do I proxy /api to port 8000?", "category": "web_dev", "difficulty": "easy"}
+{"case_id": "SCOPE-B108", "label": "OUT_OF_SCOPE", "title": "Docker port mapping", "body": "What does -p 8080:80 mean?", "category": "web_dev", "difficulty": "easy"}
+{"case_id": "SCOPE-B109", "label": "OUT_OF_SCOPE", "title": "Git rebase conflict", "body": "How do I abort a rebase?", "category": "web_dev", "difficulty": "easy"}
+{"case_id": "SCOPE-B110", "label": "OUT_OF_SCOPE", "title": "GitHub Actions secret", "body": "How do I expose a repository secret to a workflow?", "category": "web_dev", "difficulty": "easy"}
+{"case_id": "SCOPE-B111", "label": "OUT_OF_SCOPE", "title": "AWS S3 permission", "body": "My IAM role gets AccessDenied on GetObject.", "category": "web_dev", "difficulty": "easy"}
+{"case_id": "SCOPE-B112", "label": "OUT_OF_SCOPE", "title": "Kubernetes crashloop", "body": "Why is my pod in CrashLoopBackOff?", "category": "web_dev", "difficulty": "easy"}
+{"case_id": "SCOPE-B113", "label": "OUT_OF_SCOPE", "title": "Node package error", "body": "npm install fails with peer dependency errors.", "category": "web_dev", "difficulty": "easy"}
+{"case_id": "SCOPE-B114", "label": "OUT_OF_SCOPE", "title": "Postgres connection", "body": "psql cannot connect to localhost:5432.", "category": "web_dev", "difficulty": "easy"}
+{"case_id": "SCOPE-B115", "label": "OUT_OF_SCOPE", "title": "Redis session storage", "body": "How do I expire session keys in Redis?", "category": "web_dev", "difficulty": "easy"}
+{"case_id": "SCOPE-B116", "label": "OUT_OF_SCOPE", "title": "requests.Session persistence", "body": "How do I keep cookies between HTTP calls with requests.Session?", "category": "ambiguous_non_streamlit", "difficulty": "hard"}
+{"case_id": "SCOPE-B117", "label": "OUT_OF_SCOPE", "title": "Browser session storage", "body": "Should I use localStorage or sessionStorage for a web form?", "category": "ambiguous_non_streamlit", "difficulty": "hard"}
+{"case_id": "SCOPE-B118", "label": "OUT_OF_SCOPE", "title": "Widget state in Android", "body": "My Android Compose TextField state resets after rotation.", "category": "ambiguous_non_streamlit", "difficulty": "hard"}
+{"case_id": "SCOPE-B119", "label": "OUT_OF_SCOPE", "title": "Multipage PDF navigation", "body": "How do I keep the current page number in a PDF viewer?", "category": "ambiguous_non_streamlit", "difficulty": "hard"}
+{"case_id": "SCOPE-B120", "label": "OUT_OF_SCOPE", "title": "Callback in C# UI", "body": "My WPF button callback runs twice after navigation.", "category": "ambiguous_non_streamlit", "difficulty": "hard"}

@@ -253,6 +253,8 @@ class StagedPipeline:
         if "summary" in state:
             result.maintainer_summary = state["summary"]
         queries = state.get("queries", [])
+        if state.get("extra"):
+            result.trace["extra"] = state["extra"]
         result.trace["attempts"] = attempts
         result.trace["query_sha256"] = (hashlib.sha256(queries[0].encode()).hexdigest()[:16]
                                         if queries else None)

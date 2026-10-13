@@ -1,0 +1,30 @@
+{"case_id":"SCOPE-001","label":"OUT_OF_SCOPE","title":"سلام","body":""}
+{"case_id":"SCOPE-002","label":"OUT_OF_SCOPE","title":"How do I sort a Python list?","body":""}
+{"case_id":"SCOPE-003","label":"OUT_OF_SCOPE","title":"What is the capital of France?","body":""}
+{"case_id":"SCOPE-004","label":"OUT_OF_SCOPE","title":"How do I merge two pandas DataFrames?","body":""}
+{"case_id":"SCOPE-005","label":"OUT_OF_SCOPE","title":"Why is my Flask route returning 404?","body":""}
+{"case_id":"SCOPE-006","label":"OUT_OF_SCOPE","title":"How do I center a div with CSS?","body":""}
+{"case_id":"SCOPE-007","label":"OUT_OF_SCOPE","title":"Write a SQL query to group sales by month","body":""}
+{"case_id":"SCOPE-008","label":"OUT_OF_SCOPE","title":"My Python script throws KeyError","body":"data = {'a': 1}\nprint(data['b'])"}
+{"case_id":"SCOPE-009","label":"OUT_OF_SCOPE","title":"How do I create a virtual environment in Python?","body":""}
+{"case_id":"SCOPE-010","label":"OUT_OF_SCOPE","title":"Thanks","body":""}
+{"case_id":"SCOPE-011","label":"IN_SCOPE","title":"Session state resets","body":"My st.session_state value disappears after a rerun."}
+{"case_id":"SCOPE-012","label":"IN_SCOPE","title":"Button does not update value","body":"import streamlit as st\nst.button('Save')"}
+{"case_id":"SCOPE-013","label":"IN_SCOPE","title":"Widget loses value between pages","body":"When I navigate to another page and come back, the widget value resets."}
+{"case_id":"SCOPE-014","label":"IN_SCOPE","title":"Form callback problem","body":"My submit callback is firing before I expect it to in my Streamlit app."}
+{"case_id":"SCOPE-015","label":"IN_SCOPE","title":"Data editor issue","body":"Rows edited in st.data_editor are not reflected in session state."}
+{"case_id":"SCOPE-016","label":"IN_SCOPE","title":"Caching behavior","body":"st.cache_data keeps returning an old result after the input changes."}
+{"case_id":"SCOPE-017","label":"IN_SCOPE","title":"Multipage navigation","body":"Page navigation causes my selectbox to return to its default value."}
+{"case_id":"SCOPE-018","label":"IN_SCOPE","title":"Fragment reruns too often","body":"A fragment with run_every keeps rerunning and the local state changes."}
+{"case_id":"SCOPE-019","label":"IN_SCOPE","title":"Deployment websocket disconnect","body":"My Streamlit app disconnects and reconnects repeatedly after deployment."}
+{"case_id":"SCOPE-020","label":"IN_SCOPE","title":"Only code","body":"import streamlit as st\nst.text_input('Name', key='name')"}
+{"case_id":"SCOPE-021","label":"IN_SCOPE","title":"Old Streamlit version question","body":"In Streamlit 1.23.1, assigning to the same session_state key as a widget raises an error. Why?"}
+{"case_id":"SCOPE-022","label":"IN_SCOPE","title":"No product name mentioned","body":"My selectbox disappears when I hide it conditionally and its value is gone when it comes back."}
+{"case_id":"SCOPE-023","label":"IN_SCOPE","title":"Callback syntax","body":"Why does on_change=update() behave differently from on_change=update in my app?"}
+{"case_id":"SCOPE-024","label":"IN_SCOPE","title":"Number input bounds","body":"I change a number_input value through session state and it becomes larger than max_value."}
+{"case_id":"SCOPE-025","label":"OUT_OF_SCOPE","title":"Tkinter widget state","body":"My Tkinter Entry widget loses its value after I switch frames."}
+{"case_id":"SCOPE-026","label":"OUT_OF_SCOPE","title":"React state resets","body":"My React component state resets when I change routes."}
+{"case_id":"SCOPE-027","label":"OUT_OF_SCOPE","title":"Django form callback","body":"My Django form submit handler does not run."}
+{"case_id":"SCOPE-028","label":"OUT_OF_SCOPE","title":"Jupyter widget value resets","body":"My ipywidgets dropdown resets when I rerun the notebook cell."}
+{"case_id":"SCOPE-029","label":"IN_SCOPE","title":"Generic app wording with Streamlit context in code","body":"The app resets after click.\n```python\nimport streamlit as st\nif st.button('Go'):\n    st.write('ok')\n```"}
+{"case_id":"SCOPE-030","label":"OUT_OF_SCOPE","title":"General Python session object","body":"How do I store values in a requests.Session object between HTTP calls?"}

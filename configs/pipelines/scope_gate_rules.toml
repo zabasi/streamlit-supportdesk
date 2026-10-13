@@ -1,0 +1,23 @@
+# Zero-cost scope-classifier baseline with the same retrieval settings as advanced.
+
+[chunking]
+method = "fixed"
+max_tokens = 512
+overlap_tokens = 128
+
+[retrieval]
+top_k = 6
+candidate_k = 15
+doc_slots = 10
+rerank_keep_docs = 3
+rerank_snippet_chars = 400
+historical_filter = true
+
+[context]
+max_tokens = 3200
+
+[pipeline]
+retriever = "dense_doc_slots"
+
+[prompts]
+rerank = "configs/prompts/rerank_docs_system.txt"
