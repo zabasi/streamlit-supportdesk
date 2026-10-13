@@ -192,7 +192,12 @@ class ExpandingReranker:
 
     def siblings(self, chunk: Chunk) -> list[Chunk]:
         page = self.by_page.get(chunk.source_id, [])
-        if self.mode == "section" and chunk.source_id in self.sections.spans:
+        if self.mode == "branch":  # the found chunk's ## parent and all its children, by heading path
+            path = tuple(chunk.meta.get("heading_path") or ())
+            if len(path) < 2:  # the page's introduction (or no path): no branch to add
+                return []
+            page = [c for c in page if tuple(c.meta.get("heading_path") or ())[:2] == path[:2]]
+        elif self.mode == "section" and chunk.source_id in self.sections.spans:
             mine = [(a, b) for a, b in self.sections.spans[chunk.source_id]
                     if a < chunk.end_char and b > chunk.start_char]
             page = [c for c in page if any(a < c.end_char and b > c.start_char for a, b in mine)]

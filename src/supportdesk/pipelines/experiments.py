@@ -548,3 +548,21 @@ def build_clean_doc_slots_rerank_docs_prompt_decompose_merged_focused_concepts(r
     stages["query"] = QueryRewriter(clients, settings)
     stages["reranker"] = MergedReranker(clients, settings, _index_chunks(retriever))
     return StagedPipeline(name="clean_doc_slots_rerank_docs_prompt_decompose_merged_focused_concepts", clients=clients, settings=settings, **stages)
+
+
+
+def build_clean_doc_slots_rerank_docs_prompt_decompose_structure_advanced(retriever, clients, settings):
+    """The advanced design on structure chunks with headers, 12 sections."""
+    stages = default_stages(retriever, clients, settings)
+    stages["query"] = QueryRewriter(clients, settings)
+    stages["reranker"] = ExpandingReranker(clients, settings, _index_chunks(retriever))
+    return StagedPipeline(name="clean_doc_slots_rerank_docs_prompt_decompose_structure_advanced", clients=clients, settings=settings, **stages)
+
+
+
+def build_clean_doc_slots_rerank_docs_prompt_decompose_structure_advanced_branch(retriever, clients, settings):
+    """The advanced design on structure chunks, adding each found section's ## branch."""
+    stages = default_stages(retriever, clients, settings)
+    stages["query"] = QueryRewriter(clients, settings)
+    stages["reranker"] = ExpandingReranker(clients, settings, _index_chunks(retriever))
+    return StagedPipeline(name="clean_doc_slots_rerank_docs_prompt_decompose_structure_advanced_branch", clients=clients, settings=settings, **stages)

@@ -281,3 +281,36 @@ def test_the_reranker_view_experiments_change_only_what_the_reranker_sees():
                                                           "prompts.rerank"})):
         other = flat(d + suffix)
         assert {k for k in base if base[k] != other[k]} == {"pipeline.name", *changed}, suffix
+
+
+def test_branch_expansion_adds_the_sections_parent_and_its_children(clients, settings):
+    from supportdesk.pipelines.stages.evidence import ExpandingReranker
+    tree = [("intro", ["Widget behavior"]), ("anatomy", ["Widget behavior", "Anatomy"]),
+            ("life", ["Widget behavior", "Widget life cycle"]),
+            ("not-yet", ["Widget behavior", "Widget life cycle", "Calling a widget command when it doesn't exist"]),
+            ("exists", ["Widget behavior", "Widget life cycle", "Calling a widget command when it exists"]),
+            ("cleanup", ["Widget behavior", "Widget life cycle", "Widget clean-up process"]),
+            ("binding", ["Widget behavior", "Binding widgets to query parameters"])]
+    chunks = [Chunk(chunk_id=f"doc:w:{name}", source_id="doc:w", source_type="documentation", title="Widget behavior",
+                    text=name, url="u", start_char=n * 10, end_char=n * 10 + 9, meta={"heading_path": path})
+              for n, (name, path) in enumerate(tree)]
+    s = dataclasses.replace(settings, retrieval=dataclasses.replace(settings.retrieval, expand="branch"))
+    stage = ExpandingReranker(clients, s, chunks)
+    found = stage.expand([Hit(chunks[4], 0.9, 1, "dense")])  # "### Calling a widget command when it exists"
+    assert {h.chunk.chunk_id.rsplit(":", 1)[-1] for h in found} == {"exists", "life", "not-yet", "cleanup"}
+    assert [h.source for h in found[1:]] == ["expand"] * 3
+    assert stage.expand([Hit(chunks[0], 0.9, 1, "dense")]) == [Hit(chunks[0], 0.9, 1, "dense")]  # intro: no branch
+
+
+def test_the_structure_experiments_change_only_chunking_room_and_expansion():
+    from supportdesk.config import Settings
+    def flat(name):
+        d = Settings.load(env={}, overrides=[f"pipeline.name={name}"]).to_dict()
+        return {f"{section}.{key}": value for section, keys in d.items() for key, value in keys.items()}
+    base, d = flat("advanced"), "clean_doc_slots_rerank_docs_prompt_decompose"
+    structure = {"pipeline.name", "chunking.method", "chunking.context_header", "retrieval.top_k",
+                 "retrieval.candidate_k", "retrieval.doc_slots", "retrieval.rerank_keep_docs", "paths.index_dir"}
+    ref, branch = flat(f"{d}_structure_advanced"), flat(f"{d}_structure_advanced_branch")
+    assert {k for k in base if base[k] != ref[k]} == structure
+    assert {k for k in ref if ref[k] != branch[k]} == {"pipeline.name", "retrieval.expand", "retrieval.expand_max_candidates"}
+    assert (branch["retrieval.expand"], branch["context.max_tokens"]) == ("branch", 3200)
