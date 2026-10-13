@@ -34,8 +34,8 @@ Each pipeline loads its own profile, so pipelines can differ while sharing every
 ```
 configs/pipelines/baseline.toml   pinned reference values (these equal the defaults the golden test pins)
 configs/pipelines/advanced.toml   6 chunks like the baseline; the report plus up to 3 concept queries,
-                                  15 candidates each (10 documentation), reranked by a model call;
-                                  overlapping kept chunks merged
+                                  15 candidates each (10 documentation), reranked by a model call that
+                                  sees focused snippets and the concepts; overlapping kept chunks merged
 ```
 
 - **What a profile may set:** `chunking`, `retrieval`, `context`, `prompts`, `pipeline.retriever`, `paths.index_dir`. Anything else in a profile is an error.
@@ -127,6 +127,9 @@ Defaults shown are the built-in ones. `*unset*` means the key is optional and no
 | `output_format` | `configs/prompts/answer_output_format.txt` | JSON shape the answer must follow |
 | `rewrite` | `configs/prompts/rewrite_system.txt` | system prompt of the query-rewriting call (QueryRewriter) |
 | `rerank` | `configs/prompts/rerank_system.txt` | system prompt of the reranking call (LLMReranker) |
+| `summarize_section` | `configs/prompts/summarize_section_system.txt` | system prompt that summarizes one documentation section (scripts/summarize_sections.py) |
+| `judge_coverage` | `configs/prompts/judge_coverage_system.txt` | system prompt of the coverage judge (CorrectiveReranker) |
+| `rewrite_missing` | `configs/prompts/rewrite_missing_system.txt` | system prompt of the query for a missing mechanism (CorrectiveReranker) |
 | `extract` | `configs/prompts/extract_system.txt` | system prompt of the call that keeps the relevant parts of the chosen chunks (ExtractingReranker) |
 | `judge` | `configs/prompts/judge_system.txt` | system prompt of the retrieve_loop sufficiency check (yes or no) |
 | `loop_rewrite` | `configs/prompts/loop_rewrite_system.txt` | system prompt of the retrieve_loop query rewrite |
@@ -141,6 +144,7 @@ Defaults shown are the built-in ones. `*unset*` means the key is optional and no
 | `cache_path` | `artifacts/cache.sqlite` | SQLite cache of model responses (makes re-runs free, enables replay) |
 | `ledger_path` | `artifacts/cost_ledger.jsonl` | record of every live call's cost; it counts toward the budget across runs |
 | `pricing_path` | `configs/pricing.json` | per-model prices used by the budget guard |
+| `summaries` | `data/summaries/sections.jsonl` | section summaries written by scripts/summarize_sections.py (SummaryReranker) |
 
 ### `[budget]`
 
@@ -186,6 +190,13 @@ Defaults shown are the built-in ones. `*unset*` means the key is optional and no
 | `extract_mode` | `keep` | ExtractingReranker: the model lists the parts to keep, or the parts to drop |
 | `extract_show_concepts` | `False` | ExtractingReranker: show the model the concept queries the query stage wrote |
 | `extract_protect_top` | `0` | ExtractingReranker: never drop parts of this many top-ranked chunks |
+| `rerank_show_concepts` | `False` | the LLMReranker also sees the concept queries the query stage wrote ("Mechanisms involved") |
+| `corrective_turns` | `0` | CorrectiveReranker: after reranking, a judge checks the kept chunks; if they are not enough, rewrite the query, search again and rerank old and new candidates together, at most this many times (0 = off) |
+| `corrective_judge` | `relevance` | CorrectiveReranker: relevance (yes or no: is there relevant evidence) or coverage (which concept queries no passage explains; one new query per missing one) |
+| `corrective_max_missing` | `2` | CorrectiveReranker with the coverage judge: most missing mechanisms searched for in one turn |
+| `summary_sections` | `0` | SummaryReranker: before reranking, add the chunks of this many documentation sections whose summaries best match the queries (0 = off) |
+| `expand` | `none` | ExpandingReranker: add more chunks of the documentation pages among the candidates before reranking: none \| page (all their other chunks) \| section (only chunks sharing a section with a found chunk) \| branch (for structure chunks: the found chunk's ## parent and all its children, from the chunks' heading paths) |
+| `expand_max_candidates` | `30` | ExpandingReranker: the most candidates after expansion |
 | `section_candidates` | `30` | most sections and other candidates the SectionReranker ranks |
 | `rerank_doc_places` | `0` | documentation places filled by the model's choice among the documentation candidates (DocPlacesReranker) |
 | `bm25_slots` | `0` | places in the results filled by BM25 (keyword) search, the rest by dense search; used by the hybrid_split retriever |

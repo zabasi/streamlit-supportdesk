@@ -9,7 +9,13 @@ from ..retrieval.retriever import Retriever
 from .staged import StagedPipeline
 from .stages import default_stages
 from .stages.clean_query import CleanQuery
-from .stages.evidence import ExtractingReranker, GradedReranker, MergedReranker
+from .stages.evidence import (
+    ExpandingReranker,
+    ExtractingReranker,
+    GradedReranker,
+    MergedReranker,
+    SummaryReranker,
+)
 from .stages.llm_rerank import DocPlacesReranker, LLMReranker
 from .stages.rewrite_query import QueryRewriter
 from .stages.sections import SectionReranker, SectionTrimmer
@@ -503,3 +509,76 @@ def build_clean_doc_slots_rerank_docs_prompt_decompose_merged_fixed384_top8(retr
     stages["query"] = QueryRewriter(clients, settings)
     stages["reranker"] = MergedReranker(clients, settings, _index_chunks(retriever))
     return StagedPipeline(name="clean_doc_slots_rerank_docs_prompt_decompose_merged_fixed384_top8", clients=clients, settings=settings, **stages)
+
+
+
+def build_clean_doc_slots_rerank_docs_prompt_decompose_merged_expand_page(retriever, clients, settings):
+    """decompose_merged where the found documentation pages add their other chunks (page) before reranking."""
+    stages = default_stages(retriever, clients, settings)
+    stages["query"] = QueryRewriter(clients, settings)
+    stages["reranker"] = ExpandingReranker(clients, settings, _index_chunks(retriever))
+    return StagedPipeline(name="clean_doc_slots_rerank_docs_prompt_decompose_merged_expand_page", clients=clients, settings=settings, **stages)
+
+
+
+def build_clean_doc_slots_rerank_docs_prompt_decompose_merged_expand_section(retriever, clients, settings):
+    """decompose_merged where the found documentation pages add their other chunks (section) before reranking."""
+    stages = default_stages(retriever, clients, settings)
+    stages["query"] = QueryRewriter(clients, settings)
+    stages["reranker"] = ExpandingReranker(clients, settings, _index_chunks(retriever))
+    return StagedPipeline(name="clean_doc_slots_rerank_docs_prompt_decompose_merged_expand_section", clients=clients, settings=settings, **stages)
+
+
+
+def build_clean_doc_slots_rerank_docs_prompt_decompose_merged_focused(retriever, clients, settings):
+    """decompose_merged where the reranker sees focused snippets."""
+    stages = default_stages(retriever, clients, settings)
+    stages["query"] = QueryRewriter(clients, settings)
+    stages["reranker"] = MergedReranker(clients, settings, _index_chunks(retriever))
+    return StagedPipeline(name="clean_doc_slots_rerank_docs_prompt_decompose_merged_focused", clients=clients, settings=settings, **stages)
+
+
+
+def build_clean_doc_slots_rerank_docs_prompt_decompose_merged_concepts(retriever, clients, settings):
+    """decompose_merged where the reranker sees the concept queries."""
+    stages = default_stages(retriever, clients, settings)
+    stages["query"] = QueryRewriter(clients, settings)
+    stages["reranker"] = MergedReranker(clients, settings, _index_chunks(retriever))
+    return StagedPipeline(name="clean_doc_slots_rerank_docs_prompt_decompose_merged_concepts", clients=clients, settings=settings, **stages)
+
+
+
+def build_clean_doc_slots_rerank_docs_prompt_decompose_merged_focused_concepts(retriever, clients, settings):
+    """decompose_merged where the reranker sees focused snippets and the concept queries."""
+    stages = default_stages(retriever, clients, settings)
+    stages["query"] = QueryRewriter(clients, settings)
+    stages["reranker"] = MergedReranker(clients, settings, _index_chunks(retriever))
+    return StagedPipeline(name="clean_doc_slots_rerank_docs_prompt_decompose_merged_focused_concepts", clients=clients, settings=settings, **stages)
+
+
+
+def build_clean_doc_slots_rerank_docs_prompt_decompose_structure_advanced(retriever, clients, settings):
+    """The advanced design on structure chunks with headers, 12 sections."""
+    stages = default_stages(retriever, clients, settings)
+    stages["query"] = QueryRewriter(clients, settings)
+    stages["reranker"] = ExpandingReranker(clients, settings, _index_chunks(retriever))
+    return StagedPipeline(name="clean_doc_slots_rerank_docs_prompt_decompose_structure_advanced", clients=clients, settings=settings, **stages)
+
+
+
+def build_clean_doc_slots_rerank_docs_prompt_decompose_structure_advanced_branch(retriever, clients, settings):
+    """The advanced design on structure chunks, adding each found section's ## branch."""
+    stages = default_stages(retriever, clients, settings)
+    stages["query"] = QueryRewriter(clients, settings)
+    stages["reranker"] = ExpandingReranker(clients, settings, _index_chunks(retriever))
+    return StagedPipeline(name="clean_doc_slots_rerank_docs_prompt_decompose_structure_advanced_branch", clients=clients, settings=settings, **stages)
+
+
+
+def build_clean_doc_slots_rerank_docs_prompt_decompose_merged_focused_concepts_summaries(retriever, clients, settings):
+    """advanced plus the chunks of the documentation sections whose summaries best match the queries."""
+    chunks = _index_chunks(retriever)
+    stages = default_stages(retriever, clients, settings)
+    stages["query"] = QueryRewriter(clients, settings)
+    stages["reranker"] = SummaryReranker(clients, settings, chunks, inner=ExpandingReranker(clients, settings, chunks))
+    return StagedPipeline(name="clean_doc_slots_rerank_docs_prompt_decompose_merged_focused_concepts_summaries", clients=clients, settings=settings, **stages)

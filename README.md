@@ -23,8 +23,9 @@ per report:        intake -> query -> retrieve -> rerank -> packet -> generate -
 - **Pipelines:** `baseline` (dense search, 6 chunks) is the reference. `advanced` is the best found
   on the development cases: the cleaned report plus up to 3 model-written queries about the Streamlit
   concepts involved, 15 candidates per query of which 10 are documentation, merged and ranked by one
-  model call, the best 6 kept with at least 3 documentation chunks; kept chunks of one page that
-  overlap are joined, so their shared text appears once. Experiments each change one thing in the baseline, so their
+  model call that sees each candidate's best-matching part and the concepts involved, the best 6
+  kept with at least 3 documentation chunks; kept chunks of one page that overlap are joined, so
+  their shared text appears once. Experiments each change one thing in the baseline, so their
   effect can be measured alone: `clean_query` (the query without the issue template),
   `doc_slots` (3 of the 6 results kept for documentation), `hybrid_rrf` and `hybrid_split` (dense
   and keyword search, merged or side by side), `rewrite_llm` and `split_llm` (a model writes one or several search queries) and

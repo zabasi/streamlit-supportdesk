@@ -188,3 +188,246 @@ def test_the_smaller_fixed_chunk_experiments_change_only_size_room_and_index():
             "retrieval.top_k", "retrieval.candidate_k", "retrieval.doc_slots"}
         assert (more["retrieval.top_k"], more["context.max_tokens"]) == (k, 3200)
         assert six["paths.index_dir"] == more["paths.index_dir"]
+
+
+LONG = ("Widget behavior\n\nIntro.\n\n" + "## Anatomy\n\n" + "a " * 120 + "\n\n## Order of operations\n\n"
+        + "b " * 200 + "\n\n### Example\n\n" + "c " * 120 + "\n\n## Life cycle\n\n" + "d " * 120 + "\n")
+
+
+def page_chunks():
+    step = len(LONG) // 5
+    bounds = [(n * step, min(len(LONG), (n + 1) * step + 20)) for n in range(5)]
+    bounds[-1] = (bounds[-1][0], len(LONG))
+    return [Chunk(chunk_id=f"doc:w:{n}", source_id="doc:w", source_type="documentation", title="Widget behavior",
+                  text=LONG[a:b], url="u", start_char=a, end_char=b) for n, (a, b) in enumerate(bounds)]
+
+
+def expander(clients, settings, mode, cap=30):
+    from supportdesk.pipelines.stages.evidence import ExpandingReranker
+    s = dataclasses.replace(settings, retrieval=dataclasses.replace(
+        settings.retrieval, expand=mode, expand_max_candidates=cap))
+    return ExpandingReranker(clients, s, page_chunks())
+
+
+def test_page_expansion_adds_the_pages_other_chunks_nearest_first(clients, settings):
+    chunks = page_chunks()
+    issue = Hit(Chunk(chunk_id="issue:1:0", source_id="issue:1", source_type="issue", title="t", text="x", url="u",
+                      start_char=0, end_char=1), 0.5, 2, "dense")
+    found = [Hit(chunks[2], 0.9, 1, "dense"), issue]
+    out = expander(clients, settings, "page").expand(found)
+    ids = [h.chunk.chunk_id for h in out]
+    assert ids[0] == "doc:w:2" and set(ids[1:5]) == {"doc:w:1", "doc:w:3", "doc:w:0", "doc:w:4"}
+    assert ids[1:3] == ["doc:w:1", "doc:w:3"] or ids[1:3] == ["doc:w:3", "doc:w:1"]  # nearest first
+    assert ids[-1] == "issue:1:0" and [h.source for h in out[1:5]] == ["expand"] * 4  # issues are not expanded
+    assert [h.rank for h in out] == list(range(1, len(out) + 1))
+    assert len(expander(clients, settings, "page", cap=3).expand(found)) == 3  # the cap holds
+    assert expander(clients, settings, "none").expand(found) == found
+
+
+def test_section_expansion_adds_only_chunks_sharing_a_section(clients, settings):
+    chunks = page_chunks()
+    order = (LONG.index("## Order of operations"), LONG.index("## Life cycle"))
+    inside = next(c for c in chunks if order[0] < c.start_char < order[1])
+    out = expander(clients, settings, "section").expand([Hit(inside, 0.9, 1, "dense")])
+    for h in out[1:]:  # every added chunk overlaps the "Order of operations" section
+        assert h.chunk.start_char < order[1] and h.chunk.end_char > order[0]
+    page = expander(clients, settings, "page").expand([Hit(inside, 0.9, 1, "dense")])
+    assert len(out) < len(page)  # fewer than the whole page
+
+
+def test_the_expansion_experiments_change_only_the_expansion():
+    from supportdesk.config import Settings
+    def flat(name):
+        d = Settings.load(env={}, overrides=[f"pipeline.name={name}"]).to_dict()
+        return {f"{section}.{key}": value for section, keys in d.items() for key, value in keys.items()}
+    d = "clean_doc_slots_rerank_docs_prompt_decompose"
+    base = flat(f"{d}_merged")
+    for mode in ("page", "section"):
+        other = flat(f"{d}_merged_expand_{mode}")
+        assert {k for k in base if base[k] != other[k]} == {"pipeline.name", "retrieval.expand"}
+        assert other["retrieval.expand"] == mode and other["retrieval.expand_max_candidates"] == 30
+
+
+def test_the_reranker_sees_the_concept_queries_only_when_asked(clients, settings):
+    from supportdesk.pipelines.stages.llm_rerank import LLMReranker
+    hits = [Hit(c, 1.0 / (n + 1), n + 1, "dense") for n, c in enumerate(page_chunks()[:3])]
+    case = CaseInput(case_id="c", title="Widget loses value", body="The value resets after a rerun")
+    plain = LLMReranker(clients, settings)
+    clients.chat.script[clients.chat.calls + 1] = json.dumps({"ranking": ["C1", "C2", "C3"]})
+    plain(case, "q", hits)
+    assert "Mechanisms involved" not in clients.chat.seen[-1][1]["content"]  # the default is unchanged
+    s = dataclasses.replace(settings, retrieval=dataclasses.replace(
+        settings.retrieval, rerank_show_concepts=True, keep_report_query=True, max_queries=2))
+    with_concepts = LLMReranker(clients, s)
+    calls = clients.chat.calls
+    clients.chat.script[calls + 1] = json.dumps({"queries": ["widget life cycle across reruns", "widget keys"]})
+    clients.chat.script[calls + 2] = json.dumps({"ranking": ["C2", "C1", "C3"]})
+    ranked = with_concepts(case, "q", hits)
+    shown = clients.chat.seen[-1][1]["content"]
+    assert "## Mechanisms involved\n- widget life cycle across reruns\n- widget keys" in shown
+    assert ranked[0].chunk.chunk_id == hits[1].chunk.chunk_id
+
+
+def test_the_reranker_view_experiments_change_only_what_the_reranker_sees():
+    from supportdesk.config import Settings
+    def flat(name):
+        d = Settings.load(env={}, overrides=[f"pipeline.name={name}"]).to_dict()
+        return {f"{section}.{key}": value for section, keys in d.items() for key, value in keys.items()}
+    d = "clean_doc_slots_rerank_docs_prompt_decompose"
+    base = flat(f"{d}_merged")
+    for suffix, changed in (("_merged_focused", {"retrieval.rerank_snippet"}),
+                            ("_merged_concepts", {"retrieval.rerank_show_concepts", "prompts.rerank"}),
+                            ("_merged_focused_concepts", {"retrieval.rerank_snippet", "retrieval.rerank_show_concepts",
+                                                          "prompts.rerank"})):
+        other = flat(d + suffix)
+        assert {k for k in base if base[k] != other[k]} == {"pipeline.name", *changed}, suffix
+
+
+def test_branch_expansion_adds_the_sections_parent_and_its_children(clients, settings):
+    from supportdesk.pipelines.stages.evidence import ExpandingReranker
+    tree = [("intro", ["Widget behavior"]), ("anatomy", ["Widget behavior", "Anatomy"]),
+            ("life", ["Widget behavior", "Widget life cycle"]),
+            ("not-yet", ["Widget behavior", "Widget life cycle", "Calling a widget command when it doesn't exist"]),
+            ("exists", ["Widget behavior", "Widget life cycle", "Calling a widget command when it exists"]),
+            ("cleanup", ["Widget behavior", "Widget life cycle", "Widget clean-up process"]),
+            ("binding", ["Widget behavior", "Binding widgets to query parameters"])]
+    chunks = [Chunk(chunk_id=f"doc:w:{name}", source_id="doc:w", source_type="documentation", title="Widget behavior",
+                    text=name, url="u", start_char=n * 10, end_char=n * 10 + 9, meta={"heading_path": path})
+              for n, (name, path) in enumerate(tree)]
+    s = dataclasses.replace(settings, retrieval=dataclasses.replace(settings.retrieval, expand="branch"))
+    stage = ExpandingReranker(clients, s, chunks)
+    found = stage.expand([Hit(chunks[4], 0.9, 1, "dense")])  # "### Calling a widget command when it exists"
+    assert {h.chunk.chunk_id.rsplit(":", 1)[-1] for h in found} == {"exists", "life", "not-yet", "cleanup"}
+    assert [h.source for h in found[1:]] == ["expand"] * 3
+    assert stage.expand([Hit(chunks[0], 0.9, 1, "dense")]) == [Hit(chunks[0], 0.9, 1, "dense")]  # intro: no branch
+
+
+def test_the_structure_experiments_change_only_chunking_room_and_expansion():
+    from supportdesk.config import Settings
+    def flat(name):
+        d = Settings.load(env={}, overrides=[f"pipeline.name={name}"]).to_dict()
+        return {f"{section}.{key}": value for section, keys in d.items() for key, value in keys.items()}
+    base, d = flat("advanced"), "clean_doc_slots_rerank_docs_prompt_decompose"
+    structure = {"pipeline.name", "chunking.method", "chunking.context_header", "retrieval.top_k",
+                 "retrieval.candidate_k", "retrieval.doc_slots", "retrieval.rerank_keep_docs", "paths.index_dir"}
+    ref, branch = flat(f"{d}_structure_advanced"), flat(f"{d}_structure_advanced_branch")
+    assert {k for k in base if base[k] != ref[k]} == structure
+    assert {k for k in ref if ref[k] != branch[k]} == {"pipeline.name", "retrieval.expand", "retrieval.expand_max_candidates"}
+    assert (branch["retrieval.expand"], branch["context.max_tokens"]) == ("branch", 3200)
+
+
+def corrective(clients, settings, verdicts, turns=1):
+    from supportdesk.pipelines.stages.evidence import CorrectiveReranker
+    chunks = page_chunks()
+    s = dataclasses.replace(settings, retrieval=dataclasses.replace(
+        settings.retrieval, corrective_turns=turns, top_k=2, doc_slots=0))
+
+    class Retriever:
+        def search(self, query, *, k, as_of=None):
+            self.query = query
+            return [Hit(chunks[4], 0.8, 1, "dense"), Hit(chunks[0], 0.7, 2, "dense")]
+
+    retriever = Retriever()
+    stage = CorrectiveReranker(clients, s, chunks, retriever)
+    hits = [Hit(chunks[0], 0.9, 1, "dense"), Hit(chunks[1], 0.5, 2, "dense")]
+    calls = clients.chat.calls
+    script = [json.dumps({"ranking": ["C1", "C2"]})]  # the first reranking
+    for verdict in verdicts:
+        script.append(verdict)  # the judge
+        if verdict == "no":
+            script += ["widget clean-up after page switch", json.dumps({"ranking": ["C3", "C1", "C2"]})]
+    for n, text in enumerate(script, start=1):
+        clients.chat.script[calls + n] = text
+    case = CaseInput(case_id="c", title="Widget value lost", body="My widget loses its value on another page")
+    return stage, retriever, stage(case, "q", hits), clients.chat.calls - calls
+
+
+def test_one_corrective_turn_searches_again_and_reranks_old_and_new_together(clients, settings):
+    stage, retriever, kept, calls = corrective(clients, settings, ["no"])
+    assert calls == 4  # rerank, judge, rewrite, rerank
+    assert retriever.query == "widget clean-up after page switch"
+    assert kept[0].chunk.chunk_id == "doc:w:4" and kept[0].source == "corrective"
+    assert stage.last_trace == {"judgements": ["no"], "queries": ["widget clean-up after page switch"], "turns": 1}
+
+
+def test_a_yes_stops_at_once_and_zero_turns_does_nothing_extra(clients, settings):
+    stage, _, _, calls = corrective(clients, settings, ["yes"])
+    assert calls == 2 and stage.last_trace == {"judgements": ["yes"], "queries": [], "turns": 0}
+    stage, _, _, calls = corrective(clients, settings, [], turns=0)
+    assert calls == 1 and stage.last_trace is None  # only the reranking, as advanced
+
+
+def test_retrieval_runs_record_the_corrective_decisions(tmp_path, capsys):
+    from supportdesk.cli import main
+    from tests.helpers import ROOT, SAMPLE
+    base = ["--data-dir", str(SAMPLE), "--index-dir", str(tmp_path / "idx"), "--artifacts-dir",
+            str(tmp_path / "art"), "--mode", "offline", "--cases", str(ROOT / "data" / "eval" / "sample_cases.jsonl")]
+    assert main(["index", *base]) == 0
+    assert main(["eval-retrieval", *base, "--pipeline", "advanced", "--set", "retrieval.corrective_turns=1",
+                 "--run-id", "c"]) == 0
+    capsys.readouterr()
+    run = tmp_path / "art" / "runs" / "c"
+    rows = [json.loads(line) for line in (run / "results.jsonl").read_text().splitlines()]
+    assert all("judgements" in r["rerank_trace"] for r in rows)
+    metrics = json.loads((run / "summary.json").read_text())["metrics"]
+    assert "corrective_cases" in metrics and "judged_enough_first" in metrics
+
+
+def coverage(clients, settings, judge_answer, max_missing=2):
+    from supportdesk.pipelines.stages.evidence import CorrectiveReranker
+    chunks = page_chunks()
+    s = dataclasses.replace(settings, retrieval=dataclasses.replace(
+        settings.retrieval, corrective_turns=1, corrective_judge="coverage", corrective_max_missing=max_missing,
+        top_k=2, doc_slots=0, keep_report_query=True, max_queries=3))
+
+    class Retriever:
+        def __init__(self):
+            self.queries = []
+
+        def search(self, query, *, k, as_of=None):
+            self.queries.append(query)
+            return [Hit(chunks[4], 0.8, 1, "dense")]
+
+    retriever = Retriever()
+    stage = CorrectiveReranker(clients, s, chunks, retriever)
+    hits = [Hit(chunks[0], 0.9, 1, "dense"), Hit(chunks[1], 0.5, 2, "dense")]
+    calls = clients.chat.calls
+    concepts = json.dumps({"queries": ["callbacks updating session state", "order of operations on rerun",
+                                       "widget life cycle"]})
+    script = [json.dumps({"ranking": ["C1", "C2"]}), concepts, judge_answer]  # rerank, concept queries, judge
+    gaps = json.loads(judge_answer).get("missing", []) if judge_answer.startswith("{") else []
+    script += [f"new query {n}" for n in range(min(len(gaps), max_missing))]
+    if gaps:
+        script.append(json.dumps({"ranking": ["C3", "C1", "C2"]}))  # the joint reranking
+    for n, text in enumerate(script, start=1):
+        clients.chat.script[calls + n] = text
+    case = CaseInput(case_id="c", title="Callback runs late", body="My callback sees the old value")
+    kept = stage(case, "q", hits)
+    return stage, retriever, kept, [m[1]["content"] for m in clients.chat.seen[calls:]]
+
+
+def test_the_coverage_judge_searches_once_per_missing_mechanism(clients, settings):
+    stage, retriever, kept, seen = coverage(clients, settings, json.dumps({"missing": ["M2", "M3"]}))
+    judge_input = next(c for c in seen if "## Mechanisms involved\nM1: " in c)
+    assert "M2: order of operations on rerun" in judge_input and "## Passages" in judge_input
+    rewrite_input = next(c for c in seen if "## Missing mechanism\norder of operations on rerun" in c)
+    assert "callbacks updating session state" in rewrite_input  # the concept queries count as previous queries
+    assert retriever.queries == ["new query 0", "new query 1"]
+    assert stage.last_trace == {"judgements": [{"missing": ["order of operations on rerun", "widget life cycle"]}],
+                                "queries": ["new query 0", "new query 1"], "turns": 1}
+    assert kept[0].source == "corrective"
+
+
+def test_the_coverage_judge_stops_when_nothing_is_missing_or_the_answer_is_unusable(clients, settings):
+    stage, retriever, _, _ = coverage(clients, settings, json.dumps({"missing": []}))
+    assert retriever.queries == [] and stage.last_trace["turns"] == 0
+    stage, retriever, _, _ = coverage(clients, settings, "not json")
+    assert retriever.queries == [] and stage.last_trace["judgements"] == ["unusable"]
+    stage, retriever, _, _ = coverage(clients, settings, json.dumps({"missing": ["M1", "M2", "M3"]}), max_missing=1)
+    assert retriever.queries == ["new query 0"]  # at most corrective_max_missing searches
+
+
+def test_judged_enough_counts_both_kinds_of_judge():
+    from supportdesk.eval.metrics import _enough
+    assert _enough("yes") and not _enough("no")
+    assert _enough({"missing": []}) and not _enough({"missing": ["x"]}) and not _enough("unusable")

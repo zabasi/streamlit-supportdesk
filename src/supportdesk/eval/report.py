@@ -124,6 +124,9 @@ def render_report(run_dirs: list[Path]) -> str:
                     + ([("Gold passages in the prompt packet", ("packet_passage_recall",), "pct"),
                         ("Gold share of the prompt", ("packet_gold_share",), "pct")]
                        if passage_ks else [])
+                    + ([("Cases with a corrective turn", ("corrective_cases",), "num"),
+                        ("Cases judged enough at once", ("judged_enough_first",), "num")]
+                       if any("corrective_cases" in r["summary"]["metrics"] for r in runs) else [])
                     + ([("Evidence tokens in the prompt (median)", ("packet_tokens_median",), "num"),
                         ("Chunks in the prompt (mean)", ("packet_chunks_mean",), "num")]
                        if any("packet_tokens_median" in r["summary"]["metrics"] for r in runs) else []))

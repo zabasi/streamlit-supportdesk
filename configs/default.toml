@@ -22,6 +22,9 @@ output_format = "configs/prompts/answer_output_format.txt"
 rewrite = "configs/prompts/rewrite_system.txt"
 rerank = "configs/prompts/rerank_system.txt"
 extract = "configs/prompts/extract_system.txt"
+judge_coverage = "configs/prompts/judge_coverage_system.txt"
+summarize_section = "configs/prompts/summarize_section_system.txt"
+rewrite_missing = "configs/prompts/rewrite_missing_system.txt"
 judge = "configs/prompts/judge_system.txt"
 loop_rewrite = "configs/prompts/loop_rewrite_system.txt"
 
@@ -32,6 +35,7 @@ artifacts_dir = "artifacts"      # runs/<run_id>/, reports/
 cache_path = "artifacts/cache.sqlite"
 ledger_path = "artifacts/cost_ledger.jsonl"
 pricing_path = "configs/pricing.json"
+summaries = "data/summaries/sections.jsonl"
 
 [budget]
 ceiling_usd = 5.0                # live spending on this machine stops here (all runs together)
@@ -68,6 +72,13 @@ min_chunks = 2                   # fewest chunks the GradedReranker keeps
 extract_mode = "keep"            # ExtractingReranker: the model lists parts to keep, or to drop
 extract_show_concepts = false    # ExtractingReranker: show the model the concept queries
 extract_protect_top = 0          # ExtractingReranker: never drop parts of this many top-ranked chunks
+rerank_show_concepts = false     # the LLM reranker also sees the concept queries ("Mechanisms involved")
+summary_sections = 0             # SummaryReranker: add the chunks of this many best-matching sections
+corrective_judge = "relevance"   # CorrectiveReranker: relevance (yes or no) or coverage (which mechanisms are missing)
+corrective_max_missing = 2       # coverage judge: most missing mechanisms searched for in one turn
+corrective_turns = 0             # CorrectiveReranker: judge, then rewrite and search again at most this often
+expand = "none"                  # ExpandingReranker: add more chunks of found pages: none | page | section | branch
+expand_max_candidates = 30       # ExpandingReranker: the most candidates after expansion
 section_candidates = 30          # most sections and other candidates the SectionReranker ranks
 rerank_doc_places = 0            # documentation places the model fills (DocPlacesReranker)
 bm25_slots = 0                   # places filled by BM25 in the hybrid_split retriever; the rest are dense

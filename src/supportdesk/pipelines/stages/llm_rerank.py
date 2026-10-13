@@ -109,6 +109,11 @@ class LLMReranker:
     def __init__(self, clients, settings):
         self.clients, self.snippet = clients, settings.retrieval.rerank_snippet_chars
         self.snippet_mode = settings.retrieval.rerank_snippet  # start | focused
+        self.concepts = None
+        if settings.retrieval.rerank_show_concepts:  # the query stage's concept queries (replayed from the cache)
+            from .rewrite_query import QueryRewriter
+            self.concepts = QueryRewriter(clients, settings)
+            self.skip = 1 if settings.retrieval.keep_report_query else 0
         # documentation kept in the final top_k: retrieval.rerank_keep_docs, else retrieval.doc_slots
         keep = settings.retrieval.rerank_keep_docs
         self.top_k = settings.retrieval.top_k
@@ -130,7 +135,12 @@ class LLMReranker:
             snippets = [" ".join(h.chunk.text.split())[: self.snippet] for h in hits]
         listing = "\n\n".join(f"C{n}: [{h.chunk.source_type}] {h.chunk.title}\n{snippet}"
                                 for n, (h, snippet) in enumerate(zip(hits, snippets), start=1))
-        content = f"## Report\n{report}\n\n## Candidates\n{listing}"
+        content = f"## Report\n{report}\n\n"
+        if self.concepts is not None:
+            mechanisms = self.concepts(case, {})[self.skip:]
+            if mechanisms:
+                content += "## Mechanisms involved\n" + "\n".join(f"- {m}" for m in mechanisms) + "\n\n"
+        content += f"## Candidates\n{listing}"
         text, _ = self.clients.chat.complete([{"role": "system", "content": self.prompt},
                                               {"role": "user", "content": content}],
                                              stage="rerank", json_mode=True)

@@ -1,0 +1,39 @@
+# The advanced design (decompose, focused snippets and concepts for the reranker, merging) on structure
+# chunks with context headers: 12 sections from 25 candidates, within 3,200 tokens.
+# No expansion: the reference for the branch experiment.
+# Uses index/structure_ctx.
+
+[chunking]
+method = "structure"         # section chunks: each chunk is a section, with its heading path
+max_tokens = 512
+overlap_tokens = 128
+context_header = true        # embedded with "page title › headings" in front (index/structure_ctx)
+
+[retrieval]
+top_k = 12                   # 12 small sections, within the same 3,200-token budget
+candidate_k = 25             # candidates the reranker orders
+rerank_snippet_chars = 400   # characters of each candidate the reranker sees
+rerank_snippet = "focused"   # the reranker sees each candidate's best-matching window
+rerank_show_concepts = true  # and the concept queries ("Mechanisms involved")
+keep_report_query = true     # search with the cleaned report too
+max_queries = 3              # up to 3 model-written queries
+doc_slots = 18               # documentation among the 25 candidates
+rerank_keep_docs = 6         # at least 6 documentation chunks in the final 12
+historical_filter = true
+
+[context]
+max_tokens = 3200            # the same evidence budget as advanced
+max_query_chars = 4000
+max_body_chars = 4000
+
+[pipeline]
+retriever = "dense_doc_slots"
+
+[prompts]
+rewrite = "configs/prompts/rewrite_concepts_system.txt"
+# Its own answer prompt (copy and edit configs/prompts/answer_system.txt):
+# system = "configs/prompts/advanced_system.txt"
+rerank = "configs/prompts/rerank_docs_concepts_system.txt"
+
+[paths]
+index_dir = "index/structure_ctx"     # the structure-with-headers index (already built)

@@ -473,8 +473,8 @@ def test_the_variants_of_the_advanced_design_each_change_one_thing():
     assert hybrid["pipeline.retriever"] == "hybrid_doc_slots"
     assert {k for k in base if base[k] != wide[k]} == {"pipeline.name", "retrieval.candidate_k", "retrieval.doc_slots"}
     assert (wide["retrieval.candidate_k"], wide["retrieval.doc_slots"], wide["retrieval.rerank_keep_docs"]) == (20, 15, 3)
-    merged, advanced = flat("clean_doc_slots_rerank_docs_prompt_decompose_merged"), flat("advanced")
-    assert {k for k in merged if merged[k] != advanced[k]} == {"pipeline.name"}  # advanced is decompose_merged
+    best, advanced = flat("clean_doc_slots_rerank_docs_prompt_decompose_merged_focused_concepts"), flat("advanced")
+    assert {k for k in best if best[k] != advanced[k]} == {"pipeline.name"}  # advanced is that design
 
 
 def test_the_hybrid_candidates_variant_runs_end_to_end(index, clients, settings):
@@ -710,8 +710,22 @@ def test_the_8_chunk_chunking_experiments_change_only_room_and_documentation_kep
 
 
 
-def test_advanced_merges_overlapping_chunks(index, clients, settings):
+def test_advanced_merges_and_can_expand_on_request(index, clients, settings):
+    import dataclasses
+
     from supportdesk.pipelines.advanced import build_advanced
-    from supportdesk.pipelines.stages.evidence import MergedReranker
-    pipeline = build_advanced(DocSlotsRetriever(index, clients.embedding, doc_slots=3), clients, settings)
-    assert isinstance(pipeline.reranker, MergedReranker) and pipeline.describe()["reranker"] == "MergedReranker"
+    from supportdesk.pipelines.stages.evidence import (
+        CorrectiveReranker,
+        ExpandingReranker,
+        MergedReranker,
+    )
+    retriever = DocSlotsRetriever(index, clients.embedding, doc_slots=3)
+    pipeline = build_advanced(retriever, clients, settings)
+    stage = pipeline.reranker
+    assert isinstance(stage, CorrectiveReranker) and stage.turns == 0  # corrective turns off by default
+    assert isinstance(stage.inner, ExpandingReranker) and isinstance(stage.inner.inner, MergedReranker)
+    hits = retriever.search("session state reset rerun page", k=6)
+    assert stage.inner.expand(hits) == hits  # expand = none: exactly the merging reranker's input
+    page = dataclasses.replace(settings, retrieval=dataclasses.replace(settings.retrieval, expand="page"))
+    expanded = build_advanced(retriever, clients, page).reranker.inner.expand(hits)
+    assert len(expanded) >= len(hits)
