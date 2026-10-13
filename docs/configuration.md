@@ -134,6 +134,7 @@ Defaults shown are the built-in ones. `*unset*` means the key is optional and no
 | `extract` | `configs/prompts/extract_system.txt` | system prompt of the call that keeps the relevant parts of the chosen chunks (ExtractingReranker) |
 | `judge` | `configs/prompts/judge_system.txt` | system prompt of the retrieve_loop sufficiency check (yes or no) |
 | `loop_rewrite` | `configs/prompts/loop_rewrite_system.txt` | system prompt of the retrieve_loop query rewrite |
+| `judge_scored` | `configs/prompts/judge_scored_system.txt` | system prompt of the retrieve_loop_best and retrieve_loop_mixed judge: yes or no, then a 0-10 score for every passage |
 
 ### `[paths]`
 
@@ -196,6 +197,8 @@ Defaults shown are the built-in ones. `*unset*` means the key is optional and no
 | `corrective_judge` | `relevance` | CorrectiveReranker: relevance (yes or no: is there relevant evidence) or coverage (which concept queries no passage explains; one new query per missing one) |
 | `corrective_max_missing` | `2` | CorrectiveReranker with the coverage judge: most missing mechanisms searched for in one turn |
 | `summary_sections` | `0` | SummaryReranker: before reranking, add the chunks of this many documentation sections whose summaries best match the queries (0 = off) |
+| `hier_sections` | `3` | hierarchical retrievers: how many documentation sections, chosen by comparing the query with the section summaries, the chunk search looks inside |
+| `hier_places` | `3` | hierarchical retrievers: how many of the returned chunks come from inside those sections; the rest come from the ordinary search |
 | `expand` | `none` | ExpandingReranker: add more chunks of the documentation pages among the candidates before reranking: none \| page (all their other chunks) \| section (only chunks sharing a section with a found chunk) \| branch (for structure chunks: the found chunk's ## parent and all its children, from the chunks' heading paths) |
 | `expand_max_candidates` | `30` | ExpandingReranker: the most candidates after expansion |
 | `section_candidates` | `30` | most sections and other candidates the SectionReranker ranks |

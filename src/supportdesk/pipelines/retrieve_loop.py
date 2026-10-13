@@ -1,4 +1,4 @@
-"""Corrective retrieval inside the corpus: judge 6 chunks, rewrite the query, try at most 3 times.
+"""Corrective retrieval inside the corpus: judge 6 chunks, rewrite the query, try at most retrieval.max_loops times.
 
 The baseline graph is unchanged. This pipeline builds its own graph, with one cycle, and then uses
 the same packet, generator, validator and summarizer. There is no web search.
@@ -168,6 +168,6 @@ def _passages(hits: list[dict], limit: int = 1200) -> str:
 
 
 def build_retrieve_loop(retriever: Retriever, clients: Clients, settings: Settings) -> RetrieveLoopPipeline:
-    """Retrieve 6 chunks, judge them, and rewrite the query at most 3 times before answering."""
+    """Retrieve 6 chunks, judge them, and rewrite the query once (max_loops = 2 searches) before answering."""
     return RetrieveLoopPipeline(name="retrieve_loop", clients=clients, settings=settings,
                                 **default_stages(retriever, clients, settings))
