@@ -1,4 +1,4 @@
-"""Experimental pre-retrieval scope gate for the advanced pipeline."""
+"""Pre-retrieval Streamlit scope gate that wraps the current advanced pipeline."""
 from __future__ import annotations
 
 from pathlib import Path
@@ -8,13 +8,11 @@ from langgraph.graph import START, StateGraph
 from ..config import Settings
 from ..llm.factory import Clients
 from ..retrieval.retriever import Retriever
+from .advanced import build_advanced
 from .packet import Packet
 from .parsing import ParsedAnswer
-from .staged import StagedPipeline
+from .staged import STAGE_NAMES, StagedPipeline
 from .state import answer_to_dict, case_from_dict, packet_to_dict
-from .stages import default_stages
-from .stages.clean_query import CleanQuery
-from .stages.llm_rerank import LLMReranker
 from .stages.scope_classifier import LLMScopeClassifier, RuleScopeClassifier
 
 _SCOPE_PROMPT = Path("configs/prompts/scope_system.txt")
@@ -25,7 +23,7 @@ _OUT_OF_SCOPE_REPLY = (
 
 
 class ScopeGatedPipeline(StagedPipeline):
-    """Run a scope classifier after intake and skip retrieval for clearly unrelated reports."""
+    """Run a scope classifier after intake and before the current retrieval pipeline."""
 
     def __init__(self, *, classifier, **kwargs):
         super().__init__(**kwargs)
@@ -38,9 +36,11 @@ class ScopeGatedPipeline(StagedPipeline):
         decision = self.classifier(case_from_dict(state["case"]))
         return {"extra": {**state.get("extra", {}), "scope": decision.to_dict()}}
 
-    @staticmethod
-    def _scope_route(state) -> str:
-        return "query" if state["extra"]["scope"]["label"] == "IN_SCOPE" else "scope_reject"
+    def _scope_route(self, state) -> str:
+        if state["extra"]["scope"]["label"] != "IN_SCOPE":
+            return "scope_reject"
+        # Scope runs immediately after intake. Preserve any future advanced extra node inserted there.
+        return self.nodes()[1][0]
 
     def _scope_reject(self, state) -> dict:
         packet = Packet()
@@ -67,52 +67,75 @@ class ScopeGatedPipeline(StagedPipeline):
         return {}
 
     def add_to(self, graph: StateGraph, *, until: str = "summarize") -> str:
-        """Add a conditional scope gate while leaving the baseline graph untouched."""
-        linear = self._base_nodes()
+        """Add the gate before query/retrieval while preserving the wrapped pipeline stages."""
+        linear = self.nodes()
         names = [name for name, _ in linear]
         if until not in names:
             raise ValueError(f"unknown terminal node {until!r}; nodes: {names}")
         linear = linear[: names.index(until) + 1]
 
-        # intake is always first. The classifier then routes to the ordinary pipeline or reject path.
         graph.add_node("intake", self._intake)
         graph.add_node("scope", self._scope)
         graph.add_node("scope_reject", self._scope_reject)
         graph.add_node("scope_done", self._scope_done)
-        for name, fn in linear[1:]:  # query ... requested terminal
+        rest = linear[1:]
+        for name, fn in rest:
             graph.add_node(name, fn)
 
         graph.add_edge(START, "intake")
         graph.add_edge("intake", "scope")
-        graph.add_conditional_edges("scope", self._scope_route, ["query", "scope_reject"])
-        for (a, _), (b, _) in zip(linear[1:], linear[2:]):
+        in_scope_target = rest[0][0]
+        graph.add_conditional_edges("scope", self._scope_route, [in_scope_target, "scope_reject"])
+        for (a, _), (b, _) in zip(rest, rest[1:]):
             graph.add_edge(a, b)
         graph.add_edge(linear[-1][0], "scope_done")
         graph.add_edge("scope_reject", "scope_done")
         return "scope_done"
 
 
-def _from_advanced(retriever: Retriever, clients: Clients, settings: Settings, classifier, name: str):
-    # Recreate advanced's stage composition here instead of importing build_advanced.
-    # This keeps scope_gate independent and lets advanced itself opt into the same gate
-    # without a circular import.
-    stages = default_stages(retriever, clients, settings)
-    stages["query"] = CleanQuery(settings.context.max_query_chars)
-    stages["reranker"] = LLMReranker(clients, settings)
+def _wrap(base: StagedPipeline, classifier, *, name: str) -> ScopeGatedPipeline:
+    """Wrap an already-built pipeline so its current stages remain exactly intact."""
+    stages = {stage: getattr(base, stage) for stage in STAGE_NAMES}
     return ScopeGatedPipeline(
-        name=name, clients=clients, settings=settings, classifier=classifier, extra_nodes=(), **stages
+        name=name,
+        clients=base.clients,
+        settings=base.settings,
+        classifier=classifier,
+        extra_nodes=base.extra_nodes,
+        **stages,
+    )
+
+
+def build_advanced_scoped(retriever: Retriever, clients: Clients, settings: Settings) -> ScopeGatedPipeline:
+    """Current advanced pipeline with an LLM pre-retrieval scope classifier."""
+    return _wrap(
+        build_advanced(retriever, clients, settings),
+        LLMScopeClassifier(clients, _SCOPE_PROMPT),
+        name="advanced",
     )
 
 
 def build_scope_gate(retriever: Retriever, clients: Clients, settings: Settings) -> ScopeGatedPipeline:
-    """Advanced retrieval behind an LLM scope classifier; baseline remains unchanged."""
-    return _from_advanced(
-        retriever, clients, settings, LLMScopeClassifier(clients, _SCOPE_PROMPT), "scope_gate")
+    """Named comparison pipeline: current advanced retrieval plus the LLM scope gate."""
+    return _wrap(
+        build_advanced(retriever, clients, settings),
+        LLMScopeClassifier(clients, _SCOPE_PROMPT),
+        name="scope_gate",
+    )
 
 
 def build_scope_gate_rules(retriever: Retriever, clients: Clients, settings: Settings) -> ScopeGatedPipeline:
-    """Zero-cost rule baseline for the same pre-retrieval routing task."""
-    return _from_advanced(retriever, clients, settings, RuleScopeClassifier(), "scope_gate_rules")
+    """Rule-based comparison using the same current advanced pipeline underneath."""
+    return _wrap(
+        build_advanced(retriever, clients, settings),
+        RuleScopeClassifier(),
+        name="scope_gate_rules",
+    )
 
 
-__all__ = ["ScopeGatedPipeline", "build_scope_gate", "build_scope_gate_rules"]
+__all__ = [
+    "ScopeGatedPipeline",
+    "build_advanced_scoped",
+    "build_scope_gate",
+    "build_scope_gate_rules",
+]

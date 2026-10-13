@@ -86,6 +86,7 @@ from .pipelines.experiments import (
     build_split_sentences,
 )
 from .pipelines.retrieve_loop import build_retrieve_loop
+from .pipelines.scope_gate import build_advanced_scoped, build_scope_gate, build_scope_gate_rules
 from .retrieval.index import VectorIndex
 from .retrieval.retriever import (
     BM25Retriever,
@@ -98,7 +99,8 @@ from .retrieval.retriever import (
 )
 
 #: Pipelines by name: each builds the pipeline from (retriever, clients, settings); its docstring is its one-line description.
-PIPELINES = {"baseline": build_baseline, "advanced": build_advanced,
+PIPELINES = {"baseline": build_baseline, "advanced": build_advanced_scoped,
+             "scope_gate": build_scope_gate, "scope_gate_rules": build_scope_gate_rules,
              "retrieve_loop": build_retrieve_loop,
              "clean_query": build_clean_query, "doc_slots": build_doc_slots,
              "hybrid_rrf": build_hybrid_rrf, "hybrid_split": build_hybrid_split,

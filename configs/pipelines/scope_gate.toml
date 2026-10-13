@@ -1,5 +1,18 @@
-# Advanced retrieval with an LLM pre-retrieval IN_SCOPE / OUT_OF_SCOPE gate.
-# Retrieval settings intentionally match advanced so the only new behavior is the scope check.
+# Comparison profile: current advanced retrieval + LLM pre-retrieval scope gate.
+# Settings for the advanced pipeline (--pipeline advanced). Every key here overrides
+# configs/default.toml for this pipeline only; --config and --set still override it.
+#
+# The best retrieval found on the development cases (experiment
+# clean_doc_slots_rerank_docs_prompt_decompose_merged_focused_concepts): the cleaned report plus up to 3
+# model-written queries, one per Streamlit concept involved (QueryRewriter, prompt
+# configs/prompts/rewrite_concepts_system.txt); each query returns 15 candidates, 10 of them documentation
+# (retriever dense_doc_slots); the lists are merged by rank fusion; one model call ranks the 15, seeing each
+# candidate's best-matching window (rerank_snippet = focused) and the concept queries as "Mechanisms
+# involved" (rerank_show_concepts, prompt configs/prompts/rerank_docs_concepts_system.txt); the best 6 are
+# kept, with at least 3 documentation chunks, and kept chunks of one page that overlap or touch are merged.
+# The model sees at most 6 pieces within 3,200 tokens. Per case: two model calls for retrieval (the rewrite
+# and the reranking; the reranker reuses the rewrite's answer). retrieval.expand = page | section (with
+# --set) adds more chunks of the found pages before reranking.
 
 [chunking]
 method = "fixed"
@@ -8,17 +21,32 @@ overlap_tokens = 128
 
 [retrieval]
 top_k = 6
-candidate_k = 15
-doc_slots = 10
-rerank_keep_docs = 3
-rerank_snippet_chars = 400
+candidate_k = 15             # candidates the reranker orders
+rerank_snippet_chars = 400   # characters of each candidate the reranker sees
+rerank_snippet = "focused"   # the reranker sees each candidate's best-matching window
+rerank_show_concepts = true  # and the concept queries ("Mechanisms involved")
+keep_report_query = true     # search with the cleaned report too
+max_queries = 3              # up to 3 model-written queries
+doc_slots = 10               # documentation among the 15 candidates
+rerank_keep_docs = 3         # documentation kept in the final 6 after reranking
 historical_filter = true
 
 [context]
-max_tokens = 3200
+max_tokens = 3200            # 6 chunks x 512 tokens: enough room that the budget never drops a chunk
+max_query_chars = 4000
+max_body_chars = 4000
 
 [pipeline]
 retriever = "dense_doc_slots"
 
 [prompts]
-rerank = "configs/prompts/rerank_docs_system.txt"
+rewrite = "configs/prompts/rewrite_concepts_system.txt"
+# Its own answer prompt (copy and edit configs/prompts/answer_system.txt):
+# system = "configs/prompts/advanced_system.txt"
+rerank = "configs/prompts/rerank_docs_concepts_system.txt"
+
+# If advanced uses different chunking, give it its own index so the two never collide
+# (an index built with other chunking is refused). Then build it with:
+#   supportdesk index --pipeline advanced
+# [paths]
+# index_dir = "index/advanced"

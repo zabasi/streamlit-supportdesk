@@ -136,3 +136,10 @@ def test_registry_advanced_includes_llm_scope_gate(index, clients, settings):
     assert isinstance(pipeline, ScopeGatedPipeline)
     assert type(pipeline.classifier).__name__ == "LLMScopeClassifier"
     assert pipeline.name == "advanced"
+
+    # Regression: the gate wraps whatever advanced is today; it must not replace its retrieval design.
+    from supportdesk.pipelines.advanced import build_advanced
+    from supportdesk.retrieval.retriever import DocSlotsRetriever
+    raw = build_advanced(DocSlotsRetriever(index, clients.embedding, doc_slots=s.retrieval.doc_slots), clients, s)
+    for stage in ("query", "retriever", "reranker", "packet", "generator", "validator", "summarizer"):
+        assert type(getattr(pipeline, stage)) is type(getattr(raw, stage))
