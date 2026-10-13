@@ -521,3 +521,30 @@ def build_clean_doc_slots_rerank_docs_prompt_decompose_merged_expand_section(ret
     stages["query"] = QueryRewriter(clients, settings)
     stages["reranker"] = ExpandingReranker(clients, settings, _index_chunks(retriever))
     return StagedPipeline(name="clean_doc_slots_rerank_docs_prompt_decompose_merged_expand_section", clients=clients, settings=settings, **stages)
+
+
+
+def build_clean_doc_slots_rerank_docs_prompt_decompose_merged_focused(retriever, clients, settings):
+    """decompose_merged where the reranker sees focused snippets."""
+    stages = default_stages(retriever, clients, settings)
+    stages["query"] = QueryRewriter(clients, settings)
+    stages["reranker"] = MergedReranker(clients, settings, _index_chunks(retriever))
+    return StagedPipeline(name="clean_doc_slots_rerank_docs_prompt_decompose_merged_focused", clients=clients, settings=settings, **stages)
+
+
+
+def build_clean_doc_slots_rerank_docs_prompt_decompose_merged_concepts(retriever, clients, settings):
+    """decompose_merged where the reranker sees the concept queries."""
+    stages = default_stages(retriever, clients, settings)
+    stages["query"] = QueryRewriter(clients, settings)
+    stages["reranker"] = MergedReranker(clients, settings, _index_chunks(retriever))
+    return StagedPipeline(name="clean_doc_slots_rerank_docs_prompt_decompose_merged_concepts", clients=clients, settings=settings, **stages)
+
+
+
+def build_clean_doc_slots_rerank_docs_prompt_decompose_merged_focused_concepts(retriever, clients, settings):
+    """decompose_merged where the reranker sees focused snippets and the concept queries."""
+    stages = default_stages(retriever, clients, settings)
+    stages["query"] = QueryRewriter(clients, settings)
+    stages["reranker"] = MergedReranker(clients, settings, _index_chunks(retriever))
+    return StagedPipeline(name="clean_doc_slots_rerank_docs_prompt_decompose_merged_focused_concepts", clients=clients, settings=settings, **stages)

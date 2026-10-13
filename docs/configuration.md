@@ -186,6 +186,7 @@ Defaults shown are the built-in ones. `*unset*` means the key is optional and no
 | `extract_mode` | `keep` | ExtractingReranker: the model lists the parts to keep, or the parts to drop |
 | `extract_show_concepts` | `False` | ExtractingReranker: show the model the concept queries the query stage wrote |
 | `extract_protect_top` | `0` | ExtractingReranker: never drop parts of this many top-ranked chunks |
+| `rerank_show_concepts` | `False` | the LLMReranker also sees the concept queries the query stage wrote ("Mechanisms involved") |
 | `expand` | `none` | ExpandingReranker: add more chunks of the documentation pages among the candidates before reranking: none \| page (all their other chunks) \| section (only chunks sharing a section with a found chunk) |
 | `expand_max_candidates` | `30` | ExpandingReranker: the most candidates after expansion |
 | `section_candidates` | `30` | most sections and other candidates the SectionReranker ranks |

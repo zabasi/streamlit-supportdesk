@@ -246,3 +246,38 @@ def test_the_expansion_experiments_change_only_the_expansion():
         other = flat(f"{d}_merged_expand_{mode}")
         assert {k for k in base if base[k] != other[k]} == {"pipeline.name", "retrieval.expand"}
         assert other["retrieval.expand"] == mode and other["retrieval.expand_max_candidates"] == 30
+
+
+def test_the_reranker_sees_the_concept_queries_only_when_asked(clients, settings):
+    from supportdesk.pipelines.stages.llm_rerank import LLMReranker
+    hits = [Hit(c, 1.0 / (n + 1), n + 1, "dense") for n, c in enumerate(page_chunks()[:3])]
+    case = CaseInput(case_id="c", title="Widget loses value", body="The value resets after a rerun")
+    plain = LLMReranker(clients, settings)
+    clients.chat.script[clients.chat.calls + 1] = json.dumps({"ranking": ["C1", "C2", "C3"]})
+    plain(case, "q", hits)
+    assert "Mechanisms involved" not in clients.chat.seen[-1][1]["content"]  # the default is unchanged
+    s = dataclasses.replace(settings, retrieval=dataclasses.replace(
+        settings.retrieval, rerank_show_concepts=True, keep_report_query=True, max_queries=2))
+    with_concepts = LLMReranker(clients, s)
+    calls = clients.chat.calls
+    clients.chat.script[calls + 1] = json.dumps({"queries": ["widget life cycle across reruns", "widget keys"]})
+    clients.chat.script[calls + 2] = json.dumps({"ranking": ["C2", "C1", "C3"]})
+    ranked = with_concepts(case, "q", hits)
+    shown = clients.chat.seen[-1][1]["content"]
+    assert "## Mechanisms involved\n- widget life cycle across reruns\n- widget keys" in shown
+    assert ranked[0].chunk.chunk_id == hits[1].chunk.chunk_id
+
+
+def test_the_reranker_view_experiments_change_only_what_the_reranker_sees():
+    from supportdesk.config import Settings
+    def flat(name):
+        d = Settings.load(env={}, overrides=[f"pipeline.name={name}"]).to_dict()
+        return {f"{section}.{key}": value for section, keys in d.items() for key, value in keys.items()}
+    d = "clean_doc_slots_rerank_docs_prompt_decompose"
+    base = flat(f"{d}_merged")
+    for suffix, changed in (("_merged_focused", {"retrieval.rerank_snippet"}),
+                            ("_merged_concepts", {"retrieval.rerank_show_concepts", "prompts.rerank"}),
+                            ("_merged_focused_concepts", {"retrieval.rerank_snippet", "retrieval.rerank_show_concepts",
+                                                          "prompts.rerank"})):
+        other = flat(d + suffix)
+        assert {k for k in base if base[k] != other[k]} == {"pipeline.name", *changed}, suffix

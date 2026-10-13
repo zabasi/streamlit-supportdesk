@@ -177,6 +177,8 @@ class Retrieval:
     extract_show_concepts: bool = _opt("ExtractingReranker: show the model the concept queries the query stage wrote",
                                        False)
     extract_protect_top: int = _opt("ExtractingReranker: never drop parts of this many top-ranked chunks", 0)
+    rerank_show_concepts: bool = _opt("the LLMReranker also sees the concept queries the query stage wrote "
+                                      "(\"Mechanisms involved\")", False)
     expand: str = _opt("ExpandingReranker: add more chunks of the documentation pages among the candidates "
                        "before reranking: none | page (all their other chunks) | section (only chunks sharing a "
                        "section with a found chunk)", "none")

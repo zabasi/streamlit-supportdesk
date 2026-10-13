@@ -68,6 +68,7 @@ min_chunks = 2                   # fewest chunks the GradedReranker keeps
 extract_mode = "keep"            # ExtractingReranker: the model lists parts to keep, or to drop
 extract_show_concepts = false    # ExtractingReranker: show the model the concept queries
 extract_protect_top = 0          # ExtractingReranker: never drop parts of this many top-ranked chunks
+rerank_show_concepts = false     # the LLM reranker also sees the concept queries ("Mechanisms involved")
 expand = "none"                  # ExpandingReranker: add more chunks of found pages: none | page | section
 expand_max_candidates = 30       # ExpandingReranker: the most candidates after expansion
 section_candidates = 30          # most sections and other candidates the SectionReranker ranks
