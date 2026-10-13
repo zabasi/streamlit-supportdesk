@@ -127,6 +127,7 @@ Defaults shown are the built-in ones. `*unset*` means the key is optional and no
 | `output_format` | `configs/prompts/answer_output_format.txt` | JSON shape the answer must follow |
 | `rewrite` | `configs/prompts/rewrite_system.txt` | system prompt of the query-rewriting call (QueryRewriter) |
 | `rerank` | `configs/prompts/rerank_system.txt` | system prompt of the reranking call (LLMReranker) |
+| `summarize_section` | `configs/prompts/summarize_section_system.txt` | system prompt that summarizes one documentation section (scripts/summarize_sections.py) |
 | `judge_coverage` | `configs/prompts/judge_coverage_system.txt` | system prompt of the coverage judge (CorrectiveReranker) |
 | `rewrite_missing` | `configs/prompts/rewrite_missing_system.txt` | system prompt of the query for a missing mechanism (CorrectiveReranker) |
 | `extract` | `configs/prompts/extract_system.txt` | system prompt of the call that keeps the relevant parts of the chosen chunks (ExtractingReranker) |
@@ -143,6 +144,7 @@ Defaults shown are the built-in ones. `*unset*` means the key is optional and no
 | `cache_path` | `artifacts/cache.sqlite` | SQLite cache of model responses (makes re-runs free, enables replay) |
 | `ledger_path` | `artifacts/cost_ledger.jsonl` | record of every live call's cost; it counts toward the budget across runs |
 | `pricing_path` | `configs/pricing.json` | per-model prices used by the budget guard |
+| `summaries` | `data/summaries/sections.jsonl` | section summaries written by scripts/summarize_sections.py (SummaryReranker) |
 
 ### `[budget]`
 
@@ -192,6 +194,7 @@ Defaults shown are the built-in ones. `*unset*` means the key is optional and no
 | `corrective_turns` | `0` | CorrectiveReranker: after reranking, a judge checks the kept chunks; if they are not enough, rewrite the query, search again and rerank old and new candidates together, at most this many times (0 = off) |
 | `corrective_judge` | `relevance` | CorrectiveReranker: relevance (yes or no: is there relevant evidence) or coverage (which concept queries no passage explains; one new query per missing one) |
 | `corrective_max_missing` | `2` | CorrectiveReranker with the coverage judge: most missing mechanisms searched for in one turn |
+| `summary_sections` | `0` | SummaryReranker: before reranking, add the chunks of this many documentation sections whose summaries best match the queries (0 = off) |
 | `expand` | `none` | ExpandingReranker: add more chunks of the documentation pages among the candidates before reranking: none \| page (all their other chunks) \| section (only chunks sharing a section with a found chunk) \| branch (for structure chunks: the found chunk's ## parent and all its children, from the chunks' heading paths) |
 | `expand_max_candidates` | `30` | ExpandingReranker: the most candidates after expansion |
 | `section_candidates` | `30` | most sections and other candidates the SectionReranker ranks |

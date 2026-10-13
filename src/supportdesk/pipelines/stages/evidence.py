@@ -336,3 +336,67 @@ class CorrectiveReranker:
             trace["turns"] += 1
         self.last_trace = trace
         return kept
+
+
+
+class SummaryReranker:
+    """Hierarchical retrieval through section summaries. Before reranking, the queries (the report and
+    the concept queries; those calls replay from the cache) are compared with a summary of every
+    documentation section (scripts/summarize_sections.py); the fixed chunks of the
+    retrieval.summary_sections best-matching sections are added to the candidates, marked "summary",
+    if they are not there yet and are visible at the case's date. Then ``inner`` reranks as usual."""
+
+    def __init__(self, clients, settings, chunks: list[Chunk], inner=None):
+        import json
+
+        from ...retrieval.filters import parse_ts
+        from .rewrite_query import QueryRewriter
+        self.inner = inner or ExpandingReranker(clients, settings, chunks)
+        self.n, self.clients, self.settings, self.parse_ts = settings.retrieval.summary_sections, clients, settings, parse_ts
+        self.by_page: dict[str, list[Chunk]] = {}
+        for c in chunks:
+            if c.source_type == "documentation" and c.start_char is not None:
+                self.by_page.setdefault(c.source_id, []).append(c)
+        self.sections, self.vectors = [], []
+        if self.n:
+            path = Path(settings.paths.summaries)
+            if not path.exists():  # like an index that is not built: commands report it, snapshot --all skips it
+                from ...retrieval.index import IndexUnusable
+                raise IndexUnusable(f"section summaries {path} not found: run scripts/summarize_sections.py first")
+            rows = [json.loads(line) for line in path.read_text(encoding="utf-8").splitlines() if line.strip()]
+            self.sections = [r for r in rows if r["source_id"] in self.by_page]
+            texts = [f"{r['title']} > {r['heading']}: {r['summary']}" for r in self.sections]
+            self.vectors = self.clients.embedding.embed(texts, stage="summary")[0] if texts else []
+            self.queries = QueryRewriter(clients, settings)
+
+    def chunks_of(self, section: dict, as_of: str | None) -> list[Chunk]:
+        cutoff = self.parse_ts(as_of)
+        found = []
+        for c in self.by_page.get(section["source_id"], []):
+            if c.start_char < section["end_char"] and c.end_char > section["start_char"]:
+                stamp = self.parse_ts(c.as_of)
+                if cutoff is None or stamp is None or stamp < cutoff:
+                    found.append(c)
+        return found
+
+    def __call__(self, case: CaseInput, query: str, hits: list[Hit]) -> list[Hit]:
+        if not self.n or not self.sections:
+            return self.inner(case, query, hits)
+        qvecs = [self.clients.embedding.embed([q], stage="query")[0][0] for q in self.queries(case, {})]
+        def score(i):
+            return max(sum(a * b for a, b in zip(q, self.vectors[i])) for q in qvecs)
+        order = sorted(range(len(self.sections)), key=lambda i: (-score(i), i))
+        as_of = case.created_at if self.settings.retrieval.historical_filter else None
+        seen, added, used = {h.chunk.chunk_id for h in hits}, [], 0
+        for i in order:
+            if used >= self.n:
+                break
+            new = [c for c in self.chunks_of(self.sections[i], as_of) if c.chunk_id not in seen]
+            if not new:
+                continue
+            used += 1
+            for c in new:
+                seen.add(c.chunk_id)
+                added.append(Hit(c, score(i), 0, "summary"))
+        pool = [replace(h, rank=n) for n, h in enumerate(hits + added, start=1)]
+        return self.inner(case, query, pool)

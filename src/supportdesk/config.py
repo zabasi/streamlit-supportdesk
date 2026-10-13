@@ -93,6 +93,8 @@ class Prompts:
     rewrite: Path = _opt("system prompt of the query-rewriting call (QueryRewriter)",
                          Path("configs/prompts/rewrite_system.txt"))
     rerank: Path = _opt("system prompt of the reranking call (LLMReranker)", Path("configs/prompts/rerank_system.txt"))
+    summarize_section: Path = _opt("system prompt that summarizes one documentation section "
+                                   "(scripts/summarize_sections.py)", Path("configs/prompts/summarize_section_system.txt"))
     judge_coverage: Path = _opt("system prompt of the coverage judge (CorrectiveReranker)",
                                 Path("configs/prompts/judge_coverage_system.txt"))
     rewrite_missing: Path = _opt("system prompt of the query for a missing mechanism (CorrectiveReranker)",
@@ -113,6 +115,8 @@ class Paths:
     cache_path: Path = _opt("SQLite cache of model responses (makes re-runs free, enables replay)", Path("artifacts/cache.sqlite"))
     ledger_path: Path = _opt("record of every live call's cost; it counts toward the budget across runs", Path("artifacts/cost_ledger.jsonl"))
     pricing_path: Path = _opt("per-model prices used by the budget guard", Path("configs/pricing.json"))
+    summaries: Path = _opt("section summaries written by scripts/summarize_sections.py (SummaryReranker)",
+                           Path("data/summaries/sections.jsonl"))
 
 
 @dataclass(frozen=True)
@@ -191,6 +195,8 @@ class Retrieval:
                                  "relevance")
     corrective_max_missing: int = _opt("CorrectiveReranker with the coverage judge: most missing mechanisms "
                                        "searched for in one turn", 2)
+    summary_sections: int = _opt("SummaryReranker: before reranking, add the chunks of this many documentation "
+                                 "sections whose summaries best match the queries (0 = off)", 0)
     expand: str = _opt("ExpandingReranker: add more chunks of the documentation pages among the candidates "
                        "before reranking: none | page (all their other chunks) | section (only chunks sharing a "
                        "section with a found chunk) | branch (for structure chunks: the found chunk's ## parent "
@@ -464,6 +470,7 @@ class Settings:
             (r.corrective_judge in ("relevance", "coverage"),
              f"retrieval.corrective_judge must be relevance or coverage, got {r.corrective_judge!r}"),
             (r.corrective_max_missing >= 1, "retrieval.corrective_max_missing must be >= 1"),
+            (0 <= r.summary_sections <= 10, "retrieval.summary_sections must be between 0 and 10"),
             (r.extract_mode in ("keep", "drop"), f"retrieval.extract_mode must be keep or drop, got {r.extract_mode!r}"),
             (r.extract_protect_top >= 0, "retrieval.extract_protect_top must be >= 0"),
             (0 <= r.rerank_doc_places <= r.top_k,

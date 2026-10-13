@@ -9,7 +9,13 @@ from ..retrieval.retriever import Retriever
 from .staged import StagedPipeline
 from .stages import default_stages
 from .stages.clean_query import CleanQuery
-from .stages.evidence import ExpandingReranker, ExtractingReranker, GradedReranker, MergedReranker
+from .stages.evidence import (
+    ExpandingReranker,
+    ExtractingReranker,
+    GradedReranker,
+    MergedReranker,
+    SummaryReranker,
+)
 from .stages.llm_rerank import DocPlacesReranker, LLMReranker
 from .stages.rewrite_query import QueryRewriter
 from .stages.sections import SectionReranker, SectionTrimmer
@@ -566,3 +572,13 @@ def build_clean_doc_slots_rerank_docs_prompt_decompose_structure_advanced_branch
     stages["query"] = QueryRewriter(clients, settings)
     stages["reranker"] = ExpandingReranker(clients, settings, _index_chunks(retriever))
     return StagedPipeline(name="clean_doc_slots_rerank_docs_prompt_decompose_structure_advanced_branch", clients=clients, settings=settings, **stages)
+
+
+
+def build_clean_doc_slots_rerank_docs_prompt_decompose_merged_focused_concepts_summaries(retriever, clients, settings):
+    """advanced plus the chunks of the documentation sections whose summaries best match the queries."""
+    chunks = _index_chunks(retriever)
+    stages = default_stages(retriever, clients, settings)
+    stages["query"] = QueryRewriter(clients, settings)
+    stages["reranker"] = SummaryReranker(clients, settings, chunks, inner=ExpandingReranker(clients, settings, chunks))
+    return StagedPipeline(name="clean_doc_slots_rerank_docs_prompt_decompose_merged_focused_concepts_summaries", clients=clients, settings=settings, **stages)
