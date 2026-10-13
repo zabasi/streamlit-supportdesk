@@ -223,3 +223,66 @@ class ExpandingReranker:
 
     def __call__(self, case: CaseInput, query: str, hits: list[Hit]) -> list[Hit]:
         return self.inner(case, query, self.expand(hits))
+
+
+
+class CorrectiveReranker:
+    """Corrective retrieval on top of another reranker (by default advanced's ExpandingReranker).
+    After reranking, a judge (prompts.judge) reads the kept chunks and answers yes or no. On no, a model
+    writes one new query (prompts.loop_rewrite), the retriever searches with it, and the old and new
+    candidates are reranked together, so the best chunks of both rounds can be kept. At most
+    retrieval.corrective_turns times; 0 does nothing extra. Chunks from a corrective search are marked
+    "corrective"; each case's decisions are left in ``last_trace`` for the run's results."""
+
+    def __init__(self, clients, settings, chunks: list[Chunk], retriever, inner=None):
+        self.inner = inner or ExpandingReranker(clients, settings, chunks)
+        self.clients, self.retriever, self.settings = clients, retriever, settings
+        self.turns = settings.retrieval.corrective_turns
+        self.clean = CleanQuery(settings.context.max_query_chars)
+        self.judge_prompt = Path(settings.prompts.judge).read_text(encoding="utf-8")
+        self.rewrite_prompt = Path(settings.prompts.loop_rewrite).read_text(encoding="utf-8")
+        self.last_trace: dict | None = None
+
+    @staticmethod
+    def passages(hits: list[Hit], limit: int) -> str:
+        return "\n\n".join(f"[{h.chunk.chunk_id}] {h.chunk.title}\n{h.chunk.text[:limit]}" for h in hits) \
+            or "(no passages)"
+
+    def judge(self, question: str, kept: list[Hit]) -> str:
+        messages = [{"role": "system", "content": self.judge_prompt},
+                    {"role": "user", "content": f"Question:\n{question}\n\nPassages:\n{self.passages(kept, 1200)}"}]
+        text, _ = self.clients.chat.complete(messages, stage="judge", json_mode=False)
+        return "yes" if text.strip().lower().startswith("yes") else "no"
+
+    def rewrite(self, question: str, previous: list[str], kept: list[Hit]) -> str:
+        messages = [{"role": "system", "content": self.rewrite_prompt},
+                    {"role": "user", "content": f"Question:\n{question}\n\nPrevious queries:\n" + "\n".join(previous)
+                     + f"\n\nPassages already retrieved:\n{self.passages(kept, 400)}"}]
+        text, _ = self.clients.chat.complete(messages, stage="loop_rewrite", json_mode=False)
+        return " ".join(text.split()) or " ".join(question.split())
+
+    def __call__(self, case: CaseInput, query: str, hits: list[Hit]) -> list[Hit]:
+        kept = self.inner(case, query, hits)
+        if not self.turns:
+            self.last_trace = None
+            return kept
+        question = self.clean(case, {})[0]
+        trace: dict = {"judgements": [], "queries": [], "turns": 0}
+        pool, previous = list(hits), [query]
+        for _ in range(self.turns):
+            verdict = self.judge(question, kept)
+            trace["judgements"].append(verdict)
+            if verdict == "yes":
+                break
+            new_query = self.rewrite(question, previous, kept)
+            previous.append(new_query)
+            trace["queries"].append(new_query)
+            as_of = case.created_at if self.settings.retrieval.historical_filter else None
+            found = self.retriever.search(new_query, k=max(len(hits), self.settings.retrieval.top_k), as_of=as_of)
+            seen = {h.chunk.chunk_id for h in pool}
+            pool += [replace(h, source="corrective") for h in found if h.chunk.chunk_id not in seen]
+            pool = [replace(h, rank=n) for n, h in enumerate(pool, start=1)]
+            kept = self.inner(case, query, pool)
+            trace["turns"] += 1
+        self.last_trace = trace
+        return kept

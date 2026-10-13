@@ -714,12 +714,18 @@ def test_advanced_merges_and_can_expand_on_request(index, clients, settings):
     import dataclasses
 
     from supportdesk.pipelines.advanced import build_advanced
-    from supportdesk.pipelines.stages.evidence import ExpandingReranker, MergedReranker
+    from supportdesk.pipelines.stages.evidence import (
+        CorrectiveReranker,
+        ExpandingReranker,
+        MergedReranker,
+    )
     retriever = DocSlotsRetriever(index, clients.embedding, doc_slots=3)
     pipeline = build_advanced(retriever, clients, settings)
-    assert isinstance(pipeline.reranker, ExpandingReranker) and isinstance(pipeline.reranker.inner, MergedReranker)
+    stage = pipeline.reranker
+    assert isinstance(stage, CorrectiveReranker) and stage.turns == 0  # corrective turns off by default
+    assert isinstance(stage.inner, ExpandingReranker) and isinstance(stage.inner.inner, MergedReranker)
     hits = retriever.search("session state reset rerun page", k=6)
-    assert pipeline.reranker.expand(hits) == hits  # expand = none: exactly the merging reranker's input
+    assert stage.inner.expand(hits) == hits  # expand = none: exactly the merging reranker's input
     page = dataclasses.replace(settings, retrieval=dataclasses.replace(settings.retrieval, expand="page"))
-    expanded = build_advanced(retriever, clients, page).reranker.expand(hits)
+    expanded = build_advanced(retriever, clients, page).reranker.inner.expand(hits)
     assert len(expanded) >= len(hits)

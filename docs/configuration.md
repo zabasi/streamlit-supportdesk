@@ -187,6 +187,7 @@ Defaults shown are the built-in ones. `*unset*` means the key is optional and no
 | `extract_show_concepts` | `False` | ExtractingReranker: show the model the concept queries the query stage wrote |
 | `extract_protect_top` | `0` | ExtractingReranker: never drop parts of this many top-ranked chunks |
 | `rerank_show_concepts` | `False` | the LLMReranker also sees the concept queries the query stage wrote ("Mechanisms involved") |
+| `corrective_turns` | `0` | CorrectiveReranker: after reranking, a judge checks the kept chunks; if they are not enough, rewrite the query, search again and rerank old and new candidates together, at most this many times (0 = off) |
 | `expand` | `none` | ExpandingReranker: add more chunks of the documentation pages among the candidates before reranking: none \| page (all their other chunks) \| section (only chunks sharing a section with a found chunk) \| branch (for structure chunks: the found chunk's ## parent and all its children, from the chunks' heading paths) |
 | `expand_max_candidates` | `30` | ExpandingReranker: the most candidates after expansion |
 | `section_candidates` | `30` | most sections and other candidates the SectionReranker ranks |

@@ -18,7 +18,7 @@ from ..llm.factory import Clients
 from ..retrieval.retriever import Retriever
 from .staged import StagedPipeline
 from .stages import default_stages
-from .stages.evidence import ExpandingReranker
+from .stages.evidence import CorrectiveReranker
 from .stages.rewrite_query import QueryRewriter
 
 
@@ -27,8 +27,9 @@ def build_advanced(retriever: Retriever, clients: Clients, settings: Settings) -
     stages = default_stages(retriever, clients, settings)
     stages["query"] = QueryRewriter(clients, settings)
     index = getattr(retriever, "index", None)  # pages are rebuilt from the index's chunks for merging
-    # ExpandingReranker with retrieval.expand = none is MergedReranker; --set retrieval.expand=page|section
-    # tries expansion on the same design
-    stages["reranker"] = ExpandingReranker(clients, settings, list(index.chunks) if index is not None else [])
+    # CorrectiveReranker with corrective_turns = 0 is ExpandingReranker, and that with expand = none is
+    # MergedReranker; --set retrieval.corrective_turns=1 or retrieval.expand=... try those on this design
+    stages["reranker"] = CorrectiveReranker(clients, settings, list(index.chunks) if index is not None else [],
+                                            retriever)
     extra_nodes: list = []
     return StagedPipeline(name="advanced", clients=clients, settings=settings, extra_nodes=extra_nodes, **stages)

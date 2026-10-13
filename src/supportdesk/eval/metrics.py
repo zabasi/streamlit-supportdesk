@@ -196,7 +196,15 @@ def evaluate_retrieval(pairs: list[tuple[EvalCase, dict]], ks: tuple[int, ...], 
                                    for c, r in sub),
             **(passages(sub) if passage_threshold is not None else {}),
             **evidence_size(sub),
+            **corrective(sub),
         }
+
+    def corrective(sub):
+        traces = [r["rerank_trace"] for _, r in sub if isinstance(r.get("rerank_trace"), dict)]
+        if not traces:
+            return {}
+        return {"corrective_cases": sum(1 for t in traces if t.get("turns")),
+                "judged_enough_first": sum(1 for t in traces if (t.get("judgements") or [None])[0] == "yes")}
 
     def evidence_size(sub):
         tokens = [r["packet_tokens"] for _, r in sub if r.get("packet_tokens") is not None]

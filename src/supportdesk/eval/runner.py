@@ -46,6 +46,18 @@ def _write(out_dir: Path, rows: list[dict], *, kind: str, pipeline: StagedPipeli
     return summary
 
 
+def _trace(pipeline) -> dict | None:
+    """The reranking stage's record of its decisions for the last case, if it keeps one."""
+    trace = getattr(getattr(pipeline, "reranker", None), "last_trace", None)
+    return dict(trace) if isinstance(trace, dict) else None
+
+
+def _clear_trace(pipeline) -> None:
+    stage = getattr(pipeline, "reranker", None)
+    if stage is not None and hasattr(stage, "last_trace"):
+        stage.last_trace = None
+
+
 def run_eval(pipeline: StagedPipeline, cases: list[EvalCase], clients: Clients, settings: Settings, *,
              run_id: str, index_manifest: dict | None = None, case_files: list[str] | None = None,
              out_root: Path | None = None, warnings: list[str] | None = None) -> dict:
@@ -57,9 +69,13 @@ def run_eval(pipeline: StagedPipeline, cases: list[EvalCase], clients: Clients, 
             result = CaseResult(case.case_id, pipeline.name, clients.mode, "budget_stopped",
                                 error="budget exhausted earlier in this run")
         else:
+            _clear_trace(pipeline)
             result = pipeline.run(case.input)
             stopped = result.outcome == "budget_stopped"
-        pairs.append((case, {**result.to_dict(), "category": case.category, "split": case.split}))
+        row = {**result.to_dict(), "category": case.category, "split": case.split}
+        if _trace(pipeline) is not None:
+            row["rerank_trace"] = _trace(pipeline)
+        pairs.append((case, row))
     note = "" if clients.mode == "live" else (
         "replay/offline numbers are not real spend; compare 'cost.replayed_usd' with 'cost.total_usd'")
     return _write(out_dir, [row for _, row in pairs], kind="full", pipeline=pipeline, clients=clients,
@@ -84,6 +100,7 @@ def run_retrieval_eval(pipeline: StagedPipeline, cases: list[EvalCase], clients:
             row.update(outcome="budget_stopped", error="budget exhausted earlier in this run")
         else:
             try:
+                _clear_trace(pipeline)
                 r = pipeline.retrieve(case.input)
                 row["retrieved"] = [{"chunk_id": h.chunk.chunk_id, "source_id": h.chunk.source_id,
                                      "parent_source_id": h.chunk.parent_source_id, "rank": h.rank,
@@ -95,6 +112,8 @@ def run_retrieval_eval(pipeline: StagedPipeline, cases: list[EvalCase], clients:
                                   "end_char": c.end_char} for c in r.packet.chunks]
                 row["n_queries"] = len(r.queries)
                 row["packet_tokens"] = r.packet.token_count
+                if _trace(pipeline) is not None:
+                    row["rerank_trace"] = _trace(pipeline)
             except (BudgetExhausted, CallLimitReached) as exc:
                 stopped = True
                 row.update(outcome="budget_stopped", error=redact(exc))

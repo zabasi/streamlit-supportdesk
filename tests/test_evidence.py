@@ -314,3 +314,60 @@ def test_the_structure_experiments_change_only_chunking_room_and_expansion():
     assert {k for k in base if base[k] != ref[k]} == structure
     assert {k for k in ref if ref[k] != branch[k]} == {"pipeline.name", "retrieval.expand", "retrieval.expand_max_candidates"}
     assert (branch["retrieval.expand"], branch["context.max_tokens"]) == ("branch", 3200)
+
+
+def corrective(clients, settings, verdicts, turns=1):
+    from supportdesk.pipelines.stages.evidence import CorrectiveReranker
+    chunks = page_chunks()
+    s = dataclasses.replace(settings, retrieval=dataclasses.replace(
+        settings.retrieval, corrective_turns=turns, top_k=2, doc_slots=0))
+
+    class Retriever:
+        def search(self, query, *, k, as_of=None):
+            self.query = query
+            return [Hit(chunks[4], 0.8, 1, "dense"), Hit(chunks[0], 0.7, 2, "dense")]
+
+    retriever = Retriever()
+    stage = CorrectiveReranker(clients, s, chunks, retriever)
+    hits = [Hit(chunks[0], 0.9, 1, "dense"), Hit(chunks[1], 0.5, 2, "dense")]
+    calls = clients.chat.calls
+    script = [json.dumps({"ranking": ["C1", "C2"]})]  # the first reranking
+    for verdict in verdicts:
+        script.append(verdict)  # the judge
+        if verdict == "no":
+            script += ["widget clean-up after page switch", json.dumps({"ranking": ["C3", "C1", "C2"]})]
+    for n, text in enumerate(script, start=1):
+        clients.chat.script[calls + n] = text
+    case = CaseInput(case_id="c", title="Widget value lost", body="My widget loses its value on another page")
+    return stage, retriever, stage(case, "q", hits), clients.chat.calls - calls
+
+
+def test_one_corrective_turn_searches_again_and_reranks_old_and_new_together(clients, settings):
+    stage, retriever, kept, calls = corrective(clients, settings, ["no"])
+    assert calls == 4  # rerank, judge, rewrite, rerank
+    assert retriever.query == "widget clean-up after page switch"
+    assert kept[0].chunk.chunk_id == "doc:w:4" and kept[0].source == "corrective"
+    assert stage.last_trace == {"judgements": ["no"], "queries": ["widget clean-up after page switch"], "turns": 1}
+
+
+def test_a_yes_stops_at_once_and_zero_turns_does_nothing_extra(clients, settings):
+    stage, _, _, calls = corrective(clients, settings, ["yes"])
+    assert calls == 2 and stage.last_trace == {"judgements": ["yes"], "queries": [], "turns": 0}
+    stage, _, _, calls = corrective(clients, settings, [], turns=0)
+    assert calls == 1 and stage.last_trace is None  # only the reranking, as advanced
+
+
+def test_retrieval_runs_record_the_corrective_decisions(tmp_path, capsys):
+    from supportdesk.cli import main
+    from tests.helpers import ROOT, SAMPLE
+    base = ["--data-dir", str(SAMPLE), "--index-dir", str(tmp_path / "idx"), "--artifacts-dir",
+            str(tmp_path / "art"), "--mode", "offline", "--cases", str(ROOT / "data" / "eval" / "sample_cases.jsonl")]
+    assert main(["index", *base]) == 0
+    assert main(["eval-retrieval", *base, "--pipeline", "advanced", "--set", "retrieval.corrective_turns=1",
+                 "--run-id", "c"]) == 0
+    capsys.readouterr()
+    run = tmp_path / "art" / "runs" / "c"
+    rows = [json.loads(line) for line in (run / "results.jsonl").read_text().splitlines()]
+    assert all("judgements" in r["rerank_trace"] for r in rows)
+    metrics = json.loads((run / "summary.json").read_text())["metrics"]
+    assert "corrective_cases" in metrics and "judged_enough_first" in metrics

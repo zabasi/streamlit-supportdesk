@@ -179,6 +179,9 @@ class Retrieval:
     extract_protect_top: int = _opt("ExtractingReranker: never drop parts of this many top-ranked chunks", 0)
     rerank_show_concepts: bool = _opt("the LLMReranker also sees the concept queries the query stage wrote "
                                       "(\"Mechanisms involved\")", False)
+    corrective_turns: int = _opt("CorrectiveReranker: after reranking, a judge checks the kept chunks; if they "
+                                 "are not enough, rewrite the query, search again and rerank old and new "
+                                 "candidates together, at most this many times (0 = off)", 0)
     expand: str = _opt("ExpandingReranker: add more chunks of the documentation pages among the candidates "
                        "before reranking: none | page (all their other chunks) | section (only chunks sharing a "
                        "section with a found chunk) | branch (for structure chunks: the found chunk's ## parent "
@@ -448,6 +451,7 @@ class Settings:
             (r.expand in ("none", "page", "section", "branch"),
              f"retrieval.expand must be none, page, section or branch, got {r.expand!r}"),
             (r.expand_max_candidates >= 1, "retrieval.expand_max_candidates must be >= 1"),
+            (0 <= r.corrective_turns <= 3, "retrieval.corrective_turns must be between 0 and 3"),
             (r.extract_mode in ("keep", "drop"), f"retrieval.extract_mode must be keep or drop, got {r.extract_mode!r}"),
             (r.extract_protect_top >= 0, "retrieval.extract_protect_top must be >= 0"),
             (0 <= r.rerank_doc_places <= r.top_k,
