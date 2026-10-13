@@ -173,3 +173,48 @@ class ExtractingReranker:
         if not chosen:  # nothing kept: keep everything
             return kept
         return merge_overlaps([parts[i] for i in chosen], self.sections.pages)
+
+
+
+class ExpandingReranker:
+    """Before reranking, the documentation pages among the candidates bring more of their chunks: all of
+    them (expand = page) or only those sharing a section with a found chunk (expand = section), nearest
+    first, inserted after the chunk that brought them, up to retrieval.expand_max_candidates in total.
+    Then MergedReranker ranks, keeps the best and merges overlaps. Added chunks are marked "expand"."""
+
+    def __init__(self, clients, settings, chunks: list[Chunk]):
+        self.inner, self.sections = MergedReranker(clients, settings, chunks), Sections(chunks)
+        self.mode, self.cap = settings.retrieval.expand, settings.retrieval.expand_max_candidates
+        self.by_page: dict[str, list[Chunk]] = {}
+        for c in chunks:
+            if c.source_type == "documentation" and c.start_char is not None:
+                self.by_page.setdefault(c.source_id, []).append(c)
+
+    def siblings(self, chunk: Chunk) -> list[Chunk]:
+        page = self.by_page.get(chunk.source_id, [])
+        if self.mode == "section" and chunk.source_id in self.sections.spans:
+            mine = [(a, b) for a, b in self.sections.spans[chunk.source_id]
+                    if a < chunk.end_char and b > chunk.start_char]
+            page = [c for c in page if any(a < c.end_char and b > c.start_char for a, b in mine)]
+        return sorted((c for c in page if c.chunk_id != chunk.chunk_id),
+                      key=lambda c: (abs(c.start_char - chunk.start_char), c.start_char))
+
+    def expand(self, hits: list[Hit]) -> list[Hit]:
+        if self.mode == "none":
+            return hits
+        seen = {h.chunk.chunk_id for h in hits}
+        room = max(0, self.cap - len(hits))
+        out = []
+        for h in hits:
+            out.append(h)
+            if h.chunk.source_type != "documentation":
+                continue
+            for c in self.siblings(h.chunk):
+                if room and c.chunk_id not in seen:
+                    out.append(Hit(c, h.score, 0, "expand"))
+                    seen.add(c.chunk_id)
+                    room -= 1
+        return [replace(h, rank=n) for n, h in enumerate(out, start=1)]
+
+    def __call__(self, case: CaseInput, query: str, hits: list[Hit]) -> list[Hit]:
+        return self.inner(case, query, self.expand(hits))

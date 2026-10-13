@@ -17,6 +17,8 @@ from .pipelines.experiments import (
     build_clean_doc_slots_rerank_docs_prompt_decompose_focused,
     build_clean_doc_slots_rerank_docs_prompt_decompose_graded,
     build_clean_doc_slots_rerank_docs_prompt_decompose_merged,
+    build_clean_doc_slots_rerank_docs_prompt_decompose_merged_expand_page,
+    build_clean_doc_slots_rerank_docs_prompt_decompose_merged_expand_section,
     build_clean_doc_slots_rerank_docs_prompt_decompose_merged_extract,
     build_clean_doc_slots_rerank_docs_prompt_decompose_merged_extract_drop,
     build_clean_doc_slots_rerank_docs_prompt_decompose_merged_fixed320,
@@ -157,7 +159,9 @@ PIPELINES = {"baseline": build_baseline, "advanced": build_advanced,
              "clean_doc_slots_rerank_docs_prompt_decompose_merged_fixed320": build_clean_doc_slots_rerank_docs_prompt_decompose_merged_fixed320,
              "clean_doc_slots_rerank_docs_prompt_decompose_merged_fixed320_top9": build_clean_doc_slots_rerank_docs_prompt_decompose_merged_fixed320_top9,
              "clean_doc_slots_rerank_docs_prompt_decompose_merged_fixed384": build_clean_doc_slots_rerank_docs_prompt_decompose_merged_fixed384,
-             "clean_doc_slots_rerank_docs_prompt_decompose_merged_fixed384_top8": build_clean_doc_slots_rerank_docs_prompt_decompose_merged_fixed384_top8}
+             "clean_doc_slots_rerank_docs_prompt_decompose_merged_fixed384_top8": build_clean_doc_slots_rerank_docs_prompt_decompose_merged_fixed384_top8,
+             "clean_doc_slots_rerank_docs_prompt_decompose_merged_expand_page": build_clean_doc_slots_rerank_docs_prompt_decompose_merged_expand_page,
+             "clean_doc_slots_rerank_docs_prompt_decompose_merged_expand_section": build_clean_doc_slots_rerank_docs_prompt_decompose_merged_expand_section}
 
 RETRIEVERS = {
     "dense": lambda index, clients, s: DenseRetriever(index, clients.embedding),

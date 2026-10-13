@@ -188,3 +188,61 @@ def test_the_smaller_fixed_chunk_experiments_change_only_size_room_and_index():
             "retrieval.top_k", "retrieval.candidate_k", "retrieval.doc_slots"}
         assert (more["retrieval.top_k"], more["context.max_tokens"]) == (k, 3200)
         assert six["paths.index_dir"] == more["paths.index_dir"]
+
+
+LONG = ("Widget behavior\n\nIntro.\n\n" + "## Anatomy\n\n" + "a " * 120 + "\n\n## Order of operations\n\n"
+        + "b " * 200 + "\n\n### Example\n\n" + "c " * 120 + "\n\n## Life cycle\n\n" + "d " * 120 + "\n")
+
+
+def page_chunks():
+    step = len(LONG) // 5
+    bounds = [(n * step, min(len(LONG), (n + 1) * step + 20)) for n in range(5)]
+    bounds[-1] = (bounds[-1][0], len(LONG))
+    return [Chunk(chunk_id=f"doc:w:{n}", source_id="doc:w", source_type="documentation", title="Widget behavior",
+                  text=LONG[a:b], url="u", start_char=a, end_char=b) for n, (a, b) in enumerate(bounds)]
+
+
+def expander(clients, settings, mode, cap=30):
+    from supportdesk.pipelines.stages.evidence import ExpandingReranker
+    s = dataclasses.replace(settings, retrieval=dataclasses.replace(
+        settings.retrieval, expand=mode, expand_max_candidates=cap))
+    return ExpandingReranker(clients, s, page_chunks())
+
+
+def test_page_expansion_adds_the_pages_other_chunks_nearest_first(clients, settings):
+    chunks = page_chunks()
+    issue = Hit(Chunk(chunk_id="issue:1:0", source_id="issue:1", source_type="issue", title="t", text="x", url="u",
+                      start_char=0, end_char=1), 0.5, 2, "dense")
+    found = [Hit(chunks[2], 0.9, 1, "dense"), issue]
+    out = expander(clients, settings, "page").expand(found)
+    ids = [h.chunk.chunk_id for h in out]
+    assert ids[0] == "doc:w:2" and set(ids[1:5]) == {"doc:w:1", "doc:w:3", "doc:w:0", "doc:w:4"}
+    assert ids[1:3] == ["doc:w:1", "doc:w:3"] or ids[1:3] == ["doc:w:3", "doc:w:1"]  # nearest first
+    assert ids[-1] == "issue:1:0" and [h.source for h in out[1:5]] == ["expand"] * 4  # issues are not expanded
+    assert [h.rank for h in out] == list(range(1, len(out) + 1))
+    assert len(expander(clients, settings, "page", cap=3).expand(found)) == 3  # the cap holds
+    assert expander(clients, settings, "none").expand(found) == found
+
+
+def test_section_expansion_adds_only_chunks_sharing_a_section(clients, settings):
+    chunks = page_chunks()
+    order = (LONG.index("## Order of operations"), LONG.index("## Life cycle"))
+    inside = next(c for c in chunks if order[0] < c.start_char < order[1])
+    out = expander(clients, settings, "section").expand([Hit(inside, 0.9, 1, "dense")])
+    for h in out[1:]:  # every added chunk overlaps the "Order of operations" section
+        assert h.chunk.start_char < order[1] and h.chunk.end_char > order[0]
+    page = expander(clients, settings, "page").expand([Hit(inside, 0.9, 1, "dense")])
+    assert len(out) < len(page)  # fewer than the whole page
+
+
+def test_the_expansion_experiments_change_only_the_expansion():
+    from supportdesk.config import Settings
+    def flat(name):
+        d = Settings.load(env={}, overrides=[f"pipeline.name={name}"]).to_dict()
+        return {f"{section}.{key}": value for section, keys in d.items() for key, value in keys.items()}
+    d = "clean_doc_slots_rerank_docs_prompt_decompose"
+    base = flat(f"{d}_merged")
+    for mode in ("page", "section"):
+        other = flat(f"{d}_merged_expand_{mode}")
+        assert {k for k in base if base[k] != other[k]} == {"pipeline.name", "retrieval.expand"}
+        assert other["retrieval.expand"] == mode and other["retrieval.expand_max_candidates"] == 30
