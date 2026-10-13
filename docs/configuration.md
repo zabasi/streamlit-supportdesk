@@ -127,6 +127,8 @@ Defaults shown are the built-in ones. `*unset*` means the key is optional and no
 | `output_format` | `configs/prompts/answer_output_format.txt` | JSON shape the answer must follow |
 | `rewrite` | `configs/prompts/rewrite_system.txt` | system prompt of the query-rewriting call (QueryRewriter) |
 | `rerank` | `configs/prompts/rerank_system.txt` | system prompt of the reranking call (LLMReranker) |
+| `judge_coverage` | `configs/prompts/judge_coverage_system.txt` | system prompt of the coverage judge (CorrectiveReranker) |
+| `rewrite_missing` | `configs/prompts/rewrite_missing_system.txt` | system prompt of the query for a missing mechanism (CorrectiveReranker) |
 | `extract` | `configs/prompts/extract_system.txt` | system prompt of the call that keeps the relevant parts of the chosen chunks (ExtractingReranker) |
 | `judge` | `configs/prompts/judge_system.txt` | system prompt of the retrieve_loop sufficiency check (yes or no) |
 | `loop_rewrite` | `configs/prompts/loop_rewrite_system.txt` | system prompt of the retrieve_loop query rewrite |
@@ -188,6 +190,8 @@ Defaults shown are the built-in ones. `*unset*` means the key is optional and no
 | `extract_protect_top` | `0` | ExtractingReranker: never drop parts of this many top-ranked chunks |
 | `rerank_show_concepts` | `False` | the LLMReranker also sees the concept queries the query stage wrote ("Mechanisms involved") |
 | `corrective_turns` | `0` | CorrectiveReranker: after reranking, a judge checks the kept chunks; if they are not enough, rewrite the query, search again and rerank old and new candidates together, at most this many times (0 = off) |
+| `corrective_judge` | `relevance` | CorrectiveReranker: relevance (yes or no: is there relevant evidence) or coverage (which concept queries no passage explains; one new query per missing one) |
+| `corrective_max_missing` | `2` | CorrectiveReranker with the coverage judge: most missing mechanisms searched for in one turn |
 | `expand` | `none` | ExpandingReranker: add more chunks of the documentation pages among the candidates before reranking: none \| page (all their other chunks) \| section (only chunks sharing a section with a found chunk) \| branch (for structure chunks: the found chunk's ## parent and all its children, from the chunks' heading paths) |
 | `expand_max_candidates` | `30` | ExpandingReranker: the most candidates after expansion |
 | `section_candidates` | `30` | most sections and other candidates the SectionReranker ranks |

@@ -232,7 +232,10 @@ class CorrectiveReranker:
     writes one new query (prompts.loop_rewrite), the retriever searches with it, and the old and new
     candidates are reranked together, so the best chunks of both rounds can be kept. At most
     retrieval.corrective_turns times; 0 does nothing extra. Chunks from a corrective search are marked
-    "corrective"; each case's decisions are left in ``last_trace`` for the run's results."""
+    "corrective"; each case's decisions are left in ``last_trace`` for the run's results.
+    With retrieval.corrective_judge = coverage, the judge (prompts.judge_coverage) instead lists the concept
+    queries ("mechanisms") no kept passage explains, and one new query is written for each (prompts.
+    rewrite_missing, at most corrective_max_missing); without concept queries it falls back to relevance."""
 
     def __init__(self, clients, settings, chunks: list[Chunk], retriever, inner=None):
         self.inner = inner or ExpandingReranker(clients, settings, chunks)
@@ -242,6 +245,13 @@ class CorrectiveReranker:
         self.judge_prompt = Path(settings.prompts.judge).read_text(encoding="utf-8")
         self.rewrite_prompt = Path(settings.prompts.loop_rewrite).read_text(encoding="utf-8")
         self.last_trace: dict | None = None
+        r = settings.retrieval
+        self.mode, self.max_missing = r.corrective_judge, r.corrective_max_missing
+        if self.mode == "coverage":  # the concept queries name the mechanisms (that call replays from the cache)
+            from .rewrite_query import QueryRewriter
+            self.concepts, self.skip = QueryRewriter(clients, settings), 1 if r.keep_report_query else 0
+            self.coverage_prompt = Path(settings.prompts.judge_coverage).read_text(encoding="utf-8")
+            self.missing_prompt = Path(settings.prompts.rewrite_missing).read_text(encoding="utf-8")
 
     @staticmethod
     def passages(hits: list[Hit], limit: int) -> str:
@@ -261,6 +271,34 @@ class CorrectiveReranker:
         text, _ = self.clients.chat.complete(messages, stage="loop_rewrite", json_mode=False)
         return " ".join(text.split()) or " ".join(question.split())
 
+    def missing(self, question: str, mechanisms: list[str], kept: list[Hit]) -> list[str] | None:
+        """The mechanisms no kept passage explains; None if the judge's answer is unusable."""
+        listing = "\n".join(f"M{n}: {m}" for n, m in enumerate(mechanisms, start=1))
+        messages = [{"role": "system", "content": self.coverage_prompt},
+                    {"role": "user", "content": f"## Report\n{question}\n\n## Mechanisms involved\n{listing}\n\n"
+                                                f"## Passages\n{self.passages(kept, 1200)}"}]
+        text, _ = self.clients.chat.complete(messages, stage="judge", json_mode=True)
+        try:
+            payload = extract_json(text)
+        except (NotJson, ValueError):
+            return None
+        labels = payload.get("missing") if isinstance(payload, dict) else None
+        if not isinstance(labels, list):
+            return None
+        found = []
+        for label in labels:
+            match = re.match(r"^M(\d+)$", str(label).strip())
+            if match and 1 <= int(match.group(1)) <= len(mechanisms) and mechanisms[int(match.group(1)) - 1] not in found:
+                found.append(mechanisms[int(match.group(1)) - 1])
+        return found
+
+    def query_for(self, question: str, mechanism: str, previous: list[str]) -> str:
+        messages = [{"role": "system", "content": self.missing_prompt},
+                    {"role": "user", "content": f"## Report\n{question}\n\n## Missing mechanism\n{mechanism}\n\n"
+                                                "## Previous queries\n" + "\n".join(previous)}]
+        text, _ = self.clients.chat.complete(messages, stage="loop_rewrite", json_mode=False)
+        return " ".join(text.split()) or mechanism
+
     def __call__(self, case: CaseInput, query: str, hits: list[Hit]) -> list[Hit]:
         kept = self.inner(case, query, hits)
         if not self.turns:
@@ -269,18 +307,30 @@ class CorrectiveReranker:
         question = self.clean(case, {})[0]
         trace: dict = {"judgements": [], "queries": [], "turns": 0}
         pool, previous = list(hits), [query]
+        mechanisms = []
+        if self.mode == "coverage":
+            queries = self.concepts(case, {})
+            mechanisms, previous = queries[self.skip:], [query, *queries]
         for _ in range(self.turns):
-            verdict = self.judge(question, kept)
-            trace["judgements"].append(verdict)
-            if verdict == "yes":
-                break
-            new_query = self.rewrite(question, previous, kept)
-            previous.append(new_query)
-            trace["queries"].append(new_query)
+            if self.mode == "coverage" and mechanisms:
+                gaps = self.missing(question, mechanisms, kept)
+                trace["judgements"].append({"missing": gaps} if gaps is not None else "unusable")
+                if not gaps:  # nothing missing, or an unusable answer: stop
+                    break
+                new_queries = [self.query_for(question, m, previous) for m in gaps[: self.max_missing]]
+            else:
+                verdict = self.judge(question, kept)
+                trace["judgements"].append(verdict)
+                if verdict == "yes":
+                    break
+                new_queries = [self.rewrite(question, previous, kept)]
             as_of = case.created_at if self.settings.retrieval.historical_filter else None
-            found = self.retriever.search(new_query, k=max(len(hits), self.settings.retrieval.top_k), as_of=as_of)
-            seen = {h.chunk.chunk_id for h in pool}
-            pool += [replace(h, source="corrective") for h in found if h.chunk.chunk_id not in seen]
+            for new_query in new_queries:
+                previous.append(new_query)
+                trace["queries"].append(new_query)
+                found = self.retriever.search(new_query, k=max(len(hits), self.settings.retrieval.top_k), as_of=as_of)
+                seen = {h.chunk.chunk_id for h in pool}
+                pool += [replace(h, source="corrective") for h in found if h.chunk.chunk_id not in seen]
             pool = [replace(h, rank=n) for n, h in enumerate(pool, start=1)]
             kept = self.inner(case, query, pool)
             trace["turns"] += 1

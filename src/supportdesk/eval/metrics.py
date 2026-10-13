@@ -123,6 +123,11 @@ def passage_coverage(chunks: list[dict], span: dict) -> float | None:
     return covered / (end - start)
 
 
+def _enough(judgement) -> bool:
+    """A judge's first answer said nothing more was needed (relevance: yes; coverage: nothing missing)."""
+    return judgement == "yes" or (isinstance(judgement, dict) and not judgement.get("missing"))
+
+
 def _union(ranges: list[tuple[int, int]]) -> list[tuple[int, int]]:
     merged = []
     for lo, hi in sorted(ranges):
@@ -204,7 +209,7 @@ def evaluate_retrieval(pairs: list[tuple[EvalCase, dict]], ks: tuple[int, ...], 
         if not traces:
             return {}
         return {"corrective_cases": sum(1 for t in traces if t.get("turns")),
-                "judged_enough_first": sum(1 for t in traces if (t.get("judgements") or [None])[0] == "yes")}
+                "judged_enough_first": sum(1 for t in traces if _enough((t.get("judgements") or [None])[0]))}
 
     def evidence_size(sub):
         tokens = [r["packet_tokens"] for _, r in sub if r.get("packet_tokens") is not None]

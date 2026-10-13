@@ -93,6 +93,10 @@ class Prompts:
     rewrite: Path = _opt("system prompt of the query-rewriting call (QueryRewriter)",
                          Path("configs/prompts/rewrite_system.txt"))
     rerank: Path = _opt("system prompt of the reranking call (LLMReranker)", Path("configs/prompts/rerank_system.txt"))
+    judge_coverage: Path = _opt("system prompt of the coverage judge (CorrectiveReranker)",
+                                Path("configs/prompts/judge_coverage_system.txt"))
+    rewrite_missing: Path = _opt("system prompt of the query for a missing mechanism (CorrectiveReranker)",
+                                 Path("configs/prompts/rewrite_missing_system.txt"))
     extract: Path = _opt("system prompt of the call that keeps the relevant parts of the chosen chunks "
                          "(ExtractingReranker)", Path("configs/prompts/extract_system.txt"))
     judge: Path = _opt("system prompt of the retrieve_loop sufficiency check (yes or no)",
@@ -182,6 +186,11 @@ class Retrieval:
     corrective_turns: int = _opt("CorrectiveReranker: after reranking, a judge checks the kept chunks; if they "
                                  "are not enough, rewrite the query, search again and rerank old and new "
                                  "candidates together, at most this many times (0 = off)", 0)
+    corrective_judge: str = _opt("CorrectiveReranker: relevance (yes or no: is there relevant evidence) or coverage "
+                                 "(which concept queries no passage explains; one new query per missing one)",
+                                 "relevance")
+    corrective_max_missing: int = _opt("CorrectiveReranker with the coverage judge: most missing mechanisms "
+                                       "searched for in one turn", 2)
     expand: str = _opt("ExpandingReranker: add more chunks of the documentation pages among the candidates "
                        "before reranking: none | page (all their other chunks) | section (only chunks sharing a "
                        "section with a found chunk) | branch (for structure chunks: the found chunk's ## parent "
@@ -452,6 +461,9 @@ class Settings:
              f"retrieval.expand must be none, page, section or branch, got {r.expand!r}"),
             (r.expand_max_candidates >= 1, "retrieval.expand_max_candidates must be >= 1"),
             (0 <= r.corrective_turns <= 3, "retrieval.corrective_turns must be between 0 and 3"),
+            (r.corrective_judge in ("relevance", "coverage"),
+             f"retrieval.corrective_judge must be relevance or coverage, got {r.corrective_judge!r}"),
+            (r.corrective_max_missing >= 1, "retrieval.corrective_max_missing must be >= 1"),
             (r.extract_mode in ("keep", "drop"), f"retrieval.extract_mode must be keep or drop, got {r.extract_mode!r}"),
             (r.extract_protect_top >= 0, "retrieval.extract_protect_top must be >= 0"),
             (0 <= r.rerank_doc_places <= r.top_k,

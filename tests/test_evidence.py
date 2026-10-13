@@ -371,3 +371,63 @@ def test_retrieval_runs_record_the_corrective_decisions(tmp_path, capsys):
     assert all("judgements" in r["rerank_trace"] for r in rows)
     metrics = json.loads((run / "summary.json").read_text())["metrics"]
     assert "corrective_cases" in metrics and "judged_enough_first" in metrics
+
+
+def coverage(clients, settings, judge_answer, max_missing=2):
+    from supportdesk.pipelines.stages.evidence import CorrectiveReranker
+    chunks = page_chunks()
+    s = dataclasses.replace(settings, retrieval=dataclasses.replace(
+        settings.retrieval, corrective_turns=1, corrective_judge="coverage", corrective_max_missing=max_missing,
+        top_k=2, doc_slots=0, keep_report_query=True, max_queries=3))
+
+    class Retriever:
+        def __init__(self):
+            self.queries = []
+
+        def search(self, query, *, k, as_of=None):
+            self.queries.append(query)
+            return [Hit(chunks[4], 0.8, 1, "dense")]
+
+    retriever = Retriever()
+    stage = CorrectiveReranker(clients, s, chunks, retriever)
+    hits = [Hit(chunks[0], 0.9, 1, "dense"), Hit(chunks[1], 0.5, 2, "dense")]
+    calls = clients.chat.calls
+    concepts = json.dumps({"queries": ["callbacks updating session state", "order of operations on rerun",
+                                       "widget life cycle"]})
+    script = [json.dumps({"ranking": ["C1", "C2"]}), concepts, judge_answer]  # rerank, concept queries, judge
+    gaps = json.loads(judge_answer).get("missing", []) if judge_answer.startswith("{") else []
+    script += [f"new query {n}" for n in range(min(len(gaps), max_missing))]
+    if gaps:
+        script.append(json.dumps({"ranking": ["C3", "C1", "C2"]}))  # the joint reranking
+    for n, text in enumerate(script, start=1):
+        clients.chat.script[calls + n] = text
+    case = CaseInput(case_id="c", title="Callback runs late", body="My callback sees the old value")
+    kept = stage(case, "q", hits)
+    return stage, retriever, kept, [m[1]["content"] for m in clients.chat.seen[calls:]]
+
+
+def test_the_coverage_judge_searches_once_per_missing_mechanism(clients, settings):
+    stage, retriever, kept, seen = coverage(clients, settings, json.dumps({"missing": ["M2", "M3"]}))
+    judge_input = next(c for c in seen if "## Mechanisms involved\nM1: " in c)
+    assert "M2: order of operations on rerun" in judge_input and "## Passages" in judge_input
+    rewrite_input = next(c for c in seen if "## Missing mechanism\norder of operations on rerun" in c)
+    assert "callbacks updating session state" in rewrite_input  # the concept queries count as previous queries
+    assert retriever.queries == ["new query 0", "new query 1"]
+    assert stage.last_trace == {"judgements": [{"missing": ["order of operations on rerun", "widget life cycle"]}],
+                                "queries": ["new query 0", "new query 1"], "turns": 1}
+    assert kept[0].source == "corrective"
+
+
+def test_the_coverage_judge_stops_when_nothing_is_missing_or_the_answer_is_unusable(clients, settings):
+    stage, retriever, _, _ = coverage(clients, settings, json.dumps({"missing": []}))
+    assert retriever.queries == [] and stage.last_trace["turns"] == 0
+    stage, retriever, _, _ = coverage(clients, settings, "not json")
+    assert retriever.queries == [] and stage.last_trace["judgements"] == ["unusable"]
+    stage, retriever, _, _ = coverage(clients, settings, json.dumps({"missing": ["M1", "M2", "M3"]}), max_missing=1)
+    assert retriever.queries == ["new query 0"]  # at most corrective_max_missing searches
+
+
+def test_judged_enough_counts_both_kinds_of_judge():
+    from supportdesk.eval.metrics import _enough
+    assert _enough("yes") and not _enough("no")
+    assert _enough({"missing": []}) and not _enough({"missing": ["x"]}) and not _enough("unusable")

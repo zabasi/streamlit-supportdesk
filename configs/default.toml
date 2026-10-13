@@ -22,6 +22,8 @@ output_format = "configs/prompts/answer_output_format.txt"
 rewrite = "configs/prompts/rewrite_system.txt"
 rerank = "configs/prompts/rerank_system.txt"
 extract = "configs/prompts/extract_system.txt"
+judge_coverage = "configs/prompts/judge_coverage_system.txt"
+rewrite_missing = "configs/prompts/rewrite_missing_system.txt"
 judge = "configs/prompts/judge_system.txt"
 loop_rewrite = "configs/prompts/loop_rewrite_system.txt"
 
@@ -69,6 +71,8 @@ extract_mode = "keep"            # ExtractingReranker: the model lists parts to 
 extract_show_concepts = false    # ExtractingReranker: show the model the concept queries
 extract_protect_top = 0          # ExtractingReranker: never drop parts of this many top-ranked chunks
 rerank_show_concepts = false     # the LLM reranker also sees the concept queries ("Mechanisms involved")
+corrective_judge = "relevance"   # CorrectiveReranker: relevance (yes or no) or coverage (which mechanisms are missing)
+corrective_max_missing = 2       # coverage judge: most missing mechanisms searched for in one turn
 corrective_turns = 0             # CorrectiveReranker: judge, then rewrite and search again at most this often
 expand = "none"                  # ExpandingReranker: add more chunks of found pages: none | page | section | branch
 expand_max_candidates = 30       # ExpandingReranker: the most candidates after expansion
