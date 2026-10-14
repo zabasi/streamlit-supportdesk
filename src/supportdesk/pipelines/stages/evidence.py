@@ -130,8 +130,8 @@ class ExtractingReranker:
         self.mode, self.protect_top = r.extract_mode, r.extract_protect_top
         self.concepts = None
         if r.extract_show_concepts:  # the query stage's concept queries (its call replays from the cache)
-            from .rewrite_query import QueryRewriter
-            self.concepts, self.skip = QueryRewriter(clients, settings), 1 if r.keep_report_query else 0
+            from .rewrite_query import make_query_rewriter
+            self.concepts, self.skip = make_query_rewriter(clients, settings), 1 if r.keep_report_query else 0
 
     def parts(self, hit: Hit) -> list[Hit]:
         c = hit.chunk
@@ -248,8 +248,8 @@ class CorrectiveReranker:
         r = settings.retrieval
         self.mode, self.max_missing = r.corrective_judge, r.corrective_max_missing
         if self.mode == "coverage":  # the concept queries name the mechanisms (that call replays from the cache)
-            from .rewrite_query import QueryRewriter
-            self.concepts, self.skip = QueryRewriter(clients, settings), 1 if r.keep_report_query else 0
+            from .rewrite_query import make_query_rewriter
+            self.concepts, self.skip = make_query_rewriter(clients, settings), 1 if r.keep_report_query else 0
             self.coverage_prompt = Path(settings.prompts.judge_coverage).read_text(encoding="utf-8")
             self.missing_prompt = Path(settings.prompts.rewrite_missing).read_text(encoding="utf-8")
 
@@ -350,7 +350,7 @@ class SummaryReranker:
         import json
 
         from ...retrieval.filters import parse_ts
-        from .rewrite_query import QueryRewriter
+        from .rewrite_query import make_query_rewriter
         self.inner = inner or ExpandingReranker(clients, settings, chunks)
         self.n, self.clients, self.settings, self.parse_ts = settings.retrieval.summary_sections, clients, settings, parse_ts
         self.by_page: dict[str, list[Chunk]] = {}
@@ -367,7 +367,7 @@ class SummaryReranker:
             self.sections = [r for r in rows if r["source_id"] in self.by_page]
             texts = [f"{r['title']} > {r['heading']}: {r['summary']}" for r in self.sections]
             self.vectors = self.clients.embedding.embed(texts, stage="summary")[0] if texts else []
-            self.queries = QueryRewriter(clients, settings)
+            self.queries = make_query_rewriter(clients, settings)
 
     def chunks_of(self, section: dict, as_of: str | None) -> list[Chunk]:
         cutoff = self.parse_ts(as_of)

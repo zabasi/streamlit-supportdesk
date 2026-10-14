@@ -51,6 +51,22 @@ class RuleScopeClassifier:
         return ScopeDecision("IN_SCOPE", "ambiguous; fail open to retrieval", "rule")
 
 
+def scope_from_text(text: str, method: str = "llm") -> ScopeDecision:
+    """The scope decision in a model's JSON answer ({"label": ..., "reason": ...}); unusable output fails
+    open to IN_SCOPE, since sending an unrelated report to retrieval costs less than refusing a real one."""
+    try:
+        payload = extract_json(text)
+    except (NotJson, ValueError):
+        return ScopeDecision("IN_SCOPE", "classifier output was unusable; fail open", "fail_open")
+    if not isinstance(payload, dict):
+        return ScopeDecision("IN_SCOPE", "classifier output was not an object; fail open", "fail_open")
+    label = str(payload.get("label", "")).strip().upper()
+    reason = str(payload.get("reason", "")).strip()
+    if label not in {"IN_SCOPE", "OUT_OF_SCOPE"}:
+        return ScopeDecision("IN_SCOPE", "classifier label was invalid; fail open", "fail_open")
+    return ScopeDecision(label, reason or "model classification", method)
+
+
 class LLMScopeClassifier:
     """Binary Streamlit support classifier using the shared chat gateway and cost ledger."""
 
@@ -66,17 +82,7 @@ class LLMScopeClassifier:
             {"role": "user", "content": report},
         ]
         text, _ = self.clients.chat.complete(messages, stage="scope_classify", json_mode=True)
-        try:
-            payload = extract_json(text)
-        except (NotJson, ValueError):
-            return ScopeDecision("IN_SCOPE", "classifier output was unusable; fail open", "fail_open")
-        if not isinstance(payload, dict):
-            return ScopeDecision("IN_SCOPE", "classifier output was not an object; fail open", "fail_open")
-        label = str(payload.get("label", "")).strip().upper()
-        reason = str(payload.get("reason", "")).strip()
-        if label not in {"IN_SCOPE", "OUT_OF_SCOPE"}:
-            return ScopeDecision("IN_SCOPE", "classifier label was invalid; fail open", "fail_open")
-        return ScopeDecision(label, reason or "model classification", "llm")
+        return scope_from_text(text, "llm")
 
 
-__all__ = ["LLMScopeClassifier", "RuleScopeClassifier", "ScopeDecision"]
+__all__ = ["LLMScopeClassifier", "RuleScopeClassifier", "ScopeDecision", "scope_from_text"]

@@ -19,13 +19,13 @@ from ..retrieval.retriever import Retriever
 from .staged import StagedPipeline
 from .stages import default_stages
 from .stages.evidence import CorrectiveReranker
-from .stages.rewrite_query import QueryRewriter
+from .stages.rewrite_query import make_query_rewriter
 
 
 def build_advanced(retriever: Retriever, clients: Clients, settings: Settings) -> StagedPipeline:
     """Improved: report + concept queries; reranked on focused snippets with the concepts; best 6 merged."""
     stages = default_stages(retriever, clients, settings)
-    stages["query"] = QueryRewriter(clients, settings)
+    stages["query"] = make_query_rewriter(clients, settings)  # with scope_gate = combined: the shared call
     index = getattr(retriever, "index", None)  # pages are rebuilt from the index's chunks for merging
     # CorrectiveReranker with corrective_turns = 0 is ExpandingReranker, and that with expand = none is
     # MergedReranker; --set retrieval.corrective_turns=1 or retrieval.expand=... try those on this design

@@ -14,6 +14,7 @@ from .packet import Packet
 from .parsing import ParsedAnswer
 from .staged import STAGE_NAMES, StagedPipeline
 from .stages.scope_classifier import LLMScopeClassifier, RuleScopeClassifier
+from .stages.scope_rewrite import CombinedScopeClassifier, shared_scope_rewrite
 from .state import answer_to_dict, case_from_dict, packet_to_dict
 
 _OUT_OF_SCOPE_REPLY = (
@@ -120,11 +121,15 @@ def _wrap(base: StagedPipeline, classifier, *, name: str) -> ScopeGatedPipeline:
 def build_advanced_scoped(retriever: Retriever, clients: Clients, settings: Settings) -> StagedPipeline:
     """Improved: scope check first; then report + concept queries, reranked with focused snippets; best 6 merged."""
     base = build_advanced(retriever, clients, settings)
-    gate = settings.pipeline.scope_gate  # llm | rules | off
+    gate = settings.pipeline.scope_gate  # llm | rules | combined | off
     if gate == "off":  # advanced exactly as without the gate: no check, no extra call
         return base
-    classifier = (RuleScopeClassifier() if gate == "rules"
-                  else LLMScopeClassifier(clients, Path(settings.prompts.scope)))
+    if gate == "combined":  # the scope decision from the call that writes the concept queries (one call)
+        classifier = CombinedScopeClassifier(shared_scope_rewrite(clients, settings))
+    elif gate == "rules":
+        classifier = RuleScopeClassifier()
+    else:
+        classifier = LLMScopeClassifier(clients, Path(settings.prompts.scope))
     return _wrap(base, classifier, name="advanced")
 
 

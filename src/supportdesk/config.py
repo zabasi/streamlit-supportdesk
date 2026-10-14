@@ -95,6 +95,8 @@ class Prompts:
     rerank: Path = _opt("system prompt of the reranking call (LLMReranker)", Path("configs/prompts/rerank_system.txt"))
     scope: Path = _opt("system prompt of the pre-retrieval scope classifier (scope gate on advanced)",
                        Path("configs/prompts/scope_system.txt"))
+    scope_rewrite: Path = _opt("system prompt of the combined scope check and concept queries, one call "
+                               "(pipeline.scope_gate = combined)", Path("configs/prompts/scope_rewrite_system.txt"))
     summarize_section: Path = _opt("system prompt that summarizes one documentation section "
                                    "(scripts/summarize_sections.py)", Path("configs/prompts/summarize_section_system.txt"))
     judge_coverage: Path = _opt("system prompt of the coverage judge (CorrectiveReranker)",
@@ -259,7 +261,8 @@ class PipelineCfg:
     name: str = _opt("registered pipeline to run (see registry.py)", "baseline")
     retriever: str = _opt("registered retriever: dense | bm25 | hybrid", "dense")
     scope_gate: str = _opt("advanced only: the scope check before retrieval: llm (a model call), rules (free "
-                           "keyword rules) or off (no check); advanced's profile turns it on (llm)", "off")
+                           "keyword rules), combined (the same call that writes the concept queries) or off "
+                           "(no check); advanced's profile turns it on (llm)", "off")
 
 
 @dataclass(frozen=True)
@@ -531,8 +534,8 @@ class Settings:
             (self.limits.max_input_chars >= 1000, "limits.max_input_chars must be >= 1000"),
             (bool(self.pipeline.name) and bool(self.pipeline.retriever),
              "pipeline.name and pipeline.retriever must not be empty"),
-            (self.pipeline.scope_gate in ("llm", "rules", "off"),
-             f"pipeline.scope_gate must be llm, rules or off, got {self.pipeline.scope_gate!r}"),
+            (self.pipeline.scope_gate in ("llm", "rules", "combined", "off"),
+             f"pipeline.scope_gate must be llm, rules, combined or off, got {self.pipeline.scope_gate!r}"),
             (len(e.case_files) >= 1, "eval.case_files must list at least one file"),
             (0 < e.test_fraction < 1, "eval.test_fraction must be between 0 and 1 (exclusive)"),
             (0 < e.passage_found_fraction <= 1, "eval.passage_found_fraction must be in (0, 1]"),

@@ -111,8 +111,8 @@ class LLMReranker:
         self.snippet_mode = settings.retrieval.rerank_snippet  # start | focused
         self.concepts = None
         if settings.retrieval.rerank_show_concepts:  # the query stage's concept queries (replayed from the cache)
-            from .rewrite_query import QueryRewriter
-            self.concepts = QueryRewriter(clients, settings)
+            from .rewrite_query import make_query_rewriter
+            self.concepts = make_query_rewriter(clients, settings)
             self.skip = 1 if settings.retrieval.keep_report_query else 0
         # documentation kept in the final top_k: retrieval.rerank_keep_docs, else retrieval.doc_slots
         keep = settings.retrieval.rerank_keep_docs

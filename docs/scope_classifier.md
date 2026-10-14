@@ -80,6 +80,7 @@ gate is part of the advanced design:
 |---|---|
 | `llm` (advanced's profile) | one model call classifies the report before retrieval (prompt `prompts.scope`) |
 | `rules` | free keyword rules classify the report (no model call) |
+| `combined` | the scope decision comes from the call that also writes the concept queries (prompt `prompts.scope_rewrite`): one model call before search instead of two |
 | `off` (the global default) | no scope check: `advanced` without the gate, no extra call |
 
 Set it in a config file (`[pipeline] scope_gate = "off"`), in a pipeline profile, or for one run:
@@ -88,3 +89,29 @@ Set it in a config file (`[pipeline] scope_gate = "off"`), in a pipeline profile
 
 The report's "Settings that differ" table shows the value, so gated and ungated runs stay distinguishable.
 The comparison pipelines `scope_gate` (model) and `scope_gate_rules` (rules) keep their fixed gate.
+
+## The combined gate (experiment)
+
+With `pipeline.scope_gate = combined`, `advanced` asks the model both questions in one call
+(`configs/prompts/scope_rewrite_system.txt`): is the report about Streamlit, and which documentation queries
+would find the mechanisms behind it. The answer is `{"label", "reason", "queries"}`. The gate and every stage
+that uses the concept queries (the query stage, the reranker's "Mechanisms involved") read that one answer
+(`pipelines/stages/scope_rewrite.py`), so the separate rewrite call disappears. The scope rules in the
+prompt are those of `scope_system.txt` word for word, and the query instructions those of
+`rewrite_concepts_system.txt`, so a difference in the results comes from merging the calls, not from
+rewording. Unusable output fails open (IN_SCOPE, searched with the report) as with the separate gate.
+
+To compare it with the separate gate (`llm`):
+
+```bash
+# scope accuracy on the 120-case benchmark (the separate gate scored 100%)
+python scripts/eval_scope_classifier.py --mode live --classifier combined
+python scripts/eval_scope_classifier.py --mode live
+
+# retrieval quality, calls and time on the development cases, both with a gate
+T=$(date +%H%M)
+supportdesk eval-retrieval --pipeline advanced --split dev --mode live --run-id gate-llm-$T
+supportdesk eval-retrieval --pipeline advanced --split dev --mode live \
+  --set pipeline.scope_gate=combined --run-id gate-combined-$T
+supportdesk report gate-llm-$T gate-combined-$T --output docs/reports/combined-gate.html
+```

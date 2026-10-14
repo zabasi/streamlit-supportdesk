@@ -128,6 +128,7 @@ Defaults shown are the built-in ones. `*unset*` means the key is optional and no
 | `rewrite` | `configs/prompts/rewrite_system.txt` | system prompt of the query-rewriting call (QueryRewriter) |
 | `rerank` | `configs/prompts/rerank_system.txt` | system prompt of the reranking call (LLMReranker) |
 | `scope` | `configs/prompts/scope_system.txt` | system prompt of the pre-retrieval scope classifier (scope gate on advanced) |
+| `scope_rewrite` | `configs/prompts/scope_rewrite_system.txt` | system prompt of the combined scope check and concept queries, one call (pipeline.scope_gate = combined) |
 | `summarize_section` | `configs/prompts/summarize_section_system.txt` | system prompt that summarizes one documentation section (scripts/summarize_sections.py) |
 | `judge_coverage` | `configs/prompts/judge_coverage_system.txt` | system prompt of the coverage judge (CorrectiveReranker) |
 | `rewrite_missing` | `configs/prompts/rewrite_missing_system.txt` | system prompt of the query for a missing mechanism (CorrectiveReranker) |
@@ -237,7 +238,7 @@ Defaults shown are the built-in ones. `*unset*` means the key is optional and no
 |---|---|---|
 | `name` | `baseline` | registered pipeline to run (see registry.py) |
 | `retriever` | `dense` | registered retriever: dense \| bm25 \| hybrid |
-| `scope_gate` | `off` | advanced only: the scope check before retrieval: llm (a model call), rules (free keyword rules) or off (no check); advanced's profile turns it on (llm) |
+| `scope_gate` | `off` | advanced only: the scope check before retrieval: llm (a model call), rules (free keyword rules), combined (the same call that writes the concept queries) or off (no check); advanced's profile turns it on (llm) |
 
 ### `[eval]`
 

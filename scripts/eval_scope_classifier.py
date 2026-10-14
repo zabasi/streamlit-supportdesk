@@ -6,6 +6,7 @@ Examples:
     python scripts/eval_scope_classifier.py --mode live --model gpt-4o-mini
     # quick 30-case smoke suite:
     python scripts/eval_scope_classifier.py --mode live --cases data/eval/scope_classifier_dev.jsonl
+    python scripts/eval_scope_classifier.py --mode live --classifier combined   # scope + queries, one call
 
 The live command uses the project's normal gateway, cache, pricing, budget ledger and API-key
 configuration. It measures only the scope-classification call, so retrieval/generation do not run.
@@ -20,6 +21,7 @@ from pathlib import Path
 from supportdesk.config import Settings
 from supportdesk.llm.factory import build_clients
 from supportdesk.pipelines.stages.scope_classifier import LLMScopeClassifier
+from supportdesk.pipelines.stages.scope_rewrite import CombinedScopeClassifier, ScopeRewrite
 from supportdesk.types import CaseInput
 
 DEFAULT_CASES = Path("data/eval/scope_classifier_benchmark.jsonl")
@@ -63,7 +65,10 @@ def metrics(rows: list[dict]) -> dict:
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--cases", type=Path, default=DEFAULT_CASES)
-    ap.add_argument("--prompt", type=Path, default=DEFAULT_PROMPT)
+    ap.add_argument("--prompt", type=Path, default=None,
+                    help="the classifier's prompt (default: prompts.scope, or prompts.scope_rewrite for combined)")
+    ap.add_argument("--classifier", choices=("llm", "combined"), default="llm",
+                    help="llm: the separate scope call; combined: the call that also writes the concept queries")
     ap.add_argument("--mode", choices=("offline", "replay", "live"), default="offline")
     ap.add_argument("--model", default=None, help="Override models.chat for this benchmark")
     ap.add_argument("--json", action="store_true", help="Print machine-readable JSON")
@@ -74,7 +79,12 @@ def main() -> int:
         overrides["models.chat"] = args.model
     settings = Settings.load(overrides=overrides)
     clients = build_clients(settings)
-    classifier = LLMScopeClassifier(clients, args.prompt)
+    if args.classifier == "combined":
+        if args.prompt:
+            settings = Settings.load(overrides={**overrides, "prompts.scope_rewrite": str(args.prompt)})
+        classifier = CombinedScopeClassifier(ScopeRewrite(clients, settings))
+    else:
+        classifier = LLMScopeClassifier(clients, args.prompt or DEFAULT_PROMPT)
     source = load_rows(args.cases)
     results = []
     mark = clients.ledger.mark()
@@ -101,6 +111,7 @@ def main() -> int:
 
     summary = {
         "mode": args.mode,
+        "classifier": args.classifier,
         "model": settings.models.chat,
         "cases": str(args.cases),
         "metrics": metrics(results),
@@ -115,7 +126,7 @@ def main() -> int:
     else:
         m = summary["metrics"]
         u = summary["usage"]
-        print(f"scope classifier: {m['n']} cases | model={summary['model']} | mode={args.mode}")
+        print(f"scope classifier ({args.classifier}): {m['n']} cases | model={summary['model']} | mode={args.mode}")
         print(
             f"accuracy={m['accuracy']:.1%}  IN precision={m['in_scope_precision']:.1%}  "
             f"IN recall={m['in_scope_recall']:.1%}  FN={m['fn']}  FP={m['fp']}"

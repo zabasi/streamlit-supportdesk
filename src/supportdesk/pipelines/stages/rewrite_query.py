@@ -36,7 +36,24 @@ class QueryRewriter:
         report = self.clean(case, env)[0]
         messages = [{"role": "system", "content": self.prompt}, {"role": "user", "content": report}]
         text, _ = self.clients.chat.complete(messages, stage="rewrite", json_mode=True)
-        written = model_queries(text, self.max_queries)
-        if self.keep_report:  # the report itself, then the model's queries
-            return [report] + [q for q in written if q != report]
-        return written or [report]  # unusable output: the cleaned report
+        return with_report(report, model_queries(text, self.max_queries), self.keep_report)
+
+
+def with_report(report: str, written: list[str], keep_report: bool) -> list[str]:
+    """The queries a query stage returns: the cleaned report first (retrieval.keep_report_query), then
+    the model's queries; with no usable model queries, the report alone."""
+    if keep_report:
+        return [report] + [q for q in written if q != report]
+    return written or [report]
+
+
+def make_query_rewriter(clients, settings):
+    """The writer of the concept queries for every stage that uses them (the query stage, the reranker's
+    "Mechanisms involved", extraction, the coverage judge, section summaries). With
+    pipeline.scope_gate = combined it is the combined scope-and-queries call, shared with the scope gate,
+    so the report is read by the model once; otherwise its own rewrite call (replayed from the cache
+    after the first stage that makes it)."""
+    if settings.pipeline.scope_gate == "combined":
+        from .scope_rewrite import CombinedQueryRewriter, shared_scope_rewrite
+        return CombinedQueryRewriter(shared_scope_rewrite(clients, settings), settings)
+    return QueryRewriter(clients, settings)
