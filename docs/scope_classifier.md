@@ -69,3 +69,20 @@ Run the fast suite with:
 ```bash
 python3 scripts/eval_scope_classifier.py --mode live --cases data/eval/scope_classifier_dev.jsonl
 ```
+
+## Turning the gate on or off
+
+`advanced` reads one setting, `pipeline.scope_gate`:
+
+| Value | What `advanced` does |
+|---|---|
+| `llm` (default) | one model call classifies the report before retrieval (prompt `prompts.scope`) |
+| `rules` | free keyword rules classify the report (no model call) |
+| `off` | no scope check: `advanced` without the gate, no extra call |
+
+Set it in a config file (`[pipeline] scope_gate = "off"`), in a pipeline profile, or for one run:
+
+    supportdesk eval --pipeline advanced --split dev --mode live --set pipeline.scope_gate=off
+
+The report's "Settings that differ" table shows the value, so gated and ungated runs stay distinguishable.
+The comparison pipelines `scope_gate` (model) and `scope_gate_rules` (rules) keep their fixed gate.

@@ -104,6 +104,7 @@ max_input_chars = 60000
 [pipeline]
 name = "baseline"
 retriever = "dense"              # dense | bm25 | hybrid
+scope_gate = "llm"               # advanced only: scope check before retrieval: llm | rules | off
 
 [eval]
 case_files = ["data/eval"]               # a folder of evaluation files, or case .jsonl files; `index` keeps their issues out of the index
