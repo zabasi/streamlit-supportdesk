@@ -127,6 +127,7 @@ Defaults shown are the built-in ones. `*unset*` means the key is optional and no
 | `output_format` | `configs/prompts/answer_output_format.txt` | JSON shape the answer must follow |
 | `rewrite` | `configs/prompts/rewrite_system.txt` | system prompt of the query-rewriting call (QueryRewriter) |
 | `rerank` | `configs/prompts/rerank_system.txt` | system prompt of the reranking call (LLMReranker) |
+| `scope` | `configs/prompts/scope_system.txt` | system prompt of the pre-retrieval scope classifier (scope gate on advanced) |
 | `summarize_section` | `configs/prompts/summarize_section_system.txt` | system prompt that summarizes one documentation section (scripts/summarize_sections.py) |
 | `judge_coverage` | `configs/prompts/judge_coverage_system.txt` | system prompt of the coverage judge (CorrectiveReranker) |
 | `rewrite_missing` | `configs/prompts/rewrite_missing_system.txt` | system prompt of the query for a missing mechanism (CorrectiveReranker) |
@@ -233,6 +234,7 @@ Defaults shown are the built-in ones. `*unset*` means the key is optional and no
 |---|---|---|
 | `name` | `baseline` | registered pipeline to run (see registry.py) |
 | `retriever` | `dense` | registered retriever: dense \| bm25 \| hybrid |
+| `scope_gate` | `llm` | advanced only: the scope check before retrieval: llm (a model call), rules (free keyword rules) or off (no check) |
 
 ### `[eval]`
 

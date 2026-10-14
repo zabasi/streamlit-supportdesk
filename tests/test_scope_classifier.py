@@ -143,3 +143,55 @@ def test_registry_advanced_includes_llm_scope_gate(index, clients, settings):
     raw = build_advanced(DocSlotsRetriever(index, clients.embedding, doc_slots=s.retrieval.doc_slots), clients, s)
     for stage in ("query", "retriever", "reranker", "packet", "generator", "validator", "summarizer"):
         assert type(getattr(pipeline, stage)) is type(getattr(raw, stage))
+
+
+def test_the_scope_prompt_is_a_setting(index, clients, settings, tmp_path):
+    import dataclasses
+
+    from supportdesk.pipelines.scope_gate import build_scope_gate
+    from supportdesk.retrieval.retriever import DenseRetriever
+    prompt = tmp_path / "scope.txt"
+    prompt.write_text("custom scope prompt")
+    s = dataclasses.replace(settings, prompts=dataclasses.replace(settings.prompts, scope=prompt))
+    assert build_scope_gate(DenseRetriever(index, clients.embedding), clients, s).classifier.prompt == "custom scope prompt"
+    assert str(settings.prompts.scope).endswith("configs/prompts/scope_system.txt")  # the default
+
+
+def test_advanced_scope_gate_is_configurable(index, clients, settings):
+    import dataclasses
+
+    import pytest
+
+    from supportdesk.config import ConfigError, Settings
+    from supportdesk.pipelines.scope_gate import ScopeGatedPipeline
+    from supportdesk.pipelines.stages.scope_classifier import (
+        LLMScopeClassifier,
+        RuleScopeClassifier,
+    )
+    from supportdesk.registry import make_pipeline
+
+    def advanced(gate):
+        s = dataclasses.replace(settings, pipeline=dataclasses.replace(settings.pipeline, name="advanced",
+                                                                       scope_gate=gate))
+        return make_pipeline("advanced", "dense_doc_slots", index, clients, s)
+
+    assert isinstance(advanced("llm").classifier, LLMScopeClassifier)
+    assert isinstance(advanced("rules").classifier, RuleScopeClassifier)
+    off = advanced("off")
+    assert not isinstance(off, ScopeGatedPipeline) and off.name == "advanced"  # no gate, no extra call
+    assert Settings.load(env={}).pipeline.scope_gate == "llm"  # the default keeps the gate on
+    with pytest.raises(ConfigError, match="scope_gate"):
+        Settings.load(env={}, overrides=["pipeline.scope_gate=maybe"])
+
+
+def test_scope_gate_off_runs_advanced_without_the_scope_call(index, clients, settings):
+    import dataclasses
+
+    from supportdesk.registry import make_pipeline
+    from supportdesk.types import CaseInput
+    s = dataclasses.replace(settings, pipeline=dataclasses.replace(settings.pipeline, name="advanced",
+                                                                   scope_gate="off"))
+    result = make_pipeline("advanced", "dense_doc_slots", index, clients, s).run(
+        CaseInput(case_id="c", title="Flask REST API", body="How do I create a REST API with Flask?"))
+    assert "scope" not in result.trace.get("extra", {})  # nothing was classified
+    assert result.retrieved  # it went straight to retrieval

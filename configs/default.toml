@@ -24,6 +24,7 @@ rerank = "configs/prompts/rerank_system.txt"
 extract = "configs/prompts/extract_system.txt"
 judge_coverage = "configs/prompts/judge_coverage_system.txt"
 summarize_section = "configs/prompts/summarize_section_system.txt"
+scope = "configs/prompts/scope_system.txt"
 rewrite_missing = "configs/prompts/rewrite_missing_system.txt"
 judge = "configs/prompts/judge_system.txt"
 loop_rewrite = "configs/prompts/loop_rewrite_system.txt"
@@ -103,6 +104,7 @@ max_input_chars = 60000
 [pipeline]
 name = "baseline"
 retriever = "dense"              # dense | bm25 | hybrid
+scope_gate = "llm"               # advanced only: scope check before retrieval: llm | rules | off
 
 [eval]
 case_files = ["data/eval"]               # a folder of evaluation files, or case .jsonl files; `index` keeps their issues out of the index
