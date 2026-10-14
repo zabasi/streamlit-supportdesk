@@ -93,6 +93,8 @@ class Prompts:
     rewrite: Path = _opt("system prompt of the query-rewriting call (QueryRewriter)",
                          Path("configs/prompts/rewrite_system.txt"))
     rerank: Path = _opt("system prompt of the reranking call (LLMReranker)", Path("configs/prompts/rerank_system.txt"))
+    scope: Path = _opt("system prompt of the pre-retrieval scope classifier (scope gate on advanced)",
+                       Path("configs/prompts/scope_system.txt"))
     summarize_section: Path = _opt("system prompt that summarizes one documentation section "
                                    "(scripts/summarize_sections.py)", Path("configs/prompts/summarize_section_system.txt"))
     judge_coverage: Path = _opt("system prompt of the coverage judge (CorrectiveReranker)",

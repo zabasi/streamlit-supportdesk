@@ -143,3 +143,15 @@ def test_registry_advanced_includes_llm_scope_gate(index, clients, settings):
     raw = build_advanced(DocSlotsRetriever(index, clients.embedding, doc_slots=s.retrieval.doc_slots), clients, s)
     for stage in ("query", "retriever", "reranker", "packet", "generator", "validator", "summarizer"):
         assert type(getattr(pipeline, stage)) is type(getattr(raw, stage))
+
+
+def test_the_scope_prompt_is_a_setting(index, clients, settings, tmp_path):
+    import dataclasses
+
+    from supportdesk.pipelines.scope_gate import build_scope_gate
+    from supportdesk.retrieval.retriever import DenseRetriever
+    prompt = tmp_path / "scope.txt"
+    prompt.write_text("custom scope prompt")
+    s = dataclasses.replace(settings, prompts=dataclasses.replace(settings.prompts, scope=prompt))
+    assert build_scope_gate(DenseRetriever(index, clients.embedding), clients, s).classifier.prompt == "custom scope prompt"
+    assert str(settings.prompts.scope).endswith("configs/prompts/scope_system.txt")  # the default

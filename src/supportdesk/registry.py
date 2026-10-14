@@ -4,7 +4,6 @@ from __future__ import annotations
 
 from .config import ConfigError, Settings
 from .llm.factory import Clients
-from .pipelines.advanced import build_advanced
 from .pipelines.baseline import build_baseline
 from .pipelines.experiments import (
     build_clean_doc_slots,
