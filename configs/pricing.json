@@ -4,6 +4,7 @@
   "unit": "usd_per_million_tokens",
   "models": {
     "gpt-4o-mini": {"input": 0.15, "cached_input": 0.075, "output": 0.60},
-    "text-embedding-3-small": {"input": 0.02, "cached_input": 0.02, "output": 0.0}
+    "text-embedding-3-small": {"input": 0.02, "cached_input": 0.02, "output": 0.0},
+    "text-embedding-3-large": {"input": 0.143, "cached_input": 0.143, "output": 0.0}
   }
 }
