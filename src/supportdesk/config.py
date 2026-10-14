@@ -259,7 +259,7 @@ class PipelineCfg:
     name: str = _opt("registered pipeline to run (see registry.py)", "baseline")
     retriever: str = _opt("registered retriever: dense | bm25 | hybrid", "dense")
     scope_gate: str = _opt("advanced only: the scope check before retrieval: llm (a model call), rules (free "
-                           "keyword rules) or off (no check)", "llm")
+                           "keyword rules) or off (no check); advanced's profile turns it on (llm)", "off")
 
 
 @dataclass(frozen=True)

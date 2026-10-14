@@ -37,6 +37,7 @@ max_body_chars = 4000
 
 [pipeline]
 retriever = "dense_doc_slots"
+scope_gate = "llm"           # the scope check before retrieval is part of advanced's design
 
 [prompts]
 rewrite = "configs/prompts/rewrite_concepts_system.txt"

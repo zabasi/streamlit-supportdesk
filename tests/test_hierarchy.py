@@ -100,7 +100,7 @@ def test_the_shipped_hierarchical_profiles_differ_from_their_bases_only_in_the_r
     assert {k for k in base if base[k] != hier_baseline[k]} == {"pipeline.name", "pipeline.retriever"}
     assert hier_baseline["pipeline.retriever"] == "hierarchical"
     adv, adv_hier = flat("advanced"), flat("advanced_hier")
-    assert {k for k in adv if adv[k] != adv_hier[k]} == {"pipeline.name", "pipeline.retriever",
+    assert {k for k in adv if adv[k] != adv_hier[k]} == {"pipeline.name", "pipeline.retriever", "pipeline.scope_gate",
                                                           "retrieval.hier_places"}
     assert adv_hier["pipeline.retriever"] == "hierarchical_doc_slots"
 

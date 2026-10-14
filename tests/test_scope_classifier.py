@@ -131,7 +131,8 @@ def test_registry_advanced_includes_llm_scope_gate(index, clients, settings):
     import dataclasses
 
     from supportdesk.registry import make_pipeline
-    s = dataclasses.replace(settings, pipeline=dataclasses.replace(settings.pipeline, name="advanced"))
+    # as advanced's profile sets it (the global default is off)
+    s = dataclasses.replace(settings, pipeline=dataclasses.replace(settings.pipeline, name="advanced", scope_gate="llm"))
     pipeline = make_pipeline("advanced", "dense_doc_slots", index, clients, s)
     assert isinstance(pipeline, ScopeGatedPipeline)
     assert type(pipeline.classifier).__name__ == "LLMScopeClassifier"
@@ -179,7 +180,10 @@ def test_advanced_scope_gate_is_configurable(index, clients, settings):
     assert isinstance(advanced("rules").classifier, RuleScopeClassifier)
     off = advanced("off")
     assert not isinstance(off, ScopeGatedPipeline) and off.name == "advanced"  # no gate, no extra call
-    assert Settings.load(env={}).pipeline.scope_gate == "llm"  # the default keeps the gate on
+    assert Settings.load(env={}).pipeline.scope_gate == "off"  # off by default ...
+    assert Settings.load(env={}, overrides=["pipeline.name=advanced"]).pipeline.scope_gate == "llm"  # ... on in advanced
+    assert Settings.load(env={}, overrides=["pipeline.name=advanced",
+                                            "pipeline.scope_gate=off"]).pipeline.scope_gate == "off"  # --set still wins
     with pytest.raises(ConfigError, match="scope_gate"):
         Settings.load(env={}, overrides=["pipeline.scope_gate=maybe"])
 

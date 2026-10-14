@@ -237,7 +237,7 @@ Defaults shown are the built-in ones. `*unset*` means the key is optional and no
 |---|---|---|
 | `name` | `baseline` | registered pipeline to run (see registry.py) |
 | `retriever` | `dense` | registered retriever: dense \| bm25 \| hybrid |
-| `scope_gate` | `llm` | advanced only: the scope check before retrieval: llm (a model call), rules (free keyword rules) or off (no check) |
+| `scope_gate` | `off` | advanced only: the scope check before retrieval: llm (a model call), rules (free keyword rules) or off (no check); advanced's profile turns it on (llm) |
 
 ### `[eval]`
 

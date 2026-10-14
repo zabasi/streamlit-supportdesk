@@ -72,13 +72,15 @@ python3 scripts/eval_scope_classifier.py --mode live --cases data/eval/scope_cla
 
 ## Turning the gate on or off
 
-`advanced` reads one setting, `pipeline.scope_gate`:
+`advanced` reads one setting, `pipeline.scope_gate`. It is `off` by default (`configs/default.toml`) and
+`advanced`'s own profile turns it on (`configs/pipelines/advanced.toml`: `scope_gate = "llm"`), since the
+gate is part of the advanced design:
 
 | Value | What `advanced` does |
 |---|---|
-| `llm` (default) | one model call classifies the report before retrieval (prompt `prompts.scope`) |
+| `llm` (advanced's profile) | one model call classifies the report before retrieval (prompt `prompts.scope`) |
 | `rules` | free keyword rules classify the report (no model call) |
-| `off` | no scope check: `advanced` without the gate, no extra call |
+| `off` (the global default) | no scope check: `advanced` without the gate, no extra call |
 
 Set it in a config file (`[pipeline] scope_gate = "off"`), in a pipeline profile, or for one run:
 

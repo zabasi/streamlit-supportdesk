@@ -474,7 +474,9 @@ def test_the_variants_of_the_advanced_design_each_change_one_thing():
     assert {k for k in base if base[k] != wide[k]} == {"pipeline.name", "retrieval.candidate_k", "retrieval.doc_slots"}
     assert (wide["retrieval.candidate_k"], wide["retrieval.doc_slots"], wide["retrieval.rerank_keep_docs"]) == (20, 15, 3)
     best, advanced = flat("clean_doc_slots_rerank_docs_prompt_decompose_merged_focused_concepts"), flat("advanced")
-    assert {k for k in best if best[k] != advanced[k]} == {"pipeline.name"}  # advanced is that design
+    # advanced is that design, plus the scope check its profile turns on
+    assert {k for k in best if best[k] != advanced[k]} == {"pipeline.name", "pipeline.scope_gate"}
+    assert advanced["pipeline.scope_gate"] == "llm"
 
 
 def test_the_hybrid_candidates_variant_runs_end_to_end(index, clients, settings):
