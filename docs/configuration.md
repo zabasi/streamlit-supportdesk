@@ -203,8 +203,9 @@ Defaults shown are the built-in ones. `*unset*` means the key is optional and no
 | `hier_sections` | `3` | hierarchical retrievers: how many documentation sections, chosen by comparing the query with the section summaries, the chunk search looks inside |
 | `hier_places` | `3` | hierarchical retrievers: how many of the returned chunks come from inside those sections; the rest come from the ordinary search |
 | `cluster_size` | `100` | cluster routing: about how many chunks scripts/build_clusters.py puts in each topic cluster (k-means on the chunk embeddings) |
+| `cluster_method` | `kmeans` | cluster routing: how scripts/build_clusters.py groups the chunks: kmeans (the embeddings as they are) \| centered (each source type's average removed first, so clusters follow topic rather than writing style) \| doc_anchored (the documentation clustered alone, centered; every other chunk joins its nearest documentation cluster) |
 | `cluster_top` | `2` | cluster routing: how many clusters each query is routed to |
-| `cluster_route` | `keywords` | cluster routing: how a query is routed: keywords (its words among each cluster's keywords) \| embedding (its meaning against each cluster's description) |
+| `cluster_route` | `keywords` | cluster routing: how a query is routed: keywords (its words among each cluster's keywords) \| embedding (its meaning against each cluster's description) \| centroid (its meaning against the average of each cluster's own chunks) |
 | `cluster_mode` | `filter` | cluster routing: filter (search only the routed clusters) \| boost (search everything, the routed clusters' chunks ranked higher by retrieval.cluster_boost) |
 | `cluster_boost` | `0.05` | cluster routing with cluster_mode = boost: added to the similarity of chunks in the routed clusters |
 | `expand` | `none` | ExpandingReranker: add more chunks of the documentation pages among the candidates before reranking: none \| page (all their other chunks) \| section (only chunks sharing a section with a found chunk) \| branch (for structure chunks: the found chunk's ## parent and all its children, from the chunks' heading paths) |

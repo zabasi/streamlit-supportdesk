@@ -17,12 +17,10 @@ import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
-import numpy as np
-
 from supportdesk.config import Settings
 from supportdesk.llm.factory import build_clients
 from supportdesk.pipelines.parsing import NotJson, extract_json
-from supportdesk.retrieval.clusters import distinctive_words, index_vectors, kmeans
+from supportdesk.retrieval.clusters import cluster_chunks, distinctive_words, index_vectors
 from supportdesk.retrieval.index import VectorIndex
 
 SAMPLES = 30         # chunks shown to the model per cluster: those nearest its centre
@@ -51,15 +49,17 @@ def build(settings: Settings, index: VectorIndex, clients, *, seed: int = 0) -> 
     chunks = index.chunks
     vectors = index_vectors(index)
     k = max(1, math.ceil(len(chunks) / size))
-    labels = kmeans(vectors, k, seed=seed)
-    unit = vectors / np.where(np.linalg.norm(vectors, axis=1, keepdims=True) == 0, 1.0,
-                              np.linalg.norm(vectors, axis=1, keepdims=True))
+    method = settings.retrieval.cluster_method
+    labels, unit = cluster_chunks(vectors, [c.source_type for c in chunks], k, method=method, seed=seed)
     prompt = Path(settings.prompts.label_cluster).read_text(encoding="utf-8")
     rows = []
     for c in range(int(labels.max()) + 1):
         inside = [i for i in range(len(chunks)) if labels[i] == c]
         centre = unit[inside].mean(axis=0)
-        nearest = sorted(inside, key=lambda i: (-float(unit[i] @ centre), i))[:SAMPLES]
+        # the most typical chunks name the cluster; with doc_anchored, its documentation first (the topic)
+        docs_first = method == "doc_anchored"
+        nearest = sorted(inside, key=lambda i: (docs_first and chunks[i].source_type != "documentation",
+                                                -float(unit[i] @ centre), i))[:SAMPLES]
         named = label_cluster(clients, prompt, [chunks[i] for i in nearest])
         if named is None:  # unusable model answer: the cluster's own most distinctive words
             words = distinctive_words([chunks[i].text for i in inside],
@@ -77,7 +77,7 @@ def build(settings: Settings, index: VectorIndex, clients, *, seed: int = 0) -> 
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text("".join(json.dumps(r, ensure_ascii=False) + "\n" for r in rows), encoding="utf-8")
     manifest = {"created_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
-                "chunks": len(chunks), "clusters": len(rows), "cluster_size": size, "seed": seed,
+                "chunks": len(chunks), "clusters": len(rows), "cluster_size": size, "method": method, "seed": seed,
                 "embedding_model": index.manifest.get("embedding_model"), "label_model": settings.models.chat,
                 "index_dir": str(settings.paths.index_dir)}
     out.with_suffix(".manifest.json").write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")

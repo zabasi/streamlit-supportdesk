@@ -26,6 +26,51 @@ routing (also called topic routing or metadata pre-filtering).
 The defaults are the plain version of the idea: keyword routing and a hard filter. A wrong route is then a
 certain miss, which is why `embedding`, `boost` and a larger `cluster_top` are there to soften it.
 
+## Clustering by topic rather than by writing style
+
+On our corpus, plain k-means grouped the chunks by source type: all release notes in one cluster, comments
+in another, the documentation in three. Issues, comments, release notes and documentation are each written
+in their own style, and the embeddings carry that more strongly than the subject; and since the corpus is
+about one area (Session State and widgets), the topics differ little. With a hard filter, a report was often
+routed to clusters with no documentation at all. `retrieval.cluster_method` addresses this:
+
+| `cluster_method` | How the clusters are made |
+|---|---|
+| `kmeans` | k-means on the embeddings as they are (the first version) |
+| `centered` | each source type's average embedding is removed first, so what remains is mostly the subject |
+| `doc_anchored` | the documentation is clustered alone (centered), then every other chunk joins its nearest documentation cluster: every cluster is a topic that holds documentation |
+
+`retrieval.cluster_route = centroid` routes a query by the average of each cluster's own chunk vectors (in the
+same space as the search) instead of by the embedding of its written name and keywords.
+
+## Judging a clustering before running retrieval
+
+`scripts/diagnose_clusters.py` measures a clustering with no reranking calls: each cluster's mix of source
+types (format bias), which clusters hold each case's gold passages, and the routing reach, the share of gold
+passages whose cluster is among those advanced's queries are routed to. In replay mode (the default) the
+queries come from the cache, so it is free:
+
+```bash
+python scripts/diagnose_clusters.py
+python scripts/diagnose_clusters.py --set retrieval.cluster_route=centroid --set retrieval.cluster_top=3
+```
+
+Only clusterings with little format bias and a high routing reach are worth a retrieval run.
+
+## With structure-aware chunks
+
+The `token_structure` chunker keeps sections and code blocks whole, so its documentation chunks follow
+topics. Build its index and clusters in their own files, then compare advanced on that index with and
+without routing:
+
+```bash
+supportdesk index --mode live --set chunking.method=token_structure --set paths.index_dir=index/token_structure
+python scripts/build_clusters.py --mode live --set paths.index_dir=index/token_structure \
+  --set paths.clusters=data/clusters/token_structure_anchored.jsonl --set retrieval.cluster_method=doc_anchored
+python scripts/diagnose_clusters.py --set chunking.method=token_structure --set paths.index_dir=index/token_structure \
+  --set paths.clusters=data/clusters/token_structure_anchored.jsonl --set retrieval.cluster_route=centroid
+```
+
 ## Running the experiment
 
 ```bash

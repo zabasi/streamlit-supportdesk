@@ -132,3 +132,65 @@ def test_cluster_settings_are_checked():
     for bad in ("retrieval.cluster_route=fuzzy", "retrieval.cluster_mode=maybe", "retrieval.cluster_top=0"):
         with pytest.raises(ConfigError):
             Settings.load(env={}, overrides=[bad])
+
+
+def test_centering_makes_clusters_follow_topic_not_source_type():
+    """Two source types with a strong style direction each, two topics: plain k-means splits by type,
+    centered k-means by topic."""
+    from supportdesk.retrieval.clusters import cluster_chunks
+
+    rng = np.random.default_rng(0)
+    style = {"issue": np.eye(6)[0] * 3, "documentation": np.eye(6)[1] * 3}
+    topic = [np.eye(6)[4], np.eye(6)[5]]
+    rows, types, topics = [], [], []
+    for kind in ("issue", "documentation"):
+        for t in (0, 1):
+            for _ in range(10):
+                rows.append(style[kind] + topic[t] + rng.normal(0, 0.05, 6))
+                types.append(kind)
+                topics.append(t)
+    vectors = np.array(rows)
+    by_type = lambda labels: all(len({labels[i] for i in range(40) if types[i] == k}) == 1 for k in style)
+    by_topic = lambda labels: all(len({labels[i] for i in range(40) if topics[i] == t}) == 1 for t in (0, 1))
+    plain, _ = cluster_chunks(vectors, types, 2, method="kmeans")
+    centered, _ = cluster_chunks(vectors, types, 2, method="centered")
+    anchored, _ = cluster_chunks(vectors, types, 2, method="doc_anchored")
+    assert by_type(plain) and not by_topic(plain)
+    assert by_topic(centered) and by_topic(anchored)
+
+
+def test_doc_anchored_clusters_all_hold_documentation(index, clients, settings, tmp_path):
+    s = dataclasses.replace(
+        settings, paths=dataclasses.replace(settings.paths, clusters=tmp_path / "clusters.jsonl"),
+        retrieval=dataclasses.replace(settings.retrieval, cluster_method="doc_anchored",
+                                      cluster_size=max(1, len(index.chunks) // 3)))
+    out = build_script().build(s, index, clients)
+    rows = load_clusters(out, index)
+    assert all(r["types"].get("documentation", 0) > 0 for r in rows)
+    assert json.loads(out.with_suffix(".manifest.json").read_text())["method"] == "doc_anchored"
+
+
+def test_centroid_routing_follows_the_clusters_own_chunks(index, clients, tmp_path):
+    docs, _ = write_clusters(tmp_path / "c.jsonl", index)
+    r = retriever(index, clients, tmp_path / "c.jsonl", route="centroid")
+    position = next(i for i, c in enumerate(index.chunks) if c.chunk_id in docs)
+    vector = index_vectors(index)[position]  # a documentation chunk's own vector
+    assert r.routes("anything", vector) == [0]
+
+
+def test_diagnose_reports_bias_and_routing_reach(index, clients, settings, tmp_path):
+    from types import SimpleNamespace
+
+    spec = importlib.util.spec_from_file_location("diagnose_clusters", ROOT / "scripts" / "diagnose_clusters.py")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    write_clusters(tmp_path / "c.jsonl", index)
+    s = dataclasses.replace(settings, paths=dataclasses.replace(settings.paths, clusters=tmp_path / "c.jsonl"),
+                            retrieval=dataclasses.replace(settings.retrieval, cluster_top=2))
+    doc = next(c for c in index.chunks if c.source_type == "documentation")
+    case = SimpleNamespace(case_id="g", input=CaseInput(case_id="g", title="widget", body="value lost"),
+                           evidence_spans=[{"source_id": doc.source_id, "start_char": doc.start_char,
+                                            "end_char": doc.end_char}])
+    found = module.diagnose(s, index, clients, [case])
+    assert found["cases"][0]["gold_clusters"] == [0] and found["reach"] == 1.0  # top 2 of 2: always reached
+    assert found["clusters"][0]["main_type_share"] == 1.0 and found["clusters_without_documentation"] == 1

@@ -1,9 +1,14 @@
 """Cluster routing: search only the topic clusters a query is about (an experiment).
 
 Offline, scripts/build_clusters.py groups the index's chunks into topic clusters of about
-retrieval.cluster_size chunks (k-means on their embeddings) and labels each cluster with a name and
-keywords. At search time, ClusterRoutedRetriever first routes each query to its best clusters
-(retrieval.cluster_top), by the keywords (cluster_route = keywords) or by meaning (embedding), then
+retrieval.cluster_size chunks and labels each cluster with a name and keywords. retrieval.cluster_method
+chooses how: kmeans on the embeddings as they are; centered, with each source type's average embedding
+removed first, since issues, comments, release notes and documentation are each written in their own style
+and plain k-means groups by that style rather than by topic; or doc_anchored, which clusters only the
+documentation (centered) and attaches every other chunk to its nearest documentation cluster, so every
+cluster is a topic that holds documentation. At search time, ClusterRoutedRetriever first routes each query to its best clusters
+(retrieval.cluster_top), by the keywords (cluster_route = keywords), by meaning against each cluster's description (embedding) or against the
+average of its own chunks (centroid), then
 searches with places kept for documentation, either inside those clusters only (cluster_mode = filter) or
 over everything with the routed clusters ranked higher (boost).
 """
@@ -68,10 +73,45 @@ def kmeans(vectors: np.ndarray, k: int, *, seed: int = 0, iterations: int = 50) 
                 far = int(np.argmin(np.max(x @ centres.T, axis=1)))
                 centres[c] = x[far]
         centres = _normalize(centres)
-    order = {}  # renumber clusters by their first row, so numbering does not depend on the random start
+    return _renumber(labels)  # numbered by first row, so numbering does not depend on the random start
+
+
+def remove_type_means(vectors: np.ndarray, types: list[str]) -> np.ndarray:
+    """Unit vectors with each source type's average removed: what all issues (or all comments, all
+    release notes...) share is their style, so what remains is mostly the subject."""
+    x = _normalize(np.asarray(vectors, dtype=np.float64))
+    out = x.copy()
+    for kind in set(types):
+        rows = [i for i, t in enumerate(types) if t == kind]
+        out[rows] = x[rows] - x[rows].mean(axis=0)
+    return _normalize(out)
+
+
+def _renumber(labels) -> np.ndarray:
+    order = {}
     for label in labels:
         order.setdefault(int(label), len(order))
     return np.array([order[int(label)] for label in labels])
+
+
+def cluster_chunks(vectors: np.ndarray, types: list[str], k: int, *, method: str = "kmeans",
+                   seed: int = 0) -> tuple[np.ndarray, np.ndarray]:
+    """(each row's cluster, the vectors the clusters were found in), by retrieval.cluster_method:
+    kmeans (the embeddings as they are), centered (each source type's average removed first) or
+    doc_anchored (centered; the documentation is clustered alone, every other row joins its nearest
+    documentation cluster, so every cluster holds documentation)."""
+    if method == "kmeans":
+        return kmeans(vectors, k, seed=seed), _normalize(np.asarray(vectors, dtype=np.float64))
+    space = remove_type_means(vectors, types)
+    docs = [i for i, t in enumerate(types) if t == "documentation"]
+    if method == "centered" or not docs:
+        return kmeans(space, k, seed=seed), space
+    doc_labels = kmeans(space[docs], min(k, len(docs)), seed=seed)
+    centres = _normalize(np.array([space[docs][doc_labels == c].mean(axis=0)
+                                   for c in range(int(doc_labels.max()) + 1)]))
+    labels = np.argmax(space @ centres.T, axis=1)
+    labels[docs] = doc_labels  # documentation keeps the cluster it was found in
+    return _renumber(labels), space
 
 
 def distinctive_words(texts_in: list[str], texts_out: list[str], count: int = 15) -> list[str]:
@@ -117,6 +157,7 @@ class ClusterRoutedRetriever:
         self.members = [{position[cid] for cid in row["chunk_ids"]} for row in self.clusters]
         self.last_route: list[int] = []  # the clusters the last query was routed to
         self._vectors: np.ndarray | None = None
+        self._centroids: np.ndarray | None = None
         words = [set(lexical_tokens(cluster_text(row))) for row in self.clusters]
         df = Counter(t for w in words for t in w)
         self._words = words
@@ -128,14 +169,21 @@ class ClusterRoutedRetriever:
             self._vectors = _normalize(np.asarray(vectors, dtype=np.float64))
         return self._vectors
 
+    def _cluster_centroids(self) -> np.ndarray:
+        if self._centroids is None:  # the average of each cluster's own chunk vectors (no model call)
+            unit = _normalize(index_vectors(self.index))
+            self._centroids = _normalize(np.array([unit[sorted(m)].mean(axis=0) for m in self.members]))
+        return self._centroids
+
     def routes(self, query: str, vector) -> list[int]:
         """The ``top`` clusters for this query, best first."""
         if self.route == "keywords":  # the query's words found among each cluster's keywords, rare ones weighing more
             tokens = set(lexical_tokens(query))
             scores = [sum(self._idf[t] for t in tokens & w) for w in self._words]
-        else:  # embedding: the query's meaning against each cluster's description
+        else:  # embedding: against each cluster's description; centroid: against its own chunks' average
             q = np.asarray(vector, dtype=np.float64)
-            scores = list(self._cluster_vectors() @ (q / (np.linalg.norm(q) or 1.0)))
+            matrix = self._cluster_centroids() if self.route == "centroid" else self._cluster_vectors()
+            scores = list(matrix @ (q / (np.linalg.norm(q) or 1.0)))
         order = sorted(range(len(scores)), key=lambda c: (-round(float(scores[c]), RANK_DECIMALS), c))
         return order[: self.top]
 
@@ -161,5 +209,5 @@ class ClusterRoutedRetriever:
                 for r, i in enumerate(order, start=1)]
 
 
-__all__ = ["ClusterRoutedRetriever", "cluster_text", "distinctive_words", "index_vectors", "kmeans",
-           "load_clusters"]
+__all__ = ["ClusterRoutedRetriever", "cluster_chunks", "cluster_text", "distinctive_words", "index_vectors",
+           "kmeans", "load_clusters", "remove_type_means"]

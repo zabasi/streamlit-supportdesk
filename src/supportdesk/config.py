@@ -213,10 +213,15 @@ class Retrieval:
                             "sections; the rest come from the ordinary search", 3)
     cluster_size: int = _opt("cluster routing: about how many chunks scripts/build_clusters.py puts in each "
                              "topic cluster (k-means on the chunk embeddings)", 100)
+    cluster_method: str = _opt("cluster routing: how scripts/build_clusters.py groups the chunks: kmeans (the "
+                               "embeddings as they are) | centered (each source type's average removed first, so "
+                               "clusters follow topic rather than writing style) | doc_anchored (the documentation "
+                               "clustered alone, centered; every other chunk joins its nearest documentation cluster)",
+                               "kmeans")
     cluster_top: int = _opt("cluster routing: how many clusters each query is routed to", 2)
     cluster_route: str = _opt("cluster routing: how a query is routed: keywords (its words among each "
-                              "cluster's keywords) | embedding (its meaning against each cluster's description)",
-                              "keywords")
+                              "cluster's keywords) | embedding (its meaning against each cluster's description) | "
+                              "centroid (its meaning against the average of each cluster's own chunks)", "keywords")
     cluster_mode: str = _opt("cluster routing: filter (search only the routed clusters) | boost (search "
                              "everything, the routed clusters' chunks ranked higher by retrieval.cluster_boost)",
                              "filter")
@@ -503,8 +508,10 @@ class Settings:
             (r.hier_places >= 0, "retrieval.hier_places must be >= 0 (a search never takes more than it returns)"),
             (r.cluster_size >= 1, "retrieval.cluster_size must be >= 1"),
             (r.cluster_top >= 1, "retrieval.cluster_top must be >= 1"),
-            (r.cluster_route in ("keywords", "embedding"),
-             f"retrieval.cluster_route must be keywords or embedding, got {r.cluster_route!r}"),
+            (r.cluster_route in ("keywords", "embedding", "centroid"),
+             f"retrieval.cluster_route must be keywords, embedding or centroid, got {r.cluster_route!r}"),
+            (r.cluster_method in ("kmeans", "centered", "doc_anchored"),
+             f"retrieval.cluster_method must be kmeans, centered or doc_anchored, got {r.cluster_method!r}"),
             (r.cluster_mode in ("filter", "boost"),
              f"retrieval.cluster_mode must be filter or boost, got {r.cluster_mode!r}"),
             (r.cluster_boost >= 0, "retrieval.cluster_boost must be >= 0"),
