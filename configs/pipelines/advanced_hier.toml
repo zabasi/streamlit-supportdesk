@@ -1,0 +1,39 @@
+# advanced with hierarchical retrieval. Every value equals configs/pipelines/advanced.toml except the
+# retriever: each of advanced's searches (the report and up to 3 concept queries) first compares the query
+# with the documentation section summaries and takes 4 of its 15 candidates from inside the 3 best-matching
+# sections (retriever hierarchical_doc_slots: the usual 10 documentation places, 4 of them from those
+# sections). Everything after retrieval is unchanged: rank fusion, one reranking call, the best 6 kept with
+# at least 3 documentation chunks. Needs data/summaries/sections.jsonl.
+# Compare with advanced, and with the additive variant
+# clean_doc_slots_rerank_docs_prompt_decompose_merged_focused_concepts_summaries.
+
+[chunking]
+method = "fixed"
+max_tokens = 512
+overlap_tokens = 128
+
+[retrieval]
+top_k = 6
+candidate_k = 15
+rerank_snippet_chars = 400
+rerank_snippet = "focused"
+rerank_show_concepts = true
+keep_report_query = true
+max_queries = 3
+doc_slots = 10
+rerank_keep_docs = 3
+historical_filter = true
+hier_sections = 3            # sections chosen by their summaries
+hier_places = 4              # of the 15 candidates of each search, taken from inside those sections
+
+[context]
+max_tokens = 3200
+max_query_chars = 4000
+max_body_chars = 4000
+
+[pipeline]
+retriever = "hierarchical_doc_slots"
+
+[prompts]
+rewrite = "configs/prompts/rewrite_concepts_system.txt"
+rerank = "configs/prompts/rerank_docs_concepts_system.txt"

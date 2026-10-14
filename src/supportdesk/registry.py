@@ -84,8 +84,11 @@ from .pipelines.experiments import (
     build_split_llm,
     build_split_sentences,
 )
+from .pipelines.hierarchical import build_advanced_hier, build_hier_baseline
 from .pipelines.retrieve_loop import build_retrieve_loop
+from .pipelines.retrieve_loop_pool import build_retrieve_loop_best, build_retrieve_loop_mixed
 from .pipelines.scope_gate import build_advanced_scoped, build_scope_gate, build_scope_gate_rules
+from .retrieval.hierarchy import HierarchicalRetriever
 from .retrieval.index import VectorIndex
 from .retrieval.retriever import (
     BM25Retriever,
@@ -101,6 +104,9 @@ from .retrieval.retriever import (
 PIPELINES = {"baseline": build_baseline, "advanced": build_advanced_scoped,
              "scope_gate": build_scope_gate, "scope_gate_rules": build_scope_gate_rules,
              "retrieve_loop": build_retrieve_loop,
+             "retrieve_loop_best": build_retrieve_loop_best,
+             "retrieve_loop_mixed": build_retrieve_loop_mixed,
+             "hier_baseline": build_hier_baseline, "advanced_hier": build_advanced_hier,
              "clean_query": build_clean_query, "doc_slots": build_doc_slots,
              "hybrid_rrf": build_hybrid_rrf, "hybrid_split": build_hybrid_split,
              "rewrite_llm": build_rewrite_llm,
@@ -189,6 +195,12 @@ RETRIEVERS = {
         bm25_k1=s.retrieval.bm25_k1, bm25_b=s.retrieval.bm25_b),
     "dense_doc_slots": lambda index, clients, s: DocSlotsRetriever(
         index, clients.embedding, doc_slots=s.retrieval.doc_slots),
+    "hierarchical": lambda index, clients, s: HierarchicalRetriever(
+        DenseRetriever(index, clients.embedding), index, clients.embedding, s.paths.summaries,
+        sections=s.retrieval.hier_sections, places=s.retrieval.hier_places),
+    "hierarchical_doc_slots": lambda index, clients, s: HierarchicalRetriever(
+        DocSlotsRetriever(index, clients.embedding, doc_slots=s.retrieval.doc_slots), index, clients.embedding,
+        s.paths.summaries, sections=s.retrieval.hier_sections, places=s.retrieval.hier_places),
     "bm25": lambda index, clients, s: BM25Retriever(
         index.chunks, k1=s.retrieval.bm25_k1, b=s.retrieval.bm25_b),
     "hybrid": lambda index, clients, s: HybridRetriever(

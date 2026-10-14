@@ -1,0 +1,25 @@
+# Hierarchical retrieval on its own: the baseline's chunks, query, 6 results and generator, with one change.
+# The query is first compared with a short summary of every documentation section
+# (python scripts/summarize_sections.py --mode live); the chunks inside the 3 best-matching sections are
+# ranked by their own similarity, and 3 of the 6 results come from them. The other 3 come from the
+# baseline's ordinary dense search, so issues, discussions and release notes can still be found.
+# Same index as the baseline; needs data/summaries/sections.jsonl.
+
+[chunking]
+method = "fixed"
+max_tokens = 512
+overlap_tokens = 128
+
+[retrieval]
+top_k = 6
+historical_filter = true
+hier_sections = 3            # sections chosen by their summaries
+hier_places = 3              # results taken from inside those sections
+
+[context]
+max_tokens = 3200
+max_query_chars = 4000
+max_body_chars = 4000
+
+[pipeline]
+retriever = "hierarchical"

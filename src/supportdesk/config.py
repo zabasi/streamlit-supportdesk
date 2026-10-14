@@ -107,6 +107,8 @@ class Prompts:
                        Path("configs/prompts/judge_system.txt"))
     loop_rewrite: Path = _opt("system prompt of the retrieve_loop query rewrite",
                               Path("configs/prompts/loop_rewrite_system.txt"))
+    judge_scored: Path = _opt("system prompt of the retrieve_loop_best and retrieve_loop_mixed judge: yes or no, "
+                              "then a 0-10 score for every passage", Path("configs/prompts/judge_scored_system.txt"))
 
 
 @dataclass(frozen=True)
@@ -199,6 +201,10 @@ class Retrieval:
                                        "searched for in one turn", 2)
     summary_sections: int = _opt("SummaryReranker: before reranking, add the chunks of this many documentation "
                                  "sections whose summaries best match the queries (0 = off)", 0)
+    hier_sections: int = _opt("hierarchical retrievers: how many documentation sections, chosen by comparing the "
+                              "query with the section summaries, the chunk search looks inside", 3)
+    hier_places: int = _opt("hierarchical retrievers: how many of the returned chunks come from inside those "
+                            "sections; the rest come from the ordinary search", 3)
     expand: str = _opt("ExpandingReranker: add more chunks of the documentation pages among the candidates "
                        "before reranking: none | page (all their other chunks) | section (only chunks sharing a "
                        "section with a found chunk) | branch (for structure chunks: the found chunk's ## parent "
@@ -475,6 +481,8 @@ class Settings:
              f"retrieval.corrective_judge must be relevance or coverage, got {r.corrective_judge!r}"),
             (r.corrective_max_missing >= 1, "retrieval.corrective_max_missing must be >= 1"),
             (0 <= r.summary_sections <= 10, "retrieval.summary_sections must be between 0 and 10"),
+            (1 <= r.hier_sections <= 10, "retrieval.hier_sections must be between 1 and 10"),
+            (r.hier_places >= 0, "retrieval.hier_places must be >= 0 (a search never takes more than it returns)"),
             (r.extract_mode in ("keep", "drop"), f"retrieval.extract_mode must be keep or drop, got {r.extract_mode!r}"),
             (r.extract_protect_top >= 0, "retrieval.extract_protect_top must be >= 0"),
             (0 <= r.rerank_doc_places <= r.top_k,

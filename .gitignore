@@ -20,3 +20,4 @@ artifacts/*.sqlite
 artifacts/cost_ledger.jsonl
 htmlcov/
 **/.DS_Store
+artifacts/manual_reports/

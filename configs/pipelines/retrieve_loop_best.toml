@@ -1,0 +1,23 @@
+# retrieve_loop that remembers. Same search as retrieve_loop (baseline index, dense, 6 chunks per try), but the
+# judge also scores every chunk from 0 to 10 (prompts.judge_scored), and every chunk of every try is kept in a
+# pool with its best score. When the loop ends (the judge says yes, or the last try has run) the generator gets
+# the 6 highest-scoring chunks of the whole pool, not just the last search's.
+# One repeat at most: the first search, then one rewritten query (max_loops = 2 searches).
+
+[chunking]
+method = "fixed"
+max_tokens = 512
+overlap_tokens = 128
+
+[retrieval]
+top_k = 6
+historical_filter = true
+max_loops = 2
+
+[context]
+max_tokens = 3200
+max_query_chars = 4000
+max_body_chars = 4000
+
+[pipeline]
+retriever = "dense"

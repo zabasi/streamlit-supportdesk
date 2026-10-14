@@ -28,6 +28,7 @@ scope = "configs/prompts/scope_system.txt"
 rewrite_missing = "configs/prompts/rewrite_missing_system.txt"
 judge = "configs/prompts/judge_system.txt"
 loop_rewrite = "configs/prompts/loop_rewrite_system.txt"
+judge_scored = "configs/prompts/judge_scored_system.txt"
 
 [paths]
 data_dir = "data/processed"
@@ -75,6 +76,8 @@ extract_show_concepts = false    # ExtractingReranker: show the model the concep
 extract_protect_top = 0          # ExtractingReranker: never drop parts of this many top-ranked chunks
 rerank_show_concepts = false     # the LLM reranker also sees the concept queries ("Mechanisms involved")
 summary_sections = 0             # SummaryReranker: add the chunks of this many best-matching sections
+hier_sections = 3                # hierarchical retrievers: sections (by summary) the chunk search looks inside
+hier_places = 3                  # hierarchical retrievers: returned chunks taken from inside those sections
 corrective_judge = "relevance"   # CorrectiveReranker: relevance (yes or no) or coverage (which mechanisms are missing)
 corrective_max_missing = 2       # coverage judge: most missing mechanisms searched for in one turn
 corrective_turns = 0             # CorrectiveReranker: judge, then rewrite and search again at most this often
