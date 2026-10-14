@@ -86,8 +86,8 @@ from .pipelines.experiments import (
 )
 from .pipelines.hierarchical import build_advanced_hier, build_hier_baseline
 from .pipelines.retrieve_loop import build_retrieve_loop
-from .pipelines.scope_gate import build_advanced_scoped, build_scope_gate, build_scope_gate_rules
 from .pipelines.retrieve_loop_pool import build_retrieve_loop_best, build_retrieve_loop_mixed
+from .pipelines.scope_gate import build_advanced_scoped, build_scope_gate, build_scope_gate_rules
 from .retrieval.hierarchy import HierarchicalRetriever
 from .retrieval.index import VectorIndex
 from .retrieval.retriever import (
