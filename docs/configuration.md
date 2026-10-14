@@ -128,6 +128,7 @@ Defaults shown are the built-in ones. `*unset*` means the key is optional and no
 | `rewrite` | `configs/prompts/rewrite_system.txt` | system prompt of the query-rewriting call (QueryRewriter) |
 | `rerank` | `configs/prompts/rerank_system.txt` | system prompt of the reranking call (LLMReranker) |
 | `scope` | `configs/prompts/scope_system.txt` | system prompt of the pre-retrieval scope classifier (scope gate on advanced) |
+| `label_cluster` | `configs/prompts/label_cluster_system.txt` | system prompt that names a topic cluster and lists its keywords (scripts/build_clusters.py) |
 | `scope_rewrite` | `configs/prompts/scope_rewrite_system.txt` | system prompt of the combined scope check and concept queries, one call (pipeline.scope_gate = combined) |
 | `summarize_section` | `configs/prompts/summarize_section_system.txt` | system prompt that summarizes one documentation section (scripts/summarize_sections.py) |
 | `judge_coverage` | `configs/prompts/judge_coverage_system.txt` | system prompt of the coverage judge (CorrectiveReranker) |
@@ -148,6 +149,7 @@ Defaults shown are the built-in ones. `*unset*` means the key is optional and no
 | `ledger_path` | `artifacts/cost_ledger.jsonl` | record of every live call's cost; it counts toward the budget across runs |
 | `pricing_path` | `configs/pricing.json` | per-model prices used by the budget guard |
 | `summaries` | `data/summaries/sections.jsonl` | section summaries written by scripts/summarize_sections.py (SummaryReranker) |
+| `clusters` | `data/clusters/clusters.jsonl` | topic clusters written by scripts/build_clusters.py (cluster_doc_slots retriever) |
 
 ### `[budget]`
 
@@ -200,6 +202,11 @@ Defaults shown are the built-in ones. `*unset*` means the key is optional and no
 | `summary_sections` | `0` | SummaryReranker: before reranking, add the chunks of this many documentation sections whose summaries best match the queries (0 = off) |
 | `hier_sections` | `3` | hierarchical retrievers: how many documentation sections, chosen by comparing the query with the section summaries, the chunk search looks inside |
 | `hier_places` | `3` | hierarchical retrievers: how many of the returned chunks come from inside those sections; the rest come from the ordinary search |
+| `cluster_size` | `100` | cluster routing: about how many chunks scripts/build_clusters.py puts in each topic cluster (k-means on the chunk embeddings) |
+| `cluster_top` | `2` | cluster routing: how many clusters each query is routed to |
+| `cluster_route` | `keywords` | cluster routing: how a query is routed: keywords (its words among each cluster's keywords) \| embedding (its meaning against each cluster's description) |
+| `cluster_mode` | `filter` | cluster routing: filter (search only the routed clusters) \| boost (search everything, the routed clusters' chunks ranked higher by retrieval.cluster_boost) |
+| `cluster_boost` | `0.05` | cluster routing with cluster_mode = boost: added to the similarity of chunks in the routed clusters |
 | `expand` | `none` | ExpandingReranker: add more chunks of the documentation pages among the candidates before reranking: none \| page (all their other chunks) \| section (only chunks sharing a section with a found chunk) \| branch (for structure chunks: the found chunk's ## parent and all its children, from the chunks' heading paths) |
 | `expand_max_candidates` | `30` | ExpandingReranker: the most candidates after expansion |
 | `section_candidates` | `30` | most sections and other candidates the SectionReranker ranks |

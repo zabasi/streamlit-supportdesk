@@ -95,6 +95,8 @@ class Prompts:
     rerank: Path = _opt("system prompt of the reranking call (LLMReranker)", Path("configs/prompts/rerank_system.txt"))
     scope: Path = _opt("system prompt of the pre-retrieval scope classifier (scope gate on advanced)",
                        Path("configs/prompts/scope_system.txt"))
+    label_cluster: Path = _opt("system prompt that names a topic cluster and lists its keywords "
+                               "(scripts/build_clusters.py)", Path("configs/prompts/label_cluster_system.txt"))
     scope_rewrite: Path = _opt("system prompt of the combined scope check and concept queries, one call "
                                "(pipeline.scope_gate = combined)", Path("configs/prompts/scope_rewrite_system.txt"))
     summarize_section: Path = _opt("system prompt that summarizes one documentation section "
@@ -123,6 +125,8 @@ class Paths:
     pricing_path: Path = _opt("per-model prices used by the budget guard", Path("configs/pricing.json"))
     summaries: Path = _opt("section summaries written by scripts/summarize_sections.py (SummaryReranker)",
                            Path("data/summaries/sections.jsonl"))
+    clusters: Path = _opt("topic clusters written by scripts/build_clusters.py (cluster_doc_slots retriever)",
+                          Path("data/clusters/clusters.jsonl"))
 
 
 @dataclass(frozen=True)
@@ -207,6 +211,17 @@ class Retrieval:
                               "query with the section summaries, the chunk search looks inside", 3)
     hier_places: int = _opt("hierarchical retrievers: how many of the returned chunks come from inside those "
                             "sections; the rest come from the ordinary search", 3)
+    cluster_size: int = _opt("cluster routing: about how many chunks scripts/build_clusters.py puts in each "
+                             "topic cluster (k-means on the chunk embeddings)", 100)
+    cluster_top: int = _opt("cluster routing: how many clusters each query is routed to", 2)
+    cluster_route: str = _opt("cluster routing: how a query is routed: keywords (its words among each "
+                              "cluster's keywords) | embedding (its meaning against each cluster's description)",
+                              "keywords")
+    cluster_mode: str = _opt("cluster routing: filter (search only the routed clusters) | boost (search "
+                             "everything, the routed clusters' chunks ranked higher by retrieval.cluster_boost)",
+                             "filter")
+    cluster_boost: float = _opt("cluster routing with cluster_mode = boost: added to the similarity of chunks "
+                                "in the routed clusters", 0.05)
     expand: str = _opt("ExpandingReranker: add more chunks of the documentation pages among the candidates "
                        "before reranking: none | page (all their other chunks) | section (only chunks sharing a "
                        "section with a found chunk) | branch (for structure chunks: the found chunk's ## parent "
@@ -486,6 +501,13 @@ class Settings:
             (0 <= r.summary_sections <= 10, "retrieval.summary_sections must be between 0 and 10"),
             (1 <= r.hier_sections <= 10, "retrieval.hier_sections must be between 1 and 10"),
             (r.hier_places >= 0, "retrieval.hier_places must be >= 0 (a search never takes more than it returns)"),
+            (r.cluster_size >= 1, "retrieval.cluster_size must be >= 1"),
+            (r.cluster_top >= 1, "retrieval.cluster_top must be >= 1"),
+            (r.cluster_route in ("keywords", "embedding"),
+             f"retrieval.cluster_route must be keywords or embedding, got {r.cluster_route!r}"),
+            (r.cluster_mode in ("filter", "boost"),
+             f"retrieval.cluster_mode must be filter or boost, got {r.cluster_mode!r}"),
+            (r.cluster_boost >= 0, "retrieval.cluster_boost must be >= 0"),
             (r.extract_mode in ("keep", "drop"), f"retrieval.extract_mode must be keep or drop, got {r.extract_mode!r}"),
             (r.extract_protect_top >= 0, "retrieval.extract_protect_top must be >= 0"),
             (0 <= r.rerank_doc_places <= r.top_k,

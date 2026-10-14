@@ -88,6 +88,7 @@ from .pipelines.hierarchical import build_advanced_hier, build_hier_baseline
 from .pipelines.retrieve_loop import build_retrieve_loop
 from .pipelines.retrieve_loop_pool import build_retrieve_loop_best, build_retrieve_loop_mixed
 from .pipelines.scope_gate import build_advanced_scoped, build_scope_gate, build_scope_gate_rules
+from .retrieval.clusters import ClusterRoutedRetriever
 from .retrieval.hierarchy import HierarchicalRetriever
 from .retrieval.index import VectorIndex
 from .retrieval.retriever import (
@@ -195,6 +196,10 @@ RETRIEVERS = {
         bm25_k1=s.retrieval.bm25_k1, bm25_b=s.retrieval.bm25_b),
     "dense_doc_slots": lambda index, clients, s: DocSlotsRetriever(
         index, clients.embedding, doc_slots=s.retrieval.doc_slots),
+    "cluster_doc_slots": lambda index, clients, s: ClusterRoutedRetriever(
+        index, clients.embedding, doc_slots=s.retrieval.doc_slots, clusters=s.paths.clusters,
+        top=s.retrieval.cluster_top, route=s.retrieval.cluster_route, mode=s.retrieval.cluster_mode,
+        boost=s.retrieval.cluster_boost),
     "hierarchical": lambda index, clients, s: HierarchicalRetriever(
         DenseRetriever(index, clients.embedding), index, clients.embedding, s.paths.summaries,
         sections=s.retrieval.hier_sections, places=s.retrieval.hier_places),
