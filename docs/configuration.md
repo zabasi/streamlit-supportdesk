@@ -202,6 +202,10 @@ Defaults shown are the built-in ones. `*unset*` means the key is optional and no
 | `summary_sections` | `0` | SummaryReranker: before reranking, add the chunks of this many documentation sections whose summaries best match the queries (0 = off) |
 | `hier_sections` | `3` | hierarchical retrievers: how many documentation sections, chosen by comparing the query with the section summaries, the chunk search looks inside |
 | `hier_places` | `3` | hierarchical retrievers: how many of the returned chunks come from inside those sections; the rest come from the ordinary search |
+| `pool_mode` | `fuse` | advanced: how the reranker's candidates are chosen: fuse (every query's ranking merged with RRF, the best candidate_k kept) \| quota (fixed shares: the report's best dense and BM25 chunks, and the concept queries' best dense chunks) |
+| `quota_report_dense` | `5` | pool_mode = quota: dense chunks from the cleaned report |
+| `quota_report_bm25` | `5` | pool_mode = quota: keyword (BM25) chunks from the cleaned report |
+| `quota_concepts_dense` | `10` | pool_mode = quota: dense chunks from the concept queries, taken in turns |
 | `concept_weight` | `1.0` | with concept queries after the cleaned report (keep_report_query), how much each concept query's ranking counts in the fusion against the report's (1 = equal, plain RRF; below 1, the report's matches keep the lead) |
 | `decompose` | `True` | advanced: write concept queries (the decompose step) besides the cleaned report; false searches with the cleaned report alone and reranks without the mechanisms list |
 | `complete` | `none` | after reranking, repair each kept documentation chunk's edges: none \| neighbors (add the chunk before and after it) \| section (grow to the whole top-level sections it touches) \| trim (drop a short leading fragment, so it starts at a heading) \| section_trim (trim the start, complete the last section) |
