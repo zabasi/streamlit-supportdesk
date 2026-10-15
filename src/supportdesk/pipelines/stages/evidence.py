@@ -76,7 +76,10 @@ def completed_span(chunk: Chunk, page: str, spans: list[tuple[int, int]], neighb
         return best((before, after), (a0, after), (before, b0))
     first, last = _section_at(spans, a0), _section_at(spans, max(a0, b0 - 1))
     start = a0
-    if mode in ("trim", "section_trim"):  # "fragment / heading / text" -> "heading / text"
+    # a page's introduction (the text under its title, before the first top-level section) is never trimmed:
+    # it is not a leftover of a previous section
+    in_intro = bool(spans) and first == spans[0] and not page[spans[0][0]:].lstrip().startswith("## ")
+    if mode in ("trim", "section_trim") and not in_intro:  # "fragment / heading / text" -> "heading / text"
         heads = [a for a, _ in spans if a0 < a < b0]
         if heads and page[a0:heads[0]].strip() and \
                 count_tokens(page[a0:heads[0]]) < count_tokens(page[a0:b0]) / 2:  # never the chunk's main part

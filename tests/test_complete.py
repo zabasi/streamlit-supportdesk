@@ -91,3 +91,10 @@ def test_complete_is_a_checked_setting():
     assert Settings.load(env={}).retrieval.complete == "none"  # advanced unchanged by default
     with pytest.raises(ConfigError, match="retrieval.complete"):
         Settings.load(env={}, overrides=["retrieval.complete=maybe"])
+
+
+def test_trim_keeps_a_page_introduction():
+    """The text under the page title before the first ## section is an introduction, not a leftover."""
+    opening = chunk(0, A + 60)  # "# Title / Intro line." then the start of Alpha
+    assert run([opening], "trim")[0] == [(0, A + 60)]
+    assert run([opening], "section_trim")[0] == [(0, B)]  # kept, and Alpha completed
