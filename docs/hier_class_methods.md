@@ -2,20 +2,25 @@
 
 This is the method guide for the hierarchical-class RAG experiment. Scores and how to run
 the experiment are in `docs/hier_class_rag.md`. Worked numbers are in
-`docs/hier_class_examples.md`. The official HTML comparison is
-`artifacts/hier_class_rag/report.html`.
+`docs/hier_class_examples.md`. HTML reports: `artifacts/hier_class_rag/report_one_change.html` (one factor),
+`report_two_changes.html` (chunker + filter), `report_llmfilter.html` (filter model),
+and `report.html` (everything).
 
-Eight systems were measured with **retrieval only** (no answers) on the **same 15 annotated
+Fourteen systems were measured with **retrieval only** (no answers) on the **same 15 annotated
 development cases**. Gold for a case is the source ids in that case’s `selected_spans`. Split =
 `dev`.
 
-There are two families:
+**Name key:** `llmchunk` is the LLM **splitter** (`llm_chunk_system.txt`). `llmfilter` is
+the LLM **topic router** (`topic_classify_system.txt`). `advanced_llmchunk` = chunking
+only. `advanced_exist_llmfilter` = filter only. `advanced_llmchunk_llmfilter` = both.
+
+There are three families:
 
 | Family | What it tests | Index | After search |
 |---|---|---|---|
 | The four new methods | chunker × classifier | newly built | nothing: take the top 6 |
-| `advanced`, `advanced_hier`, `advanced+llm` | the current support pipeline, and routing on top of it | existing fixed 512/128 | rewrite + fusion + rerank + keep 6 |
-| `advanced_llm_llm` | those two LLM pieces **inside** `advanced` | new LLM index (806) | same `advanced` stages |
+| `advanced`, `advanced_hier` | the current support pipelines | existing fixed 512/128 | rewrite + fusion + rerank + keep 6 |
+| Advanced 3×3 | same `advanced` retrieve, every chunker × classifier | existing / rule 705 / llm 806 | same `advanced` stages; class filter only when the cell has one |
 
 The four new methods are **not** a weaker `advanced`. They deliberately omit rewrite and
 rerank so the only difference among them is chunking and class routing.
@@ -159,7 +164,12 @@ far below `advanced`, because it never rewrites the report and never reranks. Th
 
 ---
 
-## The current systems and the combo
+## The current systems and the advanced 3×3
+
+The nine `advanced_*` cells keep **the same retrieve path** as `advanced` (clean → up to 4
+queries → 15 candidates with documentation places → RRF → rerank → keep 6). Only the index
+and whether a class filter is on change. That is how each chunker and each classifier can
+be read **alone** (the `none` / existing rows) and **together** (the four mixed cells).
 
 ### 5. `advanced`
 
@@ -185,29 +195,70 @@ places help some pages and crowd others out of the 15-candidate list.
 Code: `src/supportdesk/pipelines/hierarchical.py`,
 `src/supportdesk/retrieval/hierarchy.py`.
 
-### 7. `advanced+llm` (the combo)
+### 7. `advanced_exist_kmeans` (existing chunks + k-means only)
 
-**Not** `advanced` rebuilt with LLM chunks. The winning **classifier only** (LLM topics) is
-applied to `advanced`’s existing 636 chunks. Then the full `advanced` pipeline runs, but each
-search is filtered to the two predicted topics.
+Same 636 existing chunks as `advanced`. Every search is filtered to the two nearest
+`doc_anchored` clusters.
+
+On the new gold: recall@6 **0.62** (−0.01), hit@6 **0.93**, MRR **0.82**. Completeness is
+almost unchanged; one case loses its only gold (hit drops). First-hit is a little better
+than unfiltered `advanced`.
+
+### 8. `advanced_exist_llmfilter` (existing chunks + LLM topic filter only)
+
+Same 636 chunks. Every search is filtered to the two predicted Streamlit topics.
 
 On the new gold: recall@6 **0.60**, hit@6 **0.93**, MRR **0.75**. Source retrieval got
-**worse**. Passage recall@6 rose slightly to **0.53**. A hard filter can drop a gold source
-that unfiltered `advanced` already found (see `DEV-5604` in the examples file).
+**worse**. A hard filter can drop a gold source that unfiltered `advanced` already found
+(see `DEV-5604` in the examples file: 3/3 → 1/3).
 
-### 8. `advanced_llm_llm` (advanced + LLM chunker + LLM classifier)
+### 9. `advanced_rule` (rule chunks only)
 
-This is `advanced`’s full retrieve path (clean → up to 4 queries → 15 candidates with
-documentation places → RRF → rerank → keep 6) running on the **806 LLM-split chunks**,
-and every search is filtered to the two LLM topics.
+Full `advanced` on the 705 LangChain-rule chunks. No class filter.
 
-It mixes two changes at once (new chunks *and* topic filter), so a move versus `advanced`
-cannot be attributed to one of them.
+On the new gold: recall@6 **0.61** (−0.02), hit@6 **1.00**, MRR **0.69**. Completeness is
+almost tied; first-hit is worse. Passage recall is ~0 because gold spans were annotated
+on the original windows, not these remapped chunks.
 
-On the new gold: recall@6 **0.62** (just under `advanced` 0.63), hit@6 **1.00**, MRR
-**0.88** (above `advanced` 0.79), recall@1 **0.31** (above 0.27), passage recall@6
-**0.53**. Not better as a complete-evidence system; better at putting the first gold
-near the top.
+### 10. `advanced_rule_kmeans` (rule chunks + k-means)
+
+The only cell that **beats** `advanced` on source recall@6: **0.66** (+0.02), hit@6
+**1.00**, MRR **0.87**. Rule sections plus anonymous clusters happen to keep gold in the
+candidate pool while still shrinking the search space. On `DEV-5604` this cell finds 2/3
+(misses `issue:4651`).
+
+### 11. `advanced_rule_llmfilter` (rule chunker + LLM topic filter)
+
+Recall@6 **0.58** (−0.06), hit@6 **1.00**, MRR **0.76**. Named topics on heading-split
+chunks hide more gold than k-means does on the same index. On `DEV-5604` it finds 2/3
+(misses `widget-behavior.md`).
+
+### 12. `advanced_llmchunk` (LLM chunker only, no filter)
+
+Full `advanced` on the 806 LLM-split chunks. No class filter.
+
+Recall@6 **0.59** (−0.04), hit@6 **0.93**, MRR **0.81**. Finer documentation helped the
+simple 2×2; under rewrite + rerank it does not. On `DEV-5604` it still finds all 3.
+
+### 13. `advanced_llmchunk_kmeans` (LLM chunker + k-means filter)
+
+Worst cell: recall@6 **0.54** (−0.09), hit@6 **0.87**, MRR **0.83**. Fine chunks plus a
+hard cluster filter drop gold that both `advanced` and `advanced_llmchunk` kept. On `DEV-5604`
+it still finds all 3 — the mean loss is on other cases.
+
+### 14. `advanced_llmchunk_llmfilter` (LLM chunker + LLM topic filter)
+
+Recall@6 **0.62** (−0.01), hit@6 **1.00**, MRR **0.88** (best first-hit in the grid),
+recall@1 **0.31**. Not better as a complete-evidence system; better at putting the first
+gold near the top. On `DEV-5604` it finds all 3 (unlike `advanced_exist_llmfilter`).
+
+### 15. `advanced_llmchunk_llmfilter_gpt5mini` (same chunks, stronger filter)
+
+Same 806 `gpt-4o-mini` chunks and the same advanced rewrite/rerank. Chunk labels and
+query routing use `gpt-5-mini` (`gpt-5o-mini` does not exist).
+
+Recall@6 **0.59** (worse than `gpt-4o-mini` filter 0.62), hit@6 **1.00**, MRR **0.82**
+(was 0.88). A stronger topic model did not fix the hard-filter miss.
 
 ---
 
@@ -225,11 +276,16 @@ near the top.
 `advanced` can have recall@6 = 0.63 and hit@6 = 1.00 at the same time: every case found
 *something* gold, but not every gold source.
 
-The **one-factor** numbers average the two methods that share a factor, so they do not mix
-`advanced` in:
+The **2×2 one-factor** numbers average the two *simple* methods that share a factor, so
+they do not mix `advanced` in:
 
 - LLM chunker (0.42) vs rule chunker (0.28)
 - LLM classifier (0.39) vs k-means (0.30)
+
+The **advanced 3×3** averages (each factor over the other two) go the other way: existing
+chunks 0.62, rule 0.61, LLM chunks 0.59; no classifier 0.61, k-means 0.61, LLM classifier
+0.60. Under rewrite + rerank the extra pieces usually cost recall. The exception is
+`advanced_rule_kmeans`.
 
 ---
 
@@ -243,5 +299,12 @@ The **one-factor** numbers average the two methods that share a factor, so they 
 | `llm_llm` | `LangChainLLMChunker` | LLM query | baseline stages |
 | `advanced` | existing fixed 512/128 | none | rewrite + `dense_doc_slots` + rerank |
 | `advanced_hier` | existing fixed 512/128 | section summaries | same as `advanced` |
-| `advanced+llm` | existing fixed 512/128 | LLM topics on those chunks | same as `advanced` |
-| `advanced_llm_llm` | `LangChainLLMChunker` | LLM query | full `advanced` on the 806-chunk index |
+| `advanced_exist_kmeans` | existing fixed 512/128 | centroid on those chunks | same as `advanced` |
+| `advanced_exist_llmfilter` | existing fixed 512/128 | LLM topics on those chunks | same as `advanced` |
+| `advanced_rule` | `LangChainRuleChunker` | none | full `advanced` on the 705-chunk index |
+| `advanced_rule_kmeans` | `LangChainRuleChunker` | centroid | full `advanced` on the 705-chunk index |
+| `advanced_rule_llmfilter` | `LangChainRuleChunker` | LLM topic filter | full `advanced` on the 705-chunk index |
+| `advanced_llmchunk` | `LangChainLLMChunker` | none | full `advanced` on the 806-chunk index |
+| `advanced_llmchunk_kmeans` | `LangChainLLMChunker` | centroid | full `advanced` on the 806-chunk index |
+| `advanced_llmchunk_llmfilter` | `LangChainLLMChunker` (`gpt-4o-mini`) | LLM query (`gpt-4o-mini`) | full `advanced` on the 806-chunk index |
+| `advanced_llmchunk_llmfilter_gpt5mini` | same `gpt-4o-mini` chunks | LLM query (`gpt-5-mini`) | full `advanced`; rewrite/rerank stay `gpt-4o-mini` |

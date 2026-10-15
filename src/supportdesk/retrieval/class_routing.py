@@ -11,6 +11,7 @@ from collections import defaultdict
 
 import numpy as np
 
+from ..llm.errors import ProviderError
 from ..pipelines.parsing import NotJson, extract_json
 from .clusters import _normalize, kmeans, remove_type_means
 from .index import VectorIndex
@@ -76,7 +77,7 @@ def classify_chunks_llm(chunks, chat, *, prompt: str, batch: int = 16) -> list[s
                     continue
                 if 0 <= row["i"] < len(group):
                     labels[start + row["i"]] = label
-        except (NotJson, ValueError, TypeError, OSError):
+        except (NotJson, ValueError, TypeError, OSError, ProviderError):
             continue
     return labels
 
@@ -96,7 +97,7 @@ def classify_query_llm(query: str, chat, *, prompt: str, top: int = 2) -> list[s
                 found.append(label)
         if found:
             return found[:top]
-    except (NotJson, ValueError, TypeError, OSError):
+    except (NotJson, ValueError, TypeError, OSError, ProviderError):
         pass
     first = heuristic_label(query)
     return [first] if first != "other" else [first, "session_state"][:top]

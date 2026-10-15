@@ -4,7 +4,16 @@ The four new methods share one retrieve path (class-routed dense search, documen
 kept). advanced and advanced_hier run as they are on the existing index. The combo attaches only
 the winning classifier to advanced on that same index, so chunking is not confounded.
 
+``--ablation`` runs the 3x3 of advanced x {existing, rule, llmchunk} x {none, kmeans, llmfilter}
+and reuses any finished ``runs/<name>/summary.json``. Old ids (``advanced_llm``,
+``advanced_llm_llm``, ``advanced+llm``) are aliases.
+
+Name parts: ``llmchunk`` = LLM splitter, ``llmfilter`` = LLM topic filter, ``kmeans`` =
+k-means filter, ``exist`` / ``rule`` = which index. So ``advanced_llmchunk`` is LLM
+**chunking only**; ``advanced_exist_llmfilter`` is LLM **filter only**.
+
     python scripts/hier_class_rag.py --mode live
+    python scripts/hier_class_rag.py --mode live --ablation --no-combo
     python scripts/hier_class_rag.py --mode live --methods rule_kmeans,advanced,advanced_hier
     python scripts/hier_class_rag.py --mode offline   # sample-sized smoke; not a real score
 
@@ -53,21 +62,77 @@ from supportdesk.retrieval.class_routing import (
 )
 from supportdesk.retrieval.clusters import index_vectors
 from supportdesk.retrieval.index import VectorIndex, index_from_vectors
+from supportdesk.retrieval.retriever import DocSlotsRetriever
 
 NEW_METHODS = ("rule_kmeans", "rule_llm", "llm_kmeans", "llm_llm")
 BASELINES = ("advanced", "advanced_hier")
-FULL_COMBOS = ("advanced_llm_llm",)
-ALL_METHODS = NEW_METHODS + BASELINES + FULL_COMBOS
-DISPLAY_ORDER = NEW_METHODS + BASELINES + ("advanced+llm", "advanced+kmeans") + FULL_COMBOS
+# Ids spell both factors: llmchunk = splitter, llmfilter = topic router.
+# advanced × {existing, rule, llmchunk} × {none, kmeans, llmfilter}
+ADVANCED_ABLATION = {
+    "advanced": ("existing", "none"),
+    "advanced_exist_kmeans": ("existing", "kmeans"),
+    "advanced_exist_llmfilter": ("existing", "llm"),
+    "advanced_rule": ("rule", "none"),
+    "advanced_rule_kmeans": ("rule", "kmeans"),
+    "advanced_rule_llmfilter": ("rule", "llm"),
+    "advanced_llmchunk": ("llm", "none"),
+    "advanced_llmchunk_kmeans": ("llm", "kmeans"),
+    "advanced_llmchunk_llmfilter": ("llm", "llm"),
+}
+METHOD_ALIASES = {
+    "advanced+kmeans": "advanced_exist_kmeans",
+    "advanced+llm": "advanced_exist_llmfilter",
+    "advanced_rule_llm": "advanced_rule_llmfilter",
+    "advanced_llm": "advanced_llmchunk",
+    "advanced_llm_kmeans": "advanced_llmchunk_kmeans",
+    "advanced_llm_llm": "advanced_llmchunk_llmfilter",
+    "advanced_llmchunk_llm": "advanced_llmchunk_llmfilter",
+}
+METHOD_LABELS = {
+    "rule_kmeans": "rule chunker + k-means filter (simple retrieve)",
+    "rule_llm": "rule chunker + LLM topic filter (simple retrieve)",
+    "llm_kmeans": "LLM chunker + k-means filter (simple retrieve)",
+    "llm_llm": "LLM chunker + LLM topic filter (simple retrieve)",
+    "advanced": "existing chunks, no filter (current advanced)",
+    "advanced_hier": "existing chunks + section-summary hierarchy",
+    "advanced_exist_kmeans": "existing chunks + k-means filter",
+    "advanced_exist_llmfilter": "existing chunks + LLM topic filter",
+    "advanced_rule": "rule chunker, no filter",
+    "advanced_rule_kmeans": "rule chunker + k-means filter",
+    "advanced_rule_llmfilter": "rule chunker + LLM topic filter",
+    "advanced_llmchunk": "LLM chunker, no filter",
+    "advanced_llmchunk_kmeans": "LLM chunker + k-means filter",
+    "advanced_llmchunk_llmfilter": "LLM chunker (gpt-4o-mini) + LLM topic filter (gpt-4o-mini)",
+    "advanced_llmchunk_llmfilter_gpt5mini": (
+        "LLM chunker (gpt-4o-mini) + LLM topic filter (gpt-5-mini)"),
+}
+# Same retrieve as advanced_llmchunk_llmfilter; only the topic model is stronger.
+# gpt-5o-mini does not exist; gpt-5-mini is the cheap GPT-5 tier.
+EXTRA_METHODS = {
+    "advanced_llmchunk_llmfilter_gpt5mini": ("llm", "llm", "gpt-5-mini"),
+}
+FULL_COMBOS = tuple(n for n in ADVANCED_ABLATION if n not in BASELINES)
+ALL_METHODS = NEW_METHODS + BASELINES + FULL_COMBOS + tuple(EXTRA_METHODS)
+DISPLAY_ORDER = NEW_METHODS + BASELINES + FULL_COMBOS + tuple(EXTRA_METHODS)
 OUT = ROOT / "artifacts" / "hier_class_rag"
 
 
-def _load_settings(mode: str, pipeline: str) -> Settings:
-    return Settings.load(overrides={
+def _canonical(name: str) -> str:
+    return METHOD_ALIASES.get(name, name)
+
+
+def _load_settings(mode: str, pipeline: str, *, chat: str | None = None,
+                   max_output_tokens: int | None = None) -> Settings:
+    overrides = {
         "run.mode": mode,
         "pipeline.name": pipeline,
         "pipeline.scope_gate": "off",
-    })
+    }
+    if chat:
+        overrides["models.chat"] = chat
+    if max_output_tokens:
+        overrides["generation.max_output_tokens"] = str(max_output_tokens)
+    return Settings.load(overrides=overrides)
 
 
 def _cases(gold_path: Path, eval_dir: Path) -> list:
@@ -132,14 +197,15 @@ def _labels_for(method: str, index: VectorIndex, clients, prompt: str, *, rebuil
             return saved
     clf = method.split("_", 1)[1]
     print(f"labelling chunks ({clf})...")
-    if clf == "kmeans":
+    if clf == "kmeans" or clf.startswith("kmeans"):
         vectors = index_vectors(index)
         labels, _ = kmeans_labels(vectors, [c.source_type for c in index.chunks], k=8,
                                   method="doc_anchored")
     elif clients.mode == "offline":
         labels = [heuristic_label(f"{c.title}\n{c.text}") for c in index.chunks]
     else:
-        labels = classify_chunks_llm(index.chunks, clients.chat, prompt=prompt)
+        batch = 8 if "gpt-5" in method else 16
+        labels = classify_chunks_llm(index.chunks, clients.chat, prompt=prompt, batch=batch)
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text("".join(json.dumps({"chunk_id": c.chunk_id, "label": lab}) + "\n"
                             for c, lab in zip(index.chunks, labels)), encoding="utf-8")
@@ -156,7 +222,7 @@ def _new_retriever(method: str, index: VectorIndex, clients, settings: Settings,
     return ClassRoutedRetriever(
         index, clients.embedding, labels=labels, doc_slots=max(settings.retrieval.doc_slots, 3),
         top=2, mode="filter", chat=clients.chat, prompt=prompt,
-        route="llm" if clf == "llm" else "centroid",
+        route="llm" if clf.split("_", 1)[0] in {"llm", "llmfilter"} or clf.startswith("llm") else "centroid",
     )
 
 
@@ -185,6 +251,79 @@ def _winner(rows: dict[str, dict]) -> str | None:
     return scored[0][0]
 
 
+def _run_dir(name: str) -> Path:
+    """Prefer the canonical folder; fall back to an old alias folder."""
+    dest = OUT / "runs" / name
+    if (dest / "summary.json").exists():
+        return dest
+    for old, new in METHOD_ALIASES.items():
+        if new == name:
+            alias = OUT / "runs" / old
+            if (alias / "summary.json").exists():
+                return alias
+    return dest
+
+
+def _load_finished_run(name: str) -> dict | None:
+    summary_path = _run_dir(name) / "summary.json"
+    if not summary_path.exists():
+        return None
+    summary = json.loads(summary_path.read_text(encoding="utf-8"))
+    return {"metrics": summary["metrics"],
+            "chunks": (summary.get("index") or {}).get("chunk_count"),
+            "run": str(summary_path.parent)}
+
+
+def _advanced_retriever(chunk: str, clf: str, index: VectorIndex, clients, settings: Settings,
+                        prompt: str, *, rebuild: bool, classifier_clients=None,
+                        classifier_model: str | None = None):
+    if clf == "none":
+        return DocSlotsRetriever(index, clients.embedding, doc_slots=settings.retrieval.doc_slots or 10)
+    router = classifier_clients or clients
+    suffix = f"_{classifier_model}" if classifier_model else ""
+    label_key = f"{'existing' if chunk == 'existing' else chunk}_{clf}{suffix}"
+    labels = _labels_for(label_key, index, router, prompt, rebuild=rebuild)
+    return ClassRoutedRetriever(
+        index, clients.embedding, labels=labels, doc_slots=settings.retrieval.doc_slots or 10,
+        top=2, mode="filter", chat=router.chat, prompt=prompt,
+        route="llm" if clf == "llm" else "centroid",
+    )
+
+
+def _run_advanced_ablation(name: str, chunk: str, clf: str, *, mode: str, cases, gold: Path,
+                           exclusions, records, prompt: str, rebuild: bool,
+                           classifier_model: str | None = None) -> dict:
+    finished = None if rebuild else _load_finished_run(name)
+    if finished:
+        print(f"reusing finished run {finished['run']}")
+        return finished
+    s = _load_settings(mode, "advanced")
+    c = build_clients(s)
+    router = c
+    if classifier_model and classifier_model != s.models.chat:
+        print(f"  classifier model {classifier_model} (chunk/rewrite/rerank stay {s.models.chat})")
+        router = build_clients(_load_settings(
+            mode, "advanced", chat=classifier_model, max_output_tokens=2500))
+    if chunk == "existing":
+        index = VectorIndex.load(s.paths.index_dir, expect_model=c.embedding_model,
+                                 expect_chunking=s.chunking)
+    else:
+        index = _build_or_load_index(chunk, c, s, exclusions, records, rebuild=rebuild)
+    retriever = _advanced_retriever(
+        chunk, clf, index, c, s, prompt, rebuild=rebuild,
+        classifier_clients=router, classifier_model=classifier_model)
+    pipeline = build_advanced(retriever, c, s)
+    pipeline.name = name
+    summary = run_retrieval_eval(
+        pipeline, cases, c, s, run_id=name, out_root=OUT / "runs",
+        case_files=[str(gold)],
+        warnings=[
+            f"annotated gold; advanced + chunk={chunk} + classifier={clf}"
+            + (f" + classifier_model={classifier_model}" if classifier_model else "")])
+    return {"metrics": summary["metrics"], "chunks": len(index.chunks),
+            "run": str(OUT / "runs" / name)}
+
+
 def _combo_retriever(winner: str, index: VectorIndex, clients, settings: Settings, prompt: str,
                      *, rebuild: bool):
     clf = winner.split("_", 1)[1]
@@ -197,32 +336,122 @@ def _combo_retriever(winner: str, index: VectorIndex, clients, settings: Setting
 
 
 def _write_comparison(rows: dict[str, dict], winner: str | None, factors: dict, path: Path) -> None:
-    ks = ("1", "3", "6")
     lines = [
         "# Hierarchical-class RAG comparison",
         "",
         f"Generated {datetime.now(timezone.utc).isoformat(timespec='seconds')}. "
         "Gold = annotated selected_spans. Split = dev.",
         "",
-        "| method | recall@1 | recall@3 | recall@6 | hit@6 | MRR | passage_recall@6 | chunks |",
-        "|---|---:|---:|---:|---:|---:|---:|---:|",
+        "## Name key",
+        "",
+        "- `llmchunk` = LLM **chunker** (how documentation is split). Not a filter.",
+        "- `llmfilter` = LLM **topic filter** (which classes are searched). Not a chunker.",
+        "- `kmeans` = k-means **filter** on whichever index the first part names.",
+        "- `exist` / `rule` / `llmchunk` after `advanced_` = which index `advanced` searches.",
+        "- So `advanced_llmchunk` is LLM chunking only. `advanced_exist_llmfilter` is LLM filter only.",
+        "- `advanced_llmchunk_llmfilter` is both. Old ids: `advanced_llm` → `advanced_llmchunk`, "
+        "`advanced+llm` → `advanced_exist_llmfilter`, `advanced_llm_llm` → `advanced_llmchunk_llmfilter`.",
+        "",
+        "| method | meaning | recall@1 | recall@3 | recall@6 | hit@6 | MRR | passage_recall@6 | chunks |",
+        "|---|---|---:|---:|---:|---:|---:|---:|---:|",
     ]
-    ordered = [n for n in DISPLAY_ORDER if n in rows] + [n for n in rows if n not in DISPLAY_ORDER]
+    remapped = {_canonical(n): rows[n] for n in rows}
+    ordered = [n for n in DISPLAY_ORDER if n in remapped] + [n for n in remapped if n not in DISPLAY_ORDER]
     for name in ordered:
-        row = rows[name]
+        row = remapped[name]
         m = row["metrics"]
         rec, hit = m.get("recall_at_k") or {}, m.get("hit_at_k") or {}
         pr = (m.get("passage_recall_at_k") or {}).get("6")
+        meaning = METHOD_LABELS.get(name, "")
         lines.append(
-            f"| `{name}` | {rec.get('1')} | {rec.get('3')} | {rec.get('6')} | {hit.get('6')} | "
-            f"{m.get('mrr')} | {pr} | {row.get('chunks', '')} |")
-    lines += ["", "## One-factor view (mean recall@6 of the two methods that share the factor)", ""]
+            f"| `{name}` | {meaning} | {rec.get('1')} | {rec.get('3')} | {rec.get('6')} | "
+            f"{hit.get('6')} | {m.get('mrr')} | {pr} | {row.get('chunks', '')} |")
+    rows = remapped
+    lines += ["", "## One-factor view (mean recall@6 of the two simple methods that share the factor)", ""]
+    lines.append("These four numbers are the 2×2 only (no rewrite, no rerank). They are **not** the advanced ablation.")
+    lines.append("")
     for key, value in factors.items():
         lines.append(f"- **{key}**: {value}")
     if winner:
-        lines += ["", f"Winner among the four new methods: `{winner}`.",
-                  "`advanced+llm` = LLM classifier on the existing index. "
-                  "`advanced_llm_llm` = advanced rewrite/rerank on the LLM-chunked index with LLM topics."]
+        lines += ["", f"Winner among the four new methods: `{winner}`."]
+    base = _pick(rows["advanced"]["metrics"]) if "advanced" in rows else None
+    if base is not None and any(n in rows for n in ADVANCED_ABLATION):
+        lines += [
+            "",
+            "## Advanced ablation (Δ recall@6 vs `advanced`)",
+            "",
+            "Every cell keeps `advanced` retrieve (clean + up to 4 queries + dense_doc_slots + RRF + rerank + keep 6).",
+            "Only the index and the class filter change.",
+            "",
+            "| method | chunker | classifier | recall@6 | Δ vs advanced | hit@6 | MRR |",
+            "|---|---|---|---:|---:|---:|---:|",
+        ]
+        by_chunk: dict[str, list[float]] = {}
+        by_clf: dict[str, list[float]] = {}
+        for name, (chunk, clf) in ADVANCED_ABLATION.items():
+            if name not in rows:
+                continue
+            metrics = rows[name]["metrics"]
+            score = _pick(metrics)
+            delta = round(score - base, 4)
+            sign = f"+{delta}" if delta > 0 else str(delta)
+            hit = (metrics.get("hit_at_k") or {}).get("6")
+            mrr = metrics.get("mrr")
+            chunk_name = "llmchunk" if chunk == "llm" else chunk
+            clf_name = "llmfilter" if clf == "llm" else clf
+            lines.append(
+                f"| `{name}` | {chunk_name} | {clf_name} | {score} | {sign} | {hit} | {mrr} |")
+            by_chunk.setdefault(chunk, []).append(score)
+            by_clf.setdefault(clf, []).append(score)
+        if by_chunk or by_clf:
+            lines += [
+                "",
+                "Mean recall@6 inside the 3×3 (so each factor is averaged over the other two):",
+                "",
+                "| factor | mean recall@6 |",
+                "|---|---:|",
+            ]
+            chunk_labels = {"existing": "existing chunks", "rule": "rule chunks", "llm": "llm chunks"}
+            clf_labels = {"none": "no classifier", "kmeans": "kmeans", "llm": "llm classifier"}
+            for key in ("existing", "rule", "llm"):
+                vals = by_chunk.get(key)
+                if vals:
+                    lines.append(f"| {chunk_labels[key]} | {round(sum(vals) / len(vals), 4)} |")
+            for key in ("none", "kmeans", "llm"):
+                vals = by_clf.get(key)
+                if vals:
+                    lines.append(f"| {clf_labels[key]} | {round(sum(vals) / len(vals), 4)} |")
+        extra = [n for n in EXTRA_METHODS if n in rows]
+        if extra:
+            lines += [
+                "",
+                "## Stronger classifier on `advanced_llmchunk_llmfilter`",
+                "",
+                "`gpt-5o-mini` does not exist. Chunking / rewrite / rerank stay `gpt-4o-mini`.",
+                "Only chunk labels and query routing use the listed classifier model.",
+                "",
+                "| method | classifier model | recall@6 | Δ vs `advanced_llmchunk_llmfilter` | hit@6 | MRR |",
+                "|---|---|---:|---:|---:|---:|",
+            ]
+            base_llm = _pick(rows["advanced_llmchunk_llmfilter"]["metrics"]) if "advanced_llmchunk_llmfilter" in rows else None
+            for name in extra:
+                metrics = rows[name]["metrics"]
+                score = _pick(metrics)
+                model = EXTRA_METHODS[name][2]
+                if base_llm is None:
+                    delta = "—"
+                else:
+                    d = round(score - base_llm, 4)
+                    delta = f"+{d}" if d > 0 else str(d)
+                lines.append(
+                    f"| `{name}` | {model} | {score} | {delta} | "
+                    f"{(metrics.get('hit_at_k') or {}).get('6')} | {metrics.get('mrr')} |")
+        lines += [
+            "",
+            "Passage recall is **not** comparable across chunkers. Gold spans were annotated on the original",
+            "corpus windows; remapped rule/LLM chunk ids rarely overlap those spans even when the source id",
+            "is correct. Use source recall / hit / MRR to compare cells.",
+        ]
     path.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 
@@ -239,10 +468,15 @@ def main() -> int:
                     help="comma list from " + ",".join(ALL_METHODS))
     ap.add_argument("--combo", action=argparse.BooleanOptionalAction, default=True,
                     help="after the four methods, run advanced + the winning classifier (default on)")
+    ap.add_argument("--ablation", action="store_true",
+                    help="run every advanced × chunker × classifier cell; reuse finished runs")
     ap.add_argument("--rebuild", action="store_true")
     ap.add_argument("--limit", type=int, default=0)
     args = ap.parse_args()
-    wanted = [m.strip() for m in args.methods.split(",") if m.strip()]
+    wanted = list(ADVANCED_ABLATION) if args.ablation else [
+        _canonical(m.strip()) for m in args.methods.split(",") if m.strip()]
+    if args.ablation:
+        args.combo = False
     unknown = [m for m in wanted if m not in ALL_METHODS]
     if unknown:
         raise SystemExit(f"unknown methods: {unknown}")
@@ -267,6 +501,16 @@ def main() -> int:
     for method in wanted:
         started = time.perf_counter()
         print(f"\n=== {method} ===")
+        label = METHOD_LABELS.get(method)
+        if label:
+            print(f"  {label}")
+        if not args.rebuild:
+            finished = _load_finished_run(method)
+            if finished:
+                rows[method] = finished
+                print(f"reusing finished run {finished['run']}")
+                print(format_metrics(finished["metrics"]))
+                continue
         if method in BASELINES:
             s = _load_settings(args.mode, method)
             c = build_clients(s)
@@ -281,23 +525,17 @@ def main() -> int:
             rows[method] = {"metrics": summary["metrics"], "chunks": len(index.chunks),
                             "run": str(out_root / method)}
             clients = c
-        elif method == "advanced_llm_llm":
-            s = _load_settings(args.mode, "advanced")
-            c = build_clients(s)
-            index = _build_or_load_index("llm", c, s, exclusions, records, rebuild=args.rebuild)
-            labels = _labels_for("llm_llm", index, c, prompt, rebuild=args.rebuild)
-            retriever = ClassRoutedRetriever(
-                index, c.embedding, labels=labels, doc_slots=s.retrieval.doc_slots or 10,
-                top=2, mode="filter", chat=c.chat, prompt=prompt, route="llm")
-            pipeline = build_advanced(retriever, c, s)
-            pipeline.name = method
-            summary = run_retrieval_eval(
-                pipeline, cases, c, s, run_id=method, out_root=out_root,
-                case_files=[str(args.gold)],
-                warnings=["annotated gold; advanced stages on LLM chunks + LLM topics"])
-            rows[method] = {"metrics": summary["metrics"], "chunks": len(index.chunks),
-                            "run": str(out_root / method)}
-            clients = c
+        elif method in EXTRA_METHODS:
+            chunk, clf, clf_model = EXTRA_METHODS[method]
+            rows[method] = _run_advanced_ablation(
+                method, chunk, clf, mode=args.mode, cases=cases, gold=args.gold,
+                exclusions=exclusions, records=records, prompt=prompt, rebuild=args.rebuild,
+                classifier_model=clf_model)
+        elif method in ADVANCED_ABLATION:
+            chunk, clf = ADVANCED_ABLATION[method]
+            rows[method] = _run_advanced_ablation(
+                method, chunk, clf, mode=args.mode, cases=cases, gold=args.gold,
+                exclusions=exclusions, records=records, prompt=prompt, rebuild=args.rebuild)
         else:
             simple = _load_settings(args.mode, "baseline")
             kind = method.split("_", 1)[0]
@@ -316,13 +554,13 @@ def main() -> int:
 
     winner = _winner(rows)
     if args.combo and winner:
-        print(f"\n=== combo advanced+{winner.split('_', 1)[1]} (winner {winner}) ===")
+        print(f"\n=== combo existing-index + winner classifier (winner {winner}) ===")
         s = _load_settings(args.mode, "advanced")
         c = build_clients(s)
         index = VectorIndex.load(s.paths.index_dir, expect_model=c.embedding_model,
                                  expect_chunking=s.chunking)
         retriever, clf = _combo_retriever(winner, index, c, s, prompt, rebuild=args.rebuild)
-        name = f"advanced+{clf}"
+        name = "advanced_exist_llmfilter" if clf == "llm" else "advanced_exist_kmeans"
         pipeline = build_advanced(retriever, c, s)
         pipeline.name = name
         summary = run_retrieval_eval(
@@ -338,8 +576,9 @@ def main() -> int:
         previous_file = json.loads(prev_path.read_text(encoding="utf-8"))
         previous_winner = previous_file.get("winner")
         for name, body in (previous_file.get("methods") or {}).items():
-            if name not in rows and body.get("metrics"):
-                rows[name] = body
+            key = _canonical(name)
+            if key not in rows and body.get("metrics"):
+                rows[key] = body
     winner = winner or previous_winner or _winner(rows)
     factors = _factor_view(rows)
     result = {"created_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),

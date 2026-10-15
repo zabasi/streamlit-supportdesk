@@ -2,7 +2,11 @@
 
 Companion to `docs/hier_class_methods.md`. Formulas are the ones in
 `src/supportdesk/eval/metrics.py`. The live case `DEV-5604` is taken from
-`artifacts/hier_class_rag/runs/*/results.jsonl`.
+`artifacts/hier_class_rag/runs/*/results.jsonl`. HTML: `report_one_change.html`,
+`report_two_changes.html`, `report_llmfilter.html` (full dump: `report.html`).
+
+Name parts: `llmchunk` = LLM **splitter**, `llmfilter` = LLM **topic filter**.
+`advanced_llmchunk` is chunking only. `advanced_exist_llmfilter` is filter only.
 
 ---
 
@@ -98,11 +102,17 @@ From `artifacts/hier_class_rag/comparison.md`, recall@6:
 | `llm_llm` | 0.4556 |
 | `advanced` | 0.6333 |
 | `advanced_hier` | 0.6111 |
-| `advanced+llm` | 0.6000 |
-| `advanced_llm_llm` | 0.6222 |
+| `advanced_exist_kmeans` | 0.6222 |
+| `advanced_exist_llmfilter` | 0.6000 |
+| `advanced_rule` | 0.6111 |
+| `advanced_rule_kmeans` | 0.6556 |
+| `advanced_rule_llmfilter` | 0.5778 |
+| `advanced_llmchunk` | 0.5889 |
+| `advanced_llmchunk_kmeans` | 0.5444 |
+| `advanced_llmchunk_llmfilter` | 0.6222 |
 
-One-factor view (mean of the two methods that share the factor; `advanced` is **not**
-included):
+One-factor view on the **2×2 only** (mean of the two simple methods that share the factor;
+`advanced` is **not** included):
 
 ```
 rule chunker   = (0.2222 + 0.3333) / 2 = 0.27775  →  0.2777
@@ -111,8 +121,37 @@ k-means        = (0.2222 + 0.3778) / 2 = 0.3000
 LLM classifier = (0.3333 + 0.4556) / 2 = 0.39445 →  0.3944
 ```
 
-So the LLM chunker is about **0.14** recall@6 better than the rule chunker, and the LLM
-classifier is about **0.09** better than k-means. Those two gains stacked in `llm_llm`.
+So on the simple path the LLM chunker is about **0.14** recall@6 better than the rule
+chunker, and the LLM classifier is about **0.09** better than k-means. Those two gains
+stacked in `llm_llm`.
+
+On the **advanced 3×3** the same averaging (each factor over the other two) goes the
+other way:
+
+```
+existing chunks = (0.6333 + 0.6222 + 0.6000) / 3 = 0.6185
+rule chunks     = (0.6111 + 0.6556 + 0.5778) / 3 = 0.6148
+llm chunks      = (0.5889 + 0.5444 + 0.6222) / 3 = 0.5852
+
+no classifier   = (0.6333 + 0.6111 + 0.5889) / 3 = 0.6111
+k-means         = (0.6222 + 0.6556 + 0.5444) / 3 = 0.6074
+LLM classifier  = (0.6000 + 0.5778 + 0.6222) / 3 = 0.6000
+```
+
+Δ vs `advanced` 0.6333:
+
+```
+advanced_exist_kmeans        0.6222 − 0.6333 = −0.0111
+advanced_exist_llmfilter           0.6000 − 0.6333 = −0.0333
+advanced_rule          0.6111 − 0.6333 = −0.0222
+advanced_rule_kmeans   0.6556 − 0.6333 = +0.0223
+advanced_rule_llmfilter      0.5778 − 0.6333 = −0.0555
+advanced_llmchunk            0.5889 − 0.6333 = −0.0444
+advanced_llmchunk_kmeans    0.5444 − 0.6333 = −0.0889
+advanced_llmchunk_llmfilter       0.6222 − 0.6333 = −0.0111
+```
+
+Only `advanced_rule_kmeans` is above the unfiltered baseline.
 
 ---
 
@@ -161,7 +200,7 @@ Same recall@1/@3/@6 = 0.333 / 0.333 / 1.000 and MRR = 1.000. The **order** diffe
 rank 5. The section-summary places changed which documentation chunks entered the pool;
 for this case it did not change completeness.
 
-### `advanced+llm` (hard filter dropped two golds)
+### `advanced_exist_llmfilter` (hard filter dropped two golds)
 
 Top 6:
 
@@ -200,7 +239,7 @@ MRR      = 1/1 = 1.000
 They beat k-means on this case (k-means found **zero** gold: recall@6 = 0, MRR = 0) but
 still miss the third gold that `advanced` recovered after rewrite + rerank.
 
-### `advanced_llm_llm` on this case (found all 3 again)
+### `advanced_llmchunk_llmfilter` on this case (found all 3 again)
 
 Full `advanced` stages on the 806 LLM chunks, filtered to LLM topics. Top 6:
 
@@ -220,10 +259,36 @@ recall@6 = 3/3 = 1.000
 MRR      = 1/1 = 1.000
 ```
 
-Unlike `advanced+llm` (classifier only, 1/3), putting the LLM **chunks** under `advanced`
+Unlike `advanced_exist_llmfilter` (classifier only, 1/3), putting the LLM **chunks** under `advanced`
 brought `widget-behavior.md` and `issue:4651` back. Across all 15 cases this still does
 not beat `advanced` on mean recall@6 (0.62 vs 0.63), but the first gold appears earlier
 on average (MRR 0.88 vs 0.79).
+
+### The rest of the 3×3 on this case
+
+Gold is still `{session_state.md, widget-behavior.md, issue:4651}`.
+
+| method | found in top 6 | recall@6 on this case |
+|---|---|---:|
+| `advanced` | all 3 | 1.000 |
+| `advanced_exist_kmeans` | all 3 (`session_state`, `widget-behavior`, `issue:4651`) | 1.000 |
+| `advanced_exist_llmfilter` | `session_state` only | 0.333 |
+| `advanced_rule` | all 3 | 1.000 |
+| `advanced_rule_kmeans` | `session_state` + `widget-behavior` (misses `issue:4651`) | 0.667 |
+| `advanced_rule_llmfilter` | `issue:4651` + `session_state` (misses `widget-behavior`) | 0.667 |
+| `advanced_llmchunk` | all 3 | 1.000 |
+| `advanced_llmchunk_kmeans` | all 3 | 1.000 |
+| `advanced_llmchunk_llmfilter` | all 3 | 1.000 |
+
+So on this one case:
+
+- **Classifier only** is the dangerous change: LLM topics drop 3/3 → 1/3; k-means does not.
+- **Rule chunks only** still recover all 3 (rewrite + rerank survive a new splitter).
+- **Rule + a filter** each drop a different gold (k-means drops the issue; LLM topics drop
+  `widget-behavior.md`). That is why `advanced_rule_kmeans` can win the *mean* and still
+  miss on this case.
+- **LLM chunks**, with or without a filter, recover all 3 here. The mean loss of
+  `advanced_llmchunk_kmeans` is on other cases.
 
 ### `rule_kmeans` / `llm_kmeans` on this case
 
@@ -252,7 +317,7 @@ other                  110
 … (the rest)
 ```
 
-(These counts are from the live `advanced+llm` labelling.)
+(These counts are from the live `advanced_exist_llmfilter` labelling.)
 
 The query is routed to the top 2 topics, say `{session_state, widgets_keys}`:
 
@@ -359,10 +424,19 @@ source recall was only a bit higher.
 
 1. The 2×2 compares **chunking and routing only**.
 2. `advanced` / `advanced_hier` add **rewrite + doc slots + fusion + rerank**.
-3. The combo asks: “does LLM topic filtering help that full pipeline?” On this gold,
-   **no** for source recall (0.63 → 0.60), because a wrong class is a hard miss
-   (`DEV-5604` dropped from 3/3 to 1/3).
-4. `advanced_llm_llm` asks the same with LLM chunks as well. Mean recall@6 is 0.62
-   (still under 0.63). MRR rises to 0.88. On `DEV-5604` completeness comes back to 3/3.
-5. Hit@6 = 1.00 on `advanced` means “never empty”; recall@6 = 0.63 means “still missing
+3. The 3×3 asks the same questions **inside** that full pipeline, one factor at a time.
+4. Filter only on the existing index: **no** for source recall (`advanced_exist_kmeans`
+   0.63 → 0.62, `advanced_exist_llmfilter` 0.63 → 0.60). A wrong class is a hard miss
+   (`DEV-5604` on `advanced_exist_llmfilter`: 3/3 → 1/3).
+5. Chunker only: `advanced_rule` 0.61, `advanced_llmchunk` 0.59. Neither beats unfiltered
+   `advanced` (0.63).
+6. Together: only `advanced_rule_kmeans` is above the baseline (0.66). `advanced_llmchunk_llmfilter`
+   is the best first-hit (MRR 0.88) but not more complete. `advanced_llmchunk_kmeans` is the
+   worst (−0.09).
+7. Passage recall cannot compare remapped indexes to the existing one — gold spans sit
+   on the original windows.
+8. Hit@6 = 1.00 on `advanced` means “never empty”; recall@6 = 0.63 means “still missing
    about one gold source per case.”
+9. Swapping the filter to `gpt-5-mini` on the same `gpt-4o-mini` chunks
+   (`advanced_llmchunk_llmfilter_gpt5mini`) moved recall@6 0.62 → 0.59. A stronger
+   classifier did not beat `gpt-4o-mini` on this gold.

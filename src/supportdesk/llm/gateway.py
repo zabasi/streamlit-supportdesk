@@ -51,10 +51,14 @@ class OpenAITransport:
 
     def chat(self, *, model, messages, max_output_tokens, temperature, json_mode):
         options = {"response_format": {"type": "json_object"}} if json_mode else {}
+        # GPT-5 chat models reject max_tokens and only allow the default temperature.
+        newer = str(model).startswith("gpt-5")
+        extras = {("max_completion_tokens" if newer else "max_tokens"): max_output_tokens}
+        if not newer:
+            extras["temperature"] = temperature
         try:
             resp = self._client.chat.completions.create(
-                model=model, messages=messages, max_tokens=max_output_tokens,
-                temperature=temperature, **options)
+                model=model, messages=messages, **extras, **options)
         except Exception as exc:  # noqa: BLE001 - SDK exception types vary across gateways
             raise self._map(exc) from None
         usage = getattr(resp, "usage", None)
