@@ -18,14 +18,32 @@ from pathlib import Path
 
 from ..config import Settings
 from ..llm.factory import Clients
-from ..retrieval.retriever import Retriever
+from ..retrieval.retriever import Retriever, fuse_hits
 from .staged import StagedPipeline
 from .stages import default_stages
 from .stages.clean_query import CleanQuery
 from .stages.evidence import CorrectiveReranker
 from .stages.rewrite_query import make_query_rewriter
+from .state import case_from_dict, hit_to_dict
 
 CONCEPTS_RERANK, PLAIN_RERANK = "rerank_docs_concepts_system.txt", "rerank_docs_system.txt"
+
+class WeightedFusionPipeline(StagedPipeline):
+    """advanced's pipeline. With retrieval.concept_weight below 1, the concept queries' rankings count less
+    than the cleaned report's when they are fused, so the report's matches keep the lead and a page found
+    only by a concept query can still reach the candidates. At 1 (the default) it is StagedPipeline as is.
+    (Kept here, not in StagedPipeline, so the code that defines the baseline is unchanged.)"""
+
+    def _retrieve_node(self, state) -> dict:
+        r, queries = self.settings.retrieval, state["queries"]
+        if r.concept_weight == 1.0 or not r.keep_report_query or len(queries) < 2:
+            return super()._retrieve_node(state)
+        case = case_from_dict(state["case"])
+        as_of = case.created_at if r.historical_filter else None
+        pool = self.settings.pool_size
+        rankings = [self.retriever.search(q, k=pool, as_of=as_of) for q in queries]
+        weights = [1.0] + [r.concept_weight] * (len(rankings) - 1)  # the report first, then the concepts
+        return {"candidates": [hit_to_dict(h) for h in fuse_hits(rankings, pool, rrf_k=r.rrf_k, weights=weights)]}
 
 def build_advanced(retriever: Retriever, clients: Clients, settings: Settings) -> StagedPipeline:
     """Improved: report + concept queries; reranked on focused snippets with the concepts; best 6 merged.
@@ -46,4 +64,5 @@ def build_advanced(retriever: Retriever, clients: Clients, settings: Settings) -
     stages["reranker"] = CorrectiveReranker(clients, settings, list(index.chunks) if index is not None else [],
                                             retriever)
     extra_nodes: list = []
-    return StagedPipeline(name="advanced", clients=clients, settings=settings, extra_nodes=extra_nodes, **stages)
+    return WeightedFusionPipeline(name="advanced", clients=clients, settings=settings, extra_nodes=extra_nodes,
+                                  **stages)

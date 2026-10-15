@@ -211,6 +211,9 @@ class Retrieval:
                               "query with the section summaries, the chunk search looks inside", 3)
     hier_places: int = _opt("hierarchical retrievers: how many of the returned chunks come from inside those "
                             "sections; the rest come from the ordinary search", 3)
+    concept_weight: float = _opt("with concept queries after the cleaned report (keep_report_query), how much each "
+                                 "concept query's ranking counts in the fusion against the report's (1 = equal, plain "
+                                 "RRF; below 1, the report's matches keep the lead)", 1.0)
     decompose: bool = _opt("advanced: write concept queries (the decompose step) besides the cleaned report; false "
                            "searches with the cleaned report alone and reranks without the mechanisms list", True)
     complete: str = _opt("after reranking, repair each kept documentation chunk's edges: none | neighbors (add "
@@ -517,6 +520,7 @@ class Settings:
             (r.complete in ("none", "neighbors", "section", "trim", "section_trim"),
              f"retrieval.complete must be none, neighbors, section, trim or section_trim, got {r.complete!r}"),
             (r.complete_max_tokens >= 1, "retrieval.complete_max_tokens must be >= 1"),
+            (0.0 <= r.concept_weight <= 1.0, "retrieval.concept_weight must be between 0 and 1"),
             (r.cluster_top >= 1, "retrieval.cluster_top must be >= 1"),
             (r.cluster_route in ("keywords", "embedding", "centroid"),
              f"retrieval.cluster_route must be keywords, embedding or centroid, got {r.cluster_route!r}"),
