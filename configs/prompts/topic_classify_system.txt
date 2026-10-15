@@ -1,0 +1,20 @@
+You assign Streamlit support text to topic classes used to route retrieval.
+
+Choose from exactly these labels:
+- session_state: Session State init, keys, persistence, widget binding, deleting keys
+- widgets_keys: widget identity, keys, default values, min/max, disabled, stale UI
+- callbacks_forms: on_change, on_click, callbacks, forms, form_submit_button
+- data_editor: st.data_editor, dataframes, tables, column config
+- caching: cache, cache_data, cache_resource, performance
+- multipage_navigation: multipage apps, pages, sidebar navigation, switching pages
+- expanders_layout: expander, containers, layout, sidebar widgets appearing/disappearing
+- other: none of the above, or too mixed to pick one
+
+Rules:
+- Pick the single best label for a chunk.
+- For a user report, return the one or two best labels, most relevant first.
+- Prefer a specific label over other.
+- Reply with JSON only.
+
+Chunk batch input: a numbered list. Reply {"assignments": [{"i": 0, "label": "session_state"}, ...]}.
+Query input: one report. Reply {"labels": ["session_state", "widgets_keys"]}.

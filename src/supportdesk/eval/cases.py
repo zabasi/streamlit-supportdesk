@@ -53,7 +53,10 @@ def case_from_dict(row: dict) -> EvalCase:
         missing_info=list(row.get("missing_info", [])),
         source_issue_number=row.get("source_issue_number"),
         duplicate_issue_numbers=list(row.get("duplicate_issue_numbers", [])),
-        notes=row.get("notes", ""))
+        notes=row.get("notes", ""),
+        kind=row.get("kind", "issue"),
+        independent=row.get("independent", True),
+        evidence_spans=list(row.get("evidence_spans") or []))
 
 
 def load_cases(*paths: str | Path, split: str | None = None) -> list[EvalCase]:

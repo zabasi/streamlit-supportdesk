@@ -8,6 +8,7 @@ dependencies = [
     "tomli>=2.0; python_version < '3.11'",  # TOML config on Python 3.10 (3.11+ has tomllib)
     "langgraph>=1.0,<2",                    # both graphs: indexing and support
     "langchain-core>=1.0,<2",
+    "langchain-text-splitters>=0.3,<1",  # hierarchical-class RAG experiment (scripts/hier_class_rag.py)
     "qdrant-client>=1.12,<2",               # vector store; a shared index needs a compatible client
     "langgraph-checkpoint-sqlite>=2,<4",    # saved case state, so a pending review survives a restart
     "python-dotenv>=1.0",                   # reads ./.env
