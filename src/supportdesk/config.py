@@ -211,6 +211,11 @@ class Retrieval:
                               "query with the section summaries, the chunk search looks inside", 3)
     hier_places: int = _opt("hierarchical retrievers: how many of the returned chunks come from inside those "
                             "sections; the rest come from the ordinary search", 3)
+    complete: str = _opt("after reranking, repair each kept documentation chunk's edges: none | neighbors (add "
+                         "the chunk before and after it) | section (grow to the whole top-level sections it "
+                         "touches) | trim (drop a short leading fragment, so it starts at a heading) | "
+                         "section_trim (trim the start, complete the last section)", "none")
+    complete_max_tokens: int = _opt("retrieval.complete: the most tokens a repaired chunk may grow to", 900)
     cluster_size: int = _opt("cluster routing: about how many chunks scripts/build_clusters.py puts in each "
                              "topic cluster (k-means on the chunk embeddings)", 100)
     cluster_method: str = _opt("cluster routing: how scripts/build_clusters.py groups the chunks: kmeans (the "
@@ -507,6 +512,9 @@ class Settings:
             (1 <= r.hier_sections <= 10, "retrieval.hier_sections must be between 1 and 10"),
             (r.hier_places >= 0, "retrieval.hier_places must be >= 0 (a search never takes more than it returns)"),
             (r.cluster_size >= 1, "retrieval.cluster_size must be >= 1"),
+            (r.complete in ("none", "neighbors", "section", "trim", "section_trim"),
+             f"retrieval.complete must be none, neighbors, section, trim or section_trim, got {r.complete!r}"),
+            (r.complete_max_tokens >= 1, "retrieval.complete_max_tokens must be >= 1"),
             (r.cluster_top >= 1, "retrieval.cluster_top must be >= 1"),
             (r.cluster_route in ("keywords", "embedding", "centroid"),
              f"retrieval.cluster_route must be keywords, embedding or centroid, got {r.cluster_route!r}"),

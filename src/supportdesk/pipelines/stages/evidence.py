@@ -2,6 +2,9 @@
 
 MergedReranker: the reranker keeps chunks as before; kept chunks of one page that overlap or touch are
 then merged into one continuous span, so shared text appears once. Nothing is cut, so no gold is lost.
+With retrieval.complete, each kept documentation chunk is first repaired at its edges (complete_hits):
+fixed windows start and stop anywhere, so a kept chunk may hold only part of a section. The reranker's
+choice is not changed; only the text of the chosen pieces.
 GradedReranker: the reranker also grades each candidate (relevant, partly, not); chunks graded "not"
 are dropped, so the model gets as many chunks as are relevant, up to top_k (at least
 retrieval.min_chunks). The documentation minimum applies only to chunks not graded "not".
@@ -13,11 +16,12 @@ from dataclasses import replace
 from pathlib import Path
 
 from ...retrieval.retriever import Hit
+from ...tokenizer import count_tokens
 from ...types import CaseInput, Chunk
 from ..parsing import NotJson, extract_json
 from .clean_query import CleanQuery
 from .llm_rerank import LLMReranker, keep_doc_places, model_grades, model_ranking
-from .sections import Sections, page_texts
+from .sections import Sections, page_texts, section_spans
 
 
 def merge_overlaps(hits: list[Hit], pages: dict[str, str]) -> list[Hit]:
@@ -47,15 +51,85 @@ def merge_overlaps(hits: list[Hit], pages: dict[str, str]) -> list[Hit]:
     return [replace(h, rank=n) for n, h in enumerate(merged, start=1)]
 
 
+def _section_at(spans: list[tuple[int, int]], pos: int) -> tuple[int, int] | None:
+    return next(((a, b) for a, b in spans if a <= pos < b), None)
+
+
+def completed_span(chunk: Chunk, page: str, spans: list[tuple[int, int]], neighbours: list[Chunk], *,
+                   mode: str, cap: int) -> tuple[int, int]:
+    """The repaired (start, end) of one kept documentation chunk, at most ``cap`` tokens when it grows:
+    neighbors (add the chunk before and after it), section (grow to the whole top-level sections it
+    touches), trim (drop a short leading fragment of the previous section, so it starts at a heading) or
+    section_trim (trim the start, complete the last section). When the full repair is too long, the
+    forward-only, then backward-only, repair is tried; otherwise the chunk is kept as it is."""
+    a0, b0 = chunk.start_char, chunk.end_char
+    fits = lambda a, b: count_tokens(page[a:b]) <= max(cap, count_tokens(page[a0:b0]))
+    def best(*options):
+        return next(((a, b) for a, b in options if fits(a, b)), (a0, b0))
+    if mode == "neighbors":
+        order = sorted(neighbours, key=lambda c: c.start_char)
+        i = next((n for n, c in enumerate(order) if c.chunk_id == chunk.chunk_id), None)
+        if i is None:
+            return a0, b0
+        before = order[i - 1].start_char if i > 0 else a0
+        after = order[i + 1].end_char if i + 1 < len(order) else b0
+        return best((before, after), (a0, after), (before, b0))
+    first, last = _section_at(spans, a0), _section_at(spans, max(a0, b0 - 1))
+    start = a0
+    if mode in ("trim", "section_trim"):  # "fragment / heading / text" -> "heading / text"
+        heads = [a for a, _ in spans if a0 < a < b0]
+        if heads and page[a0:heads[0]].strip() and \
+                count_tokens(page[a0:heads[0]]) < count_tokens(page[a0:b0]) / 2:  # never the chunk's main part
+            start = heads[0]
+        if mode == "trim":
+            return start, b0
+    if mode == "section" and first and last:
+        return best((first[0], last[1]), (a0, last[1]), (first[0], b0))
+    if mode == "section_trim" and last:
+        return best((start, last[1]), (start, b0))
+    return start, b0
+
+
+def complete_hits(hits: list[Hit], pages: dict[str, str], by_page: dict[str, list[Chunk]], *, mode: str,
+                  cap: int, spans: dict[str, list[tuple[int, int]]] | None = None) -> list[Hit]:
+    """Each kept documentation chunk repaired at its edges (retrieval.complete); others unchanged."""
+    if mode == "none":
+        return hits
+    spans = {} if spans is None else spans
+    out = []
+    for h in hits:
+        c = h.chunk
+        page = pages.get(c.source_id)
+        if c.source_type != "documentation" or page is None or c.start_char is None:
+            out.append(h)
+            continue
+        if c.source_id not in spans:
+            spans[c.source_id] = section_spans(page)
+        a, b = completed_span(c, page, spans[c.source_id], by_page.get(c.source_id, []), mode=mode, cap=cap)
+        if (a, b) == (c.start_char, c.end_char):
+            out.append(h)
+        else:
+            out.append(replace(h, chunk=replace(c, chunk_id=f"{c.source_id}#{a}-{b}", text=page[a:b],
+                                                start_char=a, end_char=b)))
+    return out
+
+
 class MergedReranker:
     """The reranker as before, then overlapping or touching kept chunks of one page are merged."""
 
     def __init__(self, clients, settings, chunks: list[Chunk]):
         self.ranker, self.pages = LLMReranker(clients, settings), page_texts(chunks)
         self.top_k = settings.retrieval.top_k
+        self.complete, self.cap = settings.retrieval.complete, settings.retrieval.complete_max_tokens
+        self.by_page: dict[str, list[Chunk]] = {}
+        for c in chunks:
+            if c.source_type == "documentation" and c.start_char is not None:
+                self.by_page.setdefault(c.source_id, []).append(c)
+        self.spans: dict[str, list[tuple[int, int]]] = {}
 
     def __call__(self, case: CaseInput, query: str, hits: list[Hit]) -> list[Hit]:
         kept = self.ranker(case, query, hits)[: self.top_k]
+        kept = complete_hits(kept, self.pages, self.by_page, mode=self.complete, cap=self.cap, spans=self.spans)
         return merge_overlaps(kept, self.pages)
 
 
