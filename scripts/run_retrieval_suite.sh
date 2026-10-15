@@ -8,7 +8,7 @@
 # copy of the cases) are passed to every run. The ladder goes from the baseline to advanced one step at a
 # time; the options are each added on top of advanced. All runs are retrieval-only and keep the scope gate
 # off, so they compare retrieval alone. Model calls already made replay from the cache.
-set -uo pipefail
+set -o pipefail   # not -u: macOS bash 3.2 treats an empty array as unbound
 MODE="${SUITE_MODE:-live}"   # SUITE_MODE=offline checks the script without model calls
 PREFIX="${1:?usage: run_retrieval_suite.sh PREFIX [extra --set options]}"
 shift
