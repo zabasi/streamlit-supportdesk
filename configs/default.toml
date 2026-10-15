@@ -81,6 +81,7 @@ rerank_show_concepts = false     # the LLM reranker also sees the concept querie
 summary_sections = 0             # SummaryReranker: add the chunks of this many best-matching sections
 hier_sections = 3                # hierarchical retrievers: sections (by summary) the chunk search looks inside
 hier_places = 3                  # hierarchical retrievers: returned chunks taken from inside those sections
+decompose = true                 # advanced: concept queries besides the cleaned report (false: the report alone)
 complete = "none"                # after reranking: none | neighbors | section | trim | section_trim
 complete_max_tokens = 900        # retrieval.complete: the most tokens a repaired chunk may grow to
 cluster_size = 100               # cluster routing: about this many chunks per topic cluster (build_clusters.py)

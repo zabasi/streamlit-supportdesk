@@ -211,6 +211,8 @@ class Retrieval:
                               "query with the section summaries, the chunk search looks inside", 3)
     hier_places: int = _opt("hierarchical retrievers: how many of the returned chunks come from inside those "
                             "sections; the rest come from the ordinary search", 3)
+    decompose: bool = _opt("advanced: write concept queries (the decompose step) besides the cleaned report; false "
+                           "searches with the cleaned report alone and reranks without the mechanisms list", True)
     complete: str = _opt("after reranking, repair each kept documentation chunk's edges: none | neighbors (add "
                          "the chunk before and after it) | section (grow to the whole top-level sections it "
                          "touches) | trim (drop a short leading fragment, so it starts at a heading) | "
