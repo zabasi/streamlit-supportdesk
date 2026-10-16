@@ -106,6 +106,12 @@ from .retrieval.section_questions import build_question_retriever
 
 #: Pipelines by name: each builds the pipeline from (retriever, clients, settings); its docstring is its one-line description.
 PIPELINES = {"baseline": build_baseline, "advanced": build_advanced_scoped,
+             # the four candidate retrieval designs (configs/pipelines/candidate-*.toml): advanced's stages
+             # with their own settings
+             "candidate-1-dense-rerank-section": build_advanced_scoped,
+             "candidate-2-doc2query15-rerank-section": build_advanced_scoped,
+             "candidate-3-dense-dualrerank-section": build_advanced_scoped,
+             "candidate-4-dense-rerank-section-6chunks": build_advanced_scoped,
              "scope_gate": build_scope_gate, "scope_gate_rules": build_scope_gate_rules,
              "retrieve_loop": build_retrieve_loop,
              "retrieve_loop_best": build_retrieve_loop_best,

@@ -1,0 +1,45 @@
+# candidate-4-dense-rerank-section-6chunks: candidate 1 at the baseline's budget.
+# The same retrieval, keeping 6 pieces with at least 3 documentation within 3,200 tokens: the same room
+# in the prompt as the baseline, so a comparison with it needs no adjustment.
+# Development cases: 61.8% of gold passages, gold for all 15 cases, gold documents 65.6%, the strongest
+# gold passage first in 11. In the answer evaluation: outcome accuracy 53.3%, answers citing gold 72.7%.
+
+[chunking]
+method = "fixed"
+max_tokens = 512
+overlap_tokens = 128
+
+[retrieval]
+top_k = 6                    # pieces the model sees (the baseline's)
+candidate_k = 15             # candidates the reranker orders
+rerank_snippet_chars = 400   # characters of each candidate the reranker sees
+rerank_snippet = "focused"   # the reranker sees each candidate's best-matching window
+rerank_show_concepts = true  # with decompose: the concept queries ("Mechanisms involved")
+keep_report_query = true     # with decompose: search with the cleaned report too
+max_queries = 3              # with decompose: up to 3 model-written queries
+doc_slots = 10               # documentation among the 15 candidates
+decompose = false            # the cleaned report is the only query (no concept queries)
+complete = "section"         # grow each kept documentation chunk to the whole sections it touches
+rerank_keep_docs = 3         # documentation kept in the final 6 after reranking
+historical_filter = true
+
+[context]
+max_tokens = 3200            # the baseline's evidence budget
+max_query_chars = 4000
+max_body_chars = 4000
+
+[pipeline]
+retriever = "dense_doc_slots"
+scope_gate = "llm"           # the scope check before retrieval is part of advanced's design
+
+[prompts]
+rewrite = "configs/prompts/rewrite_concepts_system.txt"
+# Its own answer prompt (copy and edit configs/prompts/answer_system.txt):
+# system = "configs/prompts/advanced_system.txt"
+rerank = "configs/prompts/rerank_docs_concepts_system.txt"
+
+# If advanced uses different chunking, give it its own index so the two never collide
+# (an index built with other chunking is refused). Then build it with:
+#   supportdesk index --pipeline advanced
+# [paths]
+# index_dir = "index/advanced"
