@@ -13,6 +13,7 @@ mode = "offline"                 # offline | replay | live
 [models]
 chat = "gpt-4o-mini"             # must exist on the gateway AND be priced in configs/pricing.json
 embedding = "text-embedding-3-small"   # changing it requires re-indexing
+second_embedding = "text-embedding-3-large"   # dual_doc_slots: the second model (its own index)
 # base_url = "https://..."       # gateway URL (unset: the SDK reads $OPENAI_BASE_URL)
 api_key_env = "OPENAI_API_KEY"   # NAME of the env var holding the key; the key itself never goes in a file
 
@@ -41,6 +42,7 @@ ledger_path = "artifacts/cost_ledger.jsonl"
 pricing_path = "configs/pricing.json"
 summaries = "data/summaries/sections.jsonl"
 clusters = "data/clusters/clusters.jsonl"
+second_index_dir = "index/large"
 
 [budget]
 ceiling_usd = 5.0                # live spending on this machine stops here (all runs together)
@@ -81,6 +83,7 @@ rerank_show_concepts = false     # the LLM reranker also sees the concept querie
 summary_sections = 0             # SummaryReranker: add the chunks of this many best-matching sections
 hier_sections = 3                # hierarchical retrievers: sections (by summary) the chunk search looks inside
 hier_places = 3                  # hierarchical retrievers: returned chunks taken from inside those sections
+second_weight = 0.5              # dual_doc_slots: the second embedding model's weight in the fusion
 report_views = "none"            # advanced: extra searches: none | title | code | title,code
 view_weight = 0.5                # report_views: each view's weight in the fusion against the report
 rerank_show_sections = false     # the reranker also sees the section headings inside each candidate

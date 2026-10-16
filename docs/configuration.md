@@ -116,6 +116,7 @@ Defaults shown are the built-in ones. `*unset*` means the key is optional and no
 |---|---|---|
 | `chat` | `gpt-4o-mini` | the chat model's name at the provider; it must have a price in pricing.json |
 | `embedding` | `text-embedding-3-small` | the embedding model's name; changing it means building the index again |
+| `second_embedding` | `text-embedding-3-large` | the second embedding model of the dual_doc_slots retriever (its own index: paths.second_index_dir) |
 | `base_url` | *unset* | the provider's URL; if unset, it is read from the OPENAI_BASE_URL environment variable |
 | `api_key_env` | `OPENAI_API_KEY` | the name of the environment variable that holds the API key (never the key itself) |
 
@@ -149,6 +150,7 @@ Defaults shown are the built-in ones. `*unset*` means the key is optional and no
 | `ledger_path` | `artifacts/cost_ledger.jsonl` | record of every live call's cost; it counts toward the budget across runs |
 | `pricing_path` | `configs/pricing.json` | per-model prices used by the budget guard |
 | `summaries` | `data/summaries/sections.jsonl` | section summaries written by scripts/summarize_sections.py (SummaryReranker) |
+| `second_index_dir` | `index/large` | the dual_doc_slots retriever's second index, built with models.second_embedding |
 | `clusters` | `data/clusters/clusters.jsonl` | topic clusters written by scripts/build_clusters.py (cluster_doc_slots retriever) |
 
 ### `[budget]`
@@ -202,6 +204,7 @@ Defaults shown are the built-in ones. `*unset*` means the key is optional and no
 | `summary_sections` | `0` | SummaryReranker: before reranking, add the chunks of this many documentation sections whose summaries best match the queries (0 = off) |
 | `hier_sections` | `3` | hierarchical retrievers: how many documentation sections, chosen by comparing the query with the section summaries, the chunk search looks inside |
 | `hier_places` | `3` | hierarchical retrievers: how many of the returned chunks come from inside those sections; the rest come from the ordinary search |
+| `second_weight` | `0.5` | dual_doc_slots: how much the second embedding model's ranking counts against the main model's in the fusion |
 | `report_views` | `none` | advanced: extra searches besides the queries, comma-separated: title (the report's title alone), code (its st.* commands, their parameter names and its error lines), or none; fused with the report's ranking at view_weight |
 | `view_weight` | `0.5` | report_views: how much each view's ranking counts against the report's |
 | `rerank_show_sections` | `False` | the reranker also sees the headings of the sections each candidate contains, which its window may not show |

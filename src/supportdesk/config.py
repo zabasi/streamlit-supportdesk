@@ -82,6 +82,8 @@ class Run:
 class Models:
     chat: str = _opt("the chat model's name at the provider; it must have a price in pricing.json", "gpt-4o-mini")
     embedding: str = _opt("the embedding model's name; changing it means building the index again", "text-embedding-3-small")
+    second_embedding: str = _opt("the second embedding model of the dual_doc_slots retriever (its own index: "
+                                 "paths.second_index_dir)", "text-embedding-3-large")
     base_url: str | None = _opt("the provider's URL; if unset, it is read from the OPENAI_BASE_URL environment variable")
     api_key_env: str = _opt("the name of the environment variable that holds the API key (never the key itself)", "OPENAI_API_KEY")
 
@@ -125,6 +127,8 @@ class Paths:
     pricing_path: Path = _opt("per-model prices used by the budget guard", Path("configs/pricing.json"))
     summaries: Path = _opt("section summaries written by scripts/summarize_sections.py (SummaryReranker)",
                            Path("data/summaries/sections.jsonl"))
+    second_index_dir: Path = _opt("the dual_doc_slots retriever's second index, built with models.second_embedding",
+                                  Path("index/large"))
     clusters: Path = _opt("topic clusters written by scripts/build_clusters.py (cluster_doc_slots retriever)",
                           Path("data/clusters/clusters.jsonl"))
 
@@ -211,6 +215,8 @@ class Retrieval:
                               "query with the section summaries, the chunk search looks inside", 3)
     hier_places: int = _opt("hierarchical retrievers: how many of the returned chunks come from inside those "
                             "sections; the rest come from the ordinary search", 3)
+    second_weight: float = _opt("dual_doc_slots: how much the second embedding model's ranking counts against "
+                                "the main model's in the fusion", 0.5)
     report_views: str = _opt("advanced: extra searches besides the queries, comma-separated: title (the report's "
                              "title alone), code (its st.* commands, their parameter names and its error lines), or "
                              "none; fused with the report's ranking at view_weight", "none")
@@ -536,6 +542,7 @@ class Settings:
             (all(v.strip() in ("none", "title", "code") for v in r.report_views.split(",")),
              f"retrieval.report_views must be none, or title and/or code (comma-separated), got {r.report_views!r}"),
             (0.0 <= r.view_weight <= 1.0, "retrieval.view_weight must be between 0 and 1"),
+            (0.0 <= r.second_weight <= 1.0, "retrieval.second_weight must be between 0 and 1"),
             (r.pool_mode in ("fuse", "quota"), f"retrieval.pool_mode must be fuse or quota, got {r.pool_mode!r}"),
             (min(r.quota_report_dense, r.quota_report_bm25, r.quota_concepts_dense) >= 0,
              "retrieval.quota_* must be >= 0"),
