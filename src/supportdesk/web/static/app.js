@@ -382,7 +382,7 @@ async function importRun() {
     $("importmsg").textContent = `${r.imported} case(s) imported` +
       (r.already_imported ? `, ${r.already_imported} already imported` : "") +
       (r.without_case_input ? `, ${r.without_case_input} without case input` : "") + ".";
-    await loadSaved();
+    await loadSaved();  // the list grows; what is open, or not, stays as it was
   } catch (error) { showError(error.message); }
   finally { $("importrun").disabled = !$("runs").value; }
 }

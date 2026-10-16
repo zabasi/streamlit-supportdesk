@@ -92,3 +92,25 @@ def test_the_routes_over_http(app):
     finally:
         httpd.shutdown()
         httpd.server_close()
+
+
+def test_a_test_split_run_imports_from_the_case_files_it_used(app, tmp_path):
+    import shutil
+    from pathlib import Path
+
+    root = Path(__file__).resolve().parents[1] / "data" / "eval"
+    test_files = tmp_path / "test-eval"
+    test_files.mkdir()
+    shutil.copy(root / "development_inputs.jsonl", test_files / "test_inputs.jsonl")
+    shutil.copy(root / "development_rubrics.jsonl", test_files / "test_rubrics.jsonl")
+    from supportdesk.eval.cases import load_cases
+
+    assert {c.split for c in load_cases(str(test_files))} == {"test"}
+    ids = write_run(app, "test-final", ["answer", "escalate"])
+    summary_path = app.settings.paths.artifacts_dir / "runs" / "test-final" / "summary.json"
+    summary = json.loads(summary_path.read_text())
+    summary["case_files"] = [str(test_files)]  # the run read the test split, not the default files
+    summary_path.write_text(json.dumps(summary))
+    result = app.import_run({"run_id": "test-final"})
+    assert result["imported"] == 2 and result["without_case_input"] == 0
+    assert {app.store.get(c["id"])["case_id"] for c in app.store.listing()} == set(ids)

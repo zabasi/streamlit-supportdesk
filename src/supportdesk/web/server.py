@@ -269,16 +269,19 @@ class App:
                         "cases": (summary.get("metrics") or {}).get("n_cases")})
         return out
 
-    def _case_inputs(self) -> dict:
-        """Every evaluation case's input (title, body, environment, history) by case ID: inputs only."""
-        if getattr(self, "_all_inputs", None) is None:
+    def _case_inputs(self, paths=None) -> dict:
+        """Every case's input (title, body, environment, history) by case ID, from these case files (every
+        split they hold, test included): inputs only, never rubrics or gold."""
+        key = tuple(str(p) for p in (paths or self.settings.eval.case_files))
+        cache = self.__dict__.setdefault("_inputs_by_files", {})
+        if key not in cache:
             try:
                 from ..eval.cases import load_cases
 
-                self._all_inputs = {c.case_id: c.input for c in load_cases(*self.settings.eval.case_files)}
-            except Exception:  # noqa: BLE001 - no evaluation data on this computer
-                self._all_inputs = {}
-        return self._all_inputs
+                cache[key] = {c.case_id: c.input for c in load_cases(*key)}
+            except Exception:  # noqa: BLE001 - those files are not on this computer
+                cache[key] = {}
+        return cache[key]
 
     def import_run(self, payload: object) -> dict:
         """Each case of a finished run becomes a saved conversation with its turn as the run recorded it:
@@ -290,7 +293,7 @@ class App:
         path = self._run_dir(run_id)
         summary = json.loads((path / "summary.json").read_text(encoding="utf-8"))
         pipeline = self._run_pipeline(summary)
-        inputs = self._case_inputs()
+        inputs = self._case_inputs(summary.get("case_files"))  # the files this run read (a test run: the test split)
         imported = skipped = missing = 0
         for line in (path / "results.jsonl").read_text(encoding="utf-8").splitlines():
             if not line.strip():

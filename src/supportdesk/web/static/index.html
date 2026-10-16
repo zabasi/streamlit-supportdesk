@@ -16,14 +16,14 @@
     <section class="panel" aria-labelledby="h-saved">
       <h2 id="h-saved">Saved conversations</h2>
       <label for="saved">Resume a conversation <span class="hint">saved on this computer</span></label>
-      <select id="saved"><option value="">— choose a saved conversation —</option></select>
+      <select id="saved" autocomplete="off"><option value="">— choose a saved conversation —</option></select>
       <div class="actions">
         <button id="delete" class="secondary" type="button" disabled>Delete</button>
         <a id="report" class="button secondary" href="/api/report" download="supportdesk-conversations.html">Download all (HTML report)</a>
       </div>
 
       <label for="runs">Import an evaluation run <span class="hint">its cases become saved conversations; no model call</span></label>
-      <select id="runs"><option value="">— choose a finished run —</option></select>
+      <select id="runs" autocomplete="off"><option value="">— choose a finished run —</option></select>
       <div class="actions">
         <button id="importrun" class="secondary" type="button" disabled>Import run</button>
         <span id="importmsg" class="hint" aria-live="polite"></span>
@@ -31,7 +31,7 @@
 
       <h2 id="h-report" class="spaced">New conversation</h2>
       <label for="source">Start from</label>
-      <select id="source"></select>
+      <select id="source" autocomplete="off"></select>
 
       <label for="title">Title</label>
       <input id="title" type="text" autocomplete="off">
@@ -50,7 +50,7 @@
         </div>
         <div>
           <label for="pipeline">Pipeline</label>
-          <select id="pipeline"></select>
+          <select id="pipeline" autocomplete="off"></select>
         </div>
         <div>
           <span class="label">Retriever</span>
