@@ -1,17 +1,17 @@
 # Settings for the advanced pipeline (--pipeline advanced). Every key here overrides
 # configs/default.toml for this pipeline only; --config and --set still override it.
 #
-# The best retrieval found on the development cases (experiment
-# clean_doc_slots_rerank_docs_prompt_decompose_merged_focused_concepts): the cleaned report plus up to 3
-# model-written queries, one per Streamlit concept involved (QueryRewriter, prompt
-# configs/prompts/rewrite_concepts_system.txt); each query returns 15 candidates, 10 of them documentation
-# (retriever dense_doc_slots); the lists are merged by rank fusion; one model call ranks the 15, seeing each
-# candidate's best-matching window (rerank_snippet = focused) and the concept queries as "Mechanisms
-# involved" (rerank_show_concepts, prompt configs/prompts/rerank_docs_concepts_system.txt); the best 6 are
-# kept, with at least 3 documentation chunks, and kept chunks of one page that overlap or touch are merged.
-# The model sees at most 6 pieces within 3,200 tokens. Per case: two model calls for retrieval (the rewrite
-# and the reranking; the reranker reuses the rewrite's answer). retrieval.expand = page | section (with
-# --set) adds more chunks of the found pages before reranking.
+# The best retrieval found on the development cases with the reviewed evidence labels: the cleaned report
+# is the only query (retrieval.decompose = false); it returns 15 candidates, 10 of them documentation
+# (retriever dense_doc_slots); one model call ranks the 15, seeing each candidate's best-matching window
+# (rerank_snippet = focused); the best 6 are kept, with at least 3 documentation chunks; each kept
+# documentation chunk is grown to the whole top-level sections it touches (retrieval.complete = section, at
+# most 900 tokens), and kept pieces of one page that overlap or touch are merged. The model sees at most 6
+# pieces within 3,200 tokens. Per case: one model call for retrieval (the reranking), after the scope check.
+#
+# The concept-query keys below (max_queries, keep_report_query, rerank_show_concepts, prompts.rewrite and
+# prompts.rerank) are the previous design's: with decompose = false they are not used (the reranker uses
+# the plain prompt, rerank_docs_system.txt). --set retrieval.decompose=true restores that design exactly.
 
 [chunking]
 method = "fixed"
@@ -23,10 +23,12 @@ top_k = 6
 candidate_k = 15             # candidates the reranker orders
 rerank_snippet_chars = 400   # characters of each candidate the reranker sees
 rerank_snippet = "focused"   # the reranker sees each candidate's best-matching window
-rerank_show_concepts = true  # and the concept queries ("Mechanisms involved")
-keep_report_query = true     # search with the cleaned report too
-max_queries = 3              # up to 3 model-written queries
+rerank_show_concepts = true  # with decompose: the concept queries ("Mechanisms involved")
+keep_report_query = true     # with decompose: search with the cleaned report too
+max_queries = 3              # with decompose: up to 3 model-written queries
 doc_slots = 10               # documentation among the 15 candidates
+decompose = false            # the cleaned report is the only query (no concept queries)
+complete = "section"         # grow each kept documentation chunk to the whole sections it touches
 rerank_keep_docs = 3         # documentation kept in the final 6 after reranking
 historical_filter = true
 

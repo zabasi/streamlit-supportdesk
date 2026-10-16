@@ -34,6 +34,7 @@ def test_without_decompose_advanced_makes_no_rewrite_call_and_shows_no_mechanism
 
 def test_the_default_keeps_decompose(index, clients, settings):
     assert isinstance(advanced(index, clients, settings, decompose=True).query, QueryRewriter)
-    assert Settings.load(env={}, overrides=["pipeline.name=advanced"]).retrieval.decompose is True
+    assert Settings.load(env={}).retrieval.decompose is True  # the global default
+    assert Settings.load(env={}, overrides=["pipeline.name=advanced"]).retrieval.decompose is False  # advanced's
     assert Settings.load(env={}, overrides=["pipeline.name=advanced",
                                             "retrieval.decompose=false"]).retrieval.decompose is False
