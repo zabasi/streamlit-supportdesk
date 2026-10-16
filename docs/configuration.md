@@ -217,6 +217,7 @@ Defaults shown are the built-in ones. `*unset*` means the key is optional and no
 | `second_weight` | `0.5` | dual_doc_slots: how much the second embedding model's ranking counts against the main model's in the fusion |
 | `report_views` | `none` | advanced: extra searches besides the queries, comma-separated: title (the report's title alone), code (its st.* commands, their parameter names and its error lines), or none; fused with the report's ranking at view_weight |
 | `view_weight` | `0.5` | report_views: how much each view's ranking counts against the report's |
+| `rerank_mode` | `llm` | llm (one reranking call) \| score (no call: the candidates' similarity to the report, for a question-found one its question's) \| rrf (no call: each candidate's rank among the candidates of its own source) |
 | `rerank_merge` | `rrf` | prompts.rerank_second: merge the two rankings by rrf (a candidate's ranks in both) \| alternate (the best not yet taken of each in turn) \| split (the first ranking's best rerank_split, then the second's best not yet taken up to top_k) |
 | `rerank_split` | `4` | rerank_merge = split: pieces taken from the first ranking; the rest of top_k comes from the second |
 | `rerank_merge_k` | `10` | rerank_merge = rrf: the RRF constant |

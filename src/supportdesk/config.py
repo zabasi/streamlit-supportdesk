@@ -244,6 +244,9 @@ class Retrieval:
                              "title alone), code (its st.* commands, their parameter names and its error lines), or "
                              "none; fused with the report's ranking at view_weight", "none")
     view_weight: float = _opt("report_views: how much each view's ranking counts against the report's", 0.5)
+    rerank_mode: str = _opt("llm (one reranking call) | score (no call: the candidates' similarity to the report, "
+                            "for a question-found one its question's) | rrf (no call: each candidate's rank among "
+                            "the candidates of its own source)", "llm")
     rerank_merge: str = _opt("prompts.rerank_second: merge the two rankings by rrf (a candidate's ranks in both) | "
                              "alternate (the best not yet taken of each in turn) | split (the first ranking's best "
                              "rerank_split, then the second's best not yet taken up to top_k)", "rrf")
@@ -632,6 +635,7 @@ class Settings:
             (r.question_filter_top >= 0, "retrieval.question_filter_top must be >= 0"),
             (r.question_chunk in ("overlap", "question"),
              f"retrieval.question_chunk must be overlap or question, got {r.question_chunk!r}"),
+            (r.rerank_mode in ("llm", "score", "rrf"), f"retrieval.rerank_mode must be llm, score or rrf, got {r.rerank_mode!r}"),
             (r.rerank_merge in ("rrf", "alternate", "split"),
              f"retrieval.rerank_merge must be rrf, alternate or split, got {r.rerank_merge!r}"),
             (r.rerank_split >= 0, "retrieval.rerank_split must be >= 0 (it is capped at retrieval.top_k)"),

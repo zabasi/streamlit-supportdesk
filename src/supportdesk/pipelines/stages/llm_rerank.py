@@ -65,6 +65,19 @@ def model_ranking(text: str, count: int) -> list[int]:
     return order
 
 
+def search_order(hits: list[Hit], *, mode: str, k: int) -> list[int]:
+    """rerank_mode without a model call. score: by each candidate's similarity to the report (a base
+    chunk's own, or a question-found one's question's); rrf: by 1/(k + its rank among the candidates of its
+    own source), so the best of each source come first in turn."""
+    if mode == "score":
+        return sorted(range(len(hits)), key=lambda i: (-hits[i].score, i))
+    groups: dict[str, list[int]] = {}
+    for i in sorted(range(len(hits)), key=lambda i: hits[i].rank):
+        groups.setdefault(hits[i].source, []).append(i)
+    own = {i: n for members in groups.values() for n, i in enumerate(members, start=1)}
+    return sorted(range(len(hits)), key=lambda i: (-1 / (k + own[i]), hits[i].rank))
+
+
 def merge_orders(first: list[int], second: list[int], n: int, *, mode: str, k: int, top_k: int = 0,
                  split: int = 0) -> list[int]:
     """Merge two rankings of the same ``n`` candidates (positions, best first; either may be empty when its
@@ -205,6 +218,7 @@ class LLMReranker:
         self.prompt_second = Path(second).read_text(encoding="utf-8") if second else None
         self.merge, self.merge_k = settings.retrieval.rerank_merge, settings.retrieval.rerank_merge_k
         self.split = settings.retrieval.rerank_split
+        self.mode = settings.retrieval.rerank_mode
 
     def model_order(self, case: CaseInput, hits: list[Hit], *, prompt: str | None = None) -> list[int]:
         """One model call: positions in ``hits``, most useful first; [] if the output is unusable."""
@@ -254,8 +268,11 @@ class LLMReranker:
     def __call__(self, case: CaseInput, query: str, hits: list[Hit]) -> list[Hit]:
         if len(hits) < 2:
             return hits
-        order = self.model_order(case, hits)
-        if self.prompt_second is not None:  # a second ranking by another notion of relevance, merged
+        if self.mode != "llm":  # no reranking call: the search's own scores or ranks decide
+            order = search_order(hits, mode=self.mode, k=self.fuse_k)
+        else:
+            order = self.model_order(case, hits)
+        if self.mode == "llm" and self.prompt_second is not None:  # a second ranking by another notion of relevance, merged
             order = merge_orders(order, self.model_order(case, hits, prompt=self.prompt_second), len(hits),
                                  mode=self.merge, k=self.merge_k, top_k=self.top_k, split=self.split)
         ranked = ([hits[i] for i in order] + [h for i, h in enumerate(hits) if i not in set(order)]

@@ -63,9 +63,13 @@ class WeightedFusionPipeline(StagedPipeline):
         as_of = case.created_at if r.historical_filter else None
         report, concepts = queries[0], queries[1:]
         picked: dict[str, Hit] = {}
-        for hit in self.retriever.search(report, k=r.union_report, as_of=as_of)[: r.union_report]:
+        found = self.retriever.search(report, k=r.union_report, as_of=as_of)
+        extras = {"question", "bm25"}  # candidates a question_doc_slots retriever adds: kept, not cut
+        own = [h for h in found if h.source not in extras][: r.union_report] + [h for h in found if h.source in extras]
+        for hit in own:
             if len(picked) < r.union_max and hit.chunk.chunk_id not in picked:
-                picked[hit.chunk.chunk_id] = Hit(hit.chunk, hit.score, len(picked) + 1, "report")
+                source = hit.source if hit.source in extras else "report"
+                picked[hit.chunk.chunk_id] = Hit(hit.chunk, hit.score, len(picked) + 1, source)
         depth = r.union_per_concept + r.union_report  # deep enough to find that many new ones
         rankings = [self.retriever.search(q, k=depth, as_of=as_of) for q in concepts]
         positions, added = [0] * len(rankings), [0] * len(rankings)
