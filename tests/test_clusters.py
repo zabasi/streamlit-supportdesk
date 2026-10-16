@@ -194,3 +194,25 @@ def test_diagnose_reports_bias_and_routing_reach(index, clients, settings, tmp_p
     found = module.diagnose(s, index, clients, [case])
     assert found["cases"][0]["gold_clusters"] == [0] and found["reach"] == 1.0  # top 2 of 2: always reached
     assert found["clusters"][0]["main_type_share"] == 1.0 and found["clusters_without_documentation"] == 1
+
+
+def test_diagnose_routes_the_pipelines_own_queries(index, clients, settings, tmp_path):
+    """With decompose off, advanced searches with the cleaned report alone, so the diagnostic must route
+    that one query, not the concept queries of the earlier design."""
+    from types import SimpleNamespace
+
+    spec = importlib.util.spec_from_file_location("diagnose_clusters", ROOT / "scripts" / "diagnose_clusters.py")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    write_clusters(tmp_path / "c.jsonl", index)
+    doc = next(c for c in index.chunks if c.source_type == "documentation")
+    case = SimpleNamespace(case_id="g", input=CaseInput(case_id="g", title="widget", body="value lost"),
+                           evidence_spans=[{"source_id": doc.source_id, "start_char": doc.start_char,
+                                            "end_char": doc.end_char}])
+    for decompose, expected in ((False, 1), (True, None)):
+        s = dataclasses.replace(
+            settings, paths=dataclasses.replace(settings.paths, clusters=tmp_path / "c.jsonl"),
+            pipeline=dataclasses.replace(settings.pipeline, name="advanced", scope_gate="off"),
+            retrieval=dataclasses.replace(settings.retrieval, decompose=decompose))
+        queries = module.diagnose(s, index, clients, [case])["cases"][0]["queries"]
+        assert queries == expected if expected is not None else queries >= 1
