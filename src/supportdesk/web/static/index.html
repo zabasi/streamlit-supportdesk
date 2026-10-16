@@ -13,8 +13,19 @@
   </header>
 
   <main>
-    <section class="panel" aria-labelledby="h-report">
-      <h2 id="h-report">Report</h2>
+    <section class="panel" aria-labelledby="h-saved">
+      <h2 id="h-saved">Saved conversations</h2>
+      <label for="saved">Resume a conversation <span class="hint">saved on this computer</span></label>
+      <select id="saved"><option value="">— choose a saved conversation —</option></select>
+      <div class="actions">
+        <button id="delete" class="secondary" type="button" disabled>Delete</button>
+        <a id="report" class="button secondary" href="/api/report" download="supportdesk-conversations.html">Download all (HTML report)</a>
+      </div>
+
+      <h2 id="h-report" class="spaced">New conversation</h2>
+      <label for="source">Start from</label>
+      <select id="source"></select>
+
       <label for="title">Title</label>
       <input id="title" type="text" autocomplete="off">
 
@@ -23,6 +34,7 @@
 
       <label for="history">Earlier messages <span class="hint">optional, one per line</span></label>
       <textarea id="history" rows="3"></textarea>
+      <p id="envline" class="hint" hidden></p>
 
       <div class="row">
         <div>
@@ -40,17 +52,30 @@
       </div>
 
       <div class="actions">
-        <button id="go" type="button">Analyze <kbd>Ctrl</kbd>+<kbd>Enter</kbd></button>
-        <span class="hint">Examples:</span>
-        <button class="link" type="button" data-example="0">session state</button>
-        <button class="link" type="button" data-example="1">stuck loading</button>
+        <button id="go" type="button">Start conversation <kbd>Ctrl</kbd>+<kbd>Enter</kbd></button>
+        <span class="hint">Runs the first turn (may cost money in live mode).</span>
       </div>
       <div id="error" class="error" role="alert" hidden></div>
     </section>
 
     <section class="panel" aria-labelledby="h-result" aria-live="polite">
-      <h2 id="h-result">Result</h2>
-      <div id="empty" class="empty">Submit a report to see the answer, the evidence behind it, and what it cost.</div>
+      <h2 id="h-result">Conversation</h2>
+      <div id="empty" class="empty">Start a new conversation, or resume a saved one, to see the assistant's replies, the evidence behind them, and what they cost.</div>
+      <div id="convo" hidden>
+        <div id="convhead" class="convhead"></div>
+        <div id="thread" class="thread"></div>
+        <div id="replybox" hidden>
+          <label for="reply">Your reply to the assistant's question <span class="hint">say so if you don't know; never invent details</span></label>
+          <textarea id="reply" rows="4"></textarea>
+          <div class="actions"><button id="send" type="button">Send reply and run the next turn</button></div>
+        </div>
+        <div class="actions">
+          <button id="retry" type="button" hidden>Retry the failed turn (may cost money)</button>
+          <button id="dljson" class="secondary" type="button">Download conversation (JSON)</button>
+          <button id="dlsum" class="secondary" type="button">Download maintainer summary (Markdown)</button>
+        </div>
+        <h2 class="spaced">Latest turn</h2>
+      </div>
       <div id="result" hidden></div>
     </section>
   </main>

@@ -191,44 +191,218 @@ function renderResult(data) {
   root.hidden = false;
 }
 
-async function ask() {
-  const button = $("go");
-  showError("");
-  const history = $("history").value.split("\n").map((l) => l.trim()).filter(Boolean);
-  const payload = {
-    title: $("title").value, body: $("body").value, history,
-    created_at: $("created").value.trim() || null,
-    pipeline: $("pipeline").value,
-  };
-  if (!payload.title.trim()) { showError("Please enter a title."); return; }
-  button.disabled = true;
-  button.firstChild.nodeValue = "Analyzing… ";
+/* ---------- conversations ---------- */
+
+const STATUS = {
+  new: ["Ready for the first turn", ""], awaiting_reply: ["The assistant asked a question: your reply", "warn"],
+  answer: ["Answered", "ok"], escalate: ["Escalation proposed", "warn"],
+  limit_reached: ["Clarification limit reached", "bad"], error: ["The last turn failed: retry by hand", "bad"],
+};
+let conv = null;        // the conversation on screen
+let devHistory = null;  // a development case's earlier messages, with their roles
+let devEnv = {};        // and its reported environment
+let limits = { followups: 5, turns: 6 };
+let busy = false;
+
+const post = (path, body) => api(path, { method: "POST",
+  headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
+
+function setBusy(value, label) {
+  busy = value;
+  ["go", "send", "retry", "delete", "saved", "source"].forEach((id) => { $(id).disabled = value; });
+  if (!value) $("delete").disabled = !conv;
+  if (label) $("go").firstChild.nodeValue = label;
+}
+
+async function loadCases() {
+  const select = $("source");
+  const options = [h("option", { value: "typed" }, "New question (type it below)"),
+    h("optgroup", { label: "Examples" }, EXAMPLES.map((ex, i) => h("option", { value: "example:" + i }, ex.title)))];
   try {
-    const data = await api("/api/ask", { method: "POST",
-      headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
-    renderResult(data);
-    loadStatus();  // refresh the budget readout
-  } catch (error) {
-    showError(error.message);
-  } finally {
-    button.disabled = false;
-    button.firstChild.nodeValue = "Analyze ";
+    const data = await api("/api/cases");
+    if (data.cases.length) {
+      options.push(h("optgroup", { label: "Development cases" },
+        data.cases.map((c) => h("option", { value: "dev:" + c.id }, `${c.id} — ${c.title}`))));
+    }
+  } catch (_) { /* no development cases on this computer */ }
+  select.replaceChildren(...options);
+}
+
+async function loadSaved() {
+  const data = await api("/api/conversations");
+  limits = data.limits || limits;
+  const keep = conv ? conv.id : "";
+  $("saved").replaceChildren(h("option", { value: "" }, "— choose a saved conversation —"),
+    ...data.conversations.map((c) => h("option", { value: c.id },
+      `${c.title} · ${(STATUS[c.status] || [c.status])[0]} · ${c.pipeline} · ` +
+      `${new Date(c.updated_at).toLocaleString()}`)));
+  $("saved").value = keep;
+}
+
+async function chooseSource() {
+  const value = $("source").value;
+  devHistory = null; devEnv = {};
+  $("envline").hidden = true;
+  if (value === "typed") {
+    ["title", "body", "history", "created"].forEach((id) => { $(id).value = ""; });
+  } else if (value.startsWith("example:")) {
+    const ex = EXAMPLES[Number(value.slice(8))];
+    $("title").value = ex.title; $("body").value = ex.body;
+    $("history").value = ex.history; $("created").value = ex.created;
+  } else if (value.startsWith("dev:")) {
+    try {
+      const c = await api("/api/case?id=" + encodeURIComponent(value.slice(4)));
+      $("title").value = c.title; $("body").value = c.body; $("created").value = c.created_at || "";
+      devHistory = c.history; devEnv = c.environment || {};
+      $("history").value = c.history.map((m) => `${m.role}: ${m.body}`).join("\n");
+      const env = Object.entries(devEnv);
+      $("envline").textContent = env.length ? "Reported environment: " + env.map(([k, v]) => `${k}=${v}`).join(", ")
+                                            : "No reported environment.";
+      $("envline").hidden = false;
+    } catch (error) { showError(error.message); }
   }
 }
 
-function init() {
-  $("go").addEventListener("click", ask);
-  $("pipeline").addEventListener("change", showRetriever);  // each pipeline brings its own retriever
-  document.addEventListener("keydown", (event) => {
-    if (event.key === "Enter" && (event.ctrlKey || event.metaKey)) { event.preventDefault(); ask(); }
-  });
-  document.querySelectorAll("[data-example]").forEach((b) => b.addEventListener("click", () => {
-    const ex = EXAMPLES[Number(b.dataset.example)];
-    $("title").value = ex.title; $("body").value = ex.body;
-    $("history").value = ex.history; $("created").value = ex.created;
-  }));
-  loadStatus();
+function historyItems() {
+  // a development case keeps its messages with their roles unless the text was edited
+  const typed = $("history").value.split("\n").map((l) => l.trim()).filter(Boolean);
+  if (devHistory && typed.join("\n") === devHistory.map((m) => `${m.role}: ${m.body}`).join("\n")) return devHistory;
+  return typed;
 }
 
-if (typeof window !== "undefined") window.__supportdesk = { renderResult, h, init, loadStatus };
+function renderConversation(c) {
+  conv = c;
+  const [label, kind] = STATUS[c.status] || [c.status, ""];
+  // replaceChildren() takes nodes only: an array or null would be shown as text
+  const badges = [pill(label, kind), " ", pill(c.pipeline), " ",
+    pill(`questions ${c.questions_used} of ${limits.followups}`), " ", pill(`turns ${c.turns.length} of ${limits.turns}`)];
+  if (c.source && c.source.case_id) badges.push(" ", pill(c.source.case_id));
+  $("convhead").replaceChildren(...badges);
+  const r = c.report;
+  $("thread").replaceChildren(
+    // the report collapses, so the assistant's messages and the replies stay in view
+    h("details", { class: "msg report", open: !c.turns.length },
+      h("summary", null, h("strong", null, r.title), " ", h("span", { class: "hint" }, "the report")),
+      r.body ? h("div", null, r.body) : null,
+      Object.keys(r.environment || {}).length
+        ? h("div", { class: "ev-meta" }, Object.entries(r.environment).map(([k, v]) => `${k}=${v}`).join(" · ")) : null),
+    ...c.initial_history.concat(c.messages).map((m) => h("article", { class: "msg " + m.role },
+      h("strong", null, m.role === "assistant" ? "Assistant" : "User"),
+      m.outcome ? [" ", pill((OUTCOMES[m.outcome] || [m.outcome])[0], (OUTCOMES[m.outcome] || [])[1])] : null,
+      h("div", null, m.body))));
+  $("replybox").hidden = c.status !== "awaiting_reply";
+  $("retry").hidden = c.status !== "error";
+  $("convo").hidden = false;
+  $("empty").hidden = true;
+  $("delete").disabled = false;
+  const last = c.turns[c.turns.length - 1];
+  if (last) renderResult({ result: last.result, evidence: last.evidence, pipeline: c.pipeline,
+                           retriever: last.retriever, applied: last.applied });
+  else { $("result").hidden = true; }
+}
+
+async function runTurn(reply) {
+  if (busy || !conv) return;
+  showError("");
+  setBusy(true);
+  try {
+    renderConversation(await post("/api/conversations/turn", { id: conv.id, reply }));
+    $("reply").value = "";
+  } catch (error) {
+    showError(error.message);
+    try { renderConversation(await api("/api/conversation?id=" + encodeURIComponent(conv.id))); } catch (_) { /* gone */ }
+  } finally {
+    setBusy(false);
+    loadSaved().catch(() => {});
+    loadStatus();  // refresh the budget readout
+  }
+}
+
+async function start() {
+  if (busy) return;
+  showError("");
+  const value = $("source").value;
+  const payload = {
+    title: $("title").value, body: $("body").value, history: historyItems(),
+    created_at: $("created").value.trim() || null, pipeline: $("pipeline").value,
+    environment: value.startsWith("dev:") ? devEnv : {},
+    source: value.startsWith("dev:") ? { kind: "dev", case_id: value.slice(4) }
+          : { kind: value.startsWith("example:") ? "example" : "typed" },
+  };
+  if (!payload.title.trim()) { showError("Please enter a title."); return; }
+  setBusy(true, "Starting… ");
+  try {
+    renderConversation(await post("/api/conversations/new", payload));
+  } catch (error) {
+    showError(error.message);
+    setBusy(false, "Start conversation ");
+    return;
+  }
+  setBusy(false, "Start conversation ");
+  await runTurn("");
+}
+
+async function resume() {
+  const id = $("saved").value;
+  if (!id) return;
+  showError("");
+  try { renderConversation(await api("/api/conversation?id=" + encodeURIComponent(id))); }
+  catch (error) { showError(error.message); }
+}
+
+async function remove() {
+  if (!conv || busy || !window.confirm(`Delete the saved conversation “${conv.report.title}”?`)) return;
+  try {
+    await post("/api/conversations/delete", { id: conv.id });
+    conv = null;
+    $("convo").hidden = true; $("result").hidden = true; $("empty").hidden = false;
+    $("delete").disabled = true;
+    await loadSaved();
+  } catch (error) { showError(error.message); }
+}
+
+function download(text, name, type) {
+  const url = URL.createObjectURL(new Blob([text], { type }));
+  const link = h("a", null);
+  link.setAttribute("href", url); link.setAttribute("download", name);
+  document.body.appendChild(link); link.click(); link.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+async function downloadSummary() {
+  if (!conv) return;
+  try {
+    const response = await fetch("/api/conversation/summary?id=" + encodeURIComponent(conv.id));
+    if (!response.ok) throw new Error(`request failed (${response.status})`);
+    download(await response.text(), `supportdesk-${conv.id}-summary.md`, "text/markdown");
+  } catch (error) { showError(error.message); }
+}
+
+function init() {
+  $("go").addEventListener("click", start);
+  $("send").addEventListener("click", () => {
+    if (!$("reply").value.trim()) { showError("Write your reply first."); return; }
+    runTurn($("reply").value);
+  });
+  $("retry").addEventListener("click", () => runTurn(""));
+  $("saved").addEventListener("change", resume);
+  $("delete").addEventListener("click", remove);
+  $("source").addEventListener("change", chooseSource);
+  $("dljson").addEventListener("click", () => conv && download(JSON.stringify(conv, null, 2),
+    `supportdesk-${conv.id}.json`, "application/json"));
+  $("dlsum").addEventListener("click", downloadSummary);
+  $("pipeline").addEventListener("change", showRetriever);  // each pipeline brings its own retriever
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Enter" && (event.ctrlKey || event.metaKey)) {
+      event.preventDefault();
+      if (conv && conv.status === "awaiting_reply" && document.activeElement === $("reply")) $("send").click();
+      else start();
+    }
+  });
+  loadStatus();
+  loadCases();
+  loadSaved().catch((error) => showError(error.message));
+}
+
+if (typeof window !== "undefined") window.__supportdesk = { renderResult, renderConversation, h, init, loadStatus };
 if (typeof document !== "undefined" && document.getElementById) init();

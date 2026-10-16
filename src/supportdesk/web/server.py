@@ -12,14 +12,24 @@ import threading
 import uuid
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from importlib import resources
-from urllib.parse import urlparse
+from urllib.parse import parse_qs, urlparse
 
 from ..config import ConfigError, Settings, redact
 from ..llm.factory import Clients, build_clients
+from ..pipelines.stages.conversation import QUESTIONS_USED
 from ..registry import PIPELINES, RETRIEVERS, make_pipeline
 from ..retrieval.filters import parse_ts
 from ..retrieval.index import VectorIndex
 from ..types import CaseInput
+from .conversations import (
+    MAX_FOLLOWUPS,
+    MAX_TURNS,
+    OPEN,
+    ConversationStore,
+    now,
+    report_html,
+    summary_markdown,
+)
 
 LOOPBACK = {"localhost", "127.0.0.1", "[::1]"}
 STATIC = {"/": ("index.html", "text/html; charset=utf-8"),
@@ -41,7 +51,7 @@ class App:
     are shared state, and the budget is not something to race on."""
 
     def __init__(self, settings: Settings, clients: Clients | None = None,
-                 index: VectorIndex | None = None, settings_for=None):
+                 index: VectorIndex | None = None, settings_for=None, store_path=None):
         """``settings_for(pipeline_name)`` returns that pipeline's resolved settings (its profile);
         without it every pipeline uses ``settings``."""
         self.settings = settings
@@ -58,6 +68,9 @@ class App:
         self.chunks = {c.chunk_id: c for c in self.index.chunks}
         self._pipelines: dict = {}
         self.lock = threading.Lock()
+        # saved conversations: local, like the cache and the ledger
+        self.store = ConversationStore(store_path or settings.paths.artifacts_dir / "web" / "conversations.sqlite")
+        self._dev_cases = None
 
     def settings_for(self, pipeline: str) -> Settings:
         if pipeline not in self._resolved:
@@ -86,6 +99,10 @@ class App:
 
     def ask(self, payload: object) -> dict:
         case, pipeline_name, retriever_name = self._validate(payload)
+        return self._run(case, pipeline_name, retriever_name)
+
+    def _run(self, case: CaseInput, pipeline_name: str, retriever_name: str, *, questions_used=None,
+             keep_result: bool = False) -> dict:
         settings = self.settings_for(pipeline_name)  # this pipeline's own profile
         built = self.index.manifest.get("chunking", {})
         if (built.get("max_tokens"), built.get("overlap_tokens")) != (
@@ -101,7 +118,11 @@ class App:
             if key not in self._pipelines:
                 self._pipelines[key] = make_pipeline(pipeline_name, retriever_name, self.index,
                                                      self.clients, settings)
-            result = self._pipelines[key].run(case)
+            token = QUESTIONS_USED.set(questions_used)  # only a conversation sets it
+            try:
+                result = self._pipelines[key].run(case)
+            finally:
+                QUESTIONS_USED.reset(token)
             budget = {"spent_usd": self.clients.ledger.total_cost_usd,
                       "remaining_usd": self.clients.ledger.remaining_usd()}
         return {"result": result.to_dict(), "evidence": self._evidence(result),
@@ -109,6 +130,100 @@ class App:
                 "applied": {"profile": settings.profile, "top_k": settings.retrieval.top_k,
                             "prompt_chunks": settings.prompt_chunks,
                             "candidate_k": settings.pool_size}}
+
+    # --- development cases (inputs only: never rubrics, labels or gold evidence) ----------------
+    def dev_cases(self) -> list[dict]:
+        if self._dev_cases is None:
+            try:
+                from ..eval.cases import load_cases
+
+                cases = load_cases(*self.settings.eval.case_files, split="dev")
+            except Exception:  # noqa: BLE001 - no evaluation data on this computer: just none to offer
+                cases = []
+            self._dev_cases = {c.case_id: c.input for c in cases}
+        return [{"id": cid, "title": inp.title} for cid, inp in self._dev_cases.items()]
+
+    def dev_case(self, case_id: str) -> dict:
+        self.dev_cases()
+        inp = (self._dev_cases or {}).get(case_id)
+        if inp is None:
+            raise BadRequest("unknown development case")
+        return {"id": case_id, "title": inp.title, "body": inp.body, "created_at": inp.created_at,
+                "environment": dict(inp.environment or {}),
+                "history": [{"role": h.get("role", "user"), "body": h.get("body", "")} for h in inp.history or []]}
+
+    # --- conversations ------------------------------------------------------------------------
+    def conversation(self, conv_id: str) -> dict:
+        conv = self.store.get(conv_id or "")
+        if conv is None:
+            raise BadRequest("unknown conversation")
+        return conv
+
+    def conversation_new(self, payload: object) -> dict:
+        """Create a conversation from a report; no model call."""
+        case, pipeline, _ = self._validate(payload)
+        env = payload.get("environment") or {}
+        if not isinstance(env, dict) or len(env) > 20 or any(
+                not isinstance(k, str) or not isinstance(v, str) or len(k) > 60 or len(v) > 200 for k, v in env.items()):
+            raise BadRequest("environment must be an object of at most 20 short text fields")
+        source = payload.get("source") or {}
+        kind = source.get("kind") if isinstance(source, dict) else None
+        if kind not in ("typed", "example", "dev"):
+            kind = "typed"
+        src = {"kind": kind}
+        if kind == "dev":
+            src["case_id"] = self.dev_case(str(source.get("case_id") or ""))["id"]
+        report = {"title": case.title, "body": case.body, "created_at": case.created_at, "environment": env}
+        return self.store.create(pipeline=pipeline, source=src, report=report, history=case.history)
+
+    def conversation_turn(self, payload: object) -> dict:
+        """One pipeline turn: with the user's reply when the assistant asked for information."""
+        if not isinstance(payload, dict):
+            raise BadRequest("body must be a JSON object")
+        conv = self.conversation(str(payload.get("id") or ""))
+        if conv["status"] not in OPEN:
+            raise BadRequest(f"this conversation is finished ({conv['status']}); start a new one")
+        if len(conv["turns"]) >= MAX_TURNS:
+            conv["status"] = "limit_reached"
+            self.store.save(conv)
+            return conv
+        if conv["status"] == "awaiting_reply":
+            reply = payload.get("reply")
+            if not isinstance(reply, str) or not reply.strip():
+                raise BadRequest("write a reply to the assistant's question first")
+            if len(reply) > self.limits["body"]:
+                raise BadRequest(f"reply is longer than {self.limits['body']} characters")
+            conv["messages"].append({"role": "user", "body": reply.strip(), "at": now()})
+        r = conv["report"]
+        case = CaseInput(case_id=f"web-{conv['id']}", title=r["title"], body=r["body"], created_at=r["created_at"],
+                         environment=dict(r.get("environment") or {}),
+                         history=[{"role": m["role"], "body": m["body"]} for m in conv["initial_history"] + conv["messages"]])
+        retriever = self.settings_for(conv["pipeline"]).pipeline.retriever
+        data = self._run(case, conv["pipeline"], retriever, questions_used=conv["questions_used"])
+        result = data["result"]
+        outcome = result.get("outcome")
+        conv["turns"].append({"n": len(conv["turns"]) + 1, "at": now(), "outcome": outcome, "result": result,
+                              "evidence": data["evidence"], "retriever": data["retriever"],
+                              "applied": data.get("applied"), "usage": result.get("usage") or {}})
+        reply_text = result.get("user_reply")
+        if reply_text and outcome in ("answer", "request_info", "escalate"):
+            conv["messages"].append({"role": "assistant", "body": reply_text, "at": now(), "outcome": outcome})
+        if outcome == "request_info":
+            conv["questions_used"] += 1
+            conv["status"] = "awaiting_reply" if conv["questions_used"] < MAX_FOLLOWUPS else "limit_reached"
+        elif outcome in ("answer", "escalate"):
+            conv["status"] = outcome
+        elif result.get("error") or outcome in ("error", "budget_stopped"):
+            conv["status"] = "error"  # a turn that can be retried by hand
+        else:
+            conv["status"] = outcome or "error"  # for example out of scope: finished
+        self.store.save(conv)
+        return conv
+
+    def conversation_delete(self, payload: object) -> dict:
+        if not isinstance(payload, dict) or not self.store.delete(str(payload.get("id") or "")):
+            raise BadRequest("unknown conversation")
+        return {"deleted": payload["id"]}
 
     def _evidence(self, result) -> list[dict]:
         scores = {r["chunk_id"]: r["score"] for r in result.retrieved}
@@ -150,10 +265,14 @@ class App:
                 raise BadRequest("created_at must be an ISO timestamp, for example 2024-05-01T10:00:00Z") \
                     from None
         history = payload.get("history", [])
-        if not isinstance(history, list) or len(history) > self.limits["history_items"] or any(
-                not isinstance(h, str) or len(h) > self.limits["history_chars"] for h in history):
+        # earlier messages: plain strings (from the user), or {role: user | assistant, body} objects
+        items = [h if isinstance(h, dict) else {"role": "user", "body": h} for h in history] \
+            if isinstance(history, list) else None
+        if items is None or len(items) > self.limits["history_items"] or any(
+                not isinstance(h.get("body"), str) or len(h["body"]) > self.limits["history_chars"]
+                or h.get("role", "user") not in ("user", "assistant") for h in items):
             raise BadRequest(f"history must be a list of at most {self.limits['history_items']} "
-                             f"strings of at most {self.limits['history_chars']} characters")
+                             f"messages of at most {self.limits['history_chars']} characters")
         pipeline = payload.get("pipeline") or self.settings.pipeline.name
         if pipeline not in PIPELINES:
             raise BadRequest(f"unknown pipeline; choose from {sorted(PIPELINES)}")
@@ -166,7 +285,8 @@ class App:
                              f"{retriever}); to try another, use --retriever on the command line")
         case = CaseInput(case_id=f"web-{uuid.uuid4().hex[:8]}", title=title, body=body,
                          created_at=created or None,
-                         history=[{"role": "user", "body": h.strip()} for h in history if h.strip()])
+                         history=[{"role": h.get("role", "user"), "body": h["body"].strip()}
+                                  for h in items if h["body"].strip()])
         return case, pipeline, retriever
 
 
@@ -186,6 +306,24 @@ def _origin_ok(origin: str | None, host_header: str) -> bool:
         return True  # same-origin GETs and non-browser clients do not send one
     parsed = urlparse(origin)
     return parsed.scheme == "http" and parsed.netloc.lower() == host_header.lower()
+
+
+GET_ROUTES = {
+    "/api/cases": lambda app, q: ("json", {"cases": app.dev_cases()}),
+    "/api/case": lambda app, q: ("json", app.dev_case(q.get("id", ""))),
+    "/api/conversations": lambda app, q: ("json", {"conversations": app.store.listing(),
+                                                   "limits": {"followups": MAX_FOLLOWUPS, "turns": MAX_TURNS}}),
+    "/api/conversation": lambda app, q: ("json", app.conversation(q.get("id", ""))),
+    "/api/conversation/summary": lambda app, q: ("text/markdown; charset=utf-8",
+                                                 summary_markdown(app.conversation(q.get("id", "")))),
+    "/api/report": lambda app, q: ("text/html; charset=utf-8", report_html(app.store.all())),
+}
+POST_ROUTES = {
+    "/api/ask": "ask",  # method names, looked up on the app (so it stays the single source of truth)
+    "/api/conversations/new": "conversation_new",
+    "/api/conversations/turn": "conversation_turn",
+    "/api/conversations/delete": "conversation_delete",
+}
 
 
 def make_handler(app: App):
@@ -226,13 +364,24 @@ def make_handler(app: App):
                 self._send(200, data, ctype)
             elif path == "/api/status":
                 self._json(200, app.status())
+            elif path in GET_ROUTES:
+                query = {k: v[0] for k, v in parse_qs(urlparse(self.path).query).items()}
+                try:
+                    kind, value = GET_ROUTES[path](app, query)
+                except BadRequest as exc:
+                    return self._json(400, {"error": redact(exc)})
+                if kind == "json":
+                    self._json(200, value)
+                else:
+                    self._send(200, value.encode("utf-8"), kind)
             else:
                 self._json(404, {"error": "not found"})
 
         def do_POST(self) -> None:
             if not self._guard():
                 return
-            if urlparse(self.path).path != "/api/ask":
+            action = POST_ROUTES.get(urlparse(self.path).path)
+            if action is None:
                 return self._json(404, {"error": "not found"})
             if (self.headers.get("Content-Type") or "").split(";")[0].strip() != "application/json":
                 return self._json(415, {"error": "Content-Type must be application/json"})
@@ -247,7 +396,7 @@ def make_handler(app: App):
                 return self._json(413, {"error": f"request larger than {limit} bytes"})
             try:
                 payload = json.loads(self.rfile.read(length) or b"null")
-                self._json(200, app.ask(payload))
+                self._json(200, getattr(app, action)(payload))
             except (BadRequest, json.JSONDecodeError, UnicodeDecodeError) as exc:
                 self._json(400, {"error": redact(exc) if isinstance(exc, BadRequest)
                                  else "body is not valid JSON"})

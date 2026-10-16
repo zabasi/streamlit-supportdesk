@@ -22,6 +22,7 @@ from ...llm.factory import Clients, chat_client_for
 from ...types import CaseInput
 from ..packet import Packet
 from ..parsing import ParsedAnswer
+from .conversation import QUESTIONS_USED
 from .protocols import GenerationFailed
 
 MODEL = "gpt-5.4-mini"  # the package's request builder accepts only this model
@@ -55,7 +56,8 @@ class ControlledGenerator:
             # in the package's verified run)
             case = dataclasses.replace(case, environment=dict(env))
         try:
-            result = generate_from_packet(case, packet, self.complete)
+            # a web conversation passes how many clarification questions it has asked; elsewhere 0
+            result = generate_from_packet(case, packet, self.complete, questions_used=QUESTIONS_USED.get() or 0)
         except ValueError as exc:  # no usable assessment: an error for this case, with the call's usage
             raise GenerationFailed(f"controlled_v2: {exc}", attempts=[
                 {"error": str(exc), "usage": self.last_usage}]) from None

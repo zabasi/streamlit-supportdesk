@@ -65,3 +65,17 @@ a { color: var(--accent); }
 
 .label{display:block;font-weight:600;margin:12px 0 4px}
 .readonly{margin:0;padding:8px 10px;border:1px dashed #c9cfd8;border-radius:6px;color:#3b4555;background:#f7f8fa}
+
+/* conversations */
+h2.spaced { margin-top: 24px; }
+button.secondary, a.button.secondary { background: var(--info-bg); color: var(--accent); }
+a.button { display: inline-block; text-decoration: none; border-radius: 6px; padding: 9px 16px; font-weight: 600; }
+.convhead { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+.thread { display: flex; flex-direction: column; gap: 8px; margin: 8px 0 12px; }
+.msg { white-space: pre-wrap; overflow-wrap: anywhere; padding: 10px 12px; border-radius: 8px;
+  border: 1px solid var(--line); background: var(--bg); }
+.msg strong { display: inline-block; margin-bottom: 4px; }
+.msg.assistant { background: var(--info-bg); border-color: transparent; }
+.msg.report { border-left: 3px solid var(--accent); }
+.msg.report > summary { padding: 0; }
+.msg.report[open] > summary { border-bottom: 0; margin-bottom: 6px; }

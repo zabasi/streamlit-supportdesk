@@ -165,7 +165,7 @@ def test_the_extracted_environment_is_used_only_when_the_case_has_none(clients, 
 
     seen = []
     monkeypatch.setattr(controlled, "generate_from_packet",
-                        lambda case, packet, complete: seen.append(case.environment) or (_ for _ in ()).throw(
+                        lambda case, packet, complete, **_: seen.append(case.environment) or (_ for _ in ()).throw(
                             ValueError("stop here")))
     gen = controlled.ControlledGenerator(clients, settings)
     app_case = CaseInput(case_id="a", title="t", body="b")
