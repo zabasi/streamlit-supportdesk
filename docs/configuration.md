@@ -215,7 +215,10 @@ Defaults shown are the built-in ones. `*unset*` means the key is optional and no
 | `report_views` | `none` | advanced: extra searches besides the queries, comma-separated: title (the report's title alone), code (its st.* commands, their parameter names and its error lines), or none; fused with the report's ranking at view_weight |
 | `view_weight` | `0.5` | report_views: how much each view's ranking counts against the report's |
 | `rerank_show_sections` | `False` | the reranker also sees the headings of the sections each candidate contains, which its window may not show |
-| `pool_mode` | `fuse` | advanced: how the reranker's candidates are chosen: fuse (every query's ranking merged with RRF, the best candidate_k kept) \| quota (fixed shares: the report's best dense and BM25 chunks, and the concept queries' best dense chunks) |
+| `pool_mode` | `fuse` | advanced: how the reranker's candidates are chosen: fuse (every query's ranking merged with RRF, the best candidate_k kept) \| quota (fixed shares: the report's best dense and BM25 chunks, and the concept queries' best dense chunks) \| union (no fusion: the report's own candidates all kept, each concept query adding its best new ones) |
+| `union_report` | `15` | pool_mode = union: the cleaned report's own candidates, all kept |
+| `union_per_concept` | `12` | pool_mode = union: new candidates each concept query adds (its best ones not already in the pool) |
+| `union_max` | `40` | pool_mode = union: the most candidates the reranker gets |
 | `quota_report_dense` | `5` | pool_mode = quota: dense chunks from the cleaned report |
 | `quota_report_bm25` | `5` | pool_mode = quota: keyword (BM25) chunks from the cleaned report |
 | `quota_concepts_dense` | `10` | pool_mode = quota: dense chunks from the concept queries, taken in turns |

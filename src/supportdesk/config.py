@@ -241,7 +241,12 @@ class Retrieval:
                                       "contains, which its window may not show", False)
     pool_mode: str = _opt("advanced: how the reranker's candidates are chosen: fuse (every query's ranking merged "
                           "with RRF, the best candidate_k kept) | quota (fixed shares: the report's best dense and "
-                          "BM25 chunks, and the concept queries' best dense chunks)", "fuse")
+                          "BM25 chunks, and the concept queries' best dense chunks) | union (no fusion: the report's "
+                          "own candidates all kept, each concept query adding its best new ones)", "fuse")
+    union_report: int = _opt("pool_mode = union: the cleaned report's own candidates, all kept", 15)
+    union_per_concept: int = _opt("pool_mode = union: new candidates each concept query adds (its best ones not "
+                                  "already in the pool)", 12)
+    union_max: int = _opt("pool_mode = union: the most candidates the reranker gets", 40)
     quota_report_dense: int = _opt("pool_mode = quota: dense chunks from the cleaned report", 5)
     quota_report_bm25: int = _opt("pool_mode = quota: keyword (BM25) chunks from the cleaned report", 5)
     quota_concepts_dense: int = _opt("pool_mode = quota: dense chunks from the concept queries, taken in turns", 10)
@@ -567,7 +572,10 @@ class Settings:
              f"retrieval.report_views must be none, or title and/or code (comma-separated), got {r.report_views!r}"),
             (0.0 <= r.view_weight <= 1.0, "retrieval.view_weight must be between 0 and 1"),
             (0.0 <= r.second_weight <= 1.0, "retrieval.second_weight must be between 0 and 1"),
-            (r.pool_mode in ("fuse", "quota"), f"retrieval.pool_mode must be fuse or quota, got {r.pool_mode!r}"),
+            (r.pool_mode in ("fuse", "quota", "union"),
+             f"retrieval.pool_mode must be fuse, quota or union, got {r.pool_mode!r}"),
+            (min(r.union_report, r.union_per_concept) >= 0 and r.union_max >= max(1, r.union_report),
+             "retrieval.union_* must be >= 0, and union_max at least union_report"),
             (min(r.quota_report_dense, r.quota_report_bm25, r.quota_concepts_dense) >= 0,
              "retrieval.quota_* must be >= 0"),
             (r.cluster_top >= 1, "retrieval.cluster_top must be >= 1"),

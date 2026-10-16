@@ -94,7 +94,10 @@ second_weight = 0.5              # dual_doc_slots: the second embedding model's 
 report_views = "none"            # advanced: extra searches: none | title | code | title,code
 view_weight = 0.5                # report_views: each view's weight in the fusion against the report
 rerank_show_sections = false     # the reranker also sees the section headings inside each candidate
-pool_mode = "fuse"               # advanced: fuse (RRF of all queries) | quota (fixed shares per source)
+pool_mode = "fuse"               # advanced: fuse (RRF of all queries) | quota (fixed shares) | union (all, no fusion)
+union_report = 15                # pool_mode = union: the report's own candidates, all kept
+union_per_concept = 12           # pool_mode = union: new candidates each concept query adds
+union_max = 40                   # pool_mode = union: most candidates the reranker gets
 quota_report_dense = 5           # pool_mode = quota: dense chunks from the cleaned report
 quota_report_bm25 = 5            # pool_mode = quota: BM25 chunks from the cleaned report
 quota_concepts_dense = 10        # pool_mode = quota: dense chunks from the concept queries, in turns
