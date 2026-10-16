@@ -178,6 +178,15 @@ class ClassRoutedRetriever:
                 for r, i in enumerate(order, start=1)]
 
 
-__all__ = ["TOPICS", "ClassRoutedRetriever", "centroid_routes", "class_centroids",
-           "classify_chunks_llm", "classify_query_llm", "heuristic_label", "kmeans_labels",
-           "remove_type_means", "kmeans"]
+__all__ = [
+    "TOPICS",
+    "ClassRoutedRetriever",
+    "centroid_routes",
+    "class_centroids",
+    "classify_chunks_llm",
+    "classify_query_llm",
+    "heuristic_label",
+    "kmeans",
+    "kmeans_labels",
+    "remove_type_means",
+]

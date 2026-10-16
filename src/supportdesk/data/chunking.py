@@ -160,7 +160,14 @@ CHUNKERS = {
     "token_structure": lambda settings: TokenStructureChunker(settings.chunking.token_target,
                                                               settings.chunking.token_soft_max,
                                                               settings.chunking.token_min_section),
+    "langchain_rule": lambda settings: _langchain_rule(settings),
 }
+
+
+def _langchain_rule(settings):
+    from .langchain_chunkers import LangChainRuleChunker  # needs langchain-text-splitters
+    return LangChainRuleChunker(chunk_size=settings.chunking.langchain_chunk_chars,
+                                overlap=settings.chunking.langchain_overlap_chars)
 
 
 def make_chunker(settings):

@@ -166,7 +166,7 @@ Defaults shown are the built-in ones. `*unset*` means the key is optional and no
 
 | Key | Default | What it does |
 |---|---|---|
-| `method` | `fixed` | which chunker the indexing graph's chunk node runs: fixed \| structure \| token_structure |
+| `method` | `fixed` | which chunker the indexing graph's chunk node runs: fixed \| structure \| token_structure \| langchain_rule |
 | `max_tokens` | `512` | chunk size in tokens (the project's tokenizer); changing it means building the index again |
 | `overlap_tokens` | `128` | tokens shared by consecutive chunks; must be smaller than max_tokens |
 | `context_header` | `False` | embed each documentation chunk with its page title and heading path in front (the stored text is unchanged); needs its own index |
@@ -176,6 +176,8 @@ Defaults shown are the built-in ones. `*unset*` means the key is optional and no
 | `token_target` | `500` | token_structure chunker: the chunk size it aims for, in tokens |
 | `token_soft_max` | `700` | token_structure chunker: the most tokens a chunk may grow to before it is cut |
 | `token_min_section` | `150` | token_structure chunker: a section of at least this many tokens starts a new chunk; smaller ones are packed together |
+| `langchain_chunk_chars` | `1600` | langchain_rule chunker: the most characters in a chunk (LangChain's recursive splitter, inside each heading section) |
+| `langchain_overlap_chars` | `200` | langchain_rule chunker: characters shared by neighbouring chunks |
 
 ### `[retrieval]`
 

@@ -70,7 +70,7 @@ def _opt(help_text: str, default=None):
 
 
 #: Chunkers the indexing graph can run (see data/chunking.py: CHUNKERS).
-CHUNKING_METHODS = ("fixed", "structure", "token_structure")
+CHUNKING_METHODS = ("fixed", "structure", "token_structure", "langchain_rule")
 
 
 @dataclass(frozen=True)
@@ -160,6 +160,9 @@ class Chunking:
     token_soft_max: int = _opt("token_structure chunker: the most tokens a chunk may grow to before it is cut", 700)
     token_min_section: int = _opt("token_structure chunker: a section of at least this many tokens starts a new "
                                   "chunk; smaller ones are packed together", 150)
+    langchain_chunk_chars: int = _opt("langchain_rule chunker: the most characters in a chunk (LangChain's "
+                                      "recursive splitter, inside each heading section)", 1600)
+    langchain_overlap_chars: int = _opt("langchain_rule chunker: characters shared by neighbouring chunks", 200)
 
     def extras(self) -> dict:
         """The chunking settings beyond method, sizes and the header switch that change an index: they are
@@ -170,6 +173,9 @@ class Chunking:
         if self.method == "token_structure":
             found.update(token_target=self.token_target, token_soft_max=self.token_soft_max,
                          token_min_section=self.token_min_section)
+        if self.method == "langchain_rule":
+            found.update(langchain_chunk_chars=self.langchain_chunk_chars,
+                         langchain_overlap_chars=self.langchain_overlap_chars)
         if self.context_header:
             found["context_header_scope"] = self.context_header_scope
         return found

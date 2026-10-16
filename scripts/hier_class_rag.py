@@ -22,16 +22,15 @@ Stay on --split dev. Gold is the annotated selected_spans dump. Do not commit .e
 from __future__ import annotations
 
 import argparse
+import contextlib
 import json
 import os
 import sys
 import time
 
-try:
+with contextlib.suppress(AttributeError, ValueError):  # line-buffered output where supported
     sys.stdout.reconfigure(line_buffering=True)
     sys.stderr.reconfigure(line_buffering=True)
-except Exception:
-    pass
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -46,7 +45,7 @@ from supportdesk.data.corpus import load_corpus
 from supportdesk.data.langchain_chunkers import LangChainLLMChunker, LangChainRuleChunker
 from supportdesk.eval.annotated import DEFAULT_ANNOTATED, load_annotated_cases, write_eval_jsonl
 from supportdesk.eval.cases import exclusions_from_cases, load_cases
-from supportdesk.eval.metrics import evaluate_retrieval, format_metrics
+from supportdesk.eval.metrics import format_metrics
 from supportdesk.eval.runner import run_retrieval_eval
 from supportdesk.llm.factory import build_clients
 from supportdesk.pipelines.advanced import build_advanced
@@ -137,8 +136,15 @@ def _load_settings(mode: str, pipeline: str, *, chat: str | None = None,
     return Settings.load(overrides=overrides)
 
 
-def _cases(gold_path: Path, eval_dir: Path) -> list:
+def _cases(gold_path: Path | None, eval_dir: Path) -> list:
+    """The development cases. By default their gold is the repository's rubrics (data/eval, which hold
+    the reviewed labels); --gold overlays an annotated dump instead."""
     official = load_cases(eval_dir) if eval_dir.exists() else []
+    if gold_path is None:
+        cases = [c for c in official if c.split == "dev"]
+        if not cases:
+            raise SystemExit(f"no development cases in {eval_dir}")
+        return cases
     cases = load_annotated_cases(gold_path, official=official)
     if not cases:
         raise SystemExit(f"no annotated cases in {gold_path}")
@@ -341,8 +347,8 @@ def _write_comparison(rows: dict[str, dict], winner: str | None, factors: dict, 
     lines = [
         "# Hierarchical-class RAG comparison",
         "",
-        f"Generated {datetime.now(timezone.utc).isoformat(timespec='seconds')}. "
-        "Gold = annotated selected_spans. Split = dev.",
+        (f"Generated {datetime.now(timezone.utc).isoformat(timespec='seconds')}. "
+         "Gold = the development rubrics (data/eval) or --gold. Split = dev."),
         "",
         "## Name key",
         "",
@@ -351,8 +357,8 @@ def _write_comparison(rows: dict[str, dict], winner: str | None, factors: dict, 
         "- `kmeans` = k-means **filter** on whichever index the first part names.",
         "- `exist` / `rule` / `llmchunk` after `advanced_` = which index `advanced` searches.",
         "- So `advanced_llmchunk` is LLM chunking only. `advanced_exist_llmfilter` is LLM filter only.",
-        "- `advanced_llmchunk_llmfilter` is both. Old ids: `advanced_llm` → `advanced_llmchunk`, "
-        "`advanced+llm` → `advanced_exist_llmfilter`, `advanced_llm_llm` → `advanced_llmchunk_llmfilter`.",
+        ("- `advanced_llmchunk_llmfilter` is both. Old ids: `advanced_llm` → `advanced_llmchunk`, "
+         "`advanced+llm` → `advanced_exist_llmfilter`, `advanced_llm_llm` → `advanced_llmchunk_llmfilter`."),
         "",
         "| method | meaning | recall@1 | recall@3 | recall@6 | hit@6 | MRR | passage_recall@6 | chunks |",
         "|---|---|---:|---:|---:|---:|---:|---:|---:|",
@@ -464,7 +470,9 @@ def main() -> int:
               file=sys.stderr)
     ap = argparse.ArgumentParser()
     ap.add_argument("--mode", choices=("offline", "replay", "live"), default="offline")
-    ap.add_argument("--gold", type=Path, default=DEFAULT_ANNOTATED)
+    ap.add_argument("--gold", type=Path, default=None,
+                    help="an annotated dump to use as gold instead of data/eval "
+                         f"(for example {DEFAULT_ANNOTATED})")
     ap.add_argument("--eval-dir", type=Path, default=ROOT / "data" / "eval")
     ap.add_argument("--methods", default=",".join(ALL_METHODS),
                     help="comma list from " + ",".join(ALL_METHODS))
@@ -490,7 +498,7 @@ def main() -> int:
         cases = cases[: args.limit]
     write_eval_jsonl(cases, OUT / "annotated_dev_cases.jsonl")
     print(f"{len(cases)} annotated dev cases -> {OUT / 'annotated_dev_cases.jsonl'}")
-    print(f"gold sources / case: " +
+    print("gold sources / case: " +
           ", ".join(f"{c.case_id}={len(c.gold_evidence)}" for c in cases))
 
     official = load_cases(args.eval_dir) if args.eval_dir.exists() else cases

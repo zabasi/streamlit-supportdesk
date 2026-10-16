@@ -1,7 +1,10 @@
 """Hierarchical-class RAG experiment: gold overlay, LangChain spans, class routing."""
 from __future__ import annotations
 
+import importlib.util
 import json
+
+import pytest
 
 from supportdesk.data.chunking import check_chunks
 from supportdesk.data.corpus import load_corpus
@@ -68,6 +71,8 @@ def test_case_from_dict_keeps_evidence_spans():
     assert case.evidence_spans[0]["end_char"] == 2
 
 
+@pytest.mark.skipif(importlib.util.find_spec("langchain_text_splitters") is None,
+                    reason="needs langchain-text-splitters")
 def test_rule_chunker_spans_are_exact_source_slices():
     text = "# Title\n\nSession State keeps widget values.\n\n## Caveats\n\nDo not write after instantiate.\n"
     spans = rule_spans(text, "documentation", chunk_size=80, overlap=10)

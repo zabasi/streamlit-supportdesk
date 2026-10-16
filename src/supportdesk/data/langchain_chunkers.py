@@ -8,6 +8,7 @@ then to the rule chunker. Every chunk is still an exact source span.
 """
 from __future__ import annotations
 
+import itertools
 import re
 
 from ..pipelines.parsing import NotJson, extract_json
@@ -69,20 +70,25 @@ def rule_spans(text: str, source_type: str, *, chunk_size: int = 1600,
     _require_langchain()
     if not text.strip():
         return []
-    sections: list[tuple[int, int, tuple[str, ...]]] = []
+    # LangChain's header splitter rewrites whitespace in what it returns (Markdown line breaks, dropped
+    # blank lines), so a section's text is often not found verbatim in the source. Each section is
+    # located by its first line (the heading, unchanged apart from trailing spaces) and runs to the next
+    # section's start, so every character of the source belongs to exactly one section.
+    starts: list[tuple[int, tuple[str, ...]]] = []
     if source_type in MARKDOWN_TYPES and ("\n#" in text or text.startswith("#")):
         header = MarkdownHeaderTextSplitter(headers_to_split_on=HEADERS, strip_headers=False)
         cursor = 0
         for doc in header.split_text(text):
-            piece = doc.page_content
-            at = _locate(text, piece, cursor)
+            first = doc.page_content.strip().splitlines()[0].rstrip() if doc.page_content.strip() else ""
+            at = text.find(first, cursor) if first else -1
             if at < 0:
                 continue
-            path = tuple(str(v) for v in doc.metadata.values()) if doc.metadata else ()
-            sections.append((at, at + len(piece), path))
-            cursor = at + 1
-    if not sections:
-        sections = [(0, len(text), ())]
+            starts.append((at, tuple(str(v) for v in doc.metadata.values()) if doc.metadata else ()))
+            cursor = at + len(first)
+    if not starts or starts[0][0] > 0:  # text before the first located section is a section too
+        starts.insert(0, (0, ()))
+    sections = [(a, starts[n + 1][0] if n + 1 < len(starts) else len(text), path)
+                for n, (a, path) in enumerate(starts)]
     out: list[tuple[str, int, int, tuple[str, ...]]] = []
     for start, end, path in sections:
         out.extend(_recursive_spans(text[start:end], start=start, chunk_size=chunk_size,
@@ -129,7 +135,7 @@ def semantic_spans(text: str, embedder, *, chunk_size: int = 1600,
     vectors, _ = embedder.embed([p for p, _, _ in paras], stage="semantic_chunk")
     out, buf, start = [], paras[0][0], paras[0][1]
     for i in range(1, len(paras)):
-        piece, lo, hi = paras[i]
+        piece, lo, _hi = paras[i]
         prev, cur = vectors[i - 1], vectors[i]
         dot = sum(a * b for a, b in zip(prev, cur))
         if len(buf) + len(piece) > chunk_size or dot < threshold:
@@ -152,12 +158,12 @@ def llm_spans(text: str, chat, *, prompt: str, fallback) -> list[tuple[str, int,
         payload = extract_json(raw)
         cuts = payload.get("cuts") if isinstance(payload, dict) else None
         if not isinstance(cuts, list):
-            raise ValueError("no cuts")
+            raise TypeError("no cuts")
         points = sorted({0, len(text), *(_snap(text, c) for c in cuts if isinstance(c, (int, float)))})
         points = [p for p in points if 0 <= p <= len(text)]
         if len(points) < 2:
             raise ValueError("too few cuts")
-        return [(text[a:b], a, b, ()) for a, b in zip(points, points[1:]) if b > a]
+        return [(text[a:b], a, b, ()) for a, b in itertools.pairwise(points) if b > a]
     except (NotJson, ValueError, TypeError, OSError):
         return fallback(text)
 

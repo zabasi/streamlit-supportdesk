@@ -61,6 +61,8 @@ structure_max_chars = 2000      # structure chunker: longer sections are split a
 token_target = 500              # token_structure chunker: the size it aims for
 token_soft_max = 700            # token_structure chunker: the most a chunk may grow to
 token_min_section = 150         # token_structure chunker: a section this big starts a new chunk
+langchain_chunk_chars = 1600    # langchain_rule chunker: most characters per chunk
+langchain_overlap_chars = 200   # langchain_rule chunker: characters shared by neighbouring chunks
 
 [retrieval]
 top_k = 6                        # chunks returned by retrieval AND (by default) allowed in the prompt
