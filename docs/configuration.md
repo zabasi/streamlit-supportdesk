@@ -115,6 +115,7 @@ Defaults shown are the built-in ones. `*unset*` means the key is optional and no
 | Key | Default | What it does |
 |---|---|---|
 | `chat` | `gpt-4o-mini` | the chat model's name at the provider; it must have a price in pricing.json |
+| `rerank` | `` | the chat model for the reranking call only (it must have a price in pricing.json); empty uses models.chat |
 | `embedding` | `text-embedding-3-small` | the embedding model's name; changing it means building the index again |
 | `second_embedding` | `text-embedding-3-large` | the second embedding model of the dual_doc_slots retriever (its own index: paths.second_index_dir) |
 | `base_url` | *unset* | the provider's URL; if unset, it is read from the OPENAI_BASE_URL environment variable |

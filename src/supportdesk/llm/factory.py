@@ -44,6 +44,18 @@ def build_clients(settings: Settings, *, transport: Transport | None = None) -> 
     return Clients(mode, gateway, gateway, ledger, settings.models.embedding)
 
 
+def chat_client_for(clients: Clients, settings: Settings, model: str):
+    """A chat client for another model that shares ``clients``' ledger (spend counted and capped with
+    everything else) and, beyond offline, the same cache; the model must have a price in pricing.json."""
+    if not model or model == settings.models.chat:
+        return clients.chat
+    if clients.mode == "offline":
+        return FakeChatClient(ledger=clients.ledger)
+    other = dataclasses.replace(settings, models=dataclasses.replace(settings.models, chat=model))
+    return Gateway(mode=clients.mode, settings=other, ledger=clients.ledger,
+                   cache=DiskCache(settings.paths.cache_path), pricing=load_pricing(other))
+
+
 def second_embedding_client(clients: Clients, settings: Settings, model: str):
     """An embedding client for another model that shares ``clients``' ledger (so its spending is counted and
     capped with everything else) and, beyond offline, the same cache."""

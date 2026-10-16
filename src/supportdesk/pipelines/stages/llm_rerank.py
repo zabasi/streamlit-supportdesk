@@ -126,6 +126,8 @@ class LLMReranker:
         self.clients, self.snippet = clients, settings.retrieval.rerank_snippet_chars
         self.snippet_mode = settings.retrieval.rerank_snippet  # start | focused
         self.show_sections = settings.retrieval.rerank_show_sections
+        from ...llm.factory import chat_client_for
+        self.chat = chat_client_for(clients, settings, settings.models.rerank)  # models.rerank, or the chat model
         self.concepts = None
         if settings.retrieval.rerank_show_concepts:  # the query stage's concept queries (replayed from the cache)
             from .rewrite_query import make_query_rewriter
@@ -162,7 +164,7 @@ class LLMReranker:
             if mechanisms:
                 content += "## Mechanisms involved\n" + "\n".join(f"- {m}" for m in mechanisms) + "\n\n"
         content += f"## Candidates\n{listing}"
-        text, _ = self.clients.chat.complete([{"role": "system", "content": self.prompt},
+        text, _ = self.chat.complete([{"role": "system", "content": self.prompt},
                                               {"role": "user", "content": content}],
                                              stage="rerank", json_mode=True)
         return text

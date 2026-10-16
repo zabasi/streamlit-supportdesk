@@ -12,6 +12,7 @@ mode = "offline"                 # offline | replay | live
 
 [models]
 chat = "gpt-4o-mini"             # must exist on the gateway AND be priced in configs/pricing.json
+rerank = ""                                   # chat model for the reranking call only; "" = chat
 embedding = "text-embedding-3-small"   # changing it requires re-indexing
 second_embedding = "text-embedding-3-large"   # dual_doc_slots: the second model (its own index)
 # base_url = "https://..."       # gateway URL (unset: the SDK reads $OPENAI_BASE_URL)

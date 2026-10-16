@@ -81,6 +81,8 @@ class Run:
 @dataclass(frozen=True)
 class Models:
     chat: str = _opt("the chat model's name at the provider; it must have a price in pricing.json", "gpt-4o-mini")
+    rerank: str = _opt("the chat model for the reranking call only (it must have a price in pricing.json); empty "
+                       "uses models.chat", "")
     embedding: str = _opt("the embedding model's name; changing it means building the index again", "text-embedding-3-small")
     second_embedding: str = _opt("the second embedding model of the dual_doc_slots retriever (its own index: "
                                  "paths.second_index_dir)", "text-embedding-3-large")
