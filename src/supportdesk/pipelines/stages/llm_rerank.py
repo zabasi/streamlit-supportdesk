@@ -103,12 +103,31 @@ def model_grades(text: str, count: int) -> dict[int, str]:
     return grades
 
 
+_HEADING_LINE = re.compile(r"^#{1,6}\s+(.+?)\s*#*\s*$")
+_FENCE = re.compile(r"^\s*(```|~~~)")
+
+
+def chunk_headings(text: str, *, limit: int = 6) -> list[str]:
+    """The Markdown headings inside a chunk, in order (not lines inside code fences): the sections it
+    contains, which its focused window may not show."""
+    out, fenced = [], False
+    for line in text.splitlines():
+        if _FENCE.match(line):
+            fenced = not fenced
+        elif not fenced and (m := _HEADING_LINE.match(line)):
+            out.append(m.group(1).strip())
+    return out[:limit]
+
+
 class LLMReranker:
     """Reorders the candidates with one model call: the most useful for the report first."""
 
     def __init__(self, clients, settings):
         self.clients, self.snippet = clients, settings.retrieval.rerank_snippet_chars
         self.snippet_mode = settings.retrieval.rerank_snippet  # start | focused
+        self.show_sections = settings.retrieval.rerank_show_sections
+        from ...llm.factory import chat_client_for
+        self.chat = chat_client_for(clients, settings, settings.models.rerank)  # models.rerank, or the chat model
         self.concepts = None
         if settings.retrieval.rerank_show_concepts:  # the query stage's concept queries (replayed from the cache)
             from .rewrite_query import make_query_rewriter
@@ -133,7 +152,11 @@ class LLMReranker:
             snippets = [focused_snippet(h.chunk.text, weights, self.snippet) for h in hits]
         else:
             snippets = [" ".join(h.chunk.text.split())[: self.snippet] for h in hits]
-        listing = "\n\n".join(f"C{n}: [{h.chunk.source_type}] {h.chunk.title}\n{snippet}"
+        def header(h: Hit) -> str:  # with rerank_show_sections, the sections the whole chunk contains
+            sections = chunk_headings(h.chunk.text) if self.show_sections else []
+            return "Sections: " + " · ".join(sections) + "\n" if sections else ""
+
+        listing = "\n\n".join(f"C{n}: [{h.chunk.source_type}] {h.chunk.title}\n{header(h)}{snippet}"
                                 for n, (h, snippet) in enumerate(zip(hits, snippets), start=1))
         content = f"## Report\n{report}\n\n"
         if self.concepts is not None:
@@ -141,7 +164,7 @@ class LLMReranker:
             if mechanisms:
                 content += "## Mechanisms involved\n" + "\n".join(f"- {m}" for m in mechanisms) + "\n\n"
         content += f"## Candidates\n{listing}"
-        text, _ = self.clients.chat.complete([{"role": "system", "content": self.prompt},
+        text, _ = self.chat.complete([{"role": "system", "content": self.prompt},
                                               {"role": "user", "content": content}],
                                              stage="rerank", json_mode=True)
         return text

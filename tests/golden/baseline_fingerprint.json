@@ -21,7 +21,7 @@
   "supportdesk.data.chunking.Exclusions": "3f9f93bf0b09d43c",
   "supportdesk.data.chunking.FixedTokenChunker": "cea3b9b5fa24950a",
   "supportdesk.data.chunking.build_chunks": "cf1432f18b65d3a8",
-  "supportdesk.data.chunking.chunk_text": "e8ea82497f2b9dce",
+  "supportdesk.data.chunking.chunk_text": "eac9c6397d5a5893",
   "supportdesk.data.clean.clean_text": "e1ab2054028936a4",
   "supportdesk.retrieval.filters.parse_ts": "9c2705aa7df5145a",
   "supportdesk.retrieval.filters.visible_mask": "9d5a3c8e06cf7095",

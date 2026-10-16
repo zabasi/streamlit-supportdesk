@@ -47,9 +47,8 @@ def page_texts(chunks: list[Chunk]) -> dict[str, str]:
     return pages
 
 
-def section_spans(text: str) -> list[tuple[int, int]]:
-    """(start, end) of the page's top-level sections: cut before each heading of the shallowest level
-    from ## down (outside code fences). Text before the first such heading is a section too."""
+def _headings(text: str) -> list[tuple[int, int]]:
+    """(position, level) of every heading from ## down, outside code fences."""
     headings, fence, pos = [], None, 0
     for line in text.splitlines(keepends=True):
         opener = _FENCE.match(line)
@@ -63,11 +62,35 @@ def section_spans(text: str) -> list[tuple[int, int]]:
             if heading:
                 headings.append((pos, len(heading.group(1))))
         pos += len(line)
+    return headings
+
+
+def section_spans(text: str) -> list[tuple[int, int]]:
+    """(start, end) of the page's top-level sections: cut before each heading of the shallowest level
+    from ## down (outside code fences). Text before the first such heading is a section too."""
+    headings = _headings(text)
     if not headings:
         return [(0, len(text))]
     top = min(level for _, level in headings)
     cuts = sorted({0, *(p for p, level in headings if level == top), len(text)})
     return [(a, b) for a, b in pairwise(cuts) if text[a:b].strip()]
+
+
+def nested_sections(text: str) -> list[tuple[int, int, int]]:
+    """(start, end, level) of every section at every level from ## down: a section runs from its heading
+    to the next heading of the same or a higher level (outside code fences)."""
+    headings = _headings(text)
+    out = []
+    for n, (start, level) in enumerate(headings):
+        end = next((p for p, lv in headings[n + 1:] if lv <= level), len(text))
+        out.append((start, end, level))
+    return out
+
+
+def innermost_section(sections: list[tuple[int, int, int]], pos: int) -> tuple[int, int, int] | None:
+    """The deepest section containing ``pos`` (the subsection it is in), or None before the first heading."""
+    around = [s for s in sections if s[0] <= pos < s[1]]
+    return max(around, key=lambda s: (s[2], s[0])) if around else None
 
 
 class Sections:

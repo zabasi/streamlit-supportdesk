@@ -38,10 +38,15 @@ def chunk_text(text: str, *, max_tokens: int, overlap: int) -> list[tuple[str, i
     spans = tokenize_with_spans(text)
     if not spans:
         return []
+    # The tokenizer counts words, not punctuation, so a window from its first to its last word would leave
+    # out whatever comes before the source's first word or after its last (a closing ".", ")" or code fence):
+    # the first window starts, and the last one ends, at the source's own non-space edges instead.
+    lead, tail = len(text) - len(text.lstrip()), len(text.rstrip())
     out, start, step = [], 0, max_tokens - overlap
     while start < len(spans):
         end = min(start + max_tokens, len(spans))
-        first, last = spans[start][1], spans[end - 1][2]
+        first = lead if start == 0 else spans[start][1]
+        last = tail if end == len(spans) else spans[end - 1][2]
         out.append((text[first:last], first, last))
         if end == len(spans):
             break

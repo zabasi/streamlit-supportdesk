@@ -115,7 +115,9 @@ Defaults shown are the built-in ones. `*unset*` means the key is optional and no
 | Key | Default | What it does |
 |---|---|---|
 | `chat` | `gpt-4o-mini` | the chat model's name at the provider; it must have a price in pricing.json |
+| `rerank` | `` | the chat model for the reranking call only (it must have a price in pricing.json); empty uses models.chat |
 | `embedding` | `text-embedding-3-small` | the embedding model's name; changing it means building the index again |
+| `second_embedding` | `text-embedding-3-large` | the second embedding model of the dual_doc_slots retriever (its own index: paths.second_index_dir) |
 | `base_url` | *unset* | the provider's URL; if unset, it is read from the OPENAI_BASE_URL environment variable |
 | `api_key_env` | `OPENAI_API_KEY` | the name of the environment variable that holds the API key (never the key itself) |
 
@@ -149,6 +151,7 @@ Defaults shown are the built-in ones. `*unset*` means the key is optional and no
 | `ledger_path` | `artifacts/cost_ledger.jsonl` | record of every live call's cost; it counts toward the budget across runs |
 | `pricing_path` | `configs/pricing.json` | per-model prices used by the budget guard |
 | `summaries` | `data/summaries/sections.jsonl` | section summaries written by scripts/summarize_sections.py (SummaryReranker) |
+| `second_index_dir` | `index/large` | the dual_doc_slots retriever's second index, built with models.second_embedding |
 | `clusters` | `data/clusters/clusters.jsonl` | topic clusters written by scripts/build_clusters.py (cluster_doc_slots retriever) |
 
 ### `[budget]`
@@ -202,7 +205,17 @@ Defaults shown are the built-in ones. `*unset*` means the key is optional and no
 | `summary_sections` | `0` | SummaryReranker: before reranking, add the chunks of this many documentation sections whose summaries best match the queries (0 = off) |
 | `hier_sections` | `3` | hierarchical retrievers: how many documentation sections, chosen by comparing the query with the section summaries, the chunk search looks inside |
 | `hier_places` | `3` | hierarchical retrievers: how many of the returned chunks come from inside those sections; the rest come from the ordinary search |
-| `complete` | `none` | after reranking, repair each kept documentation chunk's edges: none \| neighbors (add the chunk before and after it) \| section (grow to the whole top-level sections it touches) \| trim (drop a short leading fragment, so it starts at a heading) \| section_trim (trim the start, complete the last section) |
+| `second_weight` | `0.5` | dual_doc_slots: how much the second embedding model's ranking counts against the main model's in the fusion |
+| `report_views` | `none` | advanced: extra searches besides the queries, comma-separated: title (the report's title alone), code (its st.* commands, their parameter names and its error lines), or none; fused with the report's ranking at view_weight |
+| `view_weight` | `0.5` | report_views: how much each view's ranking counts against the report's |
+| `rerank_show_sections` | `False` | the reranker also sees the headings of the sections each candidate contains, which its window may not show |
+| `pool_mode` | `fuse` | advanced: how the reranker's candidates are chosen: fuse (every query's ranking merged with RRF, the best candidate_k kept) \| quota (fixed shares: the report's best dense and BM25 chunks, and the concept queries' best dense chunks) |
+| `quota_report_dense` | `5` | pool_mode = quota: dense chunks from the cleaned report |
+| `quota_report_bm25` | `5` | pool_mode = quota: keyword (BM25) chunks from the cleaned report |
+| `quota_concepts_dense` | `10` | pool_mode = quota: dense chunks from the concept queries, taken in turns |
+| `concept_weight` | `1.0` | with concept queries after the cleaned report (keep_report_query), how much each concept query's ranking counts in the fusion against the report's (1 = equal, plain RRF; below 1, the report's matches keep the lead) |
+| `decompose` | `True` | advanced: write concept queries (the decompose step) besides the cleaned report; false searches with the cleaned report alone and reranks without the mechanisms list |
+| `complete` | `none` | after reranking, repair each kept documentation chunk's edges: none \| neighbors (add the chunk before and after it) \| section (grow to the whole top-level sections it touches) \| subsection (grow each edge only to the innermost section around it) \| trim (drop a short leading fragment, so it starts at a heading) \| section_trim (trim the start, complete the last section) |
 | `complete_max_tokens` | `900` | retrieval.complete: the most tokens a repaired chunk may grow to |
 | `cluster_size` | `100` | cluster routing: about how many chunks scripts/build_clusters.py puts in each topic cluster (k-means on the chunk embeddings) |
 | `cluster_method` | `kmeans` | cluster routing: how scripts/build_clusters.py groups the chunks: kmeans (the embeddings as they are) \| centered (each source type's average removed first, so clusters follow topic rather than writing style) \| doc_anchored (the documentation clustered alone, centered; every other chunk joins its nearest documentation cluster) |

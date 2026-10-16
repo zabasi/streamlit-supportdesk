@@ -9,7 +9,7 @@ from ..llm.protocols import EmbeddingClient
 from ..types import Chunk
 from .bm25 import BM25
 from .filters import visible_mask
-from .fusion import rrf
+from .fusion import rrf, weighted_rrf
 from .index import VectorIndex
 
 
@@ -245,12 +245,14 @@ class SplitDocSlotsRetriever:
                 for rank, (i, found) in enumerate(merged, start=1)]
 
 
-def fuse_hits(rankings: list[list[Hit]], k: int, *, rrf_k: int) -> list[Hit]:
+def fuse_hits(rankings: list[list[Hit]], k: int, *, rrf_k: int, weights: list[float] | None = None) -> list[Hit]:
     """Merge several per-query rankings into one with RRF (used when a query stage returns more
-    than one query). The first occurrence of a chunk supplies the chunk object."""
+    than one query). The first occurrence of a chunk supplies the chunk object. With ``weights``, each
+    ranking counts that much (weighted RRF); without them, plain RRF as always."""
     chunks: dict[str, Chunk] = {}
     for ranking in rankings:
         for hit in ranking:
             chunks.setdefault(hit.chunk.chunk_id, hit.chunk)
-    fused = rrf([[h.chunk.chunk_id for h in ranking] for ranking in rankings], k=rrf_k)[:k]
+    ids = [[h.chunk.chunk_id for h in ranking] for ranking in rankings]
+    fused = (rrf(ids, k=rrf_k) if weights is None else weighted_rrf(ids, weights, k=rrf_k))[:k]
     return [Hit(chunks[cid], score, rank, "fused") for rank, (cid, score) in enumerate(fused, 1)]
