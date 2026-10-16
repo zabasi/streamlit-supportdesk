@@ -130,6 +130,8 @@ Defaults shown are the built-in ones. `*unset*` means the key is optional and no
 | `rewrite` | `configs/prompts/rewrite_system.txt` | system prompt of the query-rewriting call (QueryRewriter) |
 | `rerank` | `configs/prompts/rerank_system.txt` | system prompt of the reranking call (LLMReranker) |
 | `scope` | `configs/prompts/scope_system.txt` | system prompt of the pre-retrieval scope classifier (scope gate on advanced) |
+| `topic_discover` | `configs/prompts/topic_discover_system.txt` | system prompt that grows a list of routing topics from the corpus, batch by batch (scripts/discover_topics.py) |
+| `topic_refine` | `configs/prompts/topic_refine_system.txt` | system prompt that merges the discovered topics into the target range |
 | `topic_classify` | `configs/prompts/topic_classify_system.txt` | system prompt that labels chunks and reports with a fixed list of Streamlit topics (class_doc_slots) |
 | `label_cluster` | `configs/prompts/label_cluster_system.txt` | system prompt that names a topic cluster and lists its keywords (scripts/build_clusters.py) |
 | `scope_rewrite` | `configs/prompts/scope_rewrite_system.txt` | system prompt of the combined scope check and concept queries, one call (pipeline.scope_gate = combined) |

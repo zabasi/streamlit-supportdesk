@@ -99,6 +99,10 @@ class Prompts:
     rerank: Path = _opt("system prompt of the reranking call (LLMReranker)", Path("configs/prompts/rerank_system.txt"))
     scope: Path = _opt("system prompt of the pre-retrieval scope classifier (scope gate on advanced)",
                        Path("configs/prompts/scope_system.txt"))
+    topic_discover: Path = _opt("system prompt that grows a list of routing topics from the corpus, batch by batch "
+                                "(scripts/discover_topics.py)", Path("configs/prompts/topic_discover_system.txt"))
+    topic_refine: Path = _opt("system prompt that merges the discovered topics into the target range",
+                              Path("configs/prompts/topic_refine_system.txt"))
     topic_classify: Path = _opt("system prompt that labels chunks and reports with a fixed list of Streamlit "
                                 "topics (class_doc_slots)", Path("configs/prompts/topic_classify_system.txt"))
     label_cluster: Path = _opt("system prompt that names a topic cluster and lists its keywords "
