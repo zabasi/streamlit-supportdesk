@@ -13,6 +13,7 @@ Stay on --split dev. Do not commit .env.
 from __future__ import annotations
 
 import argparse
+import contextlib
 import json
 import os
 import sys
@@ -20,17 +21,14 @@ import time
 from datetime import datetime, timezone
 from pathlib import Path
 
-try:
+with contextlib.suppress(AttributeError, OSError, ValueError):  # line-buffered output where supported
     sys.stdout.reconfigure(line_buffering=True)
     sys.stderr.reconfigure(line_buffering=True)
-except Exception:
-    pass
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path[:0] = [str(ROOT / "src"), str(ROOT / "scripts"), str(ROOT)]
 
 from dotenv import load_dotenv
-
 from hier_class_rag import (
     METHOD_LABELS,
     OUT,
@@ -39,6 +37,7 @@ from hier_class_rag import (
     _load_settings,
     _run_dir,
 )
+
 from supportdesk.data.corpus import load_corpus
 from supportdesk.eval.grounded_metrics import evaluate_grounded, format_confusion, format_grounded
 from supportdesk.generation.grounded import ExtractiveAnswerer, run_grounded_turn
@@ -137,25 +136,25 @@ def _write_comparison(rows: dict[str, dict], path: Path) -> None:
         h = body["metrics"]["headline"]
         oc = h.get("outcomes") or {}
 
-        def cell(key):
+        def cell(key, h=h):  # this iteration's headline
             value = h.get(key)
             return "n/a" if value is None else value
 
         by = h.get("by_category") or {}
 
-        def cat(key):
+        def cat(key, by=by):  # this iteration's categories
             row = by.get(key) or {}
             acc = row.get("outcome_accuracy")
             return "n/a" if acc is None else acc
 
         lines.append(
-            (
+            
                 f"| `{name}` | {oc.get('answer', 0)} | {oc.get('request_info', 0)} | "
                 f"{oc.get('escalate', 0)} | {oc.get('validation_failed', 0)} | "
                 f"{cell('outcome_accuracy')} | {cat('answerable')} | {cat('ambiguous')} | "
                 f"{cat('escalation')} | {cell('claim_support_rate')} | "
                 f"{cell('citation_precision')} |"
-            ))
+            )
     lines += [
         "",
         "## How to read the numbers",

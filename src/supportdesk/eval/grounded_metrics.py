@@ -77,8 +77,8 @@ def confusion_matrix(pairs: list[tuple[EvalCase, dict]]) -> dict:
             continue
         pred = row.get("outcome") or "unknown"
         if pred not in counts[gold]:
-            for g in counts:
-                counts[g][pred] = 0
+            for row_counts in counts.values():
+                row_counts[pred] = 0
             predicted_labels.append(pred)
         counts[gold][pred] += 1
         n += 1
@@ -243,8 +243,8 @@ def _show(value) -> str:
 def format_grounded(m: dict) -> str:
     h = m.get("headline") or m
     lines = [
-        f"cases: {h.get('n_cases')}   outcomes {h.get('outcomes')}   "
-        f"outcome accuracy {_show(h.get('outcome_accuracy'))}",
+        (f"cases: {h.get('n_cases')}   outcomes {h.get('outcomes')}   "
+        f"outcome accuracy {_show(h.get('outcome_accuracy'))}"),
     ]
     cats = h.get("by_category") or {}
     if cats:

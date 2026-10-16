@@ -21,7 +21,7 @@ from ..eval.cases import EvalCase
 from ..llm.errors import ProviderError
 from ..pipelines.packet import Packet
 from ..pipelines.parsing import NotJson, extract_json
-from ..types import CaseInput, Chunk
+from ..types import CaseInput
 from .grounded import GroundedTurn
 from .policy_context import OUTCOMES, context, reference_map
 
@@ -32,7 +32,7 @@ PROMPT_V3C_PATH = ROOT / "configs" / "prompts" / "policy_v3c_system.txt"
 FROZEN_INPUTS = ROOT / "experiments" / "generation_policy_v3" / "inputs" / "model_inputs.jsonl"
 ALLOWED_MODELS = ("gpt-4o-mini", "gpt-5.4-mini", "gpt-5-mini")
 INLINE_REF = re.compile(r"\[((?:S|R|H)\d+)\]")
-CODE_FENCE = re.compile(r"```(?:python|py)[ \t]*\n(.*?)```", re.I | re.S)
+CODE_FENCE = re.compile(r"```(?:python|py)[ \t]*\n(.*?)```", re.IGNORECASE | re.DOTALL)
 
 
 def sha(data: bytes) -> str:
@@ -110,9 +110,9 @@ def check(value, spec: dict, path: str = "$") -> None:
         raise ValueError(path + ": unknown value/reference")
     if "pattern" in spec and not re.search(spec["pattern"], value):
         raise ValueError(path + ": empty text")
-    if isinstance(value, str):
-        if len(value) < spec.get("minLength", 0) or len(value) > spec.get("maxLength", len(value)):
-            raise ValueError(path + ": text outside length allowance")
+    if isinstance(value, str) and (len(value) < spec.get("minLength", 0)
+                                   or len(value) > spec.get("maxLength", len(value))):
+        raise ValueError(path + ": text outside length allowance")
     if isinstance(value, dict):
         if set(value) != set(spec["required"]):
             raise ValueError(path + ": missing or extra fields")
@@ -404,15 +404,15 @@ def run_policy_turn(case: EvalCase | CaseInput, sources: list[dict], chat, *,
     sources_ids = packet_source_ids(packet) if packet.chunks else [
         s["source_id"] for s in sources if s.get("source_id")]
     has_gold = bool(set(sources_ids) & gold) if gold is not None else None
-    base = dict(
-        case_id=incoming.case_id, question=question,
-        retrieved_chunk_ids=[c.chunk_id for c in packet.chunks],
-        packet=_packet_rows(packet),
-        packet_source_ids=list(sources_ids),
-        packet_has_gold=has_gold,
-        evidence_token_count=packet.token_count,
-        evidence_kind=evidence_kind,
-    )
+    base = {
+        "case_id": incoming.case_id, "question": question,
+        "retrieved_chunk_ids": [c.chunk_id for c in packet.chunks],
+        "packet": _packet_rows(packet),
+        "packet_source_ids": list(sources_ids),
+        "packet_has_gold": has_gold,
+        "evidence_token_count": packet.token_count,
+        "evidence_kind": evidence_kind,
+    }
     if not sources or not any(s.get("passages") for s in sources):
         return PolicyTurn(
             outcome="escalate",

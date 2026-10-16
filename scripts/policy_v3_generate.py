@@ -13,6 +13,7 @@ Stay on --split dev. Do not commit .env. Gold evidence is not a RAG score: the m
 from __future__ import annotations
 
 import argparse
+import contextlib
 import csv
 import json
 import os
@@ -20,19 +21,17 @@ import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
-try:
+with contextlib.suppress(AttributeError, OSError, ValueError):  # line-buffered output where supported
     sys.stdout.reconfigure(line_buffering=True)
     sys.stderr.reconfigure(line_buffering=True)
-except Exception:
-    pass
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path[:0] = [str(ROOT / "src"), str(ROOT / "scripts"), str(ROOT)]
 
 from dotenv import load_dotenv
-
 from hier_class_generate import GEN_OUT, _index_kind, load_chunks, reconstruct_packet
 from hier_class_rag import _canonical, _cases, _load_settings, _run_dir
+
 from supportdesk.data.corpus import load_corpus
 from supportdesk.eval.annotated import DEFAULT_ANNOTATED
 from supportdesk.eval.grounded_metrics import evaluate_grounded, format_confusion, format_grounded
@@ -107,20 +106,20 @@ def _write_report(path: Path, *, matrix: dict, live: dict | None = None) -> None
         "",
         f"Generated {datetime.now(timezone.utc).isoformat(timespec='seconds')}.",
         "",
-        "This is the tested support-record generator (one JSON call, literal report "
+        ("This is the tested support-record generator (one JSON call, literal report "
         "quotes, official `answer` / `request_info` / `escalate`). It is not the HW03 "
-        "claim-support checker.",
+        "claim-support checker."),
         "",
         "## Measured run (2026-10-16, gold passages, gpt-5.4-mini)",
         "",
-        "15/15 contract-valid. Action match **9/15 (60%)**. Evidence was 81 curated "
-        "selected passages, not retrieval chunks. Content accuracy was not scored.",
+        ("15/15 contract-valid. Action match **9/15 (60%)**. Evidence was 81 curated "
+        "selected passages, not retrieval chunks. Content accuracy was not scored."),
         "",
         format_confusion(matrix),
         "",
-        "Read a row to see where that gold label went. Clarification is underused "
+        ("Read a row to see where that gold label went. Clarification is underused "
         "(4 of 6 `request_info` became `escalate`). Direct app-code answers are the "
-        "strong cell (5/6).",
+        "strong cell (5/6)."),
         "",
     ]
     if matrix.get("conclusion"):
@@ -130,8 +129,8 @@ def _write_report(path: Path, *, matrix: dict, live: dict | None = None) -> None
         lines += [
             "## This repo run",
             "",
-            f"evidence `{live.get('evidence')}`  model `{live.get('model')}`  "
-            f"mode `{live.get('mode')}`  outcome accuracy {h.get('outcome_accuracy')}",
+            (f"evidence `{live.get('evidence')}`  model `{live.get('model')}`  "
+            f"mode `{live.get('mode')}`  outcome accuracy {h.get('outcome_accuracy')}"),
             "",
             format_confusion(h.get("confusion_matrix") or {}),
             "",
@@ -254,7 +253,7 @@ def _run_snapshot(dest: Path) -> dict:
         "confusion": headline.get("confusion_matrix"),
         "n": n,
         "accuracy": acc,
-        "correct": int(round((acc or 0) * n)) if acc is not None else sum(
+        "correct": round((acc or 0) * n) if acc is not None else sum(
             1 for t in turns if False),
         "cost": costs.get("total_cost_usd"),
     }
@@ -268,11 +267,10 @@ def _write_prompt_compare(path: Path, *, live: dict, costs: dict, prompt_name: s
     orig_snap = _run_snapshot(PREV_LIVE)
     v3b_snap = _run_snapshot(V3B_LIVE)
     n = live_h.get("n_cases") or 15
-    live_correct = int(round((live_h.get("outcome_accuracy") or 0) * n))
+    live_correct = round((live_h.get("outcome_accuracy") or 0) * n)
     orig_match = sum(1 for r in orig_rows if str(r.get("action_label_match")).lower() == "true")
     folder_cost = sum(float(r.get("cost_usd") or 0) for r in orig_rows)
     baseline_correct = v3b_snap.get("correct") if v3b_snap.get("n") else orig_snap.get("correct")
-    baseline_n = v3b_snap.get("n") if v3b_snap.get("n") else orig_snap.get("n")
     if live_correct > (baseline_correct or 0):
         verdict = (f"**The new prompt is better** on this 15-case set: "
                    f"{live_correct}/{n} vs v3b {v3b_snap.get('correct')}/{v3b_snap.get('n')}.")
@@ -290,8 +288,8 @@ def _write_prompt_compare(path: Path, *, live: dict, costs: dict, prompt_name: s
         "",
         f"Generated {datetime.now(timezone.utc).isoformat(timespec='seconds')}.",
         "",
-        "Same 15 annotated development cases, same gold passages, same model "
-        "`gpt-5.4-mini`. Only the system prompt changed.",
+        ("Same 15 annotated development cases, same gold passages, same model "
+        "`gpt-5.4-mini`. Only the system prompt changed."),
         "",
         f"The new prompt is `{prompt_name}`.",
         "",
@@ -299,14 +297,14 @@ def _write_prompt_compare(path: Path, *, live: dict, costs: dict, prompt_name: s
         "",
         "| method | prompt | correct | accuracy | cost USD |",
         "|---|---|---:|---:|---:|",
-        f"| generation folder policy v3 | original | {orig_match}/{len(orig_rows) or 15} | "
-        f"{(orig_match / (len(orig_rows) or 15)):.4f} | {round(folder_cost, 6)} |",
-        f"| this repo original live v3 | `policy_v3_system.txt` | "
-        f"{orig_snap.get('correct')}/{orig_snap.get('n')} | {orig_snap.get('accuracy')} | {orig_cost} |",
-        f"| this repo v3b | `policy_v3b_system.txt` | "
-        f"{v3b_snap.get('correct')}/{v3b_snap.get('n')} | {v3b_snap.get('accuracy')} | {v3b_snap.get('cost')} |",
-        f"| this repo new prompt | `{prompt_name}` | {live_correct}/{n} | "
-        f"{live_h.get('outcome_accuracy')} | {costs.get('total_cost_usd')} |",
+        (f"| generation folder policy v3 | original | {orig_match}/{len(orig_rows) or 15} | "
+        f"{(orig_match / (len(orig_rows) or 15)):.4f} | {round(folder_cost, 6)} |"),
+        (f"| this repo original live v3 | `policy_v3_system.txt` | "
+        f"{orig_snap.get('correct')}/{orig_snap.get('n')} | {orig_snap.get('accuracy')} | {orig_cost} |"),
+        (f"| this repo v3b | `policy_v3b_system.txt` | "
+        f"{v3b_snap.get('correct')}/{v3b_snap.get('n')} | {v3b_snap.get('accuracy')} | {v3b_snap.get('cost')} |"),
+        (f"| this repo new prompt | `{prompt_name}` | {live_correct}/{n} | "
+        f"{live_h.get('outcome_accuracy')} | {costs.get('total_cost_usd')} |"),
         "",
         "### Original live v3 confusion",
         "",
@@ -342,8 +340,8 @@ def _write_prompt_compare(path: Path, *, live: dict, costs: dict, prompt_name: s
         "",
         verdict,
         "",
-        "Gold evidence is not a RAG ranking. Do not treat contract-valid JSON as a "
-        "verified Streamlit patch.",
+        ("Gold evidence is not a RAG ranking. Do not treat contract-valid JSON as a "
+        "verified Streamlit patch."),
         "",
     ]
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -373,7 +371,7 @@ def _write_head_to_head(path: Path, *, live: dict, costs: dict) -> None:
             "name": "this repo policy v3 live (gpt-5.4-mini)",
             "model": costs.get("model"),
             "evidence": costs.get("evidence"),
-            "correct": int(round((live_acc or 0) * (live_h.get("n_cases") or 0))),
+            "correct": round((live_acc or 0) * (live_h.get("n_cases") or 0)),
             "n": live_h.get("n_cases") or 0,
             "accuracy": live_acc,
             "total_cost_usd": costs.get("total_cost_usd"),
@@ -382,7 +380,7 @@ def _write_head_to_head(path: Path, *, live: dict, costs: dict) -> None:
             "name": "this repo HW03 grounded + advanced retrieve",
             "model": hw03.get("model"),
             "evidence": hw03.get("evidence"),
-            "correct": int(round((hw03.get("outcome_accuracy") or 0) * (hw03.get("n_cases") or 0))),
+            "correct": round((hw03.get("outcome_accuracy") or 0) * (hw03.get("n_cases") or 0)),
             "n": hw03.get("n_cases") or 0,
             "accuracy": hw03.get("outcome_accuracy"),
             "total_cost_usd": hw03.get("total_cost_usd"),
@@ -402,8 +400,8 @@ def _write_head_to_head(path: Path, *, live: dict, costs: dict) -> None:
         "",
         "## Costs (this live run)",
         "",
-        f"Model `{costs.get('model')}`  evidence `{costs.get('evidence')}`  "
-        f"**total ${costs.get('total_cost_usd')}**  n={costs.get('n_cases')}",
+        (f"Model `{costs.get('model')}`  evidence `{costs.get('evidence')}`  "
+        f"**total ${costs.get('total_cost_usd')}**  n={costs.get('n_cases')}"),
         "",
         "| case_id | outcome | input tokens | output tokens | cost USD |",
         "|---|---|---:|---:|---:|",
@@ -459,13 +457,13 @@ def _write_head_to_head(path: Path, *, live: dict, costs: dict) -> None:
         "",
         "## Which method is best",
         "",
-        f"**{winner['name']}** is best on this 15-case set: "
+        (f"**{winner['name']}** is best on this 15-case set: "
         f"{winner['correct']}/{winner['n']} correct "
-        f"(accuracy {winner['accuracy']}), total ${winner['total_cost_usd']}.",
+        f"(accuracy {winner['accuracy']}), total ${winner['total_cost_usd']}."),
         "",
-        "Accuracy is the official outcome match. The generation-folder and this live "
+        ("Accuracy is the official outcome match. The generation-folder and this live "
         "v3 run share gold evidence; HW03 is harder because it only sees retrieved chunks. "
-        "Do not treat a contract-valid JSON record as a verified Streamlit patch.",
+        "Do not treat a contract-valid JSON record as a verified Streamlit patch."),
         "",
     ]
     path.parent.mkdir(parents=True, exist_ok=True)

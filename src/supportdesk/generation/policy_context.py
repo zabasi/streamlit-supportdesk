@@ -68,7 +68,8 @@ def reference_map(row: dict, history: list | None = None) -> dict[str, dict]:
         refs[f"R{i}"] = {"kind": "report", **block}
     messages = case.get("history", []) if history is None else history
     if not isinstance(messages, list):
-        raise ValueError("History must be a chronological JSON array")
+        # ValueError like the other history checks: rendered() callers turn it into validation_failed
+        raise ValueError("History must be a chronological JSON array")  # noqa: TRY004
     for i, message in enumerate(messages, 1):
         if set(message) - {"role", "body", "content", "created_at"}:
             raise ValueError("Unknown history fields")
@@ -76,7 +77,7 @@ def reference_map(row: dict, history: list | None = None) -> dict[str, dict]:
             raise ValueError("History roles must be user or assistant")
         body = message.get("body", message.get("content"))
         if not isinstance(body, str):
-            raise ValueError("History message needs body/content text")
+            raise ValueError("History message needs body/content text")  # noqa: TRY004
         refs[f"H{i}"] = {"kind": "conversation", "role": message["role"], "text": body}
     n = 0
     for source in row["sources"]:
