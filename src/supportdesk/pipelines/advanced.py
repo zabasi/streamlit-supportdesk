@@ -153,6 +153,10 @@ def build_advanced(retriever: Retriever, clients: Clients, settings: Settings) -
     # MergedReranker; --set retrieval.corrective_turns=1 or retrieval.expand=... try those on this design
     stages["reranker"] = CorrectiveReranker(clients, settings, list(index.chunks) if index is not None else [],
                                             retriever)
+    if settings.pipeline.generator == "controlled_v2":  # one structured assessment; Python routes the action
+        from .stages.controlled import ControlledGenerator
+
+        stages["generator"] = ControlledGenerator(clients, settings)
     extra_nodes: list = []
     return WeightedFusionPipeline(name="advanced", clients=clients, settings=settings, extra_nodes=extra_nodes,
                                   **stages)

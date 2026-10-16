@@ -14,6 +14,7 @@ EXPECTED = {
                                              "retrieval.rerank_merge": "alternate"},
     "candidate-4-dense-rerank-section-6chunks": {"retrieval.top_k": 6, "retrieval.rerank_keep_docs": 3,
                                                  "context.max_tokens": 3200},
+    "candidate-5-dense-rerank-section-controlled-v2": {"pipeline.generator": "controlled_v2"},
 }
 SECTIONS = ("chunking", "retrieval", "context", "prompts", "pipeline")
 

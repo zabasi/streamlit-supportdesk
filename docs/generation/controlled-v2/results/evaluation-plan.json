@@ -1,0 +1,32 @@
+{
+  "selected_before_outputs": true,
+  "cases": 15,
+  "fresh_calls": 15,
+  "primary_checks": [
+    "Decision agreement and confusion matrix for all original category labels.",
+    "Useful clarification on missing user-providable facts, without inventing code/architecture or repeating supplied facts.",
+    "Preserve supported answer behavior and complete integrated edits.",
+    "Retain warranted escalation and supplied discriminating controls."
+  ],
+  "secondary_checks": [
+    "Structured-contract errors are not silently removed from the denominator.",
+    "Exact controller rendering and copied report provenance.",
+    "Same-request variation on the prior three-case sample.",
+    "Usage/cost and preserved frozen artifacts."
+  ],
+  "comparison": "Earlier saved complete policy-v3 run and routing-v1 run; schema/prompt/controller differ, so not causal attribution to the router alone.",
+  "data_unchanged": true,
+  "fixed_diagnostic_criteria": "artifacts/reports/generation-policy-v4-20261016/acceptance-checklist.json",
+  "semantic_review": "Assistant source-based inspection, not independent human grading or application execution.",
+  "not_tested": [
+    "Held-out test set",
+    "Live security/authorization gates",
+    "Real multi-turn user replies"
+  ],
+  "max_new_calls": 15,
+  "new_spend_cap_usd": 0.85,
+  "retries": 0,
+  "paid_grader_calls": 0,
+  "no_prompt_changes_during_run": true,
+  "limitation": "Adaptive development evaluation after repeated tuning on these same 15 cases, one fresh sample per case."
+}

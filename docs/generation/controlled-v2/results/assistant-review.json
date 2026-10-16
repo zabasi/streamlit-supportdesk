@@ -1,0 +1,380 @@
+{
+  "reviewer": "Assistant inspecting all 15 fresh replies and assessments against supplied report/source passages",
+  "independent_human_review": false,
+  "runtime_reproduction": false,
+  "content_accuracy": null,
+  "status_definitions": {
+    "usable_by_inspection": "Useful grounded next step with no material correction identified in this inspection; not runtime verified.",
+    "minor_revision": "Core question, correction or handoff is useful/defensible, but scope, wording, provenance or integration needs refinement.",
+    "needs_revision": "A missed discriminator, unsupported interpretation, material scope error or incomplete necessary correction remains."
+  },
+  "cases": [
+    {
+      "case_id": "DEV-5604",
+      "status": "needs_revision",
+      "question_quality": "useful_question_missed",
+      "summary": "Skips the initialization discriminator and escalates with unsupported hydration certainty.",
+      "strength": "Recognizes the fragile whole-state guard in a raw finding and preserves the reported expander/button symptom.",
+      "issues": [
+        "The assessment records no information gap even though a key-specific initialization comparison remains useful. A raw finding notices the broad guard but that does not influence routing.",
+        "The final reply treats initialization as settled and rules out direct app-code issues too strongly. Source guidance and historical analogies do not establish the reported 1.13.0 cause.",
+        "A finding says the symptom must come from hydration rather than a later mutation; absence of a later assignment does not prove that mechanism."
+      ],
+      "refs": [
+        "R5",
+        "R7",
+        "R12",
+        "R16",
+        "S1",
+        "S2",
+        "S3",
+        "S4",
+        "S5",
+        "S6"
+      ]
+    },
+    {
+      "case_id": "DEV-7044",
+      "status": "minor_revision",
+      "question_quality": "useful_with_caveats",
+      "summary": "Useful focused question about an unshown same-key assignment; no cause is asserted as observed.",
+      "strength": "Keeps a material user-providable gap alongside possible internal investigation, allowing the controller to ask before escalating.",
+      "issues": [
+        "A same-key write is a supported hypothesis, not a confirmed cause. A duplicate widget key is not independently established to cause this exact exception.",
+        "The negative hypothetical reply moves directly to escalation without establishing that all other useful checks are exhausted.",
+        "A raw finding says to keep a key only for reading state. Keys also serve widget identity; that optional workaround statement is too narrow and is correctly absent from the actual question reply."
+      ],
+      "refs": [
+        "R3",
+        "R4",
+        "R6",
+        "R16",
+        "R18",
+        "S2",
+        "S3",
+        "S4"
+      ]
+    },
+    {
+      "case_id": "DEV-9342",
+      "status": "minor_revision",
+      "question_quality": "useful_with_caveats",
+      "summary": "Asks the missing reproducing version before the ordinary internal-investigation proposal.",
+      "strength": "Correctly identifies a material missing fact and distinguishes callback-prefix assignment from direct same-pass post-widget mutation.",
+      "issues": [
+        "Knowing the version scopes investigation; it does not by itself establish that a bug is current, a regression or fixed. The reply overstates that determination.",
+        "The two hypothetical results are not clean alternatives: a currently installed release can itself be old. Their next steps need clearer version applicability.",
+        "The main-need wording groups slider with number_input although only number_input is reproduced. A clamp is bounded app advice, not verification of an internal product fix."
+      ],
+      "refs": [
+        "R3",
+        "R4",
+        "R8",
+        "R10",
+        "R18",
+        "S1",
+        "S2",
+        "S3",
+        "S4",
+        "S5",
+        "S6"
+      ]
+    },
+    {
+      "case_id": "DEV-4338",
+      "status": "minor_revision",
+      "question_quality": "none_proposed",
+      "summary": "Escalation differs from the stored answer label but preserves the unresolved historical first-value symptom.",
+      "strength": "Does not claim modern cleanup guidance proves a fix for both reported symptoms; retains the affected old version range and separates first-render seeding from cleanup.",
+      "issues": [
+        "The stored answerable category also contains a second historical symptom not fully resolved by the supplied sources. Count the action mismatch while flagging this scope ambiguity for team adjudication; do not relabel it.",
+        "Useful separate-key guidance for the explained cleanup portion appears only in raw findings and is omitted from the actual handoff reply.",
+        "Current widget identity rules must not be applied retroactively to 0.89.0–1.5.0 without evidence."
+      ],
+      "refs": [
+        "R2",
+        "R5",
+        "R7",
+        "R10",
+        "R12",
+        "R14",
+        "S1",
+        "S2",
+        "S3",
+        "S4",
+        "S5",
+        "S6"
+      ]
+    },
+    {
+      "case_id": "DEV-6166",
+      "status": "needs_revision",
+      "question_quality": "none_needed_for_proposed_product_review",
+      "summary": "Appropriate escalation direction, but loop-exit reasoning still confuses script interruption and normal completion.",
+      "strength": "Now cites the many-tab observation and distinguishes the shown shutdown path from the unknown timing before that path starts.",
+      "issues": [
+        "The loop never removes its condition key; key existence is not browser connection status. The response does not explicitly explain that distinction.",
+        "A stop request or script interruption does not imply normal exit from the while loop or execution of the following print. The findings still tie the post-loop print too directly to shutdown detection.",
+        "Batch cleanup can motivate investigation but does not verify asynchronous scheduling. Later community observations are not a verified fix for 1.18.1.",
+        "R20 is cited in the final reply but omitted from the six copied observations and the short summary. Preserve this useful clue explicitly in a practical handoff."
+      ],
+      "refs": [
+        "R3",
+        "R5",
+        "R7",
+        "R11",
+        "R14",
+        "R18",
+        "R20",
+        "S1",
+        "S2",
+        "S3",
+        "S4"
+      ]
+    },
+    {
+      "case_id": "DEV-16388",
+      "status": "minor_revision",
+      "question_quality": "none_needed_for_proposed_product_review",
+      "summary": "Correctly retains the one-rerun backend/frontend divergence as an investigation rather than answering with a reset workaround.",
+      "strength": "Recognizes that deletion already occurs through a callback and separates the later rehydration from the unresolved intermediate mismatch.",
+      "issues": [
+        "Keep the divergence explicitly user-reported, not independently reproduced. General documentation supports investigation but does not establish the internal cause or precise timing.",
+        "The bounded callback-assignment reset option could be provided as interim guidance, while preserving the unresolved product concern; its omission does not justify pretending the mismatch is solved."
+      ],
+      "refs": [
+        "R0",
+        "R3",
+        "R4",
+        "R5",
+        "R7",
+        "R13",
+        "R19",
+        "S1",
+        "S2",
+        "S3"
+      ]
+    },
+    {
+      "case_id": "DEV-3903",
+      "status": "needs_revision",
+      "question_quality": "useful_question_missed",
+      "summary": "Still invents an explicit-default problem in the first reproduction and skips the missing comparison.",
+      "strength": "The second snippet really does combine keyed state and explicit value arguments, which supports a bounded cleanup experiment.",
+      "issues": [
+        "R7 has no explicit value argument. The reply instructs removing one from that slider anyway.",
+        "R9 already assigns values before widget calls. Recommending pre-widget initialization as the resolution fails to explain the reported discrepancy.",
+        "The documentation warning is not proof of the historical frontend/backend cause or of a verified fix. The isolated comparison belongs in information_gaps, but that array is empty.",
+        "The renderer preserves the unsupported corrections faithfully; deterministic assembly does not repair semantic omissions."
+      ],
+      "refs": [
+        "R0",
+        "R2",
+        "R6",
+        "R7",
+        "R9",
+        "R13",
+        "S1",
+        "S2",
+        "S3",
+        "S4"
+      ]
+    },
+    {
+      "case_id": "DEV-4325",
+      "status": "needs_revision",
+      "question_quality": "not_needed_for_visible_code_correction",
+      "summary": "Retains answer routing, but the fresh repeat drops the persistent outer-stage correction.",
+      "strength": "The reply includes form batching, fresh keyed callback reads and a general correction of the state-name mismatch, and all identified edits reach the user reply.",
+      "issues": [
+        "The outer Start Labeling button gate remains a critical blocker. Neither the answer nor its findings instructs persisting that stage in this fresh sample, unlike the earlier identical-request three-case output.",
+        "The singular/plural mismatch is identified in the raw finding, but the final correction is generic instead of naming current_image/current_images.",
+        "Storage/counter initialization and next-item advancement remain high-level. Three of four finding slots cover overlapping form/value wiring; an essential enclosing-state edit is lost.",
+        "A schema-valid answer with all generated edits preserved can still be incomplete. No corrected app was executed."
+      ],
+      "refs": [
+        "R2",
+        "R3",
+        "R6",
+        "R11",
+        "R13",
+        "S1",
+        "S2",
+        "S3",
+        "S4",
+        "S5",
+        "S6",
+        "S7",
+        "S8"
+      ]
+    },
+    {
+      "case_id": "DEV-7305",
+      "status": "usable_by_inspection",
+      "question_quality": "not_needed_for_visible_code_correction",
+      "summary": "Supported correction of immediate function invocation, widget key binding and the manual same-key assignment.",
+      "strength": "Uses the callable reference instead of update(), reads fresh keyed state in the callback and removes the problematic outer return-value write.",
+      "issues": [
+        "The reported key-only attempt was not sufficient; function registration and keyed reading must be applied together. No historical app execution or initial-display verification was performed."
+      ],
+      "refs": [
+        "R3",
+        "R5",
+        "R7",
+        "R11",
+        "R15",
+        "S1",
+        "S2",
+        "S3",
+        "S4",
+        "S5"
+      ]
+    },
+    {
+      "case_id": "DEV-3585",
+      "status": "minor_revision",
+      "question_quality": "discriminator_not_requested",
+      "summary": "A defensible historical investigation proposal still differs from the stored clarification label.",
+      "strength": "Keeps the actual on_click=callback wiring and explicitly recognizes newer documentation is not proof of 0.84.1 behavior in the raw findings.",
+      "issues": [
+        "The stored next action is clarification; an isolated clean-start reproduction comparison could still advance diagnosis before internal review.",
+        "The snippet and historical environment make escalation a plausible support alternative. Preserve the label mismatch and scope ambiguity rather than silently changing the label.",
+        "The final reply should carry the version-applicability qualification as clearly as the raw finding does."
+      ],
+      "refs": [
+        "R0",
+        "R2",
+        "R5",
+        "R7",
+        "R11",
+        "S1",
+        "S2"
+      ]
+    },
+    {
+      "case_id": "DEV-3842",
+      "status": "usable_by_inspection",
+      "question_quality": "not_needed_for_visible_code_correction",
+      "summary": "Correctly fixes unconditional count reset and preserves the state-driven form gate.",
+      "strength": "Explicit guarded initialization and the retained update-click path explain the visible code error without asking irrelevant questions.",
+      "issues": [
+        "The edit list is supported by the supplied code and references but was not run as a historical Streamlit application."
+      ],
+      "refs": [
+        "R0",
+        "R2",
+        "R5",
+        "R7",
+        "R9",
+        "R11",
+        "S1",
+        "S2",
+        "S3",
+        "S4"
+      ]
+    },
+    {
+      "case_id": "DEV-4082",
+      "status": "needs_revision",
+      "question_quality": "not_needed_for_visible_code_correction",
+      "summary": "Useful submit-time copying is mixed with an overbroad restriction and an incomplete stable-widget correction.",
+      "strength": "Separates collecting form values from writing application data on a successful submission.",
+      "issues": [
+        "The reply says not to rely on the widget return variable, while its own first edit permits binding a local variable. Post-submit return-value processing is supported; callback freshness guidance must not be generalized to all form processing.",
+        "The original widget receives value=data, which changes as application data changes. The reply does not explicitly stabilize/remove that changing default or preserve the intended initial value, leaving the historical alternating behavior insufficiently addressed.",
+        "Calling this the established cause/fix of the historical behavior overstates the supplied evidence. No corrected form was executed."
+      ],
+      "refs": [
+        "R0",
+        "R5",
+        "R6",
+        "R7",
+        "R9",
+        "R15",
+        "S1",
+        "S2",
+        "S3",
+        "S4",
+        "S5"
+      ]
+    },
+    {
+      "case_id": "DEV-5591",
+      "status": "minor_revision",
+      "question_quality": "useful_with_caveats",
+      "summary": "A useful code-level question replaces an unsupported architecture-specific answer.",
+      "strength": "Asks for the missing widget creation and surrounding state assignments rather than claiming a confirmed cleanup or write error.",
+      "issues": [
+        "Navigation implementation and version are still unknown; obtain them if needed before applying architecture/version-specific fixes after the code reply.",
+        "Raw findings prescribe persistence patterns before the actual code is known. They are suppressed from the final question but should remain conditional review data.",
+        "A negative code check does not by itself exhaust all useful clarification or prove a product defect."
+      ],
+      "refs": [
+        "R0",
+        "R3",
+        "R5",
+        "R17",
+        "S1",
+        "S2",
+        "S3",
+        "S4"
+      ]
+    },
+    {
+      "case_id": "DEV-4989",
+      "status": "minor_revision",
+      "question_quality": "not_needed_for_visible_code_correction",
+      "summary": "Useful page-widget/durable-state distinction with incomplete migration and existing-workaround qualification.",
+      "strength": "Uses the pre-1.46 identity note for the reported 1.11.0 setup and describes a consistent permanent/temp-key mirror.",
+      "issues": [
+        "The optional st.Page/st.navigation approach requires both an architecture change and a compatible-version upgrade; the latter is not explicit.",
+        "The report already tried re-saving state, which the sources also document. Do not imply a separate permanent key is the only possible bridge or dismiss the tested self-assignment effect as navigation alone.",
+        "The advice was not executed on the original app and the repeated edit list could be more concise."
+      ],
+      "refs": [
+        "R6",
+        "R9",
+        "R11",
+        "R13",
+        "R19",
+        "R20",
+        "R21",
+        "S1",
+        "S2",
+        "S3",
+        "S4",
+        "S6",
+        "S7"
+      ]
+    },
+    {
+      "case_id": "DEV-10805",
+      "status": "minor_revision",
+      "question_quality": "none_needed_for_proposed_product_review",
+      "summary": "Useful investigation proposal retains the already-correct assignment order and supplied fragment controls.",
+      "strength": "Does not invent a radio inside the empty fragment. The raw version finding explicitly avoids using the 1.46 page-start change as a 1.43.1 explanation.",
+      "issues": [
+        "The general fragment persistence documentation does not prove the precise multipage cleanup interaction. Keep the claimed contradiction as a reported discrepancy to investigate.",
+        "Both removing the fragment call and removing its interval are preserved in copied R8; keep the wait-versus-fast-navigation distinction explicit in the practical handoff as well.",
+        "No framework defect or fixed release was independently reproduced, and no tracker action occurred."
+      ],
+      "refs": [
+        "R3",
+        "R5",
+        "R7",
+        "R8",
+        "R10",
+        "R12",
+        "R16",
+        "S1",
+        "S3",
+        "S4",
+        "S6",
+        "S7",
+        "S8",
+        "S9"
+      ]
+    }
+  ],
+  "conclusion": "The unchanged controlled-routing-v2 candidate produces 11/15 stored action matches (73.3%), versus 9/15 in the saved original policy-v3 full run. Answerable routing is 5/6, clarification is 3/6 and escalation is 3/3. The three actual questions are useful by assistant inspection with scope/next-step caveats. The main remaining action mismatches are DEV-5604, DEV-4338, DEV-3903 and DEV-3585; historical multi-part scope makes some alternatives defensible, so labels are preserved and ambiguity is reported. Content errors remain despite correct labels, especially incomplete workflow edits and unsupported causal/API interpretations. The identical-request annotation-case repeat drops a previously included persistent-stage correction. This is progress in stored-label agreement, not a verified 73.3% grounded-answer accuracy or a production-ready result. Keep the candidate experimental; no further paid calls or prompt changes are part of this run."
+}

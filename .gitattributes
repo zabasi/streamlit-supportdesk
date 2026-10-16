@@ -1,0 +1,5 @@
+# The controlled-routing v2 generation package and its handoff are checksum-verified byte for byte
+# (manifest.json, checksums.json), including their CRLF line endings: git treats them as binary so no
+# line-ending conversion (on checkout, or by git am on a patch) can change them.
+src/supportdesk/generation/controlled_v2/** binary
+docs/generation/controlled-v2/** binary

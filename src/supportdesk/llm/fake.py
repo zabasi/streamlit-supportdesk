@@ -61,15 +61,18 @@ class FakeChatClient:
     calls: int = 0
     seen: list = field(default_factory=list)
 
-    def complete(self, messages, *, stage="answer", json_mode=True):
+    def complete(self, messages, *, stage="answer", json_mode=True, extra=None):
         self.calls += 1
         self.seen.append(messages)
         behaviour = self.script.get(self.calls)
         if behaviour == "error":
             raise ProviderError("fake chat provider unavailable")
         user = messages[-1]["content"]
+        finish = "stop"
         if behaviour == "bad_json":
             text = "Sorry, here is some prose instead of JSON."
+        elif isinstance(behaviour, str) and behaviour.startswith("truncated:"):  # a cut-off answer
+            text, finish = behaviour[len("truncated:"):], "length"
         elif behaviour:
             text = behaviour
         else:
@@ -79,7 +82,7 @@ class FakeChatClient:
                  "status": "ok"}
         if self.ledger is not None:
             self.ledger.record(stage=stage, request_type="chat", items=1, **usage)
-        return text, usage
+        return text, {**usage, "finish_reason": finish, "refusal": None}  # as the gateway reports them
 
     @staticmethod
     def _answer(user: str) -> dict:

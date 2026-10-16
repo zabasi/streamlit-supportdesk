@@ -48,7 +48,7 @@ PROFILE_DIR = Path("configs/pipelines")
 #: ``None`` means any key in the section.
 PROFILE_ALLOWED: dict[str, set[str] | None] = {
     "chunking": None, "retrieval": None, "context": None, "prompts": None,
-    "pipeline": {"retriever", "scope_gate"}, "paths": {"index_dir"},
+    "pipeline": {"retriever", "scope_gate", "generator"}, "paths": {"index_dir"},
 }
 
 SECRET_PATTERN = re.compile(
@@ -380,6 +380,9 @@ class PipelineCfg:
     scope_gate: str = _opt("advanced only: the scope check before retrieval: llm (a model call), rules (free "
                            "keyword rules), combined (the same call that writes the concept queries) or off "
                            "(no check); advanced's profile turns it on (llm)", "off")
+    generator: str = _opt("advanced-based pipelines only: the answer step: single_call (the baseline's prompt "
+                          "and parser) | controlled_v2 (one structured assessment by gpt-5.4-mini, the action "
+                          "routed by Python; supportdesk/generation/controlled_v2)", "single_call")
 
 
 @dataclass(frozen=True)
@@ -695,6 +698,8 @@ class Settings:
              "pipeline.name and pipeline.retriever must not be empty"),
             (self.pipeline.scope_gate in ("llm", "rules", "combined", "off"),
              f"pipeline.scope_gate must be llm, rules, combined or off, got {self.pipeline.scope_gate!r}"),
+            (self.pipeline.generator in ("single_call", "controlled_v2"),
+             f"pipeline.generator must be single_call or controlled_v2, got {self.pipeline.generator!r}"),
             (len(e.case_files) >= 1, "eval.case_files must list at least one file"),
             (0 < e.test_fraction < 1, "eval.test_fraction must be between 0 and 1 (exclusive)"),
             (0 < e.passage_found_fraction <= 1, "eval.passage_found_fraction must be in (0, 1]"),

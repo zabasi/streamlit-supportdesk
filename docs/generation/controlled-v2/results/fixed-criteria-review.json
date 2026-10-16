@@ -1,0 +1,118 @@
+{
+  "source_file": "C:\\Users\\Mantis\\Documents\\ChatGPT\\Streamlit_QA\\streamlit-supportdesk\\artifacts\\reports\\generation-policy-v4-20261016\\acceptance-checklist.json",
+  "source_sha256": "fd5498864fff490359d50d0c90eae3f119fdda3e5e7606cff3c4faba124b7cd4",
+  "wording_unchanged": true,
+  "results": [
+    {
+      "case_id": "DEV-9342",
+      "criterion": "Ask the missing reproducing Streamlit version before deciding a release-specific product investigation.",
+      "refs": [
+        "R18"
+      ],
+      "v4_status": "not_met",
+      "current_status": "met",
+      "review_reason": "The actual question asks the missing reproducing version."
+    },
+    {
+      "case_id": "DEV-9342",
+      "criterion": "Do not equate callback-prefix writes with same-pass mutation after widget creation.",
+      "refs": [
+        "R8",
+        "S5",
+        "S6"
+      ],
+      "v4_status": "met_with_explanation_caveat",
+      "current_status": "met",
+      "review_reason": "The assessment keeps callback-prefix mutation distinct from same-pass post-widget writes."
+    },
+    {
+      "case_id": "DEV-9342",
+      "criterion": "Keep the slider claim explicitly unverified, and avoid prescribing an established internal framework patch.",
+      "refs": [
+        "R3",
+        "R8"
+      ],
+      "v4_status": "met",
+      "current_status": "partial",
+      "review_reason": "The main need still groups slider with number_input; only number_input is reproduced."
+    },
+    {
+      "case_id": "DEV-4325",
+      "criterion": "Combine a persistent outer render gate with form batching and fresh keyed submitted values.",
+      "refs": [
+        "R6",
+        "S1",
+        "S3",
+        "S5",
+        "S6"
+      ],
+      "v4_status": "met",
+      "current_status": "partial",
+      "review_reason": "Form batching and fresh keyed values are included, but the persistent outer stage is omitted in this fresh repeat."
+    },
+    {
+      "case_id": "DEV-4325",
+      "criterion": "Correct the current_image/current_images mismatch so the advanced item is the item rendered.",
+      "refs": [
+        "R6"
+      ],
+      "v4_status": "not_met",
+      "current_status": "partial",
+      "review_reason": "Raw findings identify current_image/current_images, but the final correction says only to use one consistent state name."
+    },
+    {
+      "case_id": "DEV-4325",
+      "criterion": "Preserve or clearly locate counter/storage initialization and next-item advancement; qualify incomplete integration.",
+      "refs": [
+        "R6"
+      ],
+      "v4_status": "partial",
+      "current_status": "not_met",
+      "review_reason": "Counter/storage initialization and next-item progression are not integrated into the final edits."
+    },
+    {
+      "case_id": "DEV-6166",
+      "criterion": "Describe the stop request without inferring asynchronous scheduling or detection timing from S3 alone.",
+      "refs": [
+        "S3"
+      ],
+      "v4_status": "met",
+      "current_status": "partial",
+      "review_reason": "The distinction between the shown shutdown path and unknown pre-shutdown delay improves; asynchronous scheduling remains a hypothesis."
+    },
+    {
+      "case_id": "DEV-6166",
+      "criterion": "Explain that the loop never removes its condition key and that key existence is not browser connection status.",
+      "refs": [
+        "R5"
+      ],
+      "v4_status": "not_met",
+      "current_status": "not_met",
+      "review_reason": "The reply does not explicitly explain that the key is never removed by the loop and is not connection status."
+    },
+    {
+      "case_id": "DEV-6166",
+      "criterion": "Allow an application-loop limitation to coexist with unresolved product cleanup timing; distinguish interruption from normal loop exit.",
+      "refs": [
+        "R5",
+        "R7",
+        "S3"
+      ],
+      "v4_status": "not_met",
+      "current_status": "not_met",
+      "review_reason": "Normal loop completion/post-loop print and script interruption remain conflated."
+    },
+    {
+      "case_id": "DEV-6166",
+      "criterion": "Keep the affected environment and many-tab batch cleanup report in the reviewable handoff, without treating later versions as a verified fix.",
+      "refs": [
+        "R18",
+        "R20",
+        "S4"
+      ],
+      "v4_status": "partial",
+      "current_status": "partial",
+      "review_reason": "R20 is now cited and discussed in raw findings, but is absent from the copied observation bundle and short practical summary."
+    }
+  ]
+}

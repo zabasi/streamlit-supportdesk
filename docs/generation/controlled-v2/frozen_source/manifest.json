@@ -1,0 +1,18 @@
+{
+  "version": "controlled-routing-v2-20261016",
+  "frozen_files": {
+    "generation.py": "0822132901f48ffa2e5451e4ef0c7cfa466f8f6a1757c383626e7d06ba89e35a",
+    "prompt.txt": "e490a9bdf8f6efa4e8cab51da9265100c60fd08fe75a37cc188c7a7b0b44197d",
+    "context.py": "b594151b28144b68bfd84f6fe5d9aba7bdc09a1943731923195d253a13f4d3c4",
+    "transport.py": "394e3f5ac999e5b92adbad090830504d4c36af2e4e34b33ac29cb3ae440dd9a0",
+    "inputs/model_inputs.jsonl": "001e8eb8ed2ab923ab5ee6ff06a729611453e5073545d9a3e32d32bac626868d",
+    "README.md": "604dd60854a6c2df33817c51286521bb3a178f400b79f1f9ecdfc1c657a78b1d"
+  },
+  "online_case_ids": [
+    "DEV-3903",
+    "DEV-9342",
+    "DEV-4325"
+  ],
+  "schema_router_unchanged": true,
+  "production_replacement": false
+}

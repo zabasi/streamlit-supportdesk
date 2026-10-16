@@ -70,7 +70,11 @@ class OpenAITransport:
             raise self._map(exc) from None
         usage = getattr(resp, "usage", None)
         details = getattr(usage, "prompt_tokens_details", None)
-        return {"text": resp.choices[0].message.content or "",
+        choice = resp.choices[0]
+        return {"text": choice.message.content or "",
+                # how the answer ended and any refusal, for callers that must reject cut-off answers
+                "finish": {"finish_reason": getattr(choice, "finish_reason", None),
+                           "refusal": getattr(choice.message, "refusal", None)},
                 "usage": {"input_tokens": getattr(usage, "prompt_tokens", 0) or 0,
                           "cached_input_tokens": getattr(details, "cached_tokens", 0) or 0,
                           "output_tokens": getattr(usage, "completion_tokens", 0) or 0}}
@@ -160,7 +164,7 @@ class Gateway:
             self.ledger.record(stage=stage, request_type=kind, model=model, mode="cache",
                                request_hash=key[:32], items=items, cache_hits=items,
                                cost_usd=0.0, original_cost_usd=original, **hit["usage"])
-            return hit["result"], {**hit["usage"], "model": model, "mode": "cache",
+            return hit["result"], {**hit["usage"], **hit.get("finish", {}), "model": model, "mode": "cache",
                                    "cost_usd": 0.0, "status": "ok"}
         if self.mode == "replay":
             raise ReplayMiss(f"no recorded response for {kind} request {key[:12]}")
@@ -181,8 +185,9 @@ class Gateway:
                            request_hash=key[:32], items=items, new_items=items,
                            latency_seconds=latency, cost_usd=cost, **raw["usage"])
         result = raw["text"] if kind == "chat" else raw["vectors"]
-        self.cache.put(key, {"result": result, "usage": raw["usage"]})
-        return result, {**raw["usage"], "model": model, "mode": "live", "cost_usd": cost,
+        finish = raw.get("finish") or {}
+        self.cache.put(key, {"result": result, "usage": raw["usage"], **({"finish": finish} if finish else {})})
+        return result, {**raw["usage"], **finish, "model": model, "mode": "live", "cost_usd": cost,
                         "latency_seconds": latency, "status": "ok"}
 
     def _record_failure(self, stage, kind, model, key, items, started, status):

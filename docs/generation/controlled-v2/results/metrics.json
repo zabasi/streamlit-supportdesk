@@ -1,0 +1,257 @@
+{
+  "candidate": "generation_controlled_routing_v2",
+  "model": "gpt-5.4-mini",
+  "cases": 15,
+  "new_live_calls": 15,
+  "reused_results": 0,
+  "complete_outputs": 15,
+  "contract_valid_assessments": 15,
+  "controller_decisions": 15,
+  "model_final_action_fields": 0,
+  "action_label_matches": 11,
+  "action_label_agreement_percent": 73.33333333333333,
+  "confusion_matrix": {
+    "answer": {
+      "answer": 5,
+      "request_info": 0,
+      "escalate": 1,
+      "no_valid_decision": 0
+    },
+    "request_info": {
+      "answer": 1,
+      "request_info": 3,
+      "escalate": 2,
+      "no_valid_decision": 0
+    },
+    "escalate": {
+      "answer": 0,
+      "request_info": 0,
+      "escalate": 3,
+      "no_valid_decision": 0
+    }
+  },
+  "by_expected_category": {
+    "answerable": {
+      "cases": 6,
+      "before_matches": 5,
+      "current_matches": 5
+    },
+    "needs_clarification": {
+      "cases": 6,
+      "before_matches": 2,
+      "current_matches": 3
+    },
+    "needs_escalation": {
+      "cases": 3,
+      "before_matches": 2,
+      "current_matches": 3
+    }
+  },
+  "by_action": {
+    "answer": {
+      "expected_cases": 6,
+      "predicted_cases": 6,
+      "correct": 5,
+      "label_recall": 0.8333333333333334,
+      "label_precision": 0.8333333333333334
+    },
+    "request_info": {
+      "expected_cases": 6,
+      "predicted_cases": 3,
+      "correct": 3,
+      "label_recall": 0.5,
+      "label_precision": 1.0
+    },
+    "escalate": {
+      "expected_cases": 3,
+      "predicted_cases": 6,
+      "correct": 3,
+      "label_recall": 1.0,
+      "label_precision": 0.5
+    }
+  },
+  "predicted_actions": {
+    "escalate": 6,
+    "request_info": 3,
+    "answer": 6
+  },
+  "assistant_review_counts": {
+    "needs_revision": 5,
+    "minor_revision": 8,
+    "usable_by_inspection": 2
+  },
+  "question_review": [
+    {
+      "case_id": "DEV-7044",
+      "question": "Is `st.session_state['companies_df']` assigned or mutated anywhere else in the app, or is `companies_df` used as a key for any other widget?",
+      "inspection": "useful_with_caveats",
+      "caveats": [
+        "A same-key write is a supported hypothesis, not a confirmed cause. A duplicate widget key is not independently established to cause this exact exception.",
+        "The negative hypothetical reply moves directly to escalation without establishing that all other useful checks are exhausted.",
+        "A raw finding says to keep a key only for reading state. Keys also serve widget identity; that optional workaround statement is too narrow and is correctly absent from the actual question reply."
+      ]
+    },
+    {
+      "case_id": "DEV-9342",
+      "question": "Which Streamlit version are you running?",
+      "inspection": "useful_with_caveats",
+      "caveats": [
+        "Knowing the version scopes investigation; it does not by itself establish that a bug is current, a regression or fixed. The reply overstates that determination.",
+        "The two hypothetical results are not clean alternatives: a currently installed release can itself be old. Their next steps need clearer version applicability.",
+        "The main-need wording groups slider with number_input although only number_input is reproduced. A clamp is bounded app advice, not verification of an internal product fix."
+      ]
+    },
+    {
+      "case_id": "DEV-5591",
+      "question": "Please paste the smallest code snippet that creates the sidebar widget on page A and any session_state assignment that updates it.",
+      "inspection": "useful_with_caveats",
+      "caveats": [
+        "Navigation implementation and version are still unknown; obtain them if needed before applying architecture/version-specific fixes after the code reply.",
+        "Raw findings prescribe persistence patterns before the actual code is known. They are suppressed from the final question but should remain conditional review data.",
+        "A negative code check does not by itself exhaust all useful clarification or prove a product defect."
+      ]
+    }
+  ],
+  "original_full_control_matches": 9,
+  "original_full_control_actions_changed": [
+    {
+      "case_id": "DEV-9342",
+      "expected_action": "request_info",
+      "before_policy_v3_action": "escalate",
+      "actual_action": "request_info"
+    },
+    {
+      "case_id": "DEV-16388",
+      "expected_action": "escalate",
+      "before_policy_v3_action": "answer",
+      "actual_action": "escalate"
+    },
+    {
+      "case_id": "DEV-3903",
+      "expected_action": "request_info",
+      "before_policy_v3_action": "escalate",
+      "actual_action": "answer"
+    }
+  ],
+  "net_label_improvements": 2,
+  "same_request_three_case_repeats": [
+    {
+      "case_id": "DEV-3903",
+      "identical_request": true,
+      "earlier_action": "answer",
+      "fresh_action": "answer",
+      "action_changed": false,
+      "content_note": "The unsupported answer and missed discriminator remain."
+    },
+    {
+      "case_id": "DEV-9342",
+      "identical_request": true,
+      "earlier_action": "request_info",
+      "fresh_action": "request_info",
+      "action_changed": false,
+      "content_note": "The missing-version question remains useful but conditional diagnostic wording varies."
+    },
+    {
+      "case_id": "DEV-4325",
+      "identical_request": true,
+      "earlier_action": "answer",
+      "fresh_action": "answer",
+      "action_changed": false,
+      "content_note": "Persistent outer-stage correction was present in the earlier sample and is omitted in this fresh repeat."
+    }
+  ],
+  "new_usage": {
+    "calls": 15,
+    "cache_hits": 0,
+    "failed_calls": 0,
+    "input_tokens": 57276,
+    "cached_input_tokens": 0,
+    "output_tokens": 49255,
+    "cost_usd": 0.2646045,
+    "replayed_cost_usd": 0.0,
+    "latency_seconds": 236.2698
+  },
+  "new_estimated_cost_usd": 0.2646045,
+  "original_control_estimated_cost_usd": 0.21559725,
+  "wall_time_seconds": 236.407,
+  "spend_cap_usd": 0.85,
+  "prices": {
+    "source": "https://www.metisai.ir/models.json",
+    "checked_at": "2026-10-16T15:38:08.395839+00:00",
+    "source_note": "Live refresh blocked; saved project catalog, rates previously verified 2026-10-14",
+    "live_refresh_succeeded": false,
+    "models": {
+      "gpt-4o-mini": {
+        "input": 0.15,
+        "output": 0.6,
+        "supported_parameters": [
+          "frequency_penalty",
+          "logit_bias",
+          "logprobs",
+          "max_completion_tokens",
+          "max_tokens",
+          "prediction",
+          "presence_penalty",
+          "response_format",
+          "seed",
+          "stop",
+          "structured_outputs",
+          "temperature",
+          "tool_choice",
+          "tools",
+          "top_logprobs",
+          "top_p",
+          "web_search_options"
+        ]
+      },
+      "gpt-5.4-mini": {
+        "input": 0.75,
+        "output": 4.5,
+        "supported_parameters": [
+          "include_reasoning",
+          "max_completion_tokens",
+          "max_tokens",
+          "reasoning",
+          "reasoning_effort",
+          "response_format",
+          "seed",
+          "structured_outputs",
+          "tool_choice",
+          "tools"
+        ]
+      }
+    },
+    "unit": "USD per million tokens",
+    "note": "Estimates without cache discounts; not an invoice."
+  },
+  "reasoning_effort": "medium",
+  "max_completion_tokens": 8000,
+  "source_record_uses": 40,
+  "unique_source_records": 22,
+  "selected_passages": 81,
+  "copied_report_blocks_exact": 85,
+  "identified_answer_edits_preserved": 16,
+  "reported_environments_copied_exactly": 15,
+  "source_input_environment_empty_cases": [
+    "DEV-9342",
+    "DEV-4325",
+    "DEV-5591"
+  ],
+  "required_human_review_model_records": 0,
+  "retries": 0,
+  "paid_grader_calls": 0,
+  "refinements": 0,
+  "retrieval_calls": 0,
+  "embedding_calls": 0,
+  "tracker_writes": 0,
+  "test_set_access": false,
+  "security_authorization_live_coverage": false,
+  "real_multi_turn_tested": false,
+  "independent_human_review": false,
+  "runtime_reproduction": false,
+  "content_accuracy": null,
+  "candidate_promoted": false,
+  "production_or_handoff_replaced": false,
+  "conclusion": "The unchanged controlled-routing-v2 candidate produces 11/15 stored action matches (73.3%), versus 9/15 in the saved original policy-v3 full run. Answerable routing is 5/6, clarification is 3/6 and escalation is 3/3. The three actual questions are useful by assistant inspection with scope/next-step caveats. The main remaining action mismatches are DEV-5604, DEV-4338, DEV-3903 and DEV-3585; historical multi-part scope makes some alternatives defensible, so labels are preserved and ambiguity is reported. Content errors remain despite correct labels, especially incomplete workflow edits and unsupported causal/API interpretations. The identical-request annotation-case repeat drops a previously included persistent-stage correction. This is progress in stored-label agreement, not a verified 73.3% grounded-answer accuracy or a production-ready result. Keep the candidate experimental; no further paid calls or prompt changes are part of this run.",
+  "limitations": "Adaptive development evaluation after repeated study/tuning on these same 15 cases; one new model sample each. Saved nonconcurrent original controls differ in prompt/schema/controller. No held-out, independent-human or application-runtime validation. Label agreement, question quality and grounded-answer completeness are separate."
+}

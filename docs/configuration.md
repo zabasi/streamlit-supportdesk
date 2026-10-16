@@ -292,6 +292,7 @@ Defaults shown are the built-in ones. `*unset*` means the key is optional and no
 | `name` | `baseline` | registered pipeline to run (see registry.py) |
 | `retriever` | `dense` | registered retriever: dense \| bm25 \| hybrid |
 | `scope_gate` | `off` | advanced only: the scope check before retrieval: llm (a model call), rules (free keyword rules), combined (the same call that writes the concept queries) or off (no check); advanced's profile turns it on (llm) |
+| `generator` | `single_call` | advanced-based pipelines only: the answer step: single_call (the baseline's prompt and parser) \| controlled_v2 (one structured assessment by gpt-5.4-mini, the action routed by Python; supportdesk/generation/controlled_v2) |
 
 ### `[eval]`
 
