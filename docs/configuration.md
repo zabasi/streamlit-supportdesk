@@ -216,6 +216,8 @@ Defaults shown are the built-in ones. `*unset*` means the key is optional and no
 | `second_weight` | `0.5` | dual_doc_slots: how much the second embedding model's ranking counts against the main model's in the fusion |
 | `report_views` | `none` | advanced: extra searches besides the queries, comma-separated: title (the report's title alone), code (its st.* commands, their parameter names and its error lines), or none; fused with the report's ranking at view_weight |
 | `view_weight` | `0.5` | report_views: how much each view's ranking counts against the report's |
+| `rerank_fuse_weight` | `0.0` | blend the reranker's order with each candidate's own search rank (among the candidates of its source) by weighted RRF; 0 uses the reranker's order alone |
+| `rerank_fuse_k` | `10` | rerank_fuse_weight: the RRF constant (smaller makes the top ranks count more) |
 | `rerank_show_question` | `False` | the reranker also sees, for a candidate found through a documentation section's symptom question (question_doc_slots), the question that matched the report |
 | `rerank_show_sections` | `False` | the reranker also sees the headings of the sections each candidate contains, which its window may not show |
 | `pool_mode` | `fuse` | advanced: how the reranker's candidates are chosen: fuse (every query's ranking merged with RRF, the best candidate_k kept) \| quota (fixed shares: the report's best dense and BM25 chunks, and the concept queries' best dense chunks) \| union (no fusion: the report's own candidates all kept, each concept query adding its best new ones) |
@@ -234,6 +236,8 @@ Defaults shown are the built-in ones. `*unset*` means the key is optional and no
 | `cluster_top` | `2` | cluster routing: how many clusters each query is routed to |
 | `cluster_route` | `keywords` | cluster routing: how a query is routed: keywords (its words among each cluster's keywords) \| embedding (its meaning against each cluster's description) \| centroid (its meaning against the average of each cluster's own chunks) |
 | `cluster_mode` | `filter` | cluster routing: filter (search only the routed clusters) \| boost (search everything, the routed clusters' chunks ranked higher by retrieval.cluster_boost) |
+| `question_filter_top` | `0` | question_doc_slots, Doc2Query--: keep a symptom question only if one of its this many nearest chunks in the index belongs to its own section; 0 keeps all |
+| `question_chunk` | `overlap` | question_doc_slots: the chunk added for a matched section: overlap (the one holding most of the section) \| question (the one most similar to the matched question) |
 | `question_snippet` | `report` | question_doc_slots: the window the reranker sees for a candidate found through a symptom question: report (chosen by the report's words) \| question (by the matched question's words) \| both |
 | `question_order` | `append` | question_doc_slots: where the question-found candidates appear in the reranking list: append (after the base's) \| interleave (one of each in turn) \| shuffle (an order that says nothing about their source) |
 | `question_keep` | `0` | question_doc_slots: at least this many of the kept pieces are question-found candidates (like rerank_keep_docs); 0 leaves it to the reranker |

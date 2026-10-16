@@ -78,20 +78,27 @@ class QuestionBank:
         """(section, score) by each section's best-matching question, best first."""
         return [(section, score) for section, score, _ in self.matches(query_vector)]
 
-    def matches(self, query_vector) -> list[tuple[int, float, str]]:
+    def matches(self, query_vector, allowed=None) -> list[tuple[int, float, str]]:
         """(section, score, the question that matched best), best first."""
+        return [(s, score, q) for s, score, q, _ in self.match_rows(query_vector, allowed)]
+
+    def match_rows(self, query_vector, allowed=None) -> list[tuple[int, float, str, int]]:
+        """(section, score, question, question row), best first; ``allowed`` (a boolean per question row)
+        leaves out filtered questions."""
         if not len(self.vectors):
             return []
         q = np.asarray(query_vector, dtype=np.float64)
         scores = self.vectors @ (q / (np.linalg.norm(q) or 1.0))
         flat = [question for qs in self.questions for question in qs]
-        best: dict[int, tuple[float, str]] = {}
+        best: dict[int, tuple[float, str, int]] = {}
         for row, score in enumerate(scores):
+            if allowed is not None and not allowed[row]:
+                continue
             section = self.owner[row]
             if section not in best or float(score) > best[section][0]:
-                best[section] = (float(score), flat[row])
+                best[section] = (float(score), flat[row], row)
         ranked = sorted(best.items(), key=lambda kv: (-round(kv[1][0], 6), kv[0]))
-        return [(section, score, question) for section, (score, question) in ranked]
+        return [(section, score, question, row) for section, (score, question, row) in ranked]
 
 
 def section_chunk(index: VectorIndex, by_source: dict[str, list[int]], section: dict) -> int | None:
@@ -109,23 +116,56 @@ class QuestionExpandedRetriever:
 
     name = "question_doc_slots"
 
-    def __init__(self, base, bank: QuestionBank, *, extra: int, order: str = "append"):
+    def __init__(self, base, bank: QuestionBank, *, extra: int, order: str = "append", filter_top: int = 0,
+                 chunk_mode: str = "overlap", chunk_vectors: np.ndarray | None = None):
         self.base, self.bank, self.extra, self.order = base, bank, extra, order
+        self.chunk_mode = chunk_mode
         self.index, self.embedder = base.index, base.embedder
         self.by_source: dict[str, list[int]] = defaultdict(list)
         for i, c in enumerate(self.index.chunks):
             if c.start_char is not None and c.end_char is not None:
                 self.by_source[c.source_id].append(i)
+        self.vectors = None
+        if filter_top or chunk_mode == "question":
+            from .clusters import index_vectors
+
+            v = np.asarray(index_vectors(self.index) if chunk_vectors is None else chunk_vectors, dtype=np.float64)
+            self.vectors = v / np.where(np.linalg.norm(v, axis=1, keepdims=True) == 0, 1,
+                                        np.linalg.norm(v, axis=1, keepdims=True))
+        self.allowed = self._filter(filter_top) if filter_top else None
+
+    def _section_chunks(self, section: dict) -> list[int]:
+        a, b = section["start_char"], section["end_char"]
+        return [i for i in self.by_source.get(section["source_id"], [])
+                if min(b, self.index.chunks[i].end_char) > max(a, self.index.chunks[i].start_char)]
+
+    def _filter(self, top: int) -> list[bool]:
+        """Doc2Query--: keep a question only if one of its ``top`` nearest chunks in the whole index belongs
+        to its own section; a question whose nearest chunks are elsewhere does not point to its section."""
+        if not len(self.bank.vectors):
+            return []
+        nearest = np.argsort(-(self.bank.vectors @ self.vectors.T), axis=1)[:, :top]
+        own = [set(self._section_chunks(s)) for s in self.bank.sections]
+        return [bool(own[self.bank.owner[row]] & set(nearest[row].tolist())) for row in range(len(self.bank.owner))]
+
+    def _chunk_for(self, section: dict, row: int) -> int | None:
+        """The chunk to add for a matched section: the one holding most of it (overlap), or the one most
+        similar to the question that matched (question)."""
+        if self.chunk_mode == "question" and self.vectors is not None:
+            members = self._section_chunks(section)
+            if members:
+                return max(members, key=lambda i: float(self.vectors[i] @ self.bank.vectors[row]))
+        return section_chunk(self.index, self.by_source, section)
 
     def search(self, query, *, k, as_of=None):
         hits = list(self.base.search(query, k=k, as_of=as_of))
         have = {h.chunk.chunk_id for h in hits}
         vec, _ = self.embedder.embed([query], stage="query")  # cached: the base search embedded it already
         added = 0
-        for section, score, question in self.bank.matches(vec[0]):
+        for section, score, question, row in self.bank.match_rows(vec[0], self.allowed):
             if added >= self.extra:
                 break
-            pos = section_chunk(self.index, self.by_source, self.bank.sections[section])
+            pos = self._chunk_for(self.bank.sections[section], row)
             if pos is None or self.index.chunks[pos].chunk_id in have:
                 continue
             have.add(self.index.chunks[pos].chunk_id)
@@ -157,8 +197,9 @@ def build_question_retriever(index: VectorIndex, clients, settings) -> QuestionE
 
     bank = QuestionBank.load(settings.paths.section_questions, expect_model=clients.embedding_model)
     base = DocSlotsRetriever(index, clients.embedding, doc_slots=settings.retrieval.doc_slots)
-    return QuestionExpandedRetriever(base, bank, extra=settings.retrieval.question_sections,
-                                     order=settings.retrieval.question_order)
+    r = settings.retrieval
+    return QuestionExpandedRetriever(base, bank, extra=r.question_sections, order=r.question_order,
+                                     filter_top=r.question_filter_top, chunk_mode=r.question_chunk)
 
 
 __all__ = ["QuestionBank", "QuestionExpandedRetriever", "build_question_retriever", "generate_questions",

@@ -242,6 +242,10 @@ class Retrieval:
                              "title alone), code (its st.* commands, their parameter names and its error lines), or "
                              "none; fused with the report's ranking at view_weight", "none")
     view_weight: float = _opt("report_views: how much each view's ranking counts against the report's", 0.5)
+    rerank_fuse_weight: float = _opt("blend the reranker's order with each candidate's own search rank (among "
+                                     "the candidates of its source) by weighted RRF; 0 uses the reranker's order "
+                                     "alone", 0.0)
+    rerank_fuse_k: int = _opt("rerank_fuse_weight: the RRF constant (smaller makes the top ranks count more)", 10)
     rerank_show_question: bool = _opt("the reranker also sees, for a candidate found through a documentation "
                                       "section's symptom question (question_doc_slots), the question that matched "
                                       "the report", False)
@@ -283,6 +287,11 @@ class Retrieval:
     cluster_mode: str = _opt("cluster routing: filter (search only the routed clusters) | boost (search "
                              "everything, the routed clusters' chunks ranked higher by retrieval.cluster_boost)",
                              "filter")
+    question_filter_top: int = _opt("question_doc_slots, Doc2Query--: keep a symptom question only if one of its "
+                                    "this many nearest chunks in the index belongs to its own section; 0 keeps all", 0)
+    question_chunk: str = _opt("question_doc_slots: the chunk added for a matched section: overlap (the one "
+                               "holding most of the section) | question (the one most similar to the matched "
+                               "question)", "overlap")
     question_snippet: str = _opt("question_doc_slots: the window the reranker sees for a candidate found through a "
                                  "symptom question: report (chosen by the report's words) | question (by the "
                                  "matched question's words) | both", "report")
@@ -610,6 +619,11 @@ class Settings:
             (r.question_order in ("append", "interleave", "shuffle"),
              f"retrieval.question_order must be append, interleave or shuffle, got {r.question_order!r}"),
             (0 <= r.question_keep <= r.top_k, "retrieval.question_keep must be between 0 and retrieval.top_k"),
+            (r.question_filter_top >= 0, "retrieval.question_filter_top must be >= 0"),
+            (r.question_chunk in ("overlap", "question"),
+             f"retrieval.question_chunk must be overlap or question, got {r.question_chunk!r}"),
+            (r.rerank_fuse_weight >= 0 and r.rerank_fuse_k >= 1,
+             "retrieval.rerank_fuse_weight must be >= 0 and rerank_fuse_k >= 1"),
             (r.class_route in ("llm", "centroid"), f"retrieval.class_route must be llm or centroid, got {r.class_route!r}"),
             (r.class_mode in ("filter", "boost"), f"retrieval.class_mode must be filter or boost, got {r.class_mode!r}"),
             (r.class_top >= 1 and r.class_boost >= 0, "retrieval.class_top must be >= 1 and class_boost >= 0"),

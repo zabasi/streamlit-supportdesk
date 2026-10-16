@@ -65,6 +65,21 @@ def model_ranking(text: str, count: int) -> list[int]:
     return order
 
 
+def fuse_with_search(ranked: list[Hit], hits: list[Hit], *, weight: float, k: int) -> list[Hit]:
+    """rerank_fuse_weight: blend the reranker's order with each candidate's own search rank by weighted
+    RRF, 1/(k + reranker rank) + weight/(k + search rank). The search rank is the candidate's place among
+    the candidates of its own source (the base search's, or those found through symptom questions), so a
+    strong match of either search keeps some weight however the reranker ordered it."""
+    found = lambda h: bool((h.chunk.meta or {}).get("matched_question"))
+    own: dict[str, int] = {}
+    for group in (False, True):
+        members = sorted((h for h in hits if found(h) == group), key=lambda h: h.rank)
+        own.update({h.chunk.chunk_id: n for n, h in enumerate(members, start=1)})
+    score = {h.chunk.chunk_id: 1 / (k + n) + weight / (k + own[h.chunk.chunk_id])
+             for n, h in enumerate(ranked, start=1)}
+    return sorted(ranked, key=lambda h: -score[h.chunk.chunk_id])
+
+
 def keep_question_places(ranked: list[Hit], top_k: int, minimum: int) -> list[Hit]:
     """Make sure the first ``top_k`` hold at least ``minimum`` candidates found through a section's symptom
     question, promoting the best-ranked of them from below the cut in place of the lowest-ranked others.
@@ -147,6 +162,7 @@ class LLMReranker:
         self.show_question = settings.retrieval.rerank_show_question
         self.question_snippet = settings.retrieval.question_snippet
         self.question_keep = settings.retrieval.question_keep
+        self.fuse_weight, self.fuse_k = settings.retrieval.rerank_fuse_weight, settings.retrieval.rerank_fuse_k
         from ...llm.factory import chat_client_for
         self.chat = chat_client_for(clients, settings, settings.models.rerank)  # models.rerank, or the chat model
         self.concepts = None
@@ -212,6 +228,8 @@ class LLMReranker:
         order = self.model_order(case, hits)
         ranked = ([hits[i] for i in order] + [h for i, h in enumerate(hits) if i not in set(order)]
                   if order else list(hits))  # unusable output: the retriever's order
+        if self.fuse_weight > 0 and order:
+            ranked = fuse_with_search(ranked, hits, weight=self.fuse_weight, k=self.fuse_k)
         if self.min_docs:
             ranked = keep_doc_places(ranked, self.top_k, self.min_docs)
         if self.question_keep:
