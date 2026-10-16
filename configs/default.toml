@@ -81,6 +81,9 @@ rerank_show_concepts = false     # the LLM reranker also sees the concept querie
 summary_sections = 0             # SummaryReranker: add the chunks of this many best-matching sections
 hier_sections = 3                # hierarchical retrievers: sections (by summary) the chunk search looks inside
 hier_places = 3                  # hierarchical retrievers: returned chunks taken from inside those sections
+report_views = "none"            # advanced: extra searches: none | title | code | title,code
+view_weight = 0.5                # report_views: each view's weight in the fusion against the report
+rerank_show_sections = false     # the reranker also sees the section headings inside each candidate
 pool_mode = "fuse"               # advanced: fuse (RRF of all queries) | quota (fixed shares per source)
 quota_report_dense = 5           # pool_mode = quota: dense chunks from the cleaned report
 quota_report_bm25 = 5            # pool_mode = quota: BM25 chunks from the cleaned report

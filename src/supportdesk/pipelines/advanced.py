@@ -23,6 +23,7 @@ from .staged import StagedPipeline
 from .stages import default_stages
 from .stages.clean_query import CleanQuery
 from .stages.evidence import CorrectiveReranker
+from .stages.report_views import report_views
 from .stages.rewrite_query import make_query_rewriter
 from .state import case_from_dict, hit_to_dict
 
@@ -38,13 +39,16 @@ class WeightedFusionPipeline(StagedPipeline):
         r, queries = self.settings.retrieval, state["queries"]
         if r.pool_mode == "quota":
             return {"candidates": [hit_to_dict(h) for h in self._quota_pool(state)]}
-        if r.concept_weight == 1.0 or not r.keep_report_query or len(queries) < 2:
-            return super()._retrieve_node(state)
         case = case_from_dict(state["case"])
+        views = report_views(case, r.report_views)  # the title / code views, searched besides the queries
+        if not views and (r.concept_weight == 1.0 or not r.keep_report_query or len(queries) < 2):
+            return super()._retrieve_node(state)
         as_of = case.created_at if r.historical_filter else None
         pool = self.settings.pool_size
-        rankings = [self.retriever.search(q, k=pool, as_of=as_of) for q in queries]
-        weights = [1.0] + [r.concept_weight] * (len(rankings) - 1)  # the report first, then the concepts
+        rankings = [self.retriever.search(q, k=pool, as_of=as_of) for q in [*queries, *views]]
+        concept = r.concept_weight if r.keep_report_query else 1.0
+        weights = ([1.0] + [concept] * (len(queries) - 1)  # the report first, then the concepts
+                   + [r.view_weight] * len(views))  # then the views
         return {"candidates": [hit_to_dict(h) for h in fuse_hits(rankings, pool, rrf_k=r.rrf_k, weights=weights)]}
 
     def _quota_pool(self, state) -> list[Hit]:

@@ -202,6 +202,9 @@ Defaults shown are the built-in ones. `*unset*` means the key is optional and no
 | `summary_sections` | `0` | SummaryReranker: before reranking, add the chunks of this many documentation sections whose summaries best match the queries (0 = off) |
 | `hier_sections` | `3` | hierarchical retrievers: how many documentation sections, chosen by comparing the query with the section summaries, the chunk search looks inside |
 | `hier_places` | `3` | hierarchical retrievers: how many of the returned chunks come from inside those sections; the rest come from the ordinary search |
+| `report_views` | `none` | advanced: extra searches besides the queries, comma-separated: title (the report's title alone), code (its st.* commands, their parameter names and its error lines), or none; fused with the report's ranking at view_weight |
+| `view_weight` | `0.5` | report_views: how much each view's ranking counts against the report's |
+| `rerank_show_sections` | `False` | the reranker also sees the headings of the sections each candidate contains, which its window may not show |
 | `pool_mode` | `fuse` | advanced: how the reranker's candidates are chosen: fuse (every query's ranking merged with RRF, the best candidate_k kept) \| quota (fixed shares: the report's best dense and BM25 chunks, and the concept queries' best dense chunks) |
 | `quota_report_dense` | `5` | pool_mode = quota: dense chunks from the cleaned report |
 | `quota_report_bm25` | `5` | pool_mode = quota: keyword (BM25) chunks from the cleaned report |
