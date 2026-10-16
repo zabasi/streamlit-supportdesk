@@ -96,7 +96,8 @@ hier_places = 3                  # hierarchical retrievers: returned chunks take
 second_weight = 0.5              # dual_doc_slots: the second embedding model's weight in the fusion
 report_views = "none"            # advanced: extra searches: none | title | code | title,code
 view_weight = 0.5                # report_views: each view's weight in the fusion against the report
-rerank_merge = "rrf"             # prompts.rerank_second: rrf | alternate
+rerank_merge = "rrf"             # prompts.rerank_second: rrf | alternate | split
+rerank_split = 4                 # rerank_merge = split: pieces from the first ranking, the rest from the second
 rerank_merge_k = 10              # rerank_merge = rrf: the RRF constant
 bm25_extra = 0                   # question_doc_slots: BM25 documentation chunks added (exact identifiers)
 rerank_fuse_weight = 0.0         # blend the reranker's order with each candidate's own search rank (0: off)

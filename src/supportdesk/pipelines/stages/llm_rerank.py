@@ -65,13 +65,19 @@ def model_ranking(text: str, count: int) -> list[int]:
     return order
 
 
-def merge_orders(first: list[int], second: list[int], n: int, *, mode: str, k: int) -> list[int]:
+def merge_orders(first: list[int], second: list[int], n: int, *, mode: str, k: int, top_k: int = 0,
+                 split: int = 0) -> list[int]:
     """Merge two rankings of the same ``n`` candidates (positions, best first; either may be empty when its
     answer was unusable): rrf scores each candidate 1/(k + rank in the first) + 1/(k + rank in the second);
-    alternate takes the best not yet taken of each in turn."""
+    alternate takes the best not yet taken of each in turn; split keeps the first ranking's best ``split``,
+    then the second ranking's best not yet taken until ``top_k``, then the rest in the first ranking's order."""
     if not first or not second:
         return first or second
     full = [order + [i for i in range(n) if i not in set(order)] for order in (first, second)]
+    if mode == "split":
+        out = full[0][:min(split, top_k)]
+        out += [i for i in full[1] if i not in set(out)][: max(0, top_k - len(out))]
+        return out + [i for i in full[0] if i not in set(out)]
     if mode == "alternate":
         out, seen = [], set()
         for a, b in zip(*full):
@@ -198,6 +204,7 @@ class LLMReranker:
         second = str(settings.prompts.rerank_second or "").strip()
         self.prompt_second = Path(second).read_text(encoding="utf-8") if second else None
         self.merge, self.merge_k = settings.retrieval.rerank_merge, settings.retrieval.rerank_merge_k
+        self.split = settings.retrieval.rerank_split
 
     def model_order(self, case: CaseInput, hits: list[Hit], *, prompt: str | None = None) -> list[int]:
         """One model call: positions in ``hits``, most useful first; [] if the output is unusable."""
@@ -250,7 +257,7 @@ class LLMReranker:
         order = self.model_order(case, hits)
         if self.prompt_second is not None:  # a second ranking by another notion of relevance, merged
             order = merge_orders(order, self.model_order(case, hits, prompt=self.prompt_second), len(hits),
-                                 mode=self.merge, k=self.merge_k)
+                                 mode=self.merge, k=self.merge_k, top_k=self.top_k, split=self.split)
         ranked = ([hits[i] for i in order] + [h for i, h in enumerate(hits) if i not in set(order)]
                   if order else list(hits))  # unusable output: the retriever's order
         if self.fuse_weight > 0 and order:

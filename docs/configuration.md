@@ -217,7 +217,8 @@ Defaults shown are the built-in ones. `*unset*` means the key is optional and no
 | `second_weight` | `0.5` | dual_doc_slots: how much the second embedding model's ranking counts against the main model's in the fusion |
 | `report_views` | `none` | advanced: extra searches besides the queries, comma-separated: title (the report's title alone), code (its st.* commands, their parameter names and its error lines), or none; fused with the report's ranking at view_weight |
 | `view_weight` | `0.5` | report_views: how much each view's ranking counts against the report's |
-| `rerank_merge` | `rrf` | prompts.rerank_second: merge the two rankings by rrf (a candidate's ranks in both) \| alternate (the best not yet taken of each in turn) |
+| `rerank_merge` | `rrf` | prompts.rerank_second: merge the two rankings by rrf (a candidate's ranks in both) \| alternate (the best not yet taken of each in turn) \| split (the first ranking's best rerank_split, then the second's best not yet taken up to top_k) |
+| `rerank_split` | `4` | rerank_merge = split: pieces taken from the first ranking; the rest of top_k comes from the second |
 | `rerank_merge_k` | `10` | rerank_merge = rrf: the RRF constant |
 | `bm25_extra` | `0` | question_doc_slots: add the best BM25 documentation chunks for the report that are not already candidates (exact identifiers); 0 adds none |
 | `rerank_fuse_weight` | `0.0` | blend the reranker's order with each candidate's own search rank (among the candidates of its source) by weighted RRF; 0 uses the reranker's order alone |

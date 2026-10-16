@@ -245,7 +245,10 @@ class Retrieval:
                              "none; fused with the report's ranking at view_weight", "none")
     view_weight: float = _opt("report_views: how much each view's ranking counts against the report's", 0.5)
     rerank_merge: str = _opt("prompts.rerank_second: merge the two rankings by rrf (a candidate's ranks in both) | "
-                             "alternate (the best not yet taken of each in turn)", "rrf")
+                             "alternate (the best not yet taken of each in turn) | split (the first ranking's best "
+                             "rerank_split, then the second's best not yet taken up to top_k)", "rrf")
+    rerank_split: int = _opt("rerank_merge = split: pieces taken from the first ranking; the rest of top_k "
+                             "comes from the second", 4)
     rerank_merge_k: int = _opt("rerank_merge = rrf: the RRF constant", 10)
     bm25_extra: int = _opt("question_doc_slots: add the best BM25 documentation chunks for the report that are not "
                            "already candidates (exact identifiers); 0 adds none", 0)
@@ -629,7 +632,9 @@ class Settings:
             (r.question_filter_top >= 0, "retrieval.question_filter_top must be >= 0"),
             (r.question_chunk in ("overlap", "question"),
              f"retrieval.question_chunk must be overlap or question, got {r.question_chunk!r}"),
-            (r.rerank_merge in ("rrf", "alternate"), f"retrieval.rerank_merge must be rrf or alternate, got {r.rerank_merge!r}"),
+            (r.rerank_merge in ("rrf", "alternate", "split"),
+             f"retrieval.rerank_merge must be rrf, alternate or split, got {r.rerank_merge!r}"),
+            (r.rerank_split >= 0, "retrieval.rerank_split must be >= 0 (it is capped at retrieval.top_k)"),
             (r.rerank_merge_k >= 1 and r.bm25_extra >= 0, "retrieval.rerank_merge_k must be >= 1 and bm25_extra >= 0"),
             (r.rerank_fuse_weight >= 0 and r.rerank_fuse_k >= 1,
              "retrieval.rerank_fuse_weight must be >= 0 and rerank_fuse_k >= 1"),

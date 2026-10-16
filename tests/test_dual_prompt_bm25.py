@@ -19,6 +19,17 @@ def test_merging_two_rankings():
     assert merge_orders([], b, 4, mode="rrf", k=10) == b and merge_orders(a, [], 4, mode="rrf", k=10) == a
 
 
+def test_split_takes_exactly_n_from_the_first_and_the_rest_from_the_second():
+    first = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+    second = [1, 9, 0, 8, 7, 6, 2, 3, 4, 5]  # its best two overlap the first ranking's best four
+    merged = merge_orders(first, second, 10, mode="split", k=10, top_k=8, split=4)
+    assert merged[:4] == [0, 1, 2, 3]  # the first ranking's best four
+    assert merged[4:8] == [9, 8, 7, 6]  # the second's best four not already taken
+    assert sorted(merged) == list(range(10))  # every candidate exactly once
+    capped = merge_orders(first, second, 10, mode="split", k=10, top_k=3, split=4)
+    assert capped[:3] == [0, 1, 2]  # never more than top_k from the first
+
+
 def test_a_second_prompt_makes_a_second_ranking_with_its_own_instructions(index, clients, settings, tmp_path):
     second = tmp_path / "second.txt"
     second.write_text("SECOND PROMPT: rank by cause or fix")
@@ -52,6 +63,6 @@ def test_bm25_extras_are_new_documentation_chunks(index, clients):
 def test_the_settings_are_checked():
     s = Settings.load(env={})
     assert (s.prompts.rerank_second, s.retrieval.rerank_merge, s.retrieval.bm25_extra) == ("", "rrf", 0)
-    for bad in ("retrieval.rerank_merge=vote", "retrieval.bm25_extra=-1"):
+    for bad in ("retrieval.rerank_merge=vote", "retrieval.bm25_extra=-1", "retrieval.rerank_split=-1"):
         with pytest.raises(ConfigError):
             Settings.load(env={}, overrides=[bad])
