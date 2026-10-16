@@ -93,3 +93,8 @@ python scripts/diagnose_passages.py --pipeline advanced --mode live --set pipeli
 Only the reranking calls are new for each variant (about $0.005 each); the query rewrites replay from the
 cache. In the funnel, the question is whether "page not among the candidates" goes down without "dropped by
 the reranker" going up.
+
+A later class-routing experiment (LangChain rule/LLM chunkers × k-means or named LLM topics, then the
+same filters attached to `advanced`) is in `docs/hier_class_rag.md`. Ids spell the two LLM roles
+apart: `llmchunk` is the splitter, `llmfilter` is the topic router. That run also found that a hard
+class filter on `advanced` usually costs source recall; the one gain was `advanced_rule_kmeans`.

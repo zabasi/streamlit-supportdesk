@@ -27,6 +27,11 @@ extract = "configs/prompts/extract_system.txt"
 judge_coverage = "configs/prompts/judge_coverage_system.txt"
 summarize_section = "configs/prompts/summarize_section_system.txt"
 label_cluster = "configs/prompts/label_cluster_system.txt"
+topic_classify = "configs/prompts/topic_classify_system.txt"
+section_questions = "configs/prompts/section_questions_system.txt"
+rerank_second = ""                                  # a second reranking prompt, merged with the first; "" = one ranking
+topic_discover = "configs/prompts/topic_discover_system.txt"
+topic_refine = "configs/prompts/topic_refine_system.txt"
 scope = "configs/prompts/scope_system.txt"
 scope_rewrite = "configs/prompts/scope_rewrite_system.txt"
 rewrite_missing = "configs/prompts/rewrite_missing_system.txt"
@@ -43,6 +48,8 @@ ledger_path = "artifacts/cost_ledger.jsonl"
 pricing_path = "configs/pricing.json"
 summaries = "data/summaries/sections.jsonl"
 clusters = "data/clusters/clusters.jsonl"
+section_questions = "data/questions"
+class_labels = "data/classes/llm.jsonl"
 second_index_dir = "index/large"
 
 [budget]
@@ -61,6 +68,8 @@ structure_max_chars = 2000      # structure chunker: longer sections are split a
 token_target = 500              # token_structure chunker: the size it aims for
 token_soft_max = 700            # token_structure chunker: the most a chunk may grow to
 token_min_section = 150         # token_structure chunker: a section this big starts a new chunk
+langchain_chunk_chars = 1600    # langchain_rule chunker: most characters per chunk
+langchain_overlap_chars = 200   # langchain_rule chunker: characters shared by neighbouring chunks
 
 [retrieval]
 top_k = 6                        # chunks returned by retrieval AND (by default) allowed in the prompt
@@ -87,8 +96,19 @@ hier_places = 3                  # hierarchical retrievers: returned chunks take
 second_weight = 0.5              # dual_doc_slots: the second embedding model's weight in the fusion
 report_views = "none"            # advanced: extra searches: none | title | code | title,code
 view_weight = 0.5                # report_views: each view's weight in the fusion against the report
+rerank_mode = "llm"              # llm (reranking call) | score | rrf (no call: the search decides)
+rerank_merge = "rrf"             # prompts.rerank_second: rrf | alternate | split
+rerank_split = 4                 # rerank_merge = split: pieces from the first ranking, the rest from the second
+rerank_merge_k = 10              # rerank_merge = rrf: the RRF constant
+bm25_extra = 0                   # question_doc_slots: BM25 documentation chunks added (exact identifiers)
+rerank_fuse_weight = 0.0         # blend the reranker's order with each candidate's own search rank (0: off)
+rerank_fuse_k = 10               # rerank_fuse_weight: the RRF constant
+rerank_show_question = false     # the reranker sees the symptom question that found a candidate
 rerank_show_sections = false     # the reranker also sees the section headings inside each candidate
-pool_mode = "fuse"               # advanced: fuse (RRF of all queries) | quota (fixed shares per source)
+pool_mode = "fuse"               # advanced: fuse (RRF of all queries) | quota (fixed shares) | union (all, no fusion)
+union_report = 15                # pool_mode = union: the report's own candidates, all kept
+union_per_concept = 12           # pool_mode = union: new candidates each concept query adds
+union_max = 40                   # pool_mode = union: most candidates the reranker gets
 quota_report_dense = 5           # pool_mode = quota: dense chunks from the cleaned report
 quota_report_bm25 = 5            # pool_mode = quota: BM25 chunks from the cleaned report
 quota_concepts_dense = 10        # pool_mode = quota: dense chunks from the concept queries, in turns
@@ -102,6 +122,16 @@ cluster_top = 2                  # cluster routing: clusters each query is route
 cluster_route = "keywords"       # cluster routing: keywords | embedding | centroid
 cluster_mode = "filter"          # cluster routing: filter (only the routed clusters) | boost
 cluster_boost = 0.05             # cluster routing, boost mode: added to routed chunks' similarity
+question_filter_top = 0          # question_doc_slots, Doc2Query--: keep a question if one of its N nearest chunks is in its section
+question_chunk = "overlap"       # question_doc_slots: chunk added for a matched section: overlap | question
+question_snippet = "report"      # question_doc_slots: window for question-found candidates: report | question | both
+question_order = "append"        # question_doc_slots: append | interleave | shuffle
+question_keep = 0                # question_doc_slots: kept pieces reserved for question-found candidates
+question_sections = 5            # question_doc_slots: sections added through their symptom questions
+class_route = "llm"              # class_doc_slots: llm | centroid
+class_top = 2                    # class_doc_slots: topic classes per query
+class_mode = "filter"            # class_doc_slots: filter | boost
+class_boost = 0.05               # class_doc_slots, boost mode: added to routed chunks
 corrective_judge = "relevance"   # CorrectiveReranker: relevance (yes or no) or coverage (which mechanisms are missing)
 corrective_max_missing = 2       # coverage judge: most missing mechanisms searched for in one turn
 corrective_turns = 0             # CorrectiveReranker: judge, then rewrite and search again at most this often

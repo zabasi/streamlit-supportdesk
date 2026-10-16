@@ -1,0 +1,33 @@
+{
+  "labels_gold": [
+    "answer",
+    "request_info",
+    "escalate"
+  ],
+  "labels_predicted": [
+    "answer",
+    "request_info",
+    "escalate"
+  ],
+  "counts": {
+    "answer": {
+      "answer": 5,
+      "request_info": 0,
+      "escalate": 1
+    },
+    "request_info": {
+      "answer": 0,
+      "request_info": 2,
+      "escalate": 4
+    },
+    "escalate": {
+      "answer": 1,
+      "request_info": 0,
+      "escalate": 2
+    }
+  },
+  "n": 15,
+  "action_label_matches": 9,
+  "model": "gpt-5.4-mini",
+  "conclusion": "The preselected policy v3 completes all 15 fresh calls and preserves report-text origin, but does not establish a strong overall generation solution. Direct visible application mistakes are handled more reliably than clarification, historical-version interpretation and multi-part product concerns. Stored action agreement is 9/15; the unchanged older full-development run also had 9/15, with different errors and a different prompt/schema/token ceiling. On this assistant content review, 3 are usable by inspection, 4 need minor revision and 8 need material revision; these are review categories, not independent content accuracy. Clarification is underused and escalation overused. Do not modify labels or tune on held-out test data to inflate this result. No further paid calls or prompt revisions are part of this evaluation."
+}

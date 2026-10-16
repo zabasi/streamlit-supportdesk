@@ -129,7 +129,12 @@ Defaults shown are the built-in ones. `*unset*` means the key is optional and no
 | `output_format` | `configs/prompts/answer_output_format.txt` | JSON shape the answer must follow |
 | `rewrite` | `configs/prompts/rewrite_system.txt` | system prompt of the query-rewriting call (QueryRewriter) |
 | `rerank` | `configs/prompts/rerank_system.txt` | system prompt of the reranking call (LLMReranker) |
+| `rerank_second` | `` | a second reranking prompt (for example configs/prompts/rerank_explain_system.txt): both rankings are made and merged by retrieval.rerank_merge; empty: one ranking |
 | `scope` | `configs/prompts/scope_system.txt` | system prompt of the pre-retrieval scope classifier (scope gate on advanced) |
+| `section_questions` | `configs/prompts/section_questions_system.txt` | system prompt that writes user-style problem descriptions for one documentation section |
+| `topic_discover` | `configs/prompts/topic_discover_system.txt` | system prompt that grows a list of routing topics from the corpus, batch by batch (scripts/discover_topics.py) |
+| `topic_refine` | `configs/prompts/topic_refine_system.txt` | system prompt that merges the discovered topics into the target range |
+| `topic_classify` | `configs/prompts/topic_classify_system.txt` | system prompt that labels chunks and reports with a fixed list of Streamlit topics (class_doc_slots) |
 | `label_cluster` | `configs/prompts/label_cluster_system.txt` | system prompt that names a topic cluster and lists its keywords (scripts/build_clusters.py) |
 | `scope_rewrite` | `configs/prompts/scope_rewrite_system.txt` | system prompt of the combined scope check and concept queries, one call (pipeline.scope_gate = combined) |
 | `summarize_section` | `configs/prompts/summarize_section_system.txt` | system prompt that summarizes one documentation section (scripts/summarize_sections.py) |
@@ -152,6 +157,8 @@ Defaults shown are the built-in ones. `*unset*` means the key is optional and no
 | `pricing_path` | `configs/pricing.json` | per-model prices used by the budget guard |
 | `summaries` | `data/summaries/sections.jsonl` | section summaries written by scripts/summarize_sections.py (SummaryReranker) |
 | `second_index_dir` | `index/large` | the dual_doc_slots retriever's second index, built with models.second_embedding |
+| `section_questions` | `data/questions` | symptom questions per documentation section, with their vectors, for the question_doc_slots retriever (scripts/build_section_questions.py) |
+| `class_labels` | `data/classes/llm.jsonl` | topic labels per chunk for the class_doc_slots retriever (scripts/build_class_labels.py) |
 | `clusters` | `data/clusters/clusters.jsonl` | topic clusters written by scripts/build_clusters.py (cluster_doc_slots retriever) |
 
 ### `[budget]`
@@ -166,7 +173,7 @@ Defaults shown are the built-in ones. `*unset*` means the key is optional and no
 
 | Key | Default | What it does |
 |---|---|---|
-| `method` | `fixed` | which chunker the indexing graph's chunk node runs: fixed \| structure \| token_structure |
+| `method` | `fixed` | which chunker the indexing graph's chunk node runs: fixed \| structure \| token_structure \| langchain_rule |
 | `max_tokens` | `512` | chunk size in tokens (the project's tokenizer); changing it means building the index again |
 | `overlap_tokens` | `128` | tokens shared by consecutive chunks; must be smaller than max_tokens |
 | `context_header` | `False` | embed each documentation chunk with its page title and heading path in front (the stored text is unchanged); needs its own index |
@@ -176,6 +183,8 @@ Defaults shown are the built-in ones. `*unset*` means the key is optional and no
 | `token_target` | `500` | token_structure chunker: the chunk size it aims for, in tokens |
 | `token_soft_max` | `700` | token_structure chunker: the most tokens a chunk may grow to before it is cut |
 | `token_min_section` | `150` | token_structure chunker: a section of at least this many tokens starts a new chunk; smaller ones are packed together |
+| `langchain_chunk_chars` | `1600` | langchain_rule chunker: the most characters in a chunk (LangChain's recursive splitter, inside each heading section) |
+| `langchain_overlap_chars` | `200` | langchain_rule chunker: characters shared by neighbouring chunks |
 
 ### `[retrieval]`
 
@@ -208,8 +217,19 @@ Defaults shown are the built-in ones. `*unset*` means the key is optional and no
 | `second_weight` | `0.5` | dual_doc_slots: how much the second embedding model's ranking counts against the main model's in the fusion |
 | `report_views` | `none` | advanced: extra searches besides the queries, comma-separated: title (the report's title alone), code (its st.* commands, their parameter names and its error lines), or none; fused with the report's ranking at view_weight |
 | `view_weight` | `0.5` | report_views: how much each view's ranking counts against the report's |
+| `rerank_mode` | `llm` | llm (one reranking call) \| score (no call: the candidates' similarity to the report, for a question-found one its question's) \| rrf (no call: each candidate's rank among the candidates of its own source) |
+| `rerank_merge` | `rrf` | prompts.rerank_second: merge the two rankings by rrf (a candidate's ranks in both) \| alternate (the best not yet taken of each in turn) \| split (the first ranking's best rerank_split, then the second's best not yet taken up to top_k) |
+| `rerank_split` | `4` | rerank_merge = split: pieces taken from the first ranking; the rest of top_k comes from the second |
+| `rerank_merge_k` | `10` | rerank_merge = rrf: the RRF constant |
+| `bm25_extra` | `0` | question_doc_slots: add the best BM25 documentation chunks for the report that are not already candidates (exact identifiers); 0 adds none |
+| `rerank_fuse_weight` | `0.0` | blend the reranker's order with each candidate's own search rank (among the candidates of its source) by weighted RRF; 0 uses the reranker's order alone |
+| `rerank_fuse_k` | `10` | rerank_fuse_weight: the RRF constant (smaller makes the top ranks count more) |
+| `rerank_show_question` | `False` | the reranker also sees, for a candidate found through a documentation section's symptom question (question_doc_slots), the question that matched the report |
 | `rerank_show_sections` | `False` | the reranker also sees the headings of the sections each candidate contains, which its window may not show |
-| `pool_mode` | `fuse` | advanced: how the reranker's candidates are chosen: fuse (every query's ranking merged with RRF, the best candidate_k kept) \| quota (fixed shares: the report's best dense and BM25 chunks, and the concept queries' best dense chunks) |
+| `pool_mode` | `fuse` | advanced: how the reranker's candidates are chosen: fuse (every query's ranking merged with RRF, the best candidate_k kept) \| quota (fixed shares: the report's best dense and BM25 chunks, and the concept queries' best dense chunks) \| union (no fusion: the report's own candidates all kept, each concept query adding its best new ones) |
+| `union_report` | `15` | pool_mode = union: the cleaned report's own candidates, all kept |
+| `union_per_concept` | `12` | pool_mode = union: new candidates each concept query adds (its best ones not already in the pool) |
+| `union_max` | `40` | pool_mode = union: the most candidates the reranker gets |
 | `quota_report_dense` | `5` | pool_mode = quota: dense chunks from the cleaned report |
 | `quota_report_bm25` | `5` | pool_mode = quota: keyword (BM25) chunks from the cleaned report |
 | `quota_concepts_dense` | `10` | pool_mode = quota: dense chunks from the concept queries, taken in turns |
@@ -222,6 +242,16 @@ Defaults shown are the built-in ones. `*unset*` means the key is optional and no
 | `cluster_top` | `2` | cluster routing: how many clusters each query is routed to |
 | `cluster_route` | `keywords` | cluster routing: how a query is routed: keywords (its words among each cluster's keywords) \| embedding (its meaning against each cluster's description) \| centroid (its meaning against the average of each cluster's own chunks) |
 | `cluster_mode` | `filter` | cluster routing: filter (search only the routed clusters) \| boost (search everything, the routed clusters' chunks ranked higher by retrieval.cluster_boost) |
+| `question_filter_top` | `0` | question_doc_slots, Doc2Query--: keep a symptom question only if one of its this many nearest chunks in the index belongs to its own section; 0 keeps all |
+| `question_chunk` | `overlap` | question_doc_slots: the chunk added for a matched section: overlap (the one holding most of the section) \| question (the one most similar to the matched question) |
+| `question_snippet` | `report` | question_doc_slots: the window the reranker sees for a candidate found through a symptom question: report (chosen by the report's words) \| question (by the matched question's words) \| both |
+| `question_order` | `append` | question_doc_slots: where the question-found candidates appear in the reranking list: append (after the base's) \| interleave (one of each in turn) \| shuffle (an order that says nothing about their source) |
+| `question_keep` | `0` | question_doc_slots: at least this many of the kept pieces are question-found candidates (like rerank_keep_docs); 0 leaves it to the reranker |
+| `question_sections` | `5` | question_doc_slots: sections found through their symptom questions that add a candidate beside the base retriever's |
+| `class_route` | `llm` | class_doc_slots: how a query picks its topic classes: llm (one model call with prompts.topic_classify) \| centroid (nearest class centres, no call) |
+| `class_top` | `2` | class_doc_slots: topic classes each query is routed to |
+| `class_mode` | `filter` | class_doc_slots: filter (search only the routed classes) \| boost (search everything, the routed classes' chunks ranked higher by retrieval.class_boost) |
+| `class_boost` | `0.05` | class_doc_slots with class_mode = boost: added to the similarity of chunks in the routed classes |
 | `cluster_boost` | `0.05` | cluster routing with cluster_mode = boost: added to the similarity of chunks in the routed clusters |
 | `expand` | `none` | ExpandingReranker: add more chunks of the documentation pages among the candidates before reranking: none \| page (all their other chunks) \| section (only chunks sharing a section with a found chunk) \| branch (for structure chunks: the found chunk's ## parent and all its children, from the chunks' heading paths) |
 | `expand_max_candidates` | `30` | ExpandingReranker: the most candidates after expansion |

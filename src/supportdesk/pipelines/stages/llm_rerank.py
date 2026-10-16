@@ -65,6 +65,77 @@ def model_ranking(text: str, count: int) -> list[int]:
     return order
 
 
+def search_order(hits: list[Hit], *, mode: str, k: int) -> list[int]:
+    """rerank_mode without a model call. score: by each candidate's similarity to the report (a base
+    chunk's own, or a question-found one's question's); rrf: by 1/(k + its rank among the candidates of its
+    own source), so the best of each source come first in turn."""
+    if mode == "score":
+        return sorted(range(len(hits)), key=lambda i: (-hits[i].score, i))
+    groups: dict[str, list[int]] = {}
+    for i in sorted(range(len(hits)), key=lambda i: hits[i].rank):
+        groups.setdefault(hits[i].source, []).append(i)
+    own = {i: n for members in groups.values() for n, i in enumerate(members, start=1)}
+    return sorted(range(len(hits)), key=lambda i: (-1 / (k + own[i]), hits[i].rank))
+
+
+def merge_orders(first: list[int], second: list[int], n: int, *, mode: str, k: int, top_k: int = 0,
+                 split: int = 0) -> list[int]:
+    """Merge two rankings of the same ``n`` candidates (positions, best first; either may be empty when its
+    answer was unusable): rrf scores each candidate 1/(k + rank in the first) + 1/(k + rank in the second);
+    alternate takes the best not yet taken of each in turn; split keeps the first ranking's best ``split``,
+    then the second ranking's best not yet taken until ``top_k``, then the rest in the first ranking's order."""
+    if not first or not second:
+        return first or second
+    full = [order + [i for i in range(n) if i not in set(order)] for order in (first, second)]
+    if mode == "split":
+        out = full[0][:min(split, top_k)]
+        out += [i for i in full[1] if i not in set(out)][: max(0, top_k - len(out))]
+        return out + [i for i in full[0] if i not in set(out)]
+    if mode == "alternate":
+        out, seen = [], set()
+        for a, b in zip(*full):
+            for i in (a, b):
+                if i not in seen:
+                    seen.add(i)
+                    out.append(i)
+        return out
+    rank = [{i: r for r, i in enumerate(order, start=1)} for order in full]
+    return sorted(range(n), key=lambda i: (-(1 / (k + rank[0][i]) + 1 / (k + rank[1][i])), rank[0][i]))
+
+
+def fuse_with_search(ranked: list[Hit], hits: list[Hit], *, weight: float, k: int) -> list[Hit]:
+    """rerank_fuse_weight: blend the reranker's order with each candidate's own search rank by weighted
+    RRF, 1/(k + reranker rank) + weight/(k + search rank). The search rank is the candidate's place among
+    the candidates of its own source (the base search's, or those found through symptom questions), so a
+    strong match of either search keeps some weight however the reranker ordered it."""
+    found = lambda h: bool((h.chunk.meta or {}).get("matched_question"))
+    own: dict[str, int] = {}
+    for group in (False, True):
+        members = sorted((h for h in hits if found(h) == group), key=lambda h: h.rank)
+        own.update({h.chunk.chunk_id: n for n, h in enumerate(members, start=1)})
+    score = {h.chunk.chunk_id: 1 / (k + n) + weight / (k + own[h.chunk.chunk_id])
+             for n, h in enumerate(ranked, start=1)}
+    return sorted(ranked, key=lambda h: -score[h.chunk.chunk_id])
+
+
+def keep_question_places(ranked: list[Hit], top_k: int, minimum: int) -> list[Hit]:
+    """Make sure the first ``top_k`` hold at least ``minimum`` candidates found through a section's symptom
+    question, promoting the best-ranked of them from below the cut in place of the lowest-ranked others.
+    They are documentation, so the documentation minimum still holds."""
+    head, tail = list(ranked[:top_k]), list(ranked[top_k:])
+    found = lambda h: bool((h.chunk.meta or {}).get("matched_question"))
+    for hit in [h for h in tail if found(h)]:
+        if sum(map(found, head)) >= minimum:
+            break
+        out = next((j for j in range(len(head) - 1, -1, -1) if not found(head[j])), None)
+        if out is None:
+            break
+        tail.insert(0, head.pop(out))
+        head.append(hit)
+        tail.remove(hit)
+    return head + tail
+
+
 def keep_doc_places(ranked: list[Hit], top_k: int, min_docs: int) -> list[Hit]:
     """Make sure the first ``top_k`` hold at least ``min_docs`` documentation chunks, promoting the
     best-ranked documentation from below the cut in place of the lowest-ranked other chunks."""
@@ -126,6 +197,10 @@ class LLMReranker:
         self.clients, self.snippet = clients, settings.retrieval.rerank_snippet_chars
         self.snippet_mode = settings.retrieval.rerank_snippet  # start | focused
         self.show_sections = settings.retrieval.rerank_show_sections
+        self.show_question = settings.retrieval.rerank_show_question
+        self.question_snippet = settings.retrieval.question_snippet
+        self.question_keep = settings.retrieval.question_keep
+        self.fuse_weight, self.fuse_k = settings.retrieval.rerank_fuse_weight, settings.retrieval.rerank_fuse_k
         from ...llm.factory import chat_client_for
         self.chat = chat_client_for(clients, settings, settings.models.rerank)  # models.rerank, or the chat model
         self.concepts = None
@@ -139,22 +214,43 @@ class LLMReranker:
         self.min_docs = settings.retrieval.doc_slots if keep is None else keep
         self.clean = CleanQuery(settings.context.max_query_chars)
         self.prompt = Path(settings.prompts.rerank).read_text(encoding="utf-8")
+        second = str(settings.prompts.rerank_second or "").strip()
+        self.prompt_second = Path(second).read_text(encoding="utf-8") if second else None
+        self.merge, self.merge_k = settings.retrieval.rerank_merge, settings.retrieval.rerank_merge_k
+        self.split = settings.retrieval.rerank_split
+        self.mode = settings.retrieval.rerank_mode
 
-    def model_order(self, case: CaseInput, hits: list[Hit]) -> list[int]:
+    def model_order(self, case: CaseInput, hits: list[Hit], *, prompt: str | None = None) -> list[int]:
         """One model call: positions in ``hits``, most useful first; [] if the output is unusable."""
-        return model_ranking(self.model_text(case, hits), len(hits))
+        return model_ranking(self.model_text(case, hits, prompt=prompt), len(hits))
 
-    def model_text(self, case: CaseInput, hits: list[Hit]) -> str:
+    def model_text(self, case: CaseInput, hits: list[Hit], *, prompt: str | None = None) -> str:
         """The model's raw answer to the reranking request for ``hits``."""
         report = self.clean(case, {})[0]
         if self.snippet_mode == "focused":
-            weights = term_weights(report, [h.chunk.text for h in hits])
-            snippets = [focused_snippet(h.chunk.text, weights, self.snippet) for h in hits]
+            texts = [h.chunk.text for h in hits]
+            weights = term_weights(report, texts)
+
+            def window(h: Hit) -> str:
+                # question_snippet: a candidate found through a section's symptom question is shown by the
+                # window matching that question's words (or the report's and the question's), since it was
+                # found because its text does not share the report's words
+                question = (h.chunk.meta or {}).get("matched_question")
+                if question and self.question_snippet != "report":
+                    words = question if self.question_snippet == "question" else f"{report} {question}"
+                    return focused_snippet(h.chunk.text, term_weights(words, texts), self.snippet)
+                return focused_snippet(h.chunk.text, weights, self.snippet)
+
+            snippets = [window(h) for h in hits]
         else:
             snippets = [" ".join(h.chunk.text.split())[: self.snippet] for h in hits]
-        def header(h: Hit) -> str:  # with rerank_show_sections, the sections the whole chunk contains
+        def header(h: Hit) -> str:
+            # rerank_show_sections: the sections the whole chunk contains; rerank_show_question: for a
+            # candidate found through a section's symptom question, the question that matched the report
             sections = chunk_headings(h.chunk.text) if self.show_sections else []
-            return "Sections: " + " · ".join(sections) + "\n" if sections else ""
+            question = (h.chunk.meta or {}).get("matched_question") if self.show_question else None
+            return (("Sections: " + " · ".join(sections) + "\n" if sections else "")
+                    + (f'Found for: "{question}"\n' if question else ""))
 
         listing = "\n\n".join(f"C{n}: [{h.chunk.source_type}] {h.chunk.title}\n{header(h)}{snippet}"
                                 for n, (h, snippet) in enumerate(zip(hits, snippets), start=1))
@@ -164,7 +260,7 @@ class LLMReranker:
             if mechanisms:
                 content += "## Mechanisms involved\n" + "\n".join(f"- {m}" for m in mechanisms) + "\n\n"
         content += f"## Candidates\n{listing}"
-        text, _ = self.chat.complete([{"role": "system", "content": self.prompt},
+        text, _ = self.chat.complete([{"role": "system", "content": prompt or self.prompt},
                                               {"role": "user", "content": content}],
                                              stage="rerank", json_mode=True)
         return text
@@ -172,11 +268,21 @@ class LLMReranker:
     def __call__(self, case: CaseInput, query: str, hits: list[Hit]) -> list[Hit]:
         if len(hits) < 2:
             return hits
-        order = self.model_order(case, hits)
+        if self.mode != "llm":  # no reranking call: the search's own scores or ranks decide
+            order = search_order(hits, mode=self.mode, k=self.fuse_k)
+        else:
+            order = self.model_order(case, hits)
+        if self.mode == "llm" and self.prompt_second is not None:  # a second ranking by another notion of relevance, merged
+            order = merge_orders(order, self.model_order(case, hits, prompt=self.prompt_second), len(hits),
+                                 mode=self.merge, k=self.merge_k, top_k=self.top_k, split=self.split)
         ranked = ([hits[i] for i in order] + [h for i, h in enumerate(hits) if i not in set(order)]
                   if order else list(hits))  # unusable output: the retriever's order
+        if self.fuse_weight > 0 and order:
+            ranked = fuse_with_search(ranked, hits, weight=self.fuse_weight, k=self.fuse_k)
         if self.min_docs:
             ranked = keep_doc_places(ranked, self.top_k, self.min_docs)
+        if self.question_keep:
+            ranked = keep_question_places(ranked, self.top_k, self.question_keep)
         if ranked == list(hits):
             return hits
         return [replace(h, rank=n) for n, h in enumerate(ranked, start=1)]

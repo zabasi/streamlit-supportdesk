@@ -4,8 +4,10 @@
   "unit": "usd_per_million_tokens",
   "models": {
     "gpt-4o-mini": {"input": 0.15, "cached_input": 0.075, "output": 0.60},
-    "gpt-4.1-nano": {"input": 0.10, "cached_input": 0.025, "output": 0.40},
+    "gpt-5-mini": {"input": 0.25, "cached_input": 0.025, "output": 2.00},
+    "gpt-5.4-mini": {"input": 0.75, "cached_input": 0.075, "output": 4.50},
     "gpt-4.1-mini": {"input": 0.40, "cached_input": 0.10, "output": 1.60},
+    "gpt-4.1-nano": {"input": 0.10, "cached_input": 0.025, "output": 0.40},
     "text-embedding-3-small": {"input": 0.02, "cached_input": 0.02, "output": 0.0},
     "text-embedding-3-large": {"input": 0.143, "cached_input": 0.143, "output": 0.0}
   }

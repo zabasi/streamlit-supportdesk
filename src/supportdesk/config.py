@@ -70,7 +70,7 @@ def _opt(help_text: str, default=None):
 
 
 #: Chunkers the indexing graph can run (see data/chunking.py: CHUNKERS).
-CHUNKING_METHODS = ("fixed", "structure", "token_structure")
+CHUNKING_METHODS = ("fixed", "structure", "token_structure", "langchain_rule")
 
 
 @dataclass(frozen=True)
@@ -97,8 +97,18 @@ class Prompts:
     rewrite: Path = _opt("system prompt of the query-rewriting call (QueryRewriter)",
                          Path("configs/prompts/rewrite_system.txt"))
     rerank: Path = _opt("system prompt of the reranking call (LLMReranker)", Path("configs/prompts/rerank_system.txt"))
+    rerank_second: str = _opt("a second reranking prompt (for example configs/prompts/rerank_explain_system.txt): "
+                              "both rankings are made and merged by retrieval.rerank_merge; empty: one ranking", "")
     scope: Path = _opt("system prompt of the pre-retrieval scope classifier (scope gate on advanced)",
                        Path("configs/prompts/scope_system.txt"))
+    section_questions: Path = _opt("system prompt that writes user-style problem descriptions for one "
+                                   "documentation section", Path("configs/prompts/section_questions_system.txt"))
+    topic_discover: Path = _opt("system prompt that grows a list of routing topics from the corpus, batch by batch "
+                                "(scripts/discover_topics.py)", Path("configs/prompts/topic_discover_system.txt"))
+    topic_refine: Path = _opt("system prompt that merges the discovered topics into the target range",
+                              Path("configs/prompts/topic_refine_system.txt"))
+    topic_classify: Path = _opt("system prompt that labels chunks and reports with a fixed list of Streamlit "
+                                "topics (class_doc_slots)", Path("configs/prompts/topic_classify_system.txt"))
     label_cluster: Path = _opt("system prompt that names a topic cluster and lists its keywords "
                                "(scripts/build_clusters.py)", Path("configs/prompts/label_cluster_system.txt"))
     scope_rewrite: Path = _opt("system prompt of the combined scope check and concept queries, one call "
@@ -131,6 +141,11 @@ class Paths:
                            Path("data/summaries/sections.jsonl"))
     second_index_dir: Path = _opt("the dual_doc_slots retriever's second index, built with models.second_embedding",
                                   Path("index/large"))
+    section_questions: Path = _opt("symptom questions per documentation section, with their vectors, for the "
+                                   "question_doc_slots retriever (scripts/build_section_questions.py)",
+                                   Path("data/questions"))
+    class_labels: Path = _opt("topic labels per chunk for the class_doc_slots retriever "
+                              "(scripts/build_class_labels.py)", Path("data/classes/llm.jsonl"))
     clusters: Path = _opt("topic clusters written by scripts/build_clusters.py (cluster_doc_slots retriever)",
                           Path("data/clusters/clusters.jsonl"))
 
@@ -160,6 +175,9 @@ class Chunking:
     token_soft_max: int = _opt("token_structure chunker: the most tokens a chunk may grow to before it is cut", 700)
     token_min_section: int = _opt("token_structure chunker: a section of at least this many tokens starts a new "
                                   "chunk; smaller ones are packed together", 150)
+    langchain_chunk_chars: int = _opt("langchain_rule chunker: the most characters in a chunk (LangChain's "
+                                      "recursive splitter, inside each heading section)", 1600)
+    langchain_overlap_chars: int = _opt("langchain_rule chunker: characters shared by neighbouring chunks", 200)
 
     def extras(self) -> dict:
         """The chunking settings beyond method, sizes and the header switch that change an index: they are
@@ -170,6 +188,9 @@ class Chunking:
         if self.method == "token_structure":
             found.update(token_target=self.token_target, token_soft_max=self.token_soft_max,
                          token_min_section=self.token_min_section)
+        if self.method == "langchain_rule":
+            found.update(langchain_chunk_chars=self.langchain_chunk_chars,
+                         langchain_overlap_chars=self.langchain_overlap_chars)
         if self.context_header:
             found["context_header_scope"] = self.context_header_scope
         return found
@@ -223,11 +244,34 @@ class Retrieval:
                              "title alone), code (its st.* commands, their parameter names and its error lines), or "
                              "none; fused with the report's ranking at view_weight", "none")
     view_weight: float = _opt("report_views: how much each view's ranking counts against the report's", 0.5)
+    rerank_mode: str = _opt("llm (one reranking call) | score (no call: the candidates' similarity to the report, "
+                            "for a question-found one its question's) | rrf (no call: each candidate's rank among "
+                            "the candidates of its own source)", "llm")
+    rerank_merge: str = _opt("prompts.rerank_second: merge the two rankings by rrf (a candidate's ranks in both) | "
+                             "alternate (the best not yet taken of each in turn) | split (the first ranking's best "
+                             "rerank_split, then the second's best not yet taken up to top_k)", "rrf")
+    rerank_split: int = _opt("rerank_merge = split: pieces taken from the first ranking; the rest of top_k "
+                             "comes from the second", 4)
+    rerank_merge_k: int = _opt("rerank_merge = rrf: the RRF constant", 10)
+    bm25_extra: int = _opt("question_doc_slots: add the best BM25 documentation chunks for the report that are not "
+                           "already candidates (exact identifiers); 0 adds none", 0)
+    rerank_fuse_weight: float = _opt("blend the reranker's order with each candidate's own search rank (among "
+                                     "the candidates of its source) by weighted RRF; 0 uses the reranker's order "
+                                     "alone", 0.0)
+    rerank_fuse_k: int = _opt("rerank_fuse_weight: the RRF constant (smaller makes the top ranks count more)", 10)
+    rerank_show_question: bool = _opt("the reranker also sees, for a candidate found through a documentation "
+                                      "section's symptom question (question_doc_slots), the question that matched "
+                                      "the report", False)
     rerank_show_sections: bool = _opt("the reranker also sees the headings of the sections each candidate "
                                       "contains, which its window may not show", False)
     pool_mode: str = _opt("advanced: how the reranker's candidates are chosen: fuse (every query's ranking merged "
                           "with RRF, the best candidate_k kept) | quota (fixed shares: the report's best dense and "
-                          "BM25 chunks, and the concept queries' best dense chunks)", "fuse")
+                          "BM25 chunks, and the concept queries' best dense chunks) | union (no fusion: the report's "
+                          "own candidates all kept, each concept query adding its best new ones)", "fuse")
+    union_report: int = _opt("pool_mode = union: the cleaned report's own candidates, all kept", 15)
+    union_per_concept: int = _opt("pool_mode = union: new candidates each concept query adds (its best ones not "
+                                  "already in the pool)", 12)
+    union_max: int = _opt("pool_mode = union: the most candidates the reranker gets", 40)
     quota_report_dense: int = _opt("pool_mode = quota: dense chunks from the cleaned report", 5)
     quota_report_bm25: int = _opt("pool_mode = quota: keyword (BM25) chunks from the cleaned report", 5)
     quota_concepts_dense: int = _opt("pool_mode = quota: dense chunks from the concept queries, taken in turns", 10)
@@ -256,6 +300,28 @@ class Retrieval:
     cluster_mode: str = _opt("cluster routing: filter (search only the routed clusters) | boost (search "
                              "everything, the routed clusters' chunks ranked higher by retrieval.cluster_boost)",
                              "filter")
+    question_filter_top: int = _opt("question_doc_slots, Doc2Query--: keep a symptom question only if one of its "
+                                    "this many nearest chunks in the index belongs to its own section; 0 keeps all", 0)
+    question_chunk: str = _opt("question_doc_slots: the chunk added for a matched section: overlap (the one "
+                               "holding most of the section) | question (the one most similar to the matched "
+                               "question)", "overlap")
+    question_snippet: str = _opt("question_doc_slots: the window the reranker sees for a candidate found through a "
+                                 "symptom question: report (chosen by the report's words) | question (by the "
+                                 "matched question's words) | both", "report")
+    question_order: str = _opt("question_doc_slots: where the question-found candidates appear in the reranking "
+                               "list: append (after the base's) | interleave (one of each in turn) | shuffle "
+                               "(an order that says nothing about their source)", "append")
+    question_keep: int = _opt("question_doc_slots: at least this many of the kept pieces are question-found "
+                              "candidates (like rerank_keep_docs); 0 leaves it to the reranker", 0)
+    question_sections: int = _opt("question_doc_slots: sections found through their symptom questions that add "
+                                  "a candidate beside the base retriever's", 5)
+    class_route: str = _opt("class_doc_slots: how a query picks its topic classes: llm (one model call with "
+                            "prompts.topic_classify) | centroid (nearest class centres, no call)", "llm")
+    class_top: int = _opt("class_doc_slots: topic classes each query is routed to", 2)
+    class_mode: str = _opt("class_doc_slots: filter (search only the routed classes) | boost (search everything, "
+                           "the routed classes' chunks ranked higher by retrieval.class_boost)", "filter")
+    class_boost: float = _opt("class_doc_slots with class_mode = boost: added to the similarity of chunks in the "
+                              "routed classes", 0.05)
     cluster_boost: float = _opt("cluster routing with cluster_mode = boost: added to the similarity of chunks "
                                 "in the routed clusters", 0.05)
     expand: str = _opt("ExpandingReranker: add more chunks of the documentation pages among the candidates "
@@ -546,7 +612,10 @@ class Settings:
              f"retrieval.report_views must be none, or title and/or code (comma-separated), got {r.report_views!r}"),
             (0.0 <= r.view_weight <= 1.0, "retrieval.view_weight must be between 0 and 1"),
             (0.0 <= r.second_weight <= 1.0, "retrieval.second_weight must be between 0 and 1"),
-            (r.pool_mode in ("fuse", "quota"), f"retrieval.pool_mode must be fuse or quota, got {r.pool_mode!r}"),
+            (r.pool_mode in ("fuse", "quota", "union"),
+             f"retrieval.pool_mode must be fuse, quota or union, got {r.pool_mode!r}"),
+            (min(r.union_report, r.union_per_concept) >= 0 and r.union_max >= max(1, r.union_report),
+             "retrieval.union_* must be >= 0, and union_max at least union_report"),
             (min(r.quota_report_dense, r.quota_report_bm25, r.quota_concepts_dense) >= 0,
              "retrieval.quota_* must be >= 0"),
             (r.cluster_top >= 1, "retrieval.cluster_top must be >= 1"),
@@ -557,6 +626,25 @@ class Settings:
             (r.cluster_mode in ("filter", "boost"),
              f"retrieval.cluster_mode must be filter or boost, got {r.cluster_mode!r}"),
             (r.cluster_boost >= 0, "retrieval.cluster_boost must be >= 0"),
+            (r.question_sections >= 0, "retrieval.question_sections must be >= 0"),
+            (r.question_snippet in ("report", "question", "both"),
+             f"retrieval.question_snippet must be report, question or both, got {r.question_snippet!r}"),
+            (r.question_order in ("append", "interleave", "shuffle"),
+             f"retrieval.question_order must be append, interleave or shuffle, got {r.question_order!r}"),
+            (0 <= r.question_keep <= r.top_k, "retrieval.question_keep must be between 0 and retrieval.top_k"),
+            (r.question_filter_top >= 0, "retrieval.question_filter_top must be >= 0"),
+            (r.question_chunk in ("overlap", "question"),
+             f"retrieval.question_chunk must be overlap or question, got {r.question_chunk!r}"),
+            (r.rerank_mode in ("llm", "score", "rrf"), f"retrieval.rerank_mode must be llm, score or rrf, got {r.rerank_mode!r}"),
+            (r.rerank_merge in ("rrf", "alternate", "split"),
+             f"retrieval.rerank_merge must be rrf, alternate or split, got {r.rerank_merge!r}"),
+            (r.rerank_split >= 0, "retrieval.rerank_split must be >= 0 (it is capped at retrieval.top_k)"),
+            (r.rerank_merge_k >= 1 and r.bm25_extra >= 0, "retrieval.rerank_merge_k must be >= 1 and bm25_extra >= 0"),
+            (r.rerank_fuse_weight >= 0 and r.rerank_fuse_k >= 1,
+             "retrieval.rerank_fuse_weight must be >= 0 and rerank_fuse_k >= 1"),
+            (r.class_route in ("llm", "centroid"), f"retrieval.class_route must be llm or centroid, got {r.class_route!r}"),
+            (r.class_mode in ("filter", "boost"), f"retrieval.class_mode must be filter or boost, got {r.class_mode!r}"),
+            (r.class_top >= 1 and r.class_boost >= 0, "retrieval.class_top must be >= 1 and class_boost >= 0"),
             (r.extract_mode in ("keep", "drop"), f"retrieval.extract_mode must be keep or drop, got {r.extract_mode!r}"),
             (r.extract_protect_top >= 0, "retrieval.extract_protect_top must be >= 0"),
             (0 <= r.rerank_doc_places <= r.top_k,

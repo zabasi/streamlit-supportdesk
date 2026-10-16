@@ -28,7 +28,7 @@ def is_quota_error(error: object) -> bool:
 
 class Transport(Protocol):
     def chat(self, *, model: str, messages: list[dict], max_output_tokens: int,
-             temperature: float, json_mode: bool) -> dict:
+             temperature: float, json_mode: bool, extra: dict | None = None) -> dict:
         """-> {"text": str, "usage": {"input_tokens", "cached_input_tokens", "output_tokens"}}"""
 
     def embed(self, *, model: str, texts: list[str]) -> dict:
@@ -49,12 +49,23 @@ class OpenAITransport:
         self._client = OpenAI(api_key=key, base_url=base_url,
                               timeout=timeout_seconds, max_retries=0)
 
-    def chat(self, *, model, messages, max_output_tokens, temperature, json_mode):
-        options = {"response_format": {"type": "json_object"}} if json_mode else {}
+    def chat(self, *, model, messages, max_output_tokens, temperature, json_mode,
+             extra=None):
+        extra = extra or {}
+        if extra.get("response_format"):
+            options = {"response_format": extra["response_format"]}
+        else:
+            options = {"response_format": {"type": "json_object"}} if json_mode else {}
+        # GPT-5 chat models reject max_tokens and only allow the default temperature.
+        newer = str(model).startswith("gpt-5")
+        extras = {("max_completion_tokens" if newer else "max_tokens"): max_output_tokens}
+        if not newer:
+            extras["temperature"] = temperature
+        if newer and extra.get("reasoning_effort"):
+            extras["reasoning_effort"] = extra["reasoning_effort"]
         try:
             resp = self._client.chat.completions.create(
-                model=model, messages=messages, max_tokens=max_output_tokens,
-                temperature=temperature, **options)
+                model=model, messages=messages, **extras, **options)
         except Exception as exc:  # noqa: BLE001 - SDK exception types vary across gateways
             raise self._map(exc) from None
         usage = getattr(resp, "usage", None)
@@ -179,16 +190,18 @@ class Gateway:
                            request_hash=key[:32], items=items, status=status, cost_usd=0.0,
                            latency_seconds=round(time.perf_counter() - started, 4))
 
-    def complete(self, messages, *, stage="answer", json_mode=True):
+    def complete(self, messages, *, stage="answer", json_mode=True, extra=None):
         model = self.settings.models.chat
+        extra = extra or {}
         payload = {"messages": messages, "max_output_tokens": self.max_output_tokens,
-                   "temperature": self.temperature, "json_mode": json_mode}
+                   "temperature": self.temperature, "json_mode": json_mode, "extra": extra}
         return self._priced_call(
             kind="chat", stage=stage, model=model, payload=payload, items=1,
             est_output_tokens=self.max_output_tokens,
             send=lambda: self.transport.chat(model=model, messages=messages,
                                              max_output_tokens=self.max_output_tokens,
-                                             temperature=self.temperature, json_mode=json_mode))
+                                             temperature=self.temperature, json_mode=json_mode,
+                                             extra=extra))
 
     def embed(self, texts, *, stage="embed"):
         """Per-text caching: a re-run, or a larger corpus, only pays for texts never embedded."""

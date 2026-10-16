@@ -1,0 +1,21 @@
+{
+  "candidate": "generation_policy_v3",
+  "tested_on": "2026-10-16",
+  "cases": 15,
+  "new_calls": 15,
+  "model": "gpt-5.4-mini",
+  "returned_model": "gpt-5.4-mini-2026-03-17",
+  "reasoning_effort": "medium",
+  "max_completion_tokens": 8000,
+  "complete_and_contract_valid": 15,
+  "action_label_matches": 9,
+  "action_label_agreement_percent": 60.0,
+  "content_accuracy": null,
+  "independent_human_review": false,
+  "runtime_reproduction": false,
+  "historical_estimated_cost_usd": 0.21559725,
+  "report_file": "results/generation-policy-v3-development-results-20261016.html",
+  "frozen_code_sha256": "34dc54998393fa61c97f38b646dd5e89c2961fc2bb42bdf161c5d4b2dec37559",
+  "frozen_prompt_sha256": "6ea071e9e56107a388245e4b0cb56fbf25a5e9b423f06c7f7687fe653fd7e9b5",
+  "source_dataset_sha256": "001e8eb8ed2ab923ab5ee6ff06a729611453e5073545d9a3e32d32bac626868d"
+}

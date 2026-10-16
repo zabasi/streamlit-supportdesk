@@ -1,0 +1,130 @@
+{
+  "model": "gpt-5.4-mini",
+  "evidence": "gold",
+  "n_cases": 15,
+  "total_cost_usd": 0.256039,
+  "total_billed_usd": 0.279674,
+  "note": "DEV-10805 was billed twice because the first live process overlapped the retry. The case table uses the first live price. total_cost_usd is 15 unique cases; total_billed_usd includes the duplicate.",
+  "per_case": [
+    {
+      "case_id": "DEV-5604",
+      "outcome": "escalate",
+      "input_tokens": 3156,
+      "output_tokens": 3890,
+      "cost_usd": 0.019872,
+      "latency_seconds": 18.6633
+    },
+    {
+      "case_id": "DEV-7044",
+      "outcome": "answer",
+      "input_tokens": 3040,
+      "output_tokens": 3382,
+      "cost_usd": 0.017499,
+      "latency_seconds": 16.3028
+    },
+    {
+      "case_id": "DEV-9342",
+      "outcome": "request_info",
+      "input_tokens": 3220,
+      "output_tokens": 1877,
+      "cost_usd": 0.0108615,
+      "latency_seconds": 9.8958
+    },
+    {
+      "case_id": "DEV-4338",
+      "outcome": "answer",
+      "input_tokens": 3655,
+      "output_tokens": 5219,
+      "cost_usd": 0.02622675,
+      "latency_seconds": 24.9231
+    },
+    {
+      "case_id": "DEV-6166",
+      "outcome": "escalate",
+      "input_tokens": 3221,
+      "output_tokens": 2442,
+      "cost_usd": 0.01340475,
+      "latency_seconds": 13.0591
+    },
+    {
+      "case_id": "DEV-16388",
+      "outcome": "escalate",
+      "input_tokens": 2663,
+      "output_tokens": 2515,
+      "cost_usd": 0.01331475,
+      "latency_seconds": 12.2601
+    },
+    {
+      "case_id": "DEV-3903",
+      "outcome": "answer",
+      "input_tokens": 2941,
+      "output_tokens": 3242,
+      "cost_usd": 0.01679475,
+      "latency_seconds": 15.1496
+    },
+    {
+      "case_id": "DEV-4325",
+      "outcome": "answer",
+      "input_tokens": 4279,
+      "output_tokens": 4434,
+      "cost_usd": 0.02316225,
+      "latency_seconds": 19.6902
+    },
+    {
+      "case_id": "DEV-7305",
+      "outcome": "answer",
+      "input_tokens": 2771,
+      "output_tokens": 4249,
+      "cost_usd": 0.02119875,
+      "latency_seconds": 18.592
+    },
+    {
+      "case_id": "DEV-3585",
+      "outcome": "escalate",
+      "input_tokens": 2419,
+      "output_tokens": 1531,
+      "cost_usd": 0.00870375,
+      "latency_seconds": 7.7533
+    },
+    {
+      "case_id": "DEV-3842",
+      "outcome": "answer",
+      "input_tokens": 2458,
+      "output_tokens": 2416,
+      "cost_usd": 0.0127155,
+      "latency_seconds": 11.1002
+    },
+    {
+      "case_id": "DEV-4082",
+      "outcome": "answer",
+      "input_tokens": 3264,
+      "output_tokens": 3886,
+      "cost_usd": 0.019935,
+      "latency_seconds": 18.2862
+    },
+    {
+      "case_id": "DEV-5591",
+      "outcome": "answer",
+      "input_tokens": 2853,
+      "output_tokens": 2665,
+      "cost_usd": 0.01413225,
+      "latency_seconds": 14.994
+    },
+    {
+      "case_id": "DEV-4989",
+      "outcome": "answer",
+      "input_tokens": 3885,
+      "output_tokens": 3087,
+      "cost_usd": 0.01680525,
+      "latency_seconds": 17.4437
+    },
+    {
+      "case_id": "DEV-10805",
+      "outcome": "answer",
+      "input_tokens": 4034,
+      "output_tokens": 4086,
+      "cost_usd": 0.0214125,
+      "latency_seconds": 23.5936
+    }
+  ]
+}

@@ -39,6 +39,8 @@ class WeightedFusionPipeline(StagedPipeline):
         r, queries = self.settings.retrieval, state["queries"]
         if r.pool_mode == "quota":
             return {"candidates": [hit_to_dict(h) for h in self._quota_pool(state)]}
+        if r.pool_mode == "union":
+            return {"candidates": [hit_to_dict(h) for h in self._union_pool(state)]}
         case = case_from_dict(state["case"])
         views = report_views(case, r.report_views)  # the title / code views, searched besides the queries
         if not views and (r.concept_weight == 1.0 or not r.keep_report_query or len(queries) < 2):
@@ -50,6 +52,43 @@ class WeightedFusionPipeline(StagedPipeline):
         weights = ([1.0] + [concept] * (len(queries) - 1)  # the report first, then the concepts
                    + [r.view_weight] * len(views))  # then the views
         return {"candidates": [hit_to_dict(h) for h in fuse_hits(rankings, pool, rrf_k=r.rrf_k, weights=weights)]}
+
+    def _union_pool(self, state) -> list[Hit]:
+        """retrieval.pool_mode = union: no fusion and nothing displaced. The cleaned report (the first query)
+        keeps its own best union_report candidates; each concept query then adds its best union_per_concept
+        candidates that are not already in the pool, taken in turns (one from each query), until
+        union_max candidates. The reranker ranks them all."""
+        r, queries = self.settings.retrieval, state["queries"]
+        case = case_from_dict(state["case"])
+        as_of = case.created_at if r.historical_filter else None
+        report, concepts = queries[0], queries[1:]
+        picked: dict[str, Hit] = {}
+        found = self.retriever.search(report, k=r.union_report, as_of=as_of)
+        extras = {"question", "bm25"}  # candidates a question_doc_slots retriever adds: kept, not cut
+        own = [h for h in found if h.source not in extras][: r.union_report] + [h for h in found if h.source in extras]
+        for hit in own:
+            if len(picked) < r.union_max and hit.chunk.chunk_id not in picked:
+                source = hit.source if hit.source in extras else "report"
+                picked[hit.chunk.chunk_id] = Hit(hit.chunk, hit.score, len(picked) + 1, source)
+        depth = r.union_per_concept + r.union_report  # deep enough to find that many new ones
+        rankings = [self.retriever.search(q, k=depth, as_of=as_of) for q in concepts]
+        positions, added = [0] * len(rankings), [0] * len(rankings)
+        while len(picked) < r.union_max:
+            progressed = False
+            for n, ranking in enumerate(rankings):  # one new candidate from each concept query in turn
+                if added[n] >= r.union_per_concept or len(picked) >= r.union_max:
+                    continue
+                while positions[n] < len(ranking) and ranking[positions[n]].chunk.chunk_id in picked:
+                    positions[n] += 1
+                if positions[n] < len(ranking):
+                    hit = ranking[positions[n]]
+                    picked[hit.chunk.chunk_id] = Hit(hit.chunk, hit.score, len(picked) + 1, "concept")
+                    positions[n] += 1
+                    added[n] += 1
+                    progressed = True
+            if not progressed:
+                break
+        return list(picked.values())
 
     def _quota_pool(self, state) -> list[Hit]:
         """retrieval.pool_mode = quota: fixed shares instead of one fused list. The cleaned report (the first

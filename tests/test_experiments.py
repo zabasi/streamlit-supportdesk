@@ -477,8 +477,11 @@ def test_the_variants_of_the_advanced_design_each_change_one_thing():
     # advanced is that design, plus the scope check its profile turns on
     # advanced is that design, plus the scope check, and since the reviewed labels without the concept
     # queries and with section completion
+    # and, since then, 8 pieces with at least 5 documentation within 4,300 tokens
     assert {k for k in best if best[k] != advanced[k]} == {"pipeline.name", "pipeline.scope_gate",
-                                                          "retrieval.decompose", "retrieval.complete"}
+                                                          "retrieval.decompose", "retrieval.complete",
+                                                          "retrieval.top_k", "retrieval.rerank_keep_docs",
+                                                          "context.max_tokens"}
     assert (advanced["pipeline.scope_gate"], advanced["retrieval.decompose"], advanced["retrieval.complete"]) == \
         ("llm", False, "section")
 

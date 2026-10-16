@@ -1,0 +1,113 @@
+{
+  "model": "gpt-5.4-mini",
+  "evidence": "gold",
+  "n_cases": 15,
+  "total_cost_usd": 0.184565,
+  "per_case": [
+    {
+      "case_id": "DEV-5604",
+      "outcome": "escalate",
+      "input_tokens": 3574,
+      "output_tokens": 2834,
+      "cost_usd": 0.0154335
+    },
+    {
+      "case_id": "DEV-7044",
+      "outcome": "request_info",
+      "input_tokens": 3458,
+      "output_tokens": 819,
+      "cost_usd": 0.006279
+    },
+    {
+      "case_id": "DEV-9342",
+      "outcome": "escalate",
+      "input_tokens": 3638,
+      "output_tokens": 1453,
+      "cost_usd": 0.009267
+    },
+    {
+      "case_id": "DEV-4338",
+      "outcome": "escalate",
+      "input_tokens": 4073,
+      "output_tokens": 2637,
+      "cost_usd": 0.01492125
+    },
+    {
+      "case_id": "DEV-6166",
+      "outcome": "escalate",
+      "input_tokens": 3639,
+      "output_tokens": 1928,
+      "cost_usd": 0.01140525
+    },
+    {
+      "case_id": "DEV-16388",
+      "outcome": "escalate",
+      "input_tokens": 3081,
+      "output_tokens": 2387,
+      "cost_usd": 0.01305225
+    },
+    {
+      "case_id": "DEV-3903",
+      "outcome": "answer",
+      "input_tokens": 3359,
+      "output_tokens": 2922,
+      "cost_usd": 0.01566825
+    },
+    {
+      "case_id": "DEV-4325",
+      "outcome": "answer",
+      "input_tokens": 4697,
+      "output_tokens": 1868,
+      "cost_usd": 0.01192875
+    },
+    {
+      "case_id": "DEV-7305",
+      "outcome": "answer",
+      "input_tokens": 3189,
+      "output_tokens": 2425,
+      "cost_usd": 0.01330425
+    },
+    {
+      "case_id": "DEV-3585",
+      "outcome": "request_info",
+      "input_tokens": 2837,
+      "output_tokens": 826,
+      "cost_usd": 0.00584475
+    },
+    {
+      "case_id": "DEV-3842",
+      "outcome": "answer",
+      "input_tokens": 2876,
+      "output_tokens": 1967,
+      "cost_usd": 0.0110085
+    },
+    {
+      "case_id": "DEV-4082",
+      "outcome": "answer",
+      "input_tokens": 3682,
+      "output_tokens": 2398,
+      "cost_usd": 0.0135525
+    },
+    {
+      "case_id": "DEV-5591",
+      "outcome": "request_info",
+      "input_tokens": 3271,
+      "output_tokens": 1309,
+      "cost_usd": 0.00834375
+    },
+    {
+      "case_id": "DEV-4989",
+      "outcome": "answer",
+      "input_tokens": 4303,
+      "output_tokens": 3013,
+      "cost_usd": 0.01678575
+    },
+    {
+      "case_id": "DEV-10805",
+      "outcome": "escalate",
+      "input_tokens": 4452,
+      "output_tokens": 3207,
+      "cost_usd": 0.0177705
+    }
+  ]
+}

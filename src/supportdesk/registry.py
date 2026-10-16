@@ -88,6 +88,7 @@ from .pipelines.hierarchical import build_advanced_hier, build_hier_baseline
 from .pipelines.retrieve_loop import build_retrieve_loop
 from .pipelines.retrieve_loop_pool import build_retrieve_loop_best, build_retrieve_loop_mixed
 from .pipelines.scope_gate import build_advanced_scoped, build_scope_gate, build_scope_gate_rules
+from .retrieval.class_routing import build_class_retriever
 from .retrieval.clusters import ClusterRoutedRetriever
 from .retrieval.dual import build_dual
 from .retrieval.hierarchy import HierarchicalRetriever
@@ -101,9 +102,16 @@ from .retrieval.retriever import (
     SplitDocSlotsRetriever,
     SplitHybridRetriever,
 )
+from .retrieval.section_questions import build_question_retriever
 
 #: Pipelines by name: each builds the pipeline from (retriever, clients, settings); its docstring is its one-line description.
 PIPELINES = {"baseline": build_baseline, "advanced": build_advanced_scoped,
+             # the four candidate retrieval designs (configs/pipelines/candidate-*.toml): advanced's stages
+             # with their own settings
+             "candidate-1-dense-rerank-section": build_advanced_scoped,
+             "candidate-2-doc2query15-rerank-section": build_advanced_scoped,
+             "candidate-3-dense-dualrerank-section": build_advanced_scoped,
+             "candidate-4-dense-rerank-section-6chunks": build_advanced_scoped,
              "scope_gate": build_scope_gate, "scope_gate_rules": build_scope_gate_rules,
              "retrieve_loop": build_retrieve_loop,
              "retrieve_loop_best": build_retrieve_loop_best,
@@ -198,6 +206,8 @@ RETRIEVERS = {
     "dense_doc_slots": lambda index, clients, s: DocSlotsRetriever(
         index, clients.embedding, doc_slots=s.retrieval.doc_slots),
     "dual_doc_slots": lambda index, clients, s: build_dual(index, clients, s),
+    "class_doc_slots": lambda index, clients, s: build_class_retriever(index, clients, s),
+    "question_doc_slots": lambda index, clients, s: build_question_retriever(index, clients, s),
     "cluster_doc_slots": lambda index, clients, s: ClusterRoutedRetriever(
         index, clients.embedding, doc_slots=s.retrieval.doc_slots, clusters=s.paths.clusters,
         top=s.retrieval.cluster_top, route=s.retrieval.cluster_route, mode=s.retrieval.cluster_mode,

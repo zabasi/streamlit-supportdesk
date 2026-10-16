@@ -4,10 +4,24 @@
 # The best retrieval found on the development cases with the reviewed evidence labels: the cleaned report
 # is the only query (retrieval.decompose = false); it returns 15 candidates, 10 of them documentation
 # (retriever dense_doc_slots); one model call ranks the 15, seeing each candidate's best-matching window
-# (rerank_snippet = focused); the best 6 are kept, with at least 3 documentation chunks; each kept
+# (rerank_snippet = focused); the best 8 are kept, with at least 5 documentation chunks; each kept
 # documentation chunk is grown to the whole top-level sections it touches (retrieval.complete = section, at
-# most 900 tokens), and kept pieces of one page that overlap or touch are merged. The model sees at most 6
-# pieces within 3,200 tokens. Per case: one model call for retrieval (the reranking), after the scope check.
+# most 900 tokens), and kept pieces of one page that overlap or touch are merged. The model sees at most 8
+# pieces within 4,300 tokens. Per case: one model call for retrieval (the reranking), after the scope check.
+# On the development cases (retrieval only): 70.1% of gold passages in the prompt, gold for all 15 cases.
+#
+# Fair comparison: advanced uses more room than the baseline (8 pieces and 4,300 tokens against 6 and
+# 3,200). Any comparison of the two must also run the baseline at the same budget
+# (--set retrieval.top_k=8 --set context.max_tokens=4300), so a gain from choosing better evidence is
+# kept apart from a gain from showing more of it.
+#
+# Tried on this design and not adopted (no gain beyond noise, or a loss): concept queries in any form
+# (decompose, weighted, quota and union pools, search-only), hybrid BM25, topic clusters and topic routing
+# (filter or boost, fixed or discovered topics, with overlap), structure-aware chunking (token_structure,
+# LangChain rule chunks, with section or neighbour completion), the larger embedding model alone or fused,
+# a stronger reranking model, report views, the reranker seeing each chunk's sections or other windows
+# (first 400 or 600 characters, best 600), a larger pool, the corrective loop, and lighter completion
+# (subsection, lower caps, section_trim): siblings of a gold subsection are often gold too.
 #
 # The concept-query keys below (max_queries, keep_report_query, rerank_show_concepts, prompts.rewrite and
 # prompts.rerank) are the previous design's: with decompose = false they are not used (the reranker uses
@@ -19,7 +33,7 @@ max_tokens = 512
 overlap_tokens = 128
 
 [retrieval]
-top_k = 6
+top_k = 8                    # pieces the model sees
 candidate_k = 15             # candidates the reranker orders
 rerank_snippet_chars = 400   # characters of each candidate the reranker sees
 rerank_snippet = "focused"   # the reranker sees each candidate's best-matching window
@@ -29,11 +43,11 @@ max_queries = 3              # with decompose: up to 3 model-written queries
 doc_slots = 10               # documentation among the 15 candidates
 decompose = false            # the cleaned report is the only query (no concept queries)
 complete = "section"         # grow each kept documentation chunk to the whole sections it touches
-rerank_keep_docs = 3         # documentation kept in the final 6 after reranking
+rerank_keep_docs = 5         # documentation kept in the final 8 after reranking (3 places for the rest)
 historical_filter = true
 
 [context]
-max_tokens = 3200            # 6 chunks x 512 tokens: enough room that the budget never drops a chunk
+max_tokens = 4300            # room for 8 pieces after section completion
 max_query_chars = 4000
 max_body_chars = 4000
 
