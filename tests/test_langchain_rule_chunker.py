@@ -52,3 +52,16 @@ def test_the_experiment_reads_the_repository_gold_by_default():
     spec.loader.exec_module(module)
     cases = module._cases(None, ROOT / "data/eval")
     assert len(cases) == 15 and all(c.evidence_spans for c in cases)
+
+
+def test_chunks_tile_every_page_so_section_completion_works():
+    """LangChain drops the whitespace it cuts at; the gaps are closed so each page can be rebuilt from
+    its chunks (section completion needs that)."""
+    from supportdesk.pipelines.stages.sections import page_texts
+
+    s = Settings.load(env={}, overrides=["chunking.method=langchain_rule"])
+    records = [r for r in load_corpus(ROOT / "data/processed").records if r.source_type == "documentation"]
+    chunks = build_chunks(records, chunker=make_chunker(s))
+    pages = page_texts(chunks)
+    assert set(pages) == {r.source_id for r in records}
+    assert all(pages[r.source_id] == r.text[: len(pages[r.source_id])] for r in records)

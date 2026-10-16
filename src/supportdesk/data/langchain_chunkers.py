@@ -98,7 +98,25 @@ def rule_spans(text: str, source_type: str, *, chunk_size: int = 1600,
         if start < end and (start, end) not in seen:
             seen.add((start, end))
             unique.append((piece, start, end, path))
-    return unique
+    return _close_whitespace_gaps(text, unique)
+
+
+def _close_whitespace_gaps(text: str, spans: list[tuple[str, int, int, tuple[str, ...]]]):
+    """LangChain's splitters drop the whitespace they cut at (a blank line between two pieces), which
+    leaves gaps between neighbouring chunks. A chunk followed by a whitespace-only gap is extended to the
+    next chunk's start, so the chunks tile the source: pages can then be rebuilt from their chunks (which
+    section completion needs). Each chunk's text stays exactly its source slice."""
+    spans = sorted(spans, key=lambda s: (s[1], s[2]))
+    out = []
+    for n, (_, start, end, path) in enumerate(spans):
+        nxt = spans[n + 1][1] if n + 1 < len(spans) else len(text)
+        if end < nxt and not text[end:nxt].strip():
+            end = nxt
+        out.append((text[start:end], start, end, path))
+    if out and out[0][1] > 0 and not text[:out[0][1]].strip():  # leading whitespace joins the first chunk
+        first = out[0]
+        out[0] = (text[:first[2]], 0, first[2], first[3])
+    return out
 
 
 def _snap(text: str, pos: int) -> int:
