@@ -90,6 +90,31 @@ def confusion_matrix(pairs: list[tuple[EvalCase, dict]]) -> dict:
     }
 
 
+#: A finished run's results rows name each case's category; this is the decision each category expects.
+EXPECTED_BY_CATEGORY = {"answerable": "answer", "ambiguous": "request_info", "escalation": "escalate"}
+
+
+def matrix_from_rows(rows: list[dict]) -> dict | None:
+    """The same matrix as ``confusion_matrix``, from a finished run's results rows (``results.jsonl``):
+    rows are the decision each case's category expects, columns the decision the run made, with any other
+    outcome (an error, a failed validation) as a column of its own. None for a run without decisions
+    (retrieval only)."""
+    pairs = [(EXPECTED_BY_CATEGORY[r["category"]], r.get("outcome") or "unknown") for r in rows
+             if r.get("category") in EXPECTED_BY_CATEGORY and r.get("outcome") != "retrieval_only"]
+    if not pairs:
+        return None
+    predicted = list(GOLD_LABELS) + sorted({p for _, p in pairs if p not in GOLD_LABELS})
+    counts = {gold: {pred: 0 for pred in predicted} for gold in GOLD_LABELS}
+    for gold, pred in pairs:
+        counts[gold][pred] += 1
+    return {"labels_gold": list(GOLD_LABELS), "labels_predicted": predicted, "counts": counts, "n": len(pairs)}
+
+
+def matrix_correct(matrix: dict) -> int:
+    """Cases on the diagonal: the decision the category expects."""
+    return sum(matrix["counts"][g].get(g, 0) for g in matrix["labels_gold"])
+
+
 def format_confusion(matrix: dict) -> str:
     """A markdown table: rows = gold, columns = predicted."""
     golds = matrix.get("labels_gold") or GOLD_LABELS

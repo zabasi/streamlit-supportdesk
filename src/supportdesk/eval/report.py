@@ -7,7 +7,7 @@ from pathlib import Path
 
 CSS = """body{font:15px/1.5 system-ui,sans-serif;margin:24px auto;max-width:1100px;padding:0 16px;color:#1c2330}
 table{border-collapse:collapse;width:100%;margin:12px 0 28px}th,td{border:1px solid #dfe3ea;padding:6px 10px;
-text-align:left;vertical-align:top}th{background:#f1f3f7}td.num{text-align:right;font-variant-numeric:tabular-nums}
+text-align:left;vertical-align:top}th{background:#f1f3f7}td.num{text-align:right;font-variant-numeric:tabular-nums}td.ok{font-weight:700;background:#e6f4ea}
 .override{color:#a15c00;font-weight:600}.warn{background:#fff1dc;border-left:4px solid #a15c00;padding:8px 12px;margin:12px 0}.muted{color:#5d6879}
 code{background:#f1f3f7;padding:0 4px;border-radius:3px}"""
 
@@ -153,6 +153,9 @@ def render_report(run_dirs: list[Path]) -> str:
                 cells += (f"<td class=num>recall@{top} {_fmt(data['recall_at_k'][top], 'pct')} "
                           f"(n={data['n']})</td>")
         out.append(f"<tr><td>{escape(cat)}</td>{cells}</tr>")
+    out.append("</table>")
+    out.append(_decisions_section(runs))
+    out.append("<table>")
     out.append("</table><h2>Cases</h2>"
                f"<table><tr><th>Case</th><th>Category</th>{head}</tr>")
     for case_id in runs[0]["order"]:
@@ -169,6 +172,35 @@ def render_report(run_dirs: list[Path]) -> str:
                    f"<td>{escape(runs[0]['rows'][case_id].get('category', ''))}</td>{cells}</tr>")
     out.append("</table>")
     return "".join(out)
+
+
+def _decisions_section(runs: list[dict]) -> str:
+    """One confusion matrix per run that made decisions: rows the decision each case's category expects,
+    columns the decision made (an error or a failed validation as its own column); the diagonal is correct."""
+    from .grounded_metrics import matrix_correct, matrix_from_rows
+
+    tables = []
+    for r in runs:
+        matrix = matrix_from_rows(list(r["rows"].values()))
+        if matrix is None:
+            continue
+        preds, counts = matrix["labels_predicted"], matrix["counts"]
+        head = "".join(f"<th>{escape(p)}</th>" for p in preds)
+        body = ""
+        for gold in matrix["labels_gold"]:
+            cells = "".join(f"<td class='num{' ok' if p == gold else ''}'>{counts[gold].get(p, 0)}</td>"
+                            for p in preds)
+            body += f"<tr><td>{escape(gold)}</td>{cells}<td class=num>{sum(counts[gold].values())}</td></tr>"
+        totals = "".join(f"<td class=num>{sum(counts[g].get(p, 0) for g in counts)}</td>" for p in preds)
+        name = escape(r["summary"].get("run_id") or r["summary"].get("pipeline", ""))
+        tables.append(f"<h3>{name} <span class=muted>{matrix_correct(matrix)} of {matrix['n']} correct</span></h3>"
+                      f"<table><tr><th>expected / decided</th>{head}<th>total</th></tr>{body}"
+                      f"<tr><td><b>total</b></td>{totals}<td class=num>{matrix['n']}</td></tr></table>")
+    if not tables:
+        return ""
+    return ("<h2>Decisions</h2><p class=muted>Rows: the decision each case's category expects. Columns: the "
+            "decision made. The highlighted diagonal is correct; an error or a failed validation has its "
+            "own column.</p>" + "".join(tables))
 
 
 def write_report(run_dirs: list[Path], output: Path) -> None:
