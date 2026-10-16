@@ -177,15 +177,27 @@ class App:
             kind = "typed"
         src = {"kind": kind}
         report = {"title": case.title, "body": case.body, "created_at": case.created_at, "environment": env}
-        case_id = None
+        case_id, history = None, case.history
         if kind == "dev":
             dev = self.dev_case(str(source.get("case_id") or ""))
             src["case_id"] = dev["id"]
-            unchanged = (dev["title"].strip(), (dev["body"] or "").strip(), dev["created_at"] or None, dev["environment"],
-                         [{"role": m["role"], "body": m["body"].strip()} for m in dev["history"] if m["body"].strip()])
-            if unchanged == (case.title, case.body, case.created_at, env, case.history):
-                case_id = dev["id"]  # the case as evaluated: its first turn can replay the evaluation's answer
-        conv = self.store.create(pipeline=pipeline, source=src, report=report, history=case.history, case_id=case_id)
+
+            def seen(text):  # text as a browser sends it back: line endings normalised, outer spaces trimmed
+                return (text or "").replace("\r\n", "\n").replace("\r", "\n").strip()
+            original = self._cases()[dev["id"]].input
+            unchanged = (seen(original.title), seen(original.body), original.created_at or None,
+                         dict(original.environment or {}),
+                         [(m.get("role", "user"), seen(m.get("body"))) for m in original.history or [] if seen(m.get("body"))])
+            given = (seen(case.title), seen(case.body), case.created_at, env,
+                     [(m["role"], seen(m["body"])) for m in case.history])
+            if unchanged == given:
+                # the case as evaluated, byte for byte (its own line endings, spaces and history) and its own ID,
+                # so every request is the evaluation's and replays from the cache
+                case_id = dev["id"]
+                report = {"title": original.title, "body": original.body, "created_at": original.created_at,
+                          "environment": dict(original.environment or {})}
+                history = [dict(m) for m in original.history or []]
+        conv = self.store.create(pipeline=pipeline, source=src, report=report, history=history, case_id=case_id)
         if kind == "dev":
             conv["label"] = self.label_for(src["case_id"])
             self.store.save(conv)
@@ -213,7 +225,10 @@ class App:
         case_id = conv.get("case_id") or content_case_id(r, conv["initial_history"])  # older saves have none
         case = CaseInput(case_id=case_id, title=r["title"], body=r["body"], created_at=r["created_at"],
                          environment=dict(r.get("environment") or {}),
-                         history=[{"role": m["role"], "body": m["body"]} for m in conv["initial_history"] + conv["messages"]])
+                         # earlier messages exactly as given (a case's own may carry created_at); the turn's own
+                         # bookkeeping (at, outcome) is not part of the case
+                         history=[{k: v for k, v in m.items() if k in ("role", "body", "created_at")}
+                                  for m in conv["initial_history"] + conv["messages"]])
         retriever = self.settings_for(conv["pipeline"]).pipeline.retriever
         data = self._run(case, conv["pipeline"], retriever, questions_used=conv["questions_used"])
         result = data["result"]
@@ -332,7 +347,7 @@ class App:
             if self.store.find(kind="run", run_id=run_id, case_id=case_id):
                 skipped += 1
                 continue
-            history = [{"role": h.get("role", "user"), "body": h.get("body", "")} for h in inp.history or []]
+            history = [dict(h) for h in inp.history or []]  # exactly as the run had them
             report = {"title": inp.title, "body": inp.body, "created_at": inp.created_at,
                       "environment": dict(inp.environment or {})}
             conv = self.store.create(pipeline=pipeline, source={"kind": "run", "run_id": run_id, "case_id": case_id},

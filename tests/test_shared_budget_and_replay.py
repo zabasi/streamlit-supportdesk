@@ -66,3 +66,31 @@ def test_an_unchanged_development_case_keeps_its_own_id(app):
     assert app.conversation_new(payload)["case_id"] == dev["id"]
     edited = app.conversation_new({**payload, "body": dev["body"] + "\nOne more detail."})
     assert edited["case_id"].startswith("web-") and edited["source"]["case_id"] == dev["id"]
+
+
+def test_every_development_case_sent_by_a_browser_reaches_the_pipeline_as_evaluated(app):
+    """A browser text box turns \\r\\n into \\n; the case must still be the evaluation's, byte for byte."""
+    from supportdesk.eval.cases import load_cases
+
+    cases = load_cases(*app.settings.eval.case_files, split="dev")
+    if not cases:
+        pytest.skip("no development cases in this checkout")
+    captured = []
+
+    def run(case, pipeline, retriever, *, questions_used=None, keep_result=False):
+        captured.append(case)
+        return {"result": {"outcome": "answer", "user_reply": "x", "citations": [], "violations": [], "usage": {},
+                           "error": None}, "evidence": [], "retriever": retriever, "applied": None}
+    app._run = run
+    for ev in cases:
+        dev = app.dev_case(ev.case_id)
+        browser = lambda text: (text or "").replace("\r\n", "\n")
+        conv = app.conversation_new({"title": dev["title"], "body": browser(dev["body"]), "created_at": dev["created_at"],
+                                     "history": [{**m, "body": browser(m["body"])} for m in dev["history"]],
+                                     "environment": dev["environment"], "pipeline": "baseline",
+                                     "source": {"kind": "dev", "case_id": ev.case_id}})
+        app.conversation_turn({"id": conv["id"]})
+        assert captured[-1] == ev.input, ev.case_id  # every field, the case ID included
+    edited = app.conversation_new({"title": "x", "body": "edited", "pipeline": "baseline",
+                                   "source": {"kind": "dev", "case_id": cases[0].case_id}})
+    assert edited["case_id"].startswith("web-")
