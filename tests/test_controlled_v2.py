@@ -9,7 +9,7 @@ from pathlib import Path
 import pytest
 
 from supportdesk.config import ConfigError, Settings
-from supportdesk.pipelines.packet import assemble_packet
+from supportdesk.pipelines.packet import Packet, assemble_packet
 from supportdesk.pipelines.stages.controlled import MODEL, ControlledGenerator
 from supportdesk.pipelines.stages.defaults import SingleCallGenerator
 from supportdesk.pipelines.stages.protocols import GenerationFailed
@@ -156,3 +156,21 @@ def test_the_generator_setting_is_checked():
     assert Settings.load(env={}).pipeline.generator == "single_call"
     with pytest.raises(ConfigError, match="pipeline.generator"):
         Settings.load(env={}, overrides=["pipeline.generator=critic"])
+
+
+def test_the_extracted_environment_is_used_only_when_the_case_has_none(clients, settings, monkeypatch):
+    """An app case carries no reported environment, so the extracted one is passed; an evaluation case
+    keeps its own, exactly as in the package's verified run."""
+    from supportdesk.pipelines.stages import controlled
+
+    seen = []
+    monkeypatch.setattr(controlled, "generate_from_packet",
+                        lambda case, packet, complete: seen.append(case.environment) or (_ for _ in ()).throw(
+                            ValueError("stop here")))
+    gen = controlled.ControlledGenerator(clients, settings)
+    app_case = CaseInput(case_id="a", title="t", body="b")
+    eval_case = CaseInput(case_id="e", title="t", body="b", environment={"streamlit_version": "1.13.0"})
+    for case in (app_case, eval_case):
+        with pytest.raises(GenerationFailed):
+            gen(case, {"streamlit_version": "1.40.0", "python_version": "3.12"}, Packet())
+    assert seen == [{"streamlit_version": "1.40.0", "python_version": "3.12"}, {"streamlit_version": "1.13.0"}]

@@ -49,6 +49,11 @@ class ControlledGenerator:
 
     def __call__(self, case: CaseInput, env: dict, packet: Packet) -> ParsedAnswer:
         self.last_usage = None
+        if not case.environment and env:
+            # a case typed into the app has no reported environment of its own: give the package the one
+            # the pipeline extracted from the report (an evaluation case keeps its reported environment, as
+            # in the package's verified run)
+            case = dataclasses.replace(case, environment=dict(env))
         try:
             result = generate_from_packet(case, packet, self.complete)
         except ValueError as exc:  # no usable assessment: an error for this case, with the call's usage
