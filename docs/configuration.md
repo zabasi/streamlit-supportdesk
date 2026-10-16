@@ -234,6 +234,9 @@ Defaults shown are the built-in ones. `*unset*` means the key is optional and no
 | `cluster_top` | `2` | cluster routing: how many clusters each query is routed to |
 | `cluster_route` | `keywords` | cluster routing: how a query is routed: keywords (its words among each cluster's keywords) \| embedding (its meaning against each cluster's description) \| centroid (its meaning against the average of each cluster's own chunks) |
 | `cluster_mode` | `filter` | cluster routing: filter (search only the routed clusters) \| boost (search everything, the routed clusters' chunks ranked higher by retrieval.cluster_boost) |
+| `question_snippet` | `report` | question_doc_slots: the window the reranker sees for a candidate found through a symptom question: report (chosen by the report's words) \| question (by the matched question's words) \| both |
+| `question_order` | `append` | question_doc_slots: where the question-found candidates appear in the reranking list: append (after the base's) \| interleave (one of each in turn) \| shuffle (an order that says nothing about their source) |
+| `question_keep` | `0` | question_doc_slots: at least this many of the kept pieces are question-found candidates (like rerank_keep_docs); 0 leaves it to the reranker |
 | `question_sections` | `5` | question_doc_slots: sections found through their symptom questions that add a candidate beside the base retriever's |
 | `class_route` | `llm` | class_doc_slots: how a query picks its topic classes: llm (one model call with prompts.topic_classify) \| centroid (nearest class centres, no call) |
 | `class_top` | `2` | class_doc_slots: topic classes each query is routed to |

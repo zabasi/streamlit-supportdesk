@@ -9,7 +9,9 @@ documentation only (no evaluation case is involved).
 from __future__ import annotations
 
 import dataclasses
+import hashlib
 import json
+import random
 from collections import defaultdict
 from pathlib import Path
 
@@ -107,8 +109,8 @@ class QuestionExpandedRetriever:
 
     name = "question_doc_slots"
 
-    def __init__(self, base, bank: QuestionBank, *, extra: int):
-        self.base, self.bank, self.extra = base, bank, extra
+    def __init__(self, base, bank: QuestionBank, *, extra: int, order: str = "append"):
+        self.base, self.bank, self.extra, self.order = base, bank, extra, order
         self.index, self.embedder = base.index, base.embedder
         self.by_source: dict[str, list[int]] = defaultdict(list)
         for i, c in enumerate(self.index.chunks):
@@ -131,7 +133,23 @@ class QuestionExpandedRetriever:
             chunk = dataclasses.replace(chunk, meta={**(chunk.meta or {}), "matched_question": question})
             hits.append(Hit(chunk, score, len(hits) + 1, "question"))
             added += 1
-        return hits
+        return self._arrange(hits, query)
+
+    def _arrange(self, hits: list[Hit], query: str) -> list[Hit]:
+        """The candidates' order for the reranker: append (the base's first, then the question-found),
+        interleave (one of each in turn) or shuffle (an order that says nothing about where a candidate came
+        from; reproducible, seeded by the query)."""
+        if self.order == "interleave":
+            base = [h for h in hits if h.source != "question"]
+            found = [h for h in hits if h.source == "question"]
+            mixed = []
+            for n in range(max(len(base), len(found))):
+                mixed += base[n:n + 1] + found[n:n + 1]
+            hits = mixed
+        elif self.order == "shuffle":
+            hits = list(hits)
+            random.Random(int(hashlib.sha256(query.encode("utf-8")).hexdigest()[:12], 16)).shuffle(hits)
+        return [dataclasses.replace(h, rank=n) for n, h in enumerate(hits, start=1)]
 
 
 def build_question_retriever(index: VectorIndex, clients, settings) -> QuestionExpandedRetriever:
@@ -139,7 +157,8 @@ def build_question_retriever(index: VectorIndex, clients, settings) -> QuestionE
 
     bank = QuestionBank.load(settings.paths.section_questions, expect_model=clients.embedding_model)
     base = DocSlotsRetriever(index, clients.embedding, doc_slots=settings.retrieval.doc_slots)
-    return QuestionExpandedRetriever(base, bank, extra=settings.retrieval.question_sections)
+    return QuestionExpandedRetriever(base, bank, extra=settings.retrieval.question_sections,
+                                     order=settings.retrieval.question_order)
 
 
 __all__ = ["QuestionBank", "QuestionExpandedRetriever", "build_question_retriever", "generate_questions",

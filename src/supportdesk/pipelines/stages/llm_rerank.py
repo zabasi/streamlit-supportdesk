@@ -65,6 +65,24 @@ def model_ranking(text: str, count: int) -> list[int]:
     return order
 
 
+def keep_question_places(ranked: list[Hit], top_k: int, minimum: int) -> list[Hit]:
+    """Make sure the first ``top_k`` hold at least ``minimum`` candidates found through a section's symptom
+    question, promoting the best-ranked of them from below the cut in place of the lowest-ranked others.
+    They are documentation, so the documentation minimum still holds."""
+    head, tail = list(ranked[:top_k]), list(ranked[top_k:])
+    found = lambda h: bool((h.chunk.meta or {}).get("matched_question"))
+    for hit in [h for h in tail if found(h)]:
+        if sum(map(found, head)) >= minimum:
+            break
+        out = next((j for j in range(len(head) - 1, -1, -1) if not found(head[j])), None)
+        if out is None:
+            break
+        tail.insert(0, head.pop(out))
+        head.append(hit)
+        tail.remove(hit)
+    return head + tail
+
+
 def keep_doc_places(ranked: list[Hit], top_k: int, min_docs: int) -> list[Hit]:
     """Make sure the first ``top_k`` hold at least ``min_docs`` documentation chunks, promoting the
     best-ranked documentation from below the cut in place of the lowest-ranked other chunks."""
@@ -127,6 +145,8 @@ class LLMReranker:
         self.snippet_mode = settings.retrieval.rerank_snippet  # start | focused
         self.show_sections = settings.retrieval.rerank_show_sections
         self.show_question = settings.retrieval.rerank_show_question
+        self.question_snippet = settings.retrieval.question_snippet
+        self.question_keep = settings.retrieval.question_keep
         from ...llm.factory import chat_client_for
         self.chat = chat_client_for(clients, settings, settings.models.rerank)  # models.rerank, or the chat model
         self.concepts = None
@@ -149,8 +169,20 @@ class LLMReranker:
         """The model's raw answer to the reranking request for ``hits``."""
         report = self.clean(case, {})[0]
         if self.snippet_mode == "focused":
-            weights = term_weights(report, [h.chunk.text for h in hits])
-            snippets = [focused_snippet(h.chunk.text, weights, self.snippet) for h in hits]
+            texts = [h.chunk.text for h in hits]
+            weights = term_weights(report, texts)
+
+            def window(h: Hit) -> str:
+                # question_snippet: a candidate found through a section's symptom question is shown by the
+                # window matching that question's words (or the report's and the question's), since it was
+                # found because its text does not share the report's words
+                question = (h.chunk.meta or {}).get("matched_question")
+                if question and self.question_snippet != "report":
+                    words = question if self.question_snippet == "question" else f"{report} {question}"
+                    return focused_snippet(h.chunk.text, term_weights(words, texts), self.snippet)
+                return focused_snippet(h.chunk.text, weights, self.snippet)
+
+            snippets = [window(h) for h in hits]
         else:
             snippets = [" ".join(h.chunk.text.split())[: self.snippet] for h in hits]
         def header(h: Hit) -> str:
@@ -182,6 +214,8 @@ class LLMReranker:
                   if order else list(hits))  # unusable output: the retriever's order
         if self.min_docs:
             ranked = keep_doc_places(ranked, self.top_k, self.min_docs)
+        if self.question_keep:
+            ranked = keep_question_places(ranked, self.top_k, self.question_keep)
         if ranked == list(hits):
             return hits
         return [replace(h, rank=n) for n, h in enumerate(ranked, start=1)]

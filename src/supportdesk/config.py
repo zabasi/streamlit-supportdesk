@@ -283,6 +283,14 @@ class Retrieval:
     cluster_mode: str = _opt("cluster routing: filter (search only the routed clusters) | boost (search "
                              "everything, the routed clusters' chunks ranked higher by retrieval.cluster_boost)",
                              "filter")
+    question_snippet: str = _opt("question_doc_slots: the window the reranker sees for a candidate found through a "
+                                 "symptom question: report (chosen by the report's words) | question (by the "
+                                 "matched question's words) | both", "report")
+    question_order: str = _opt("question_doc_slots: where the question-found candidates appear in the reranking "
+                               "list: append (after the base's) | interleave (one of each in turn) | shuffle "
+                               "(an order that says nothing about their source)", "append")
+    question_keep: int = _opt("question_doc_slots: at least this many of the kept pieces are question-found "
+                              "candidates (like rerank_keep_docs); 0 leaves it to the reranker", 0)
     question_sections: int = _opt("question_doc_slots: sections found through their symptom questions that add "
                                   "a candidate beside the base retriever's", 5)
     class_route: str = _opt("class_doc_slots: how a query picks its topic classes: llm (one model call with "
@@ -597,6 +605,11 @@ class Settings:
              f"retrieval.cluster_mode must be filter or boost, got {r.cluster_mode!r}"),
             (r.cluster_boost >= 0, "retrieval.cluster_boost must be >= 0"),
             (r.question_sections >= 0, "retrieval.question_sections must be >= 0"),
+            (r.question_snippet in ("report", "question", "both"),
+             f"retrieval.question_snippet must be report, question or both, got {r.question_snippet!r}"),
+            (r.question_order in ("append", "interleave", "shuffle"),
+             f"retrieval.question_order must be append, interleave or shuffle, got {r.question_order!r}"),
+            (0 <= r.question_keep <= r.top_k, "retrieval.question_keep must be between 0 and retrieval.top_k"),
             (r.class_route in ("llm", "centroid"), f"retrieval.class_route must be llm or centroid, got {r.class_route!r}"),
             (r.class_mode in ("filter", "boost"), f"retrieval.class_mode must be filter or boost, got {r.class_mode!r}"),
             (r.class_top >= 1 and r.class_boost >= 0, "retrieval.class_top must be >= 1 and class_boost >= 0"),
