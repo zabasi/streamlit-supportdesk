@@ -13,6 +13,8 @@ import sys
 import threading
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from importlib import resources
+from pathlib import Path
+from types import SimpleNamespace
 from urllib.parse import parse_qs, urlparse
 
 from ..config import ConfigError, Settings, redact
@@ -230,6 +232,102 @@ class App:
         self.store.save(conv)
         return conv
 
+    # --- evaluation runs, viewed and continued in the UI ----------------------------------------
+    def _runs_dir(self) -> Path:
+        return Path(self.settings.paths.artifacts_dir) / "runs"
+
+    def _run_dir(self, run_id: str) -> Path:
+        if not isinstance(run_id, str) or not re.fullmatch(r"[A-Za-z0-9._-]{1,120}", run_id) or run_id.startswith("."):
+            raise BadRequest("unknown run")
+        path = self._runs_dir() / run_id
+        if not (path / "summary.json").is_file() or not (path / "results.jsonl").is_file():
+            raise BadRequest("unknown run")
+        return path
+
+    @staticmethod
+    def _run_pipeline(summary: dict) -> str:
+        """The pipeline that made the run: its profile's name (candidate-1-…), else the pipeline's own."""
+        profile = (summary.get("settings") or {}).get("config_profile")
+        name = Path(profile).stem if profile else None
+        return name if name in PIPELINES else summary.get("pipeline", "")
+
+    def runs(self) -> list[dict]:
+        """Finished evaluation runs with decisions (not retrieval-only), newest first."""
+        out = []
+        root = self._runs_dir()
+        for d in sorted(root.iterdir() if root.is_dir() else [], key=lambda p: p.stat().st_mtime, reverse=True):
+            if not re.fullmatch(r"[A-Za-z0-9._-]{1,120}", d.name) or not (d / "summary.json").is_file():
+                continue
+            try:
+                summary = json.loads((d / "summary.json").read_text(encoding="utf-8"))
+            except (OSError, ValueError):
+                continue
+            if summary.get("kind") != "full":
+                continue
+            out.append({"run_id": d.name, "pipeline": self._run_pipeline(summary), "mode": summary.get("mode"),
+                        "created_at": summary.get("created_at"),
+                        "cases": (summary.get("metrics") or {}).get("n_cases")})
+        return out
+
+    def _case_inputs(self) -> dict:
+        """Every evaluation case's input (title, body, environment, history) by case ID: inputs only."""
+        if getattr(self, "_all_inputs", None) is None:
+            try:
+                from ..eval.cases import load_cases
+
+                self._all_inputs = {c.case_id: c.input for c in load_cases(*self.settings.eval.case_files)}
+            except Exception:  # noqa: BLE001 - no evaluation data on this computer
+                self._all_inputs = {}
+        return self._all_inputs
+
+    def import_run(self, payload: object) -> dict:
+        """Each case of a finished run becomes a saved conversation with its turn as the run recorded it:
+        result, evidence, summary and cost. No model call; a case already imported is not imported twice.
+        A case that ended with request_info can be continued with a reply."""
+        if not isinstance(payload, dict):
+            raise BadRequest("body must be a JSON object")
+        run_id = str(payload.get("run_id") or "")
+        path = self._run_dir(run_id)
+        summary = json.loads((path / "summary.json").read_text(encoding="utf-8"))
+        pipeline = self._run_pipeline(summary)
+        inputs = self._case_inputs()
+        imported = skipped = missing = 0
+        for line in (path / "results.jsonl").read_text(encoding="utf-8").splitlines():
+            if not line.strip():
+                continue
+            row = json.loads(line)
+            case_id, outcome = row.get("case_id"), row.get("outcome")
+            inp = inputs.get(case_id)
+            if inp is None or outcome == "retrieval_only":
+                missing += 1
+                continue
+            if self.store.find(kind="run", run_id=run_id, case_id=case_id):
+                skipped += 1
+                continue
+            history = [{"role": h.get("role", "user"), "body": h.get("body", "")} for h in inp.history or []]
+            report = {"title": inp.title, "body": inp.body, "created_at": inp.created_at,
+                      "environment": dict(inp.environment or {})}
+            conv = self.store.create(pipeline=pipeline, source={"kind": "run", "run_id": run_id, "case_id": case_id},
+                                     report=report, history=history, case_id=case_id)
+            view = SimpleNamespace(trace=row.get("trace") or {}, retrieved=row.get("retrieved") or [],
+                                   citations=row.get("citations") or [])
+            conv["turns"].append({"n": 1, "at": summary.get("created_at") or now(), "outcome": outcome, "result": row,
+                                  "evidence": self._evidence(view), "retriever": summary.get("retriever"),
+                                  "applied": None, "usage": row.get("usage") or {}, "imported_from": run_id})
+            if row.get("user_reply") and outcome in ("answer", "request_info", "escalate"):
+                conv["messages"].append({"role": "assistant", "body": row["user_reply"], "at": conv["created_at"],
+                                         "outcome": outcome})
+            if outcome == "request_info":
+                conv["questions_used"], conv["status"] = 1, "awaiting_reply"
+            elif outcome in ("answer", "escalate"):
+                conv["status"] = outcome
+            else:
+                conv["status"] = "error" if row.get("error") or outcome in ("error", "budget_stopped") else (outcome or "error")
+            self.store.save(conv)
+            imported += 1
+        return {"run_id": run_id, "pipeline": pipeline, "imported": imported, "already_imported": skipped,
+                "without_case_input": missing}
+
     def conversation_delete(self, payload: object) -> dict:
         if not isinstance(payload, dict) or not self.store.delete(str(payload.get("id") or "")):
             raise BadRequest("unknown conversation")
@@ -348,12 +446,14 @@ GET_ROUTES = {
     "/api/conversation/summary": lambda app, q: ("text/markdown; charset=utf-8",
                                                  summary_markdown(app.conversation(q.get("id", "")))),
     "/api/report": lambda app, q: ("text/html; charset=utf-8", report_html(app.store.all())),
+    "/api/runs": lambda app, q: ("json", {"runs": app.runs()}),
 }
 POST_ROUTES = {
     "/api/ask": "ask",  # method names, looked up on the app (so it stays the single source of truth)
     "/api/conversations/new": "conversation_new",
     "/api/conversations/turn": "conversation_turn",
     "/api/conversations/delete": "conversation_delete",
+    "/api/runs/import": "import_run",
 }
 
 

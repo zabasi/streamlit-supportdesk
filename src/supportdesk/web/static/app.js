@@ -236,6 +236,7 @@ async function loadSaved() {
   $("saved").replaceChildren(h("option", { value: "" }, "— choose a saved conversation —"),
     ...data.conversations.map((c) => h("option", { value: c.id },
       `${c.title} · ${(STATUS[c.status] || [c.status])[0]} · ${c.pipeline} · ` +
+      (c.source && c.source.run_id ? `from run ${c.source.run_id} · ` : "") +
       `${new Date(c.updated_at).toLocaleString()}`)));
   $("saved").value = keep;
 }
@@ -362,6 +363,30 @@ async function remove() {
   } catch (error) { showError(error.message); }
 }
 
+async function loadRuns() {
+  try {
+    const data = await api("/api/runs");
+    $("runs").replaceChildren(h("option", { value: "" }, "— choose a finished run —"),
+      ...data.runs.map((r) => h("option", { value: r.run_id },
+        `${r.run_id} · ${r.pipeline} · ${r.mode}` + (r.cases ? ` · ${r.cases} cases` : ""))));
+  } catch (_) { /* no runs on this computer */ }
+}
+
+async function importRun() {
+  const runId = $("runs").value;
+  if (!runId || busy) return;
+  showError("");
+  $("importrun").disabled = true;
+  try {
+    const r = await post("/api/runs/import", { run_id: runId });
+    $("importmsg").textContent = `${r.imported} case(s) imported` +
+      (r.already_imported ? `, ${r.already_imported} already imported` : "") +
+      (r.without_case_input ? `, ${r.without_case_input} without case input` : "") + ".";
+    await loadSaved();
+  } catch (error) { showError(error.message); }
+  finally { $("importrun").disabled = !$("runs").value; }
+}
+
 function download(text, name, type) {
   const url = URL.createObjectURL(new Blob([text], { type }));
   const link = h("a", null);
@@ -389,6 +414,8 @@ function init() {
   $("saved").addEventListener("change", resume);
   $("delete").addEventListener("click", remove);
   $("source").addEventListener("change", chooseSource);
+  $("runs").addEventListener("change", () => { $("importrun").disabled = !$("runs").value; $("importmsg").textContent = ""; });
+  $("importrun").addEventListener("click", importRun);
   $("dljson").addEventListener("click", () => conv && download(JSON.stringify(conv, null, 2),
     `supportdesk-${conv.id}.json`, "application/json"));
   $("dlsum").addEventListener("click", downloadSummary);
@@ -402,6 +429,7 @@ function init() {
   });
   loadStatus();
   loadCases();
+  loadRuns();
   loadSaved().catch((error) => showError(error.message));
 }
 

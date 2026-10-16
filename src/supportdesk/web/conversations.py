@@ -36,6 +36,13 @@ class ConversationStore:
     def _db(self) -> sqlite3.Connection:
         return sqlite3.connect(self.path)
 
+    def find(self, **source) -> dict | None:
+        """The first conversation whose source has all these fields (an imported run case, say)."""
+        for item in self.listing():
+            if all(item["source"].get(k) == v for k, v in source.items()):
+                return self.get(item["id"])
+        return None
+
     def create(self, *, pipeline: str, source: dict, report: dict, history: list[dict],
                case_id: str | None = None) -> dict:
         conv = {"id": uuid.uuid4().hex[:12], "created_at": now(), "updated_at": now(), "pipeline": pipeline,

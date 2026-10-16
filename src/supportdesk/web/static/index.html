@@ -22,6 +22,13 @@
         <a id="report" class="button secondary" href="/api/report" download="supportdesk-conversations.html">Download all (HTML report)</a>
       </div>
 
+      <label for="runs">Import an evaluation run <span class="hint">its cases become saved conversations; no model call</span></label>
+      <select id="runs"><option value="">— choose a finished run —</option></select>
+      <div class="actions">
+        <button id="importrun" class="secondary" type="button" disabled>Import run</button>
+        <span id="importmsg" class="hint" aria-live="polite"></span>
+      </div>
+
       <h2 id="h-report" class="spaced">New conversation</h2>
       <label for="source">Start from</label>
       <select id="source"></select>
