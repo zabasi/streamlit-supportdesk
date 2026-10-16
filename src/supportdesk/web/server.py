@@ -6,7 +6,9 @@ mode, it is locked down:
 - requests must be JSON, sizes are limited, and errors never reveal secrets."""
 from __future__ import annotations
 
+import dataclasses
 import json
+import re
 import sys
 import threading
 import uuid
@@ -66,6 +68,7 @@ class App:
                                                expect_model=self.clients.embedding_model,
                                                expect_chunking=settings.chunking)
         self.chunks = {c.chunk_id: c for c in self.index.chunks}
+        self._pages = None  # documentation page texts, to rebuild completed and merged pieces
         self._pipelines: dict = {}
         self.lock = threading.Lock()
         # saved conversations: local, like the cache and the ledger
@@ -229,7 +232,7 @@ class App:
         scores = {r["chunk_id"]: r["score"] for r in result.retrieved}
         out = []
         for item in result.trace.get("packet", []):
-            chunk = self.chunks.get(item["chunk_id"])
+            chunk = self.chunks.get(item["chunk_id"]) or self._piece(item["chunk_id"])
             if chunk is None:
                 continue
             out.append({"label": item["label"], "chunk_id": chunk.chunk_id,
@@ -237,8 +240,27 @@ class App:
                         "title": chunk.title, "url": chunk.url, "version": chunk.version,
                         "state": chunk.meta.get("state"), "as_of": chunk.as_of,
                         "score": scores.get(chunk.chunk_id), "text": chunk.text,
-                        "cited": chunk.chunk_id in result.citations})
+                        "cited": chunk.chunk_id in result.citations,
+                        # a whole section or merged neighbours, not a chunk of the index as it is
+                        "completed": chunk.chunk_id not in self.chunks})
         return out
+
+    def _piece(self, chunk_id: str):
+        """A completed or merged piece (``source_id#start-end``): the same span of the page the pipeline
+        cut it from, so the page shows exactly the text the model saw."""
+        match = re.fullmatch(r"(.+)#(\d+)-(\d+)", chunk_id)
+        if not match:
+            return None
+        source, a, b = match.group(1), int(match.group(2)), int(match.group(3))
+        if self._pages is None:
+            from ..pipelines.stages.sections import page_texts
+
+            self._pages = page_texts(list(self.index.chunks))
+        page = self._pages.get(source)
+        base = next((c for c in self.index.chunks if c.source_id == source), None)
+        if page is None or base is None or not 0 <= a < b <= len(page):
+            return None
+        return dataclasses.replace(base, chunk_id=chunk_id, text=page[a:b], start_char=a, end_char=b)
 
     def _validate(self, payload: object) -> tuple[CaseInput, str, str]:
         if not isinstance(payload, dict):

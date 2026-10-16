@@ -42,7 +42,7 @@ def test_ui_renders_a_real_server_response_as_text_only(tmp_path, settings, inde
     visible = page["visible"]
     assert "null" not in visible and "undefined" not in visible
     assert "[object" not in visible  # no stringified nodes/arrays leaking into the page
-    assert "top_k 6" in visible and "6 chunks in prompt" in visible  # what the pipeline actually applied
+    assert "top_k 6" in visible and "up to 6 pieces" in visible  # what the pipeline actually applied
     assert "Answer" in page["text"] and "Maintainer summary" in page["text"]
     assert "Evidence shown to the model" in page["text"] and "operating_system" in page["text"]
     assert all(h.startswith("http") for h in page["hrefs"]) and page["hrefs"]

@@ -166,3 +166,25 @@ def test_earlier_messages_keep_their_roles(app):
 def test_settings_unchanged_for_evaluation(settings):
     assert QUESTIONS_USED.get() is None  # nothing sets it outside a web conversation
     assert dataclasses.is_dataclass(settings)
+
+
+def test_completed_and_merged_pieces_are_shown_with_the_text_the_model_saw(app):
+    from types import SimpleNamespace
+
+    from supportdesk.pipelines.stages.sections import page_texts
+
+    pages = page_texts(list(app.index.chunks))
+    if not pages:
+        pytest.skip("no documentation page in the test index")
+    source, page = next(iter(pages.items()))
+    end = min(len(page), 120)
+    piece = f"{source}#0-{end}"
+    plain = next(c for c in app.index.chunks if c.source_id != source)
+    result = SimpleNamespace(trace={"packet": [{"label": "S1", "chunk_id": piece},
+                                               {"label": "S2", "chunk_id": plain.chunk_id},
+                                               {"label": "S3", "chunk_id": "nowhere#0-10"}]},
+                             retrieved=[], citations=[piece])
+    shown = app._evidence(result)
+    assert [e["label"] for e in shown] == ["S1", "S2"]  # an unknown piece is still left out
+    assert shown[0]["text"] == page[:end] and shown[0]["completed"] and shown[0]["cited"]
+    assert not shown[1]["completed"]

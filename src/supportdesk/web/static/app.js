@@ -119,6 +119,7 @@ function renderEvidence(evidence) {
     h("summary", null, h("span", { class: "chip" }, e.label), " ",
       h("strong", null, e.title || e.source_id), " ",
       h("span", { class: "ev-meta" }, `${e.type}${e.score === null || e.score === undefined ? "" : " · score " + Number(e.score).toFixed(3)}`),
+      e.completed ? [" ", pill("whole section")] : null,
       e.cited ? [" ", pill("cited", "ok")] : null),
     h("div", { class: "inner" },
       h("div", { class: "ev-meta" },
@@ -170,7 +171,7 @@ function renderResult(data) {
     h("div", null, pill(text, kind), " ", pill(data.pipeline), " ", pill(data.retriever),
       " ", pill(r.mode),
       data.applied ? [" ", pill(`top_k ${data.applied.top_k}`), " ",
-        pill(`${data.applied.prompt_chunks} chunks in prompt`)] : null),
+        pill(`up to ${data.applied.prompt_chunks} pieces`)] : null),
     r.error ? h("div", { class: "banner bad" }, r.error) : null,
     (r.violations || []).length
       ? h("div", { class: "banner" }, "Grounding problems: " + r.violations.join(", ")) : null,
