@@ -130,6 +130,7 @@ Defaults shown are the built-in ones. `*unset*` means the key is optional and no
 | `rewrite` | `configs/prompts/rewrite_system.txt` | system prompt of the query-rewriting call (QueryRewriter) |
 | `rerank` | `configs/prompts/rerank_system.txt` | system prompt of the reranking call (LLMReranker) |
 | `scope` | `configs/prompts/scope_system.txt` | system prompt of the pre-retrieval scope classifier (scope gate on advanced) |
+| `topic_classify` | `configs/prompts/topic_classify_system.txt` | system prompt that labels chunks and reports with a fixed list of Streamlit topics (class_doc_slots) |
 | `label_cluster` | `configs/prompts/label_cluster_system.txt` | system prompt that names a topic cluster and lists its keywords (scripts/build_clusters.py) |
 | `scope_rewrite` | `configs/prompts/scope_rewrite_system.txt` | system prompt of the combined scope check and concept queries, one call (pipeline.scope_gate = combined) |
 | `summarize_section` | `configs/prompts/summarize_section_system.txt` | system prompt that summarizes one documentation section (scripts/summarize_sections.py) |
@@ -152,6 +153,7 @@ Defaults shown are the built-in ones. `*unset*` means the key is optional and no
 | `pricing_path` | `configs/pricing.json` | per-model prices used by the budget guard |
 | `summaries` | `data/summaries/sections.jsonl` | section summaries written by scripts/summarize_sections.py (SummaryReranker) |
 | `second_index_dir` | `index/large` | the dual_doc_slots retriever's second index, built with models.second_embedding |
+| `class_labels` | `data/classes/llm.jsonl` | topic labels per chunk for the class_doc_slots retriever (scripts/build_class_labels.py) |
 | `clusters` | `data/clusters/clusters.jsonl` | topic clusters written by scripts/build_clusters.py (cluster_doc_slots retriever) |
 
 ### `[budget]`
@@ -224,6 +226,10 @@ Defaults shown are the built-in ones. `*unset*` means the key is optional and no
 | `cluster_top` | `2` | cluster routing: how many clusters each query is routed to |
 | `cluster_route` | `keywords` | cluster routing: how a query is routed: keywords (its words among each cluster's keywords) \| embedding (its meaning against each cluster's description) \| centroid (its meaning against the average of each cluster's own chunks) |
 | `cluster_mode` | `filter` | cluster routing: filter (search only the routed clusters) \| boost (search everything, the routed clusters' chunks ranked higher by retrieval.cluster_boost) |
+| `class_route` | `llm` | class_doc_slots: how a query picks its topic classes: llm (one model call with prompts.topic_classify) \| centroid (nearest class centres, no call) |
+| `class_top` | `2` | class_doc_slots: topic classes each query is routed to |
+| `class_mode` | `filter` | class_doc_slots: filter (search only the routed classes) \| boost (search everything, the routed classes' chunks ranked higher by retrieval.class_boost) |
+| `class_boost` | `0.05` | class_doc_slots with class_mode = boost: added to the similarity of chunks in the routed classes |
 | `cluster_boost` | `0.05` | cluster routing with cluster_mode = boost: added to the similarity of chunks in the routed clusters |
 | `expand` | `none` | ExpandingReranker: add more chunks of the documentation pages among the candidates before reranking: none \| page (all their other chunks) \| section (only chunks sharing a section with a found chunk) \| branch (for structure chunks: the found chunk's ## parent and all its children, from the chunks' heading paths) |
 | `expand_max_candidates` | `30` | ExpandingReranker: the most candidates after expansion |

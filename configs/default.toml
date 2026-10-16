@@ -27,6 +27,7 @@ extract = "configs/prompts/extract_system.txt"
 judge_coverage = "configs/prompts/judge_coverage_system.txt"
 summarize_section = "configs/prompts/summarize_section_system.txt"
 label_cluster = "configs/prompts/label_cluster_system.txt"
+topic_classify = "configs/prompts/topic_classify_system.txt"
 scope = "configs/prompts/scope_system.txt"
 scope_rewrite = "configs/prompts/scope_rewrite_system.txt"
 rewrite_missing = "configs/prompts/rewrite_missing_system.txt"
@@ -43,6 +44,7 @@ ledger_path = "artifacts/cost_ledger.jsonl"
 pricing_path = "configs/pricing.json"
 summaries = "data/summaries/sections.jsonl"
 clusters = "data/clusters/clusters.jsonl"
+class_labels = "data/classes/llm.jsonl"
 second_index_dir = "index/large"
 
 [budget]
@@ -104,6 +106,10 @@ cluster_top = 2                  # cluster routing: clusters each query is route
 cluster_route = "keywords"       # cluster routing: keywords | embedding | centroid
 cluster_mode = "filter"          # cluster routing: filter (only the routed clusters) | boost
 cluster_boost = 0.05             # cluster routing, boost mode: added to routed chunks' similarity
+class_route = "llm"              # class_doc_slots: llm | centroid
+class_top = 2                    # class_doc_slots: topic classes per query
+class_mode = "filter"            # class_doc_slots: filter | boost
+class_boost = 0.05               # class_doc_slots, boost mode: added to routed chunks
 corrective_judge = "relevance"   # CorrectiveReranker: relevance (yes or no) or coverage (which mechanisms are missing)
 corrective_max_missing = 2       # coverage judge: most missing mechanisms searched for in one turn
 corrective_turns = 0             # CorrectiveReranker: judge, then rewrite and search again at most this often

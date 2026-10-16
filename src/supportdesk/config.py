@@ -99,6 +99,8 @@ class Prompts:
     rerank: Path = _opt("system prompt of the reranking call (LLMReranker)", Path("configs/prompts/rerank_system.txt"))
     scope: Path = _opt("system prompt of the pre-retrieval scope classifier (scope gate on advanced)",
                        Path("configs/prompts/scope_system.txt"))
+    topic_classify: Path = _opt("system prompt that labels chunks and reports with a fixed list of Streamlit "
+                                "topics (class_doc_slots)", Path("configs/prompts/topic_classify_system.txt"))
     label_cluster: Path = _opt("system prompt that names a topic cluster and lists its keywords "
                                "(scripts/build_clusters.py)", Path("configs/prompts/label_cluster_system.txt"))
     scope_rewrite: Path = _opt("system prompt of the combined scope check and concept queries, one call "
@@ -131,6 +133,8 @@ class Paths:
                            Path("data/summaries/sections.jsonl"))
     second_index_dir: Path = _opt("the dual_doc_slots retriever's second index, built with models.second_embedding",
                                   Path("index/large"))
+    class_labels: Path = _opt("topic labels per chunk for the class_doc_slots retriever "
+                              "(scripts/build_class_labels.py)", Path("data/classes/llm.jsonl"))
     clusters: Path = _opt("topic clusters written by scripts/build_clusters.py (cluster_doc_slots retriever)",
                           Path("data/clusters/clusters.jsonl"))
 
@@ -262,6 +266,13 @@ class Retrieval:
     cluster_mode: str = _opt("cluster routing: filter (search only the routed clusters) | boost (search "
                              "everything, the routed clusters' chunks ranked higher by retrieval.cluster_boost)",
                              "filter")
+    class_route: str = _opt("class_doc_slots: how a query picks its topic classes: llm (one model call with "
+                            "prompts.topic_classify) | centroid (nearest class centres, no call)", "llm")
+    class_top: int = _opt("class_doc_slots: topic classes each query is routed to", 2)
+    class_mode: str = _opt("class_doc_slots: filter (search only the routed classes) | boost (search everything, "
+                           "the routed classes' chunks ranked higher by retrieval.class_boost)", "filter")
+    class_boost: float = _opt("class_doc_slots with class_mode = boost: added to the similarity of chunks in the "
+                              "routed classes", 0.05)
     cluster_boost: float = _opt("cluster routing with cluster_mode = boost: added to the similarity of chunks "
                                 "in the routed clusters", 0.05)
     expand: str = _opt("ExpandingReranker: add more chunks of the documentation pages among the candidates "
@@ -563,6 +574,9 @@ class Settings:
             (r.cluster_mode in ("filter", "boost"),
              f"retrieval.cluster_mode must be filter or boost, got {r.cluster_mode!r}"),
             (r.cluster_boost >= 0, "retrieval.cluster_boost must be >= 0"),
+            (r.class_route in ("llm", "centroid"), f"retrieval.class_route must be llm or centroid, got {r.class_route!r}"),
+            (r.class_mode in ("filter", "boost"), f"retrieval.class_mode must be filter or boost, got {r.class_mode!r}"),
+            (r.class_top >= 1 and r.class_boost >= 0, "retrieval.class_top must be >= 1 and class_boost >= 0"),
             (r.extract_mode in ("keep", "drop"), f"retrieval.extract_mode must be keep or drop, got {r.extract_mode!r}"),
             (r.extract_protect_top >= 0, "retrieval.extract_protect_top must be >= 0"),
             (0 <= r.rerank_doc_places <= r.top_k,

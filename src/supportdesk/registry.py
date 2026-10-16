@@ -88,6 +88,7 @@ from .pipelines.hierarchical import build_advanced_hier, build_hier_baseline
 from .pipelines.retrieve_loop import build_retrieve_loop
 from .pipelines.retrieve_loop_pool import build_retrieve_loop_best, build_retrieve_loop_mixed
 from .pipelines.scope_gate import build_advanced_scoped, build_scope_gate, build_scope_gate_rules
+from .retrieval.class_routing import build_class_retriever
 from .retrieval.clusters import ClusterRoutedRetriever
 from .retrieval.dual import build_dual
 from .retrieval.hierarchy import HierarchicalRetriever
@@ -198,6 +199,7 @@ RETRIEVERS = {
     "dense_doc_slots": lambda index, clients, s: DocSlotsRetriever(
         index, clients.embedding, doc_slots=s.retrieval.doc_slots),
     "dual_doc_slots": lambda index, clients, s: build_dual(index, clients, s),
+    "class_doc_slots": lambda index, clients, s: build_class_retriever(index, clients, s),
     "cluster_doc_slots": lambda index, clients, s: ClusterRoutedRetriever(
         index, clients.embedding, doc_slots=s.retrieval.doc_slots, clusters=s.paths.clusters,
         top=s.retrieval.cluster_top, route=s.retrieval.cluster_route, mode=s.retrieval.cluster_mode,

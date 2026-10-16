@@ -178,9 +178,44 @@ class ClassRoutedRetriever:
                 for r, i in enumerate(order, start=1)]
 
 
+
+def load_class_labels(path, index: VectorIndex) -> list[str]:
+    """One topic label per chunk of ``index``, in chunk order, from a labels file
+    (one {"chunk_id", "label"} line per chunk, as scripts/build_class_labels.py writes)."""
+    import json
+    from pathlib import Path
+
+    from .index import IndexUnusable
+
+    path = Path(path)
+    if not path.exists():
+        raise IndexUnusable(f"class labels {path} not found: run scripts/build_class_labels.py first")
+    found = {}
+    for line in path.read_text(encoding="utf-8").splitlines():
+        if line.strip():
+            row = json.loads(line)
+            found[row["chunk_id"]] = str(row["label"])
+    ids = [c.chunk_id for c in index.chunks]
+    if set(found) != set(ids):
+        raise IndexUnusable(f"class labels {path} were built for another index: rebuild them with "
+                            "scripts/build_class_labels.py")
+    return [found[cid] for cid in ids]
+
+
+def build_class_retriever(index: VectorIndex, clients, settings) -> ClassRoutedRetriever:
+    """The class_doc_slots retriever from the settings (paths.class_labels, retrieval.class_*)."""
+    from pathlib import Path
+
+    r = settings.retrieval
+    return ClassRoutedRetriever(
+        index, clients.embedding, labels=load_class_labels(settings.paths.class_labels, index),
+        doc_slots=r.doc_slots, top=r.class_top, mode=r.class_mode, boost=r.class_boost, route=r.class_route,
+        chat=clients.chat, prompt=Path(settings.prompts.topic_classify).read_text(encoding="utf-8"))
+
 __all__ = [
     "TOPICS",
     "ClassRoutedRetriever",
+    "build_class_retriever",
     "centroid_routes",
     "class_centroids",
     "classify_chunks_llm",
@@ -188,5 +223,6 @@ __all__ = [
     "heuristic_label",
     "kmeans",
     "kmeans_labels",
+    "load_class_labels",
     "remove_type_means",
 ]
