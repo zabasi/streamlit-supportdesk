@@ -102,6 +102,7 @@ from .retrieval.retriever import (
     SplitDocSlotsRetriever,
     SplitHybridRetriever,
 )
+from .retrieval.section_questions import build_question_retriever
 
 #: Pipelines by name: each builds the pipeline from (retriever, clients, settings); its docstring is its one-line description.
 PIPELINES = {"baseline": build_baseline, "advanced": build_advanced_scoped,
@@ -200,6 +201,7 @@ RETRIEVERS = {
         index, clients.embedding, doc_slots=s.retrieval.doc_slots),
     "dual_doc_slots": lambda index, clients, s: build_dual(index, clients, s),
     "class_doc_slots": lambda index, clients, s: build_class_retriever(index, clients, s),
+    "question_doc_slots": lambda index, clients, s: build_question_retriever(index, clients, s),
     "cluster_doc_slots": lambda index, clients, s: ClusterRoutedRetriever(
         index, clients.embedding, doc_slots=s.retrieval.doc_slots, clusters=s.paths.clusters,
         top=s.retrieval.cluster_top, route=s.retrieval.cluster_route, mode=s.retrieval.cluster_mode,

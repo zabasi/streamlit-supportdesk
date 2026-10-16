@@ -99,6 +99,8 @@ class Prompts:
     rerank: Path = _opt("system prompt of the reranking call (LLMReranker)", Path("configs/prompts/rerank_system.txt"))
     scope: Path = _opt("system prompt of the pre-retrieval scope classifier (scope gate on advanced)",
                        Path("configs/prompts/scope_system.txt"))
+    section_questions: Path = _opt("system prompt that writes user-style problem descriptions for one "
+                                   "documentation section", Path("configs/prompts/section_questions_system.txt"))
     topic_discover: Path = _opt("system prompt that grows a list of routing topics from the corpus, batch by batch "
                                 "(scripts/discover_topics.py)", Path("configs/prompts/topic_discover_system.txt"))
     topic_refine: Path = _opt("system prompt that merges the discovered topics into the target range",
@@ -137,6 +139,9 @@ class Paths:
                            Path("data/summaries/sections.jsonl"))
     second_index_dir: Path = _opt("the dual_doc_slots retriever's second index, built with models.second_embedding",
                                   Path("index/large"))
+    section_questions: Path = _opt("symptom questions per documentation section, with their vectors, for the "
+                                   "question_doc_slots retriever (scripts/build_section_questions.py)",
+                                   Path("data/questions"))
     class_labels: Path = _opt("topic labels per chunk for the class_doc_slots retriever "
                               "(scripts/build_class_labels.py)", Path("data/classes/llm.jsonl"))
     clusters: Path = _opt("topic clusters written by scripts/build_clusters.py (cluster_doc_slots retriever)",
@@ -275,6 +280,8 @@ class Retrieval:
     cluster_mode: str = _opt("cluster routing: filter (search only the routed clusters) | boost (search "
                              "everything, the routed clusters' chunks ranked higher by retrieval.cluster_boost)",
                              "filter")
+    question_sections: int = _opt("question_doc_slots: sections found through their symptom questions that add "
+                                  "a candidate beside the base retriever's", 5)
     class_route: str = _opt("class_doc_slots: how a query picks its topic classes: llm (one model call with "
                             "prompts.topic_classify) | centroid (nearest class centres, no call)", "llm")
     class_top: int = _opt("class_doc_slots: topic classes each query is routed to", 2)
@@ -586,6 +593,7 @@ class Settings:
             (r.cluster_mode in ("filter", "boost"),
              f"retrieval.cluster_mode must be filter or boost, got {r.cluster_mode!r}"),
             (r.cluster_boost >= 0, "retrieval.cluster_boost must be >= 0"),
+            (r.question_sections >= 0, "retrieval.question_sections must be >= 0"),
             (r.class_route in ("llm", "centroid"), f"retrieval.class_route must be llm or centroid, got {r.class_route!r}"),
             (r.class_mode in ("filter", "boost"), f"retrieval.class_mode must be filter or boost, got {r.class_mode!r}"),
             (r.class_top >= 1 and r.class_boost >= 0, "retrieval.class_top must be >= 1 and class_boost >= 0"),
