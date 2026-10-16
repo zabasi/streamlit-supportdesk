@@ -1,0 +1,364 @@
+{
+  "run_id": "advanced_rule_kmeans_grounded",
+  "method": "advanced_rule_kmeans",
+  "mode": "live",
+  "created_at": "2026-10-16T13:54:18+00:00",
+  "n_cases": 15,
+  "metrics": {
+    "kind": "grounded",
+    "headline": {
+      "n_cases": 15,
+      "outcome_accuracy": 0.2667,
+      "by_category": {
+        "ambiguous": {
+          "n": 6,
+          "outcome_accuracy": 0.1667,
+          "outcomes": {
+            "answer": 2,
+            "escalate": 3,
+            "request_info": 1
+          },
+          "expected": [
+            "request_info"
+          ]
+        },
+        "answerable": {
+          "n": 6,
+          "outcome_accuracy": 0.1667,
+          "outcomes": {
+            "answer": 1,
+            "escalate": 1,
+            "request_info": 2,
+            "validation_failed": 2
+          },
+          "expected": [
+            "answer"
+          ]
+        },
+        "escalation": {
+          "n": 3,
+          "outcome_accuracy": 0.6667,
+          "outcomes": {
+            "escalate": 2,
+            "validation_failed": 1
+          },
+          "expected": [
+            "escalate"
+          ]
+        }
+      },
+      "confusion_matrix": {
+        "labels_gold": [
+          "answer",
+          "request_info",
+          "escalate"
+        ],
+        "labels_predicted": [
+          "answer",
+          "request_info",
+          "escalate",
+          "validation_failed"
+        ],
+        "counts": {
+          "answer": {
+            "answer": 1,
+            "request_info": 2,
+            "escalate": 1,
+            "validation_failed": 2
+          },
+          "request_info": {
+            "answer": 2,
+            "request_info": 1,
+            "escalate": 3,
+            "validation_failed": 0
+          },
+          "escalate": {
+            "answer": 0,
+            "request_info": 0,
+            "escalate": 2,
+            "validation_failed": 1
+          }
+        },
+        "n": 15
+      },
+      "claim_support_rate": 0.6,
+      "citation_precision": 1.0,
+      "citations_outside_packet": 0,
+      "stale_answers": 0,
+      "answered_after_failure": 0,
+      "abstention_precision": 0.0,
+      "abstention_recall": null,
+      "abstention_f1": null,
+      "answer_when_packet_has_gold": 0.2,
+      "answer_completeness": 0.1134,
+      "answer_cites_gold_rate": 0.6667,
+      "instruction_echo": 0,
+      "outcomes": {
+        "answer": 3,
+        "escalate": 6,
+        "request_info": 3,
+        "validation_failed": 3
+      },
+      "n_claims": 10,
+      "n_citations": 8
+    },
+    "per_case": [
+      {
+        "case_id": "DEV-5604",
+        "category": "ambiguous",
+        "outcome": "escalate",
+        "should_refuse": false,
+        "packet_has_gold": true,
+        "n_claims": 0,
+        "n_citations": 0,
+        "citations_outside": 0,
+        "violations": "",
+        "abstention_reason": "escalate",
+        "gold_completeness": null,
+        "expected_outcomes": [
+          "request_info"
+        ],
+        "outcome_ok": false
+      },
+      {
+        "case_id": "DEV-7044",
+        "category": "ambiguous",
+        "outcome": "answer",
+        "should_refuse": false,
+        "packet_has_gold": true,
+        "n_claims": 2,
+        "n_citations": 2,
+        "citations_outside": 0,
+        "violations": "",
+        "abstention_reason": "",
+        "gold_completeness": 0.08108108108108109,
+        "expected_outcomes": [
+          "request_info"
+        ],
+        "outcome_ok": false
+      },
+      {
+        "case_id": "DEV-9342",
+        "category": "ambiguous",
+        "outcome": "escalate",
+        "should_refuse": false,
+        "packet_has_gold": true,
+        "n_claims": 0,
+        "n_citations": 0,
+        "citations_outside": 0,
+        "violations": "",
+        "abstention_reason": "escalate",
+        "gold_completeness": null,
+        "expected_outcomes": [
+          "request_info"
+        ],
+        "outcome_ok": false
+      },
+      {
+        "case_id": "DEV-4338",
+        "category": "answerable",
+        "outcome": "answer",
+        "should_refuse": false,
+        "packet_has_gold": true,
+        "n_claims": 1,
+        "n_citations": 1,
+        "citations_outside": 0,
+        "violations": "",
+        "abstention_reason": "",
+        "gold_completeness": 0.125,
+        "expected_outcomes": [
+          "answer"
+        ],
+        "outcome_ok": true
+      },
+      {
+        "case_id": "DEV-6166",
+        "category": "escalation",
+        "outcome": "validation_failed",
+        "should_refuse": false,
+        "packet_has_gold": true,
+        "n_claims": 1,
+        "n_citations": 1,
+        "citations_outside": 0,
+        "violations": "claim_not_supported",
+        "abstention_reason": "validation_failure",
+        "gold_completeness": null,
+        "expected_outcomes": [
+          "escalate"
+        ],
+        "outcome_ok": false
+      },
+      {
+        "case_id": "DEV-16388",
+        "category": "escalation",
+        "outcome": "escalate",
+        "should_refuse": false,
+        "packet_has_gold": true,
+        "n_claims": 0,
+        "n_citations": 0,
+        "citations_outside": 0,
+        "violations": "",
+        "abstention_reason": "escalate",
+        "gold_completeness": null,
+        "expected_outcomes": [
+          "escalate"
+        ],
+        "outcome_ok": true
+      },
+      {
+        "case_id": "DEV-3903",
+        "category": "ambiguous",
+        "outcome": "answer",
+        "should_refuse": false,
+        "packet_has_gold": true,
+        "n_claims": 2,
+        "n_citations": 1,
+        "citations_outside": 0,
+        "violations": "",
+        "abstention_reason": "",
+        "gold_completeness": 0.13402061855670103,
+        "expected_outcomes": [
+          "request_info"
+        ],
+        "outcome_ok": false
+      },
+      {
+        "case_id": "DEV-4325",
+        "category": "answerable",
+        "outcome": "request_info",
+        "should_refuse": false,
+        "packet_has_gold": true,
+        "n_claims": 0,
+        "n_citations": 0,
+        "citations_outside": 0,
+        "violations": "",
+        "abstention_reason": "request_info",
+        "gold_completeness": null,
+        "expected_outcomes": [
+          "answer"
+        ],
+        "outcome_ok": false
+      },
+      {
+        "case_id": "DEV-7305",
+        "category": "answerable",
+        "outcome": "validation_failed",
+        "should_refuse": false,
+        "packet_has_gold": true,
+        "n_claims": 2,
+        "n_citations": 2,
+        "citations_outside": 0,
+        "violations": "claim_not_supported",
+        "abstention_reason": "validation_failure",
+        "gold_completeness": null,
+        "expected_outcomes": [
+          "answer"
+        ],
+        "outcome_ok": false
+      },
+      {
+        "case_id": "DEV-3585",
+        "category": "ambiguous",
+        "outcome": "escalate",
+        "should_refuse": false,
+        "packet_has_gold": true,
+        "n_claims": 0,
+        "n_citations": 0,
+        "citations_outside": 0,
+        "violations": "",
+        "abstention_reason": "escalate",
+        "gold_completeness": null,
+        "expected_outcomes": [
+          "request_info"
+        ],
+        "outcome_ok": false
+      },
+      {
+        "case_id": "DEV-3842",
+        "category": "answerable",
+        "outcome": "escalate",
+        "should_refuse": false,
+        "packet_has_gold": true,
+        "n_claims": 0,
+        "n_citations": 0,
+        "citations_outside": 0,
+        "violations": "",
+        "abstention_reason": "escalate",
+        "gold_completeness": null,
+        "expected_outcomes": [
+          "answer"
+        ],
+        "outcome_ok": false
+      },
+      {
+        "case_id": "DEV-4082",
+        "category": "answerable",
+        "outcome": "validation_failed",
+        "should_refuse": false,
+        "packet_has_gold": true,
+        "n_claims": 2,
+        "n_citations": 1,
+        "citations_outside": 0,
+        "violations": "claim_not_supported claim_not_supported",
+        "abstention_reason": "validation_failure",
+        "gold_completeness": null,
+        "expected_outcomes": [
+          "answer"
+        ],
+        "outcome_ok": false
+      },
+      {
+        "case_id": "DEV-5591",
+        "category": "ambiguous",
+        "outcome": "request_info",
+        "should_refuse": false,
+        "packet_has_gold": true,
+        "n_claims": 0,
+        "n_citations": 0,
+        "citations_outside": 0,
+        "violations": "",
+        "abstention_reason": "request_info",
+        "gold_completeness": null,
+        "expected_outcomes": [
+          "request_info"
+        ],
+        "outcome_ok": true
+      },
+      {
+        "case_id": "DEV-4989",
+        "category": "answerable",
+        "outcome": "request_info",
+        "should_refuse": false,
+        "packet_has_gold": true,
+        "n_claims": 0,
+        "n_citations": 0,
+        "citations_outside": 0,
+        "violations": "",
+        "abstention_reason": "request_info",
+        "gold_completeness": null,
+        "expected_outcomes": [
+          "answer"
+        ],
+        "outcome_ok": false
+      },
+      {
+        "case_id": "DEV-10805",
+        "category": "escalation",
+        "outcome": "escalate",
+        "should_refuse": false,
+        "packet_has_gold": true,
+        "n_claims": 0,
+        "n_citations": 0,
+        "citations_outside": 0,
+        "violations": "",
+        "abstention_reason": "escalate",
+        "gold_completeness": null,
+        "expected_outcomes": [
+          "escalate"
+        ],
+        "outcome_ok": true
+      }
+    ]
+  },
+  "retrieval_run": "D:\\QBC 13\\Project\\streamlit-supportdesk-main\\artifacts\\hier_class_rag\\runs\\advanced_rule_kmeans"
+}

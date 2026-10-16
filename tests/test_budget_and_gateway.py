@@ -24,7 +24,8 @@ class StubTransport:
     def __init__(self, fail=None):
         self.calls, self.fail = 0, fail
 
-    def chat(self, *, model, messages, max_output_tokens, temperature, json_mode):
+    def chat(self, *, model, messages, max_output_tokens, temperature, json_mode,
+             extra=None):
         self.calls += 1
         if self.fail:
             raise self.fail

@@ -1,0 +1,16 @@
+case_id,expected_category,expected_action,actual_action,action_label_match,source_records,selected_passages,contract_valid,review_status,input_tokens,output_tokens,reasoning_tokens,cost_usd,main_finding
+DEV-5604,needs_clarification,request_info,escalate,False,3,7,True,needs_revision,3156,2211,1442,0.0123165,Unsupported expander/rendering diagnosis and a missed initialization discriminator.
+DEV-7044,needs_clarification,request_info,request_info,True,3,6,True,usable_by_inspection,3040,1547,1024,0.0092415,A useful focused question about an unshown write or key collision.
+DEV-9342,needs_clarification,request_info,escalate,False,3,6,True,needs_revision,3220,1592,1023,0.009579,"Callback order is understood, but the missing version is not requested and internal fixes are prescribed too early."
+DEV-4338,answerable,answer,escalate,False,3,6,True,minor_revision,3655,2608,1910,0.01447725,Separates explained cleanup from an unresolved historical hydration symptom; the escalation alternative is defensible but does not match the stored action.
+DEV-6166,needs_escalation,escalate,escalate,True,3,4,True,needs_revision,3221,1120,512,0.00745575,"Appropriate proposed handoff, but script-stop/loop-exit reasoning and handoff completeness remain weak."
+DEV-16388,needs_escalation,escalate,answer,False,2,3,True,needs_revision,2663,2963,2385,0.01533075,Useful reset workaround is overextended into an explanation of the reported one-rerun divergence.
+DEV-3903,needs_clarification,request_info,escalate,False,2,4,True,needs_revision,2941,3738,3237,0.01902675,Recognizes competing default/state inputs but skips the discriminating check before escalation.
+DEV-4325,answerable,answer,answer,True,3,8,True,minor_revision,4279,2464,1536,0.01429725,Strong integrated workflow coverage; a few explanation/citation details need correction.
+DEV-7305,answerable,answer,answer,True,3,6,True,usable_by_inspection,2771,2206,1536,0.01200525,Correctly repairs immediate function invocation versus callback registration and reads fresh keyed state.
+DEV-3585,needs_clarification,request_info,escalate,False,2,2,True,minor_revision,2419,1410,1024,0.00815925,"Careful historical escalation is defensible, though the stored category calls for clarification."
+DEV-3842,answerable,answer,answer,True,2,4,True,usable_by_inspection,2458,2849,2048,0.014664,Clear supported correction of unconditional state reinitialization and the disappearing form gate.
+DEV-4082,answerable,answer,answer,True,3,5,True,minor_revision,3264,3849,3073,0.0197685,"Useful submit-time state pattern, with an overstrong causal explanation and incomplete initial-value integration."
+DEV-5591,needs_clarification,request_info,request_info,True,2,4,True,needs_revision,2853,2847,2326,0.01495125,"Right action category, but version alone is not the needed discriminator and architecture is assumed."
+DEV-4989,answerable,answer,answer,True,3,7,True,needs_revision,3885,4867,3948,0.02481525,"Useful dummy-key pattern, but a modern migration option lacks the reported-version guard and an existing workaround is mischaracterized."
+DEV-10805,needs_escalation,escalate,escalate,True,3,9,True,needs_revision,4034,3663,2996,0.019509,"Correct escalation direction, but a fragment-scope assumption contradicts the reproduction and cleanup wording needs version guards."

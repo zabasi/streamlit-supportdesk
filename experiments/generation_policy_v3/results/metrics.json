@@ -1,0 +1,226 @@
+{
+  "selected_candidate": "generation_policy_v3",
+  "model": "gpt-5.4-mini",
+  "returned_models": [
+    "gpt-5.4-mini-2026-03-17"
+  ],
+  "cases": 15,
+  "new_live_calls": 15,
+  "reused_results": 0,
+  "complete_responses": 15,
+  "contract_valid_responses": 15,
+  "reasoning_effort": "medium",
+  "max_completion_tokens": 8000,
+  "action_label_matches": 9,
+  "action_label_agreement_percent": 60.0,
+  "confusion_matrix": {
+    "answer": {
+      "answer": 5,
+      "request_info": 0,
+      "escalate": 1
+    },
+    "request_info": {
+      "answer": 0,
+      "request_info": 2,
+      "escalate": 4
+    },
+    "escalate": {
+      "answer": 1,
+      "request_info": 0,
+      "escalate": 2
+    }
+  },
+  "by_expected_category": {
+    "answerable": {
+      "cases": 6,
+      "action_matches": 5
+    },
+    "needs_clarification": {
+      "cases": 6,
+      "action_matches": 2
+    },
+    "needs_escalation": {
+      "cases": 3,
+      "action_matches": 2
+    }
+  },
+  "by_action": {
+    "answer": {
+      "expected_cases": 6,
+      "predicted_cases": 6,
+      "correct": 5,
+      "recall": 0.8333333333333334,
+      "precision": 0.8333333333333334
+    },
+    "request_info": {
+      "expected_cases": 6,
+      "predicted_cases": 2,
+      "correct": 2,
+      "recall": 0.3333333333333333,
+      "precision": 1.0
+    },
+    "escalate": {
+      "expected_cases": 3,
+      "predicted_cases": 7,
+      "correct": 2,
+      "recall": 0.6666666666666666,
+      "precision": 0.2857142857142857
+    }
+  },
+  "predicted_actions": {
+    "escalate": 7,
+    "request_info": 2,
+    "answer": 6
+  },
+  "assistant_review_status_counts": {
+    "needs_revision": 8,
+    "usable_by_inspection": 3,
+    "minor_revision": 4
+  },
+  "new_usage": {
+    "calls": 15,
+    "cache_hits": 0,
+    "failed_calls": 0,
+    "input_tokens": 47859,
+    "cached_input_tokens": 0,
+    "output_tokens": 39934,
+    "cost_usd": 0.21559725,
+    "replayed_cost_usd": 0.0,
+    "latency_seconds": 187.295
+  },
+  "new_estimated_cost_usd": 0.21559725,
+  "wall_time_seconds": 187.361,
+  "new_spend_cap_usd": 0.85,
+  "whole_batch_reservation_usd": 0.7651335,
+  "report_blocks_copied_exactly": 82,
+  "source_record_uses": 40,
+  "unique_source_records": 22,
+  "selected_passages": 81,
+  "historical_full_run": {
+    "candidate": "generation_redesign_v4",
+    "work": "C:\\Users\\Mantis\\Documents\\ChatGPT\\Streamlit_QA\\streamlit-supportdesk\\artifacts\\reports\\gpt54mini-v4-development-20261015",
+    "action_matches": 9,
+    "cases": 15,
+    "category_results": {
+      "answerable": {
+        "cases": 6,
+        "action_label_matches": 6
+      },
+      "needs_clarification": {
+        "cases": 6,
+        "action_label_matches": 1
+      },
+      "needs_escalation": {
+        "cases": 3,
+        "action_label_matches": 2
+      }
+    },
+    "estimated_cost_for_all_15_usd": 0.1210365,
+    "changed_actions": [
+      {
+        "case_id": "DEV-4338",
+        "previous_action": "answer",
+        "current_action": "escalate",
+        "expected_action": "answer"
+      },
+      {
+        "case_id": "DEV-3903",
+        "previous_action": "answer",
+        "current_action": "escalate",
+        "expected_action": "request_info"
+      },
+      {
+        "case_id": "DEV-5591",
+        "previous_action": "answer",
+        "current_action": "request_info",
+        "expected_action": "request_info"
+      }
+    ],
+    "max_completion_tokens": 4000,
+    "limitation": "Different prompt/schema and completion ceiling, earlier generation samples; not a controlled causal comparison."
+  },
+  "same_request_three_case_repeats": [
+    {
+      "case_id": "DEV-9342",
+      "prior_action": "request_info",
+      "fresh_action": "escalate",
+      "identical_request": true,
+      "action_changed": true
+    },
+    {
+      "case_id": "DEV-4325",
+      "prior_action": "answer",
+      "fresh_action": "answer",
+      "identical_request": true,
+      "action_changed": false
+    },
+    {
+      "case_id": "DEV-6166",
+      "prior_action": "escalate",
+      "fresh_action": "escalate",
+      "identical_request": true,
+      "action_changed": false
+    }
+  ],
+  "content_accuracy": null,
+  "independent_human_review": false,
+  "runtime_reproduction": false,
+  "test_set_access": false,
+  "retrieval_calls": 0,
+  "embedding_calls": 0,
+  "tracker_writes": 0,
+  "prompt_changes_during_run": false,
+  "case_specific_prompt_selection": false,
+  "rubrics_sent_to_model": false,
+  "prices": {
+    "source": "https://www.metisai.ir/models.json",
+    "checked_at": "2026-10-16T11:10:40.470944+00:00",
+    "source_note": "Live refresh blocked; saved project catalog, rates previously verified 2026-10-14",
+    "live_refresh_succeeded": false,
+    "models": {
+      "gpt-4o-mini": {
+        "input": 0.15,
+        "output": 0.6,
+        "supported_parameters": [
+          "frequency_penalty",
+          "logit_bias",
+          "logprobs",
+          "max_completion_tokens",
+          "max_tokens",
+          "prediction",
+          "presence_penalty",
+          "response_format",
+          "seed",
+          "stop",
+          "structured_outputs",
+          "temperature",
+          "tool_choice",
+          "tools",
+          "top_logprobs",
+          "top_p",
+          "web_search_options"
+        ]
+      },
+      "gpt-5.4-mini": {
+        "input": 0.75,
+        "output": 4.5,
+        "supported_parameters": [
+          "include_reasoning",
+          "max_completion_tokens",
+          "max_tokens",
+          "reasoning",
+          "reasoning_effort",
+          "response_format",
+          "seed",
+          "structured_outputs",
+          "tool_choice",
+          "tools"
+        ]
+      }
+    },
+    "unit": "USD per million tokens",
+    "note": "Estimates without cache discounts; not an invoice."
+  },
+  "conclusion": "The preselected policy v3 completes all 15 fresh calls and preserves report-text origin, but does not establish a strong overall generation solution. Direct visible application mistakes are handled more reliably than clarification, historical-version interpretation and multi-part product concerns. Stored action agreement is 9/15; the unchanged older full-development run also had 9/15, with different errors and a different prompt/schema/token ceiling. On this assistant content review, 3 are usable by inspection, 4 need minor revision and 8 need material revision; these are review categories, not independent content accuracy. Clarification is underused and escalation overused. Do not modify labels or tune on held-out test data to inflate this result. No further paid calls or prompt revisions are part of this evaluation.",
+  "limitations": "Adaptive development evaluation after repeated study and prompt selection, one fresh model sample per case. Same 15 cases and frozen evidence; no held-out validation. Label agreement is not grounded-answer accuracy. Assistant content review is not independent human signoff."
+}

@@ -9,6 +9,8 @@ Stay on `--split dev`. Do not commit `.env`.
 
 - What each method does: `docs/hier_class_methods.md`
 - Worked numbers: `docs/hier_class_examples.md`
+- Grounded generation (HW03 layer) + metrics: `docs/hier_class_generation.md`
+- Generation policy v3 (support record; best prompt v3b is 12/15 on gold passages): `docs/generation_policy_v3.md`
 - HTML reports (open in a browser):
   - one change vs `advanced`: `artifacts/hier_class_rag/report_one_change.html`
   - two changes vs `advanced`: `artifacts/hier_class_rag/report_two_changes.html`

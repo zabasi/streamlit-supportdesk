@@ -1,0 +1,465 @@
+{
+  "metrics": {
+    "kind": "grounded",
+    "headline": {
+      "n_cases": 15,
+      "outcome_accuracy": 0.6,
+      "by_category": {
+        "ambiguous": {
+          "n": 6,
+          "outcome_accuracy": 0.1667,
+          "outcomes": {
+            "answer": 3,
+            "escalate": 2,
+            "request_info": 1
+          },
+          "expected": [
+            "request_info"
+          ]
+        },
+        "answerable": {
+          "n": 6,
+          "outcome_accuracy": 1.0,
+          "outcomes": {
+            "answer": 6
+          },
+          "expected": [
+            "answer"
+          ]
+        },
+        "escalation": {
+          "n": 3,
+          "outcome_accuracy": 0.6667,
+          "outcomes": {
+            "answer": 1,
+            "escalate": 2
+          },
+          "expected": [
+            "escalate"
+          ]
+        }
+      },
+      "confusion_matrix": {
+        "labels_gold": [
+          "answer",
+          "request_info",
+          "escalate"
+        ],
+        "labels_predicted": [
+          "answer",
+          "request_info",
+          "escalate"
+        ],
+        "counts": {
+          "answer": {
+            "answer": 6,
+            "request_info": 0,
+            "escalate": 0
+          },
+          "request_info": {
+            "answer": 3,
+            "request_info": 1,
+            "escalate": 2
+          },
+          "escalate": {
+            "answer": 1,
+            "request_info": 0,
+            "escalate": 2
+          }
+        },
+        "n": 15
+      },
+      "claim_support_rate": 0.0,
+      "citation_precision": 0.0,
+      "citations_outside_packet": 56,
+      "stale_answers": 0,
+      "answered_after_failure": 0,
+      "abstention_precision": 0.0,
+      "abstention_recall": null,
+      "abstention_f1": null,
+      "answer_when_packet_has_gold": 0.6667,
+      "answer_completeness": 0.2005,
+      "answer_cites_gold_rate": 0.0,
+      "instruction_echo": 0,
+      "outcomes": {
+        "answer": 10,
+        "escalate": 4,
+        "request_info": 1
+      },
+      "n_claims": 35,
+      "n_citations": 56
+    },
+    "per_case": [
+      {
+        "case_id": "DEV-5604",
+        "category": "ambiguous",
+        "outcome": "escalate",
+        "should_refuse": false,
+        "packet_has_gold": true,
+        "n_claims": 3,
+        "n_citations": 6,
+        "citations_outside": 6,
+        "violations": "",
+        "abstention_reason": "escalate",
+        "gold_completeness": null,
+        "expected_outcomes": [
+          "request_info"
+        ],
+        "outcome_ok": false
+      },
+      {
+        "case_id": "DEV-7044",
+        "category": "ambiguous",
+        "outcome": "answer",
+        "should_refuse": false,
+        "packet_has_gold": true,
+        "n_claims": 3,
+        "n_citations": 3,
+        "citations_outside": 3,
+        "violations": "",
+        "abstention_reason": "",
+        "gold_completeness": 0.1891891891891892,
+        "expected_outcomes": [
+          "request_info"
+        ],
+        "outcome_ok": false
+      },
+      {
+        "case_id": "DEV-9342",
+        "category": "ambiguous",
+        "outcome": "request_info",
+        "should_refuse": false,
+        "packet_has_gold": true,
+        "n_claims": 2,
+        "n_citations": 4,
+        "citations_outside": 4,
+        "violations": "",
+        "abstention_reason": "request_info",
+        "gold_completeness": null,
+        "expected_outcomes": [
+          "request_info"
+        ],
+        "outcome_ok": true
+      },
+      {
+        "case_id": "DEV-4338",
+        "category": "answerable",
+        "outcome": "answer",
+        "should_refuse": false,
+        "packet_has_gold": true,
+        "n_claims": 2,
+        "n_citations": 4,
+        "citations_outside": 4,
+        "violations": "",
+        "abstention_reason": "",
+        "gold_completeness": 0.14814814814814814,
+        "expected_outcomes": [
+          "answer"
+        ],
+        "outcome_ok": true
+      },
+      {
+        "case_id": "DEV-6166",
+        "category": "escalation",
+        "outcome": "escalate",
+        "should_refuse": false,
+        "packet_has_gold": true,
+        "n_claims": 4,
+        "n_citations": 2,
+        "citations_outside": 2,
+        "violations": "",
+        "abstention_reason": "escalate",
+        "gold_completeness": null,
+        "expected_outcomes": [
+          "escalate"
+        ],
+        "outcome_ok": true
+      },
+      {
+        "case_id": "DEV-16388",
+        "category": "escalation",
+        "outcome": "escalate",
+        "should_refuse": false,
+        "packet_has_gold": true,
+        "n_claims": 3,
+        "n_citations": 3,
+        "citations_outside": 3,
+        "violations": "",
+        "abstention_reason": "escalate",
+        "gold_completeness": null,
+        "expected_outcomes": [
+          "escalate"
+        ],
+        "outcome_ok": true
+      },
+      {
+        "case_id": "DEV-3903",
+        "category": "ambiguous",
+        "outcome": "answer",
+        "should_refuse": false,
+        "packet_has_gold": true,
+        "n_claims": 2,
+        "n_citations": 3,
+        "citations_outside": 3,
+        "violations": "",
+        "abstention_reason": "",
+        "gold_completeness": 0.2268041237113402,
+        "expected_outcomes": [
+          "request_info"
+        ],
+        "outcome_ok": false
+      },
+      {
+        "case_id": "DEV-4325",
+        "category": "answerable",
+        "outcome": "answer",
+        "should_refuse": false,
+        "packet_has_gold": true,
+        "n_claims": 3,
+        "n_citations": 7,
+        "citations_outside": 7,
+        "violations": "",
+        "abstention_reason": "",
+        "gold_completeness": 0.17886178861788618,
+        "expected_outcomes": [
+          "answer"
+        ],
+        "outcome_ok": true
+      },
+      {
+        "case_id": "DEV-7305",
+        "category": "answerable",
+        "outcome": "answer",
+        "should_refuse": false,
+        "packet_has_gold": true,
+        "n_claims": 3,
+        "n_citations": 5,
+        "citations_outside": 5,
+        "violations": "",
+        "abstention_reason": "",
+        "gold_completeness": 0.17543859649122806,
+        "expected_outcomes": [
+          "answer"
+        ],
+        "outcome_ok": true
+      },
+      {
+        "case_id": "DEV-3585",
+        "category": "ambiguous",
+        "outcome": "escalate",
+        "should_refuse": false,
+        "packet_has_gold": true,
+        "n_claims": 1,
+        "n_citations": 2,
+        "citations_outside": 2,
+        "violations": "",
+        "abstention_reason": "escalate",
+        "gold_completeness": null,
+        "expected_outcomes": [
+          "request_info"
+        ],
+        "outcome_ok": false
+      },
+      {
+        "case_id": "DEV-3842",
+        "category": "answerable",
+        "outcome": "answer",
+        "should_refuse": false,
+        "packet_has_gold": true,
+        "n_claims": 1,
+        "n_citations": 1,
+        "citations_outside": 1,
+        "violations": "",
+        "abstention_reason": "",
+        "gold_completeness": 0.22448979591836735,
+        "expected_outcomes": [
+          "answer"
+        ],
+        "outcome_ok": true
+      },
+      {
+        "case_id": "DEV-4082",
+        "category": "answerable",
+        "outcome": "answer",
+        "should_refuse": false,
+        "packet_has_gold": true,
+        "n_claims": 2,
+        "n_citations": 2,
+        "citations_outside": 2,
+        "violations": "",
+        "abstention_reason": "",
+        "gold_completeness": 0.18238993710691823,
+        "expected_outcomes": [
+          "answer"
+        ],
+        "outcome_ok": true
+      },
+      {
+        "case_id": "DEV-5591",
+        "category": "ambiguous",
+        "outcome": "answer",
+        "should_refuse": false,
+        "packet_has_gold": true,
+        "n_claims": 2,
+        "n_citations": 4,
+        "citations_outside": 4,
+        "violations": "",
+        "abstention_reason": "",
+        "gold_completeness": 0.3082706766917293,
+        "expected_outcomes": [
+          "request_info"
+        ],
+        "outcome_ok": false
+      },
+      {
+        "case_id": "DEV-4989",
+        "category": "answerable",
+        "outcome": "answer",
+        "should_refuse": false,
+        "packet_has_gold": true,
+        "n_claims": 2,
+        "n_citations": 6,
+        "citations_outside": 6,
+        "violations": "",
+        "abstention_reason": "",
+        "gold_completeness": 0.20603015075376885,
+        "expected_outcomes": [
+          "answer"
+        ],
+        "outcome_ok": true
+      },
+      {
+        "case_id": "DEV-10805",
+        "category": "escalation",
+        "outcome": "answer",
+        "should_refuse": false,
+        "packet_has_gold": true,
+        "n_claims": 2,
+        "n_citations": 4,
+        "citations_outside": 4,
+        "violations": "",
+        "abstention_reason": "",
+        "gold_completeness": 0.16544117647058823,
+        "expected_outcomes": [
+          "escalate"
+        ],
+        "outcome_ok": false
+      }
+    ]
+  },
+  "model": "gpt-5.4-mini",
+  "evidence": "gold",
+  "costs": {
+    "model": "gpt-5.4-mini",
+    "evidence": "gold",
+    "n_cases": 15,
+    "total_cost_usd": 0.023636,
+    "per_case": [
+      {
+        "case_id": "DEV-5604",
+        "outcome": "escalate",
+        "input_tokens": 3156,
+        "output_tokens": 3890,
+        "cost_usd": 0.0
+      },
+      {
+        "case_id": "DEV-7044",
+        "outcome": "answer",
+        "input_tokens": 3040,
+        "output_tokens": 3382,
+        "cost_usd": 0.0
+      },
+      {
+        "case_id": "DEV-9342",
+        "outcome": "request_info",
+        "input_tokens": 3220,
+        "output_tokens": 1877,
+        "cost_usd": 0.0
+      },
+      {
+        "case_id": "DEV-4338",
+        "outcome": "answer",
+        "input_tokens": 3655,
+        "output_tokens": 5219,
+        "cost_usd": 0.0
+      },
+      {
+        "case_id": "DEV-6166",
+        "outcome": "escalate",
+        "input_tokens": 3221,
+        "output_tokens": 2442,
+        "cost_usd": 0.0
+      },
+      {
+        "case_id": "DEV-16388",
+        "outcome": "escalate",
+        "input_tokens": 2663,
+        "output_tokens": 2515,
+        "cost_usd": 0.0
+      },
+      {
+        "case_id": "DEV-3903",
+        "outcome": "answer",
+        "input_tokens": 2941,
+        "output_tokens": 3242,
+        "cost_usd": 0.0
+      },
+      {
+        "case_id": "DEV-4325",
+        "outcome": "answer",
+        "input_tokens": 4279,
+        "output_tokens": 4434,
+        "cost_usd": 0.0
+      },
+      {
+        "case_id": "DEV-7305",
+        "outcome": "answer",
+        "input_tokens": 2771,
+        "output_tokens": 4249,
+        "cost_usd": 0.0
+      },
+      {
+        "case_id": "DEV-3585",
+        "outcome": "escalate",
+        "input_tokens": 2419,
+        "output_tokens": 1531,
+        "cost_usd": 0.0
+      },
+      {
+        "case_id": "DEV-3842",
+        "outcome": "answer",
+        "input_tokens": 2458,
+        "output_tokens": 2416,
+        "cost_usd": 0.0
+      },
+      {
+        "case_id": "DEV-4082",
+        "outcome": "answer",
+        "input_tokens": 3264,
+        "output_tokens": 3886,
+        "cost_usd": 0.0
+      },
+      {
+        "case_id": "DEV-5591",
+        "outcome": "answer",
+        "input_tokens": 2853,
+        "output_tokens": 2665,
+        "cost_usd": 0.0
+      },
+      {
+        "case_id": "DEV-4989",
+        "outcome": "answer",
+        "input_tokens": 3885,
+        "output_tokens": 3087,
+        "cost_usd": 0.0
+      },
+      {
+        "case_id": "DEV-10805",
+        "outcome": "answer",
+        "input_tokens": 4034,
+        "output_tokens": 5156,
+        "cost_usd": 0.0236355
+      }
+    ]
+  }
+}

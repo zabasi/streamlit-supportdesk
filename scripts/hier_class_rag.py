@@ -122,7 +122,7 @@ def _canonical(name: str) -> str:
 
 
 def _load_settings(mode: str, pipeline: str, *, chat: str | None = None,
-                   max_output_tokens: int | None = None) -> Settings:
+                   max_output_tokens: int | None = None, extra: dict | None = None) -> Settings:
     overrides = {
         "run.mode": mode,
         "pipeline.name": pipeline,
@@ -132,6 +132,8 @@ def _load_settings(mode: str, pipeline: str, *, chat: str | None = None,
         overrides["models.chat"] = chat
     if max_output_tokens:
         overrides["generation.max_output_tokens"] = str(max_output_tokens)
+    if extra:
+        overrides.update(extra)
     return Settings.load(overrides=overrides)
 
 
