@@ -11,7 +11,6 @@ import json
 import re
 import sys
 import threading
-import uuid
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from importlib import resources
 from urllib.parse import parse_qs, urlparse
@@ -28,6 +27,7 @@ from .conversations import (
     MAX_TURNS,
     OPEN,
     ConversationStore,
+    content_case_id,
     now,
     report_html,
     summary_markdown,
@@ -174,10 +174,16 @@ class App:
         if kind not in ("typed", "example", "dev"):
             kind = "typed"
         src = {"kind": kind}
-        if kind == "dev":
-            src["case_id"] = self.dev_case(str(source.get("case_id") or ""))["id"]
         report = {"title": case.title, "body": case.body, "created_at": case.created_at, "environment": env}
-        return self.store.create(pipeline=pipeline, source=src, report=report, history=case.history)
+        case_id = None
+        if kind == "dev":
+            dev = self.dev_case(str(source.get("case_id") or ""))
+            src["case_id"] = dev["id"]
+            unchanged = (dev["title"].strip(), (dev["body"] or "").strip(), dev["created_at"] or None, dev["environment"],
+                         [{"role": m["role"], "body": m["body"].strip()} for m in dev["history"] if m["body"].strip()])
+            if unchanged == (case.title, case.body, case.created_at, env, case.history):
+                case_id = dev["id"]  # the case as evaluated: its first turn can replay the evaluation's answer
+        return self.store.create(pipeline=pipeline, source=src, report=report, history=case.history, case_id=case_id)
 
     def conversation_turn(self, payload: object) -> dict:
         """One pipeline turn: with the user's reply when the assistant asked for information."""
@@ -198,7 +204,8 @@ class App:
                 raise BadRequest(f"reply is longer than {self.limits['body']} characters")
             conv["messages"].append({"role": "user", "body": reply.strip(), "at": now()})
         r = conv["report"]
-        case = CaseInput(case_id=f"web-{conv['id']}", title=r["title"], body=r["body"], created_at=r["created_at"],
+        case_id = conv.get("case_id") or content_case_id(r, conv["initial_history"])  # older saves have none
+        case = CaseInput(case_id=case_id, title=r["title"], body=r["body"], created_at=r["created_at"],
                          environment=dict(r.get("environment") or {}),
                          history=[{"role": m["role"], "body": m["body"]} for m in conv["initial_history"] + conv["messages"]])
         retriever = self.settings_for(conv["pipeline"]).pipeline.retriever
@@ -305,7 +312,9 @@ class App:
         if asked not in (None, "", retriever):
             raise BadRequest(f"this page runs each pipeline with its own retriever ({pipeline}: "
                              f"{retriever}); to try another, use --retriever on the command line")
-        case = CaseInput(case_id=f"web-{uuid.uuid4().hex[:8]}", title=title, body=body,
+        history_items = [{"role": h.get("role", "user"), "body": h["body"].strip()} for h in items if h["body"].strip()]
+        report = {"title": title, "body": body, "created_at": created or None, "environment": {}}
+        case = CaseInput(case_id=content_case_id(report, history_items), title=title, body=body,
                          created_at=created or None,
                          history=[{"role": h.get("role", "user"), "body": h["body"].strip()}
                                   for h in items if h["body"].strip()])

@@ -6,6 +6,7 @@ turn (outcome, evidence, cost). It is local to this computer, like the cache and
 """
 from __future__ import annotations
 
+import hashlib
 import json
 import sqlite3
 import threading
@@ -35,8 +36,10 @@ class ConversationStore:
     def _db(self) -> sqlite3.Connection:
         return sqlite3.connect(self.path)
 
-    def create(self, *, pipeline: str, source: dict, report: dict, history: list[dict]) -> dict:
+    def create(self, *, pipeline: str, source: dict, report: dict, history: list[dict],
+               case_id: str | None = None) -> dict:
         conv = {"id": uuid.uuid4().hex[:12], "created_at": now(), "updated_at": now(), "pipeline": pipeline,
+                "case_id": case_id or content_case_id(report, history),
                 "source": source, "report": report, "initial_history": history, "messages": [],
                 "questions_used": 0, "status": "new", "turns": []}
         self.save(conv)
@@ -70,6 +73,17 @@ class ConversationStore:
 
     def all(self) -> list[dict]:
         return [self.get(item["id"]) for item in self.listing()]
+
+
+def content_case_id(report: dict, history: list[dict]) -> str:
+    """A case ID from the report itself: the same report and earlier messages give the same ID, so the
+    same requests (some answer steps include the case ID) replay from the cache instead of being paid
+    again; a different report gives a different ID."""
+    key = json.dumps({"title": report.get("title"), "body": report.get("body"), "created_at": report.get("created_at"),
+                      "environment": report.get("environment") or {},
+                      "history": [{"role": m.get("role"), "body": m.get("body")} for m in history]},
+                     sort_keys=True, ensure_ascii=False)
+    return "web-" + hashlib.sha256(key.encode("utf-8")).hexdigest()[:12]
 
 
 def summary_markdown(conv: dict) -> str:
@@ -134,4 +148,5 @@ def report_html(conversations: list[dict]) -> str:
     return "".join(parts)
 
 
-__all__ = ["MAX_FOLLOWUPS", "MAX_TURNS", "OPEN", "ConversationStore", "report_html", "summary_markdown"]
+__all__ = ["MAX_FOLLOWUPS", "MAX_TURNS", "OPEN", "ConversationStore", "content_case_id", "report_html",
+           "summary_markdown"]

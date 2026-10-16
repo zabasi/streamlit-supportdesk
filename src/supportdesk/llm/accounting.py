@@ -27,23 +27,52 @@ class BudgetLedger:
 
     def __post_init__(self) -> None:
         self.path = Path(self.path) if self.path else None
+        self._read_to = 0  # bytes of the file already in rows
+        self._mine: list[str] = []  # lines this ledger wrote that refresh() has not yet passed
         if self.path and self.path.exists():  # prior runs count against the same ceiling
-            with self.path.open(encoding="utf-8") as handle:
-                self.rows = [json.loads(line) for line in handle if line.strip()]
+            data = self.path.read_bytes()
+            self.rows = [json.loads(line) for line in data.decode("utf-8").splitlines() if line.strip()]
+            self._read_to = len(data)
+
+    def refresh(self) -> None:
+        """Catch up with lines other processes appended to the same file (an evaluation running while the
+        web UI is open), so the budget readout and the guard count all spending, not only this
+        process's. Reads only the new bytes; this ledger's own lines are not counted twice."""
+        if not self.path or not self.path.exists():
+            return
+        size = self.path.stat().st_size
+        if size <= self._read_to:
+            return
+        with self.path.open("rb") as handle:
+            handle.seek(self._read_to)
+            chunk = handle.read(size - self._read_to)
+        end = chunk.rfind(b"\n") + 1  # whole lines only; a line still being written waits for next time
+        for line in chunk[:end].decode("utf-8").splitlines():
+            if not line.strip():
+                continue
+            if line in self._mine:
+                self._mine.remove(line)  # written by this ledger: already in rows
+            else:
+                self.rows.append(json.loads(line))
+        self._read_to += end
 
     def record(self, **row) -> dict:
+        self.refresh()
         entry = {"seq": len(self.rows), "status": "ok", "cost_usd": 0.0, **row}
         entry.setdefault("request_type", entry.get("stage", "unknown"))
         entry.setdefault("timestamp", _now() if entry.get("mode") == "live" else "")
         self.rows.append(entry)
         if self.path:
             self.path.parent.mkdir(parents=True, exist_ok=True)
+            line = json.dumps(entry, ensure_ascii=False)
+            self._mine.append(line)
             with self.path.open("a", encoding="utf-8") as handle:
-                handle.write(json.dumps(entry, ensure_ascii=False) + "\n")
+                handle.write(line + "\n")
         return entry
 
     @property
     def total_cost_usd(self) -> float:
+        self.refresh()
         return round(sum(r.get("cost_usd", 0.0) for r in self.rows), 12)
 
     def remaining_usd(self) -> float:
