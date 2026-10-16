@@ -29,6 +29,7 @@ summarize_section = "configs/prompts/summarize_section_system.txt"
 label_cluster = "configs/prompts/label_cluster_system.txt"
 topic_classify = "configs/prompts/topic_classify_system.txt"
 section_questions = "configs/prompts/section_questions_system.txt"
+rerank_second = ""                                  # a second reranking prompt, merged with the first; "" = one ranking
 topic_discover = "configs/prompts/topic_discover_system.txt"
 topic_refine = "configs/prompts/topic_refine_system.txt"
 scope = "configs/prompts/scope_system.txt"
@@ -95,6 +96,9 @@ hier_places = 3                  # hierarchical retrievers: returned chunks take
 second_weight = 0.5              # dual_doc_slots: the second embedding model's weight in the fusion
 report_views = "none"            # advanced: extra searches: none | title | code | title,code
 view_weight = 0.5                # report_views: each view's weight in the fusion against the report
+rerank_merge = "rrf"             # prompts.rerank_second: rrf | alternate
+rerank_merge_k = 10              # rerank_merge = rrf: the RRF constant
+bm25_extra = 0                   # question_doc_slots: BM25 documentation chunks added (exact identifiers)
 rerank_fuse_weight = 0.0         # blend the reranker's order with each candidate's own search rank (0: off)
 rerank_fuse_k = 10               # rerank_fuse_weight: the RRF constant
 rerank_show_question = false     # the reranker sees the symptom question that found a candidate

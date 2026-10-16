@@ -65,6 +65,25 @@ def model_ranking(text: str, count: int) -> list[int]:
     return order
 
 
+def merge_orders(first: list[int], second: list[int], n: int, *, mode: str, k: int) -> list[int]:
+    """Merge two rankings of the same ``n`` candidates (positions, best first; either may be empty when its
+    answer was unusable): rrf scores each candidate 1/(k + rank in the first) + 1/(k + rank in the second);
+    alternate takes the best not yet taken of each in turn."""
+    if not first or not second:
+        return first or second
+    full = [order + [i for i in range(n) if i not in set(order)] for order in (first, second)]
+    if mode == "alternate":
+        out, seen = [], set()
+        for a, b in zip(*full):
+            for i in (a, b):
+                if i not in seen:
+                    seen.add(i)
+                    out.append(i)
+        return out
+    rank = [{i: r for r, i in enumerate(order, start=1)} for order in full]
+    return sorted(range(n), key=lambda i: (-(1 / (k + rank[0][i]) + 1 / (k + rank[1][i])), rank[0][i]))
+
+
 def fuse_with_search(ranked: list[Hit], hits: list[Hit], *, weight: float, k: int) -> list[Hit]:
     """rerank_fuse_weight: blend the reranker's order with each candidate's own search rank by weighted
     RRF, 1/(k + reranker rank) + weight/(k + search rank). The search rank is the candidate's place among
@@ -176,12 +195,15 @@ class LLMReranker:
         self.min_docs = settings.retrieval.doc_slots if keep is None else keep
         self.clean = CleanQuery(settings.context.max_query_chars)
         self.prompt = Path(settings.prompts.rerank).read_text(encoding="utf-8")
+        second = str(settings.prompts.rerank_second or "").strip()
+        self.prompt_second = Path(second).read_text(encoding="utf-8") if second else None
+        self.merge, self.merge_k = settings.retrieval.rerank_merge, settings.retrieval.rerank_merge_k
 
-    def model_order(self, case: CaseInput, hits: list[Hit]) -> list[int]:
+    def model_order(self, case: CaseInput, hits: list[Hit], *, prompt: str | None = None) -> list[int]:
         """One model call: positions in ``hits``, most useful first; [] if the output is unusable."""
-        return model_ranking(self.model_text(case, hits), len(hits))
+        return model_ranking(self.model_text(case, hits, prompt=prompt), len(hits))
 
-    def model_text(self, case: CaseInput, hits: list[Hit]) -> str:
+    def model_text(self, case: CaseInput, hits: list[Hit], *, prompt: str | None = None) -> str:
         """The model's raw answer to the reranking request for ``hits``."""
         report = self.clean(case, {})[0]
         if self.snippet_mode == "focused":
@@ -217,7 +239,7 @@ class LLMReranker:
             if mechanisms:
                 content += "## Mechanisms involved\n" + "\n".join(f"- {m}" for m in mechanisms) + "\n\n"
         content += f"## Candidates\n{listing}"
-        text, _ = self.chat.complete([{"role": "system", "content": self.prompt},
+        text, _ = self.chat.complete([{"role": "system", "content": prompt or self.prompt},
                                               {"role": "user", "content": content}],
                                              stage="rerank", json_mode=True)
         return text
@@ -226,6 +248,9 @@ class LLMReranker:
         if len(hits) < 2:
             return hits
         order = self.model_order(case, hits)
+        if self.prompt_second is not None:  # a second ranking by another notion of relevance, merged
+            order = merge_orders(order, self.model_order(case, hits, prompt=self.prompt_second), len(hits),
+                                 mode=self.merge, k=self.merge_k)
         ranked = ([hits[i] for i in order] + [h for i, h in enumerate(hits) if i not in set(order)]
                   if order else list(hits))  # unusable output: the retriever's order
         if self.fuse_weight > 0 and order:

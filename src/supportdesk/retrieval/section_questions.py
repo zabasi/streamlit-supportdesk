@@ -117,8 +117,16 @@ class QuestionExpandedRetriever:
     name = "question_doc_slots"
 
     def __init__(self, base, bank: QuestionBank, *, extra: int, order: str = "append", filter_top: int = 0,
-                 chunk_mode: str = "overlap", chunk_vectors: np.ndarray | None = None):
+                 chunk_mode: str = "overlap", chunk_vectors: np.ndarray | None = None, bm25_extra: int = 0,
+                 bm25_k1: float = 1.5, bm25_b: float = 0.75):
         self.base, self.bank, self.extra, self.order = base, bank, extra, order
+        self.bm25_extra = bm25_extra
+        self.bm25 = None
+        if bm25_extra:  # keyword search over documentation: exact identifiers (st.fragment, run_every)
+            from .retriever import BM25Retriever
+
+            self.bm25 = BM25Retriever([c for c in base.index.chunks if c.source_type == "documentation"],
+                                      k1=bm25_k1, b=bm25_b)
         self.chunk_mode = chunk_mode
         self.index, self.embedder = base.index, base.embedder
         self.by_source: dict[str, list[int]] = defaultdict(list)
@@ -173,6 +181,15 @@ class QuestionExpandedRetriever:
             chunk = dataclasses.replace(chunk, meta={**(chunk.meta or {}), "matched_question": question})
             hits.append(Hit(chunk, score, len(hits) + 1, "question"))
             added += 1
+        if self.bm25 is not None:  # bm25_extra: the best keyword matches not already candidates
+            found = 0
+            for hit in self.bm25.search(query, k=self.bm25_extra + len(hits), as_of=as_of):
+                if found >= self.bm25_extra:
+                    break
+                if hit.chunk.chunk_id not in have:
+                    have.add(hit.chunk.chunk_id)
+                    hits.append(Hit(hit.chunk, hit.score, len(hits) + 1, "bm25"))
+                    found += 1
         return self._arrange(hits, query)
 
     def _arrange(self, hits: list[Hit], query: str) -> list[Hit]:
@@ -199,7 +216,8 @@ def build_question_retriever(index: VectorIndex, clients, settings) -> QuestionE
     base = DocSlotsRetriever(index, clients.embedding, doc_slots=settings.retrieval.doc_slots)
     r = settings.retrieval
     return QuestionExpandedRetriever(base, bank, extra=r.question_sections, order=r.question_order,
-                                     filter_top=r.question_filter_top, chunk_mode=r.question_chunk)
+                                     filter_top=r.question_filter_top, chunk_mode=r.question_chunk,
+                                     bm25_extra=r.bm25_extra, bm25_k1=r.bm25_k1, bm25_b=r.bm25_b)
 
 
 __all__ = ["QuestionBank", "QuestionExpandedRetriever", "build_question_retriever", "generate_questions",

@@ -129,6 +129,7 @@ Defaults shown are the built-in ones. `*unset*` means the key is optional and no
 | `output_format` | `configs/prompts/answer_output_format.txt` | JSON shape the answer must follow |
 | `rewrite` | `configs/prompts/rewrite_system.txt` | system prompt of the query-rewriting call (QueryRewriter) |
 | `rerank` | `configs/prompts/rerank_system.txt` | system prompt of the reranking call (LLMReranker) |
+| `rerank_second` | `` | a second reranking prompt (for example configs/prompts/rerank_explain_system.txt): both rankings are made and merged by retrieval.rerank_merge; empty: one ranking |
 | `scope` | `configs/prompts/scope_system.txt` | system prompt of the pre-retrieval scope classifier (scope gate on advanced) |
 | `section_questions` | `configs/prompts/section_questions_system.txt` | system prompt that writes user-style problem descriptions for one documentation section |
 | `topic_discover` | `configs/prompts/topic_discover_system.txt` | system prompt that grows a list of routing topics from the corpus, batch by batch (scripts/discover_topics.py) |
@@ -216,6 +217,9 @@ Defaults shown are the built-in ones. `*unset*` means the key is optional and no
 | `second_weight` | `0.5` | dual_doc_slots: how much the second embedding model's ranking counts against the main model's in the fusion |
 | `report_views` | `none` | advanced: extra searches besides the queries, comma-separated: title (the report's title alone), code (its st.* commands, their parameter names and its error lines), or none; fused with the report's ranking at view_weight |
 | `view_weight` | `0.5` | report_views: how much each view's ranking counts against the report's |
+| `rerank_merge` | `rrf` | prompts.rerank_second: merge the two rankings by rrf (a candidate's ranks in both) \| alternate (the best not yet taken of each in turn) |
+| `rerank_merge_k` | `10` | rerank_merge = rrf: the RRF constant |
+| `bm25_extra` | `0` | question_doc_slots: add the best BM25 documentation chunks for the report that are not already candidates (exact identifiers); 0 adds none |
 | `rerank_fuse_weight` | `0.0` | blend the reranker's order with each candidate's own search rank (among the candidates of its source) by weighted RRF; 0 uses the reranker's order alone |
 | `rerank_fuse_k` | `10` | rerank_fuse_weight: the RRF constant (smaller makes the top ranks count more) |
 | `rerank_show_question` | `False` | the reranker also sees, for a candidate found through a documentation section's symptom question (question_doc_slots), the question that matched the report |

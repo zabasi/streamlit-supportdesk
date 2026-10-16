@@ -97,6 +97,8 @@ class Prompts:
     rewrite: Path = _opt("system prompt of the query-rewriting call (QueryRewriter)",
                          Path("configs/prompts/rewrite_system.txt"))
     rerank: Path = _opt("system prompt of the reranking call (LLMReranker)", Path("configs/prompts/rerank_system.txt"))
+    rerank_second: str = _opt("a second reranking prompt (for example configs/prompts/rerank_explain_system.txt): "
+                              "both rankings are made and merged by retrieval.rerank_merge; empty: one ranking", "")
     scope: Path = _opt("system prompt of the pre-retrieval scope classifier (scope gate on advanced)",
                        Path("configs/prompts/scope_system.txt"))
     section_questions: Path = _opt("system prompt that writes user-style problem descriptions for one "
@@ -242,6 +244,11 @@ class Retrieval:
                              "title alone), code (its st.* commands, their parameter names and its error lines), or "
                              "none; fused with the report's ranking at view_weight", "none")
     view_weight: float = _opt("report_views: how much each view's ranking counts against the report's", 0.5)
+    rerank_merge: str = _opt("prompts.rerank_second: merge the two rankings by rrf (a candidate's ranks in both) | "
+                             "alternate (the best not yet taken of each in turn)", "rrf")
+    rerank_merge_k: int = _opt("rerank_merge = rrf: the RRF constant", 10)
+    bm25_extra: int = _opt("question_doc_slots: add the best BM25 documentation chunks for the report that are not "
+                           "already candidates (exact identifiers); 0 adds none", 0)
     rerank_fuse_weight: float = _opt("blend the reranker's order with each candidate's own search rank (among "
                                      "the candidates of its source) by weighted RRF; 0 uses the reranker's order "
                                      "alone", 0.0)
@@ -622,6 +629,8 @@ class Settings:
             (r.question_filter_top >= 0, "retrieval.question_filter_top must be >= 0"),
             (r.question_chunk in ("overlap", "question"),
              f"retrieval.question_chunk must be overlap or question, got {r.question_chunk!r}"),
+            (r.rerank_merge in ("rrf", "alternate"), f"retrieval.rerank_merge must be rrf or alternate, got {r.rerank_merge!r}"),
+            (r.rerank_merge_k >= 1 and r.bm25_extra >= 0, "retrieval.rerank_merge_k must be >= 1 and bm25_extra >= 0"),
             (r.rerank_fuse_weight >= 0 and r.rerank_fuse_k >= 1,
              "retrieval.rerank_fuse_weight must be >= 0 and rerank_fuse_k >= 1"),
             (r.class_route in ("llm", "centroid"), f"retrieval.class_route must be llm or centroid, got {r.class_route!r}"),
