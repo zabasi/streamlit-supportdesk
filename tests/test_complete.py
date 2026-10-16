@@ -98,3 +98,32 @@ def test_trim_keeps_a_page_introduction():
     opening = chunk(0, A + 60)  # "# Title / Intro line." then the start of Alpha
     assert run([opening], "trim")[0] == [(0, A + 60)]
     assert run([opening], "section_trim")[0] == [(0, B)]  # kept, and Alpha completed
+
+
+NESTED = ("# Title\nIntro line.\n\n## Alpha\nAlpha opening.\n\n### A1\n" + "one words here. " * 10 + "\n\n### A2\n"
+          + "two words here. " * 10 + "\n\n### A3\n" + "three words here. " * 10 + "\n\n## Beta\n" + "beta words. " * 10 + "\n")
+N_ALPHA, N_A1, N_A2, N_A3, N_BETA = (NESTED.index(h) for h in ("## Alpha", "### A1", "### A2", "### A3", "## Beta"))
+
+
+def nested_run(a, b, mode):
+    c = Chunk(chunk_id="n:0", source_id="doc:n", source_type="documentation", title="Nested", text=NESTED[a:b],
+              start_char=a, end_char=b)
+    out = complete_hits([Hit(c, 1.0, 1, "dense")], {"doc:n": NESTED}, {"doc:n": [c]}, mode=mode, cap=900)
+    return out[0].chunk.start_char, out[0].chunk.end_char
+
+
+def test_nested_sections_have_their_own_extent():
+    from supportdesk.pipelines.stages.sections import nested_sections
+    assert nested_sections(NESTED) == [(N_ALPHA, N_BETA, 2), (N_A1, N_A2, 3), (N_A2, N_A3, 3), (N_A3, N_BETA, 3),
+                                       (N_BETA, len(NESTED), 2)]
+
+
+def test_subsection_grows_only_to_the_subsections_the_chunk_touches():
+    spanning = (N_A1 + 30, N_A2 + 30)  # from inside A1 to inside A2
+    assert nested_run(*spanning, "subsection") == (N_A1, N_A3)  # A1 and A2 only
+    assert nested_run(*spanning, "section") == (N_ALPHA, N_BETA)  # the whole of Alpha, with A3
+    assert nested_run(N_A2 + 20, N_A2 + 60, "subsection") == (N_A2, N_A3)  # inside one subsection: just it
+
+
+def test_subsection_leaves_a_page_introduction_as_it_is():
+    assert nested_run(5, N_A1 + 30, "subsection")[0] == 5  # before the first heading: no section to grow to

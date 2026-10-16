@@ -94,7 +94,7 @@ quota_report_bm25 = 5            # pool_mode = quota: BM25 chunks from the clean
 quota_concepts_dense = 10        # pool_mode = quota: dense chunks from the concept queries, in turns
 concept_weight = 1.0             # concept queries' weight in the fusion against the report (1 = equal)
 decompose = true                 # advanced: concept queries besides the cleaned report (false: the report alone)
-complete = "none"                # after reranking: none | neighbors | section | trim | section_trim
+complete = "none"                # after reranking: none | neighbors | section | subsection | trim | section_trim
 complete_max_tokens = 900        # retrieval.complete: the most tokens a repaired chunk may grow to
 cluster_size = 100               # cluster routing: about this many chunks per topic cluster (build_clusters.py)
 cluster_method = "kmeans"        # cluster routing: kmeans | centered | doc_anchored (build_clusters.py)

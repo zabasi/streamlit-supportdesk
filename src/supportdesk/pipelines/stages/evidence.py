@@ -21,7 +21,7 @@ from ...types import CaseInput, Chunk
 from ..parsing import NotJson, extract_json
 from .clean_query import CleanQuery
 from .llm_rerank import LLMReranker, keep_doc_places, model_grades, model_ranking
-from .sections import Sections, page_texts, section_spans
+from .sections import Sections, innermost_section, nested_sections, page_texts, section_spans
 
 
 def merge_overlaps(hits: list[Hit], pages: dict[str, str]) -> list[Hit]:
@@ -59,7 +59,7 @@ def completed_span(chunk: Chunk, page: str, spans: list[tuple[int, int]], neighb
                    mode: str, cap: int) -> tuple[int, int]:
     """The repaired (start, end) of one kept documentation chunk, at most ``cap`` tokens when it grows:
     neighbors (add the chunk before and after it), section (grow to the whole top-level sections it
-    touches), trim (drop a short leading fragment of the previous section, so it starts at a heading) or
+    touches), subsection (grow each edge only to the innermost section around it), trim (drop a short leading fragment of the previous section, so it starts at a heading) or
     section_trim (trim the start, complete the last section). When the full repair is too long, the
     forward-only, then backward-only, repair is tried; otherwise the chunk is kept as it is."""
     a0, b0 = chunk.start_char, chunk.end_char
@@ -74,6 +74,11 @@ def completed_span(chunk: Chunk, page: str, spans: list[tuple[int, int]], neighb
         before = order[i - 1].start_char if i > 0 else a0
         after = order[i + 1].end_char if i + 1 < len(order) else b0
         return best((before, after), (a0, after), (before, b0))
+    if mode == "subsection":  # grow each edge only to the innermost section around it (usually a ###)
+        inner_first, inner_last = innermost_section(spans, a0), innermost_section(spans, max(a0, b0 - 1))
+        start = inner_first[0] if inner_first else a0
+        end = max(b0, inner_last[1]) if inner_last else b0
+        return best((start, end), (a0, end), (start, b0))
     first, last = _section_at(spans, a0), _section_at(spans, max(a0, b0 - 1))
     start = a0
     # a page's introduction (the text under its title, before the first top-level section) is never trimmed:
@@ -106,8 +111,8 @@ def complete_hits(hits: list[Hit], pages: dict[str, str], by_page: dict[str, lis
         if c.source_type != "documentation" or page is None or c.start_char is None:
             out.append(h)
             continue
-        if c.source_id not in spans:
-            spans[c.source_id] = section_spans(page)
+        if c.source_id not in spans:  # top-level sections, or every level for subsection
+            spans[c.source_id] = nested_sections(page) if mode == "subsection" else section_spans(page)
         a, b = completed_span(c, page, spans[c.source_id], by_page.get(c.source_id, []), mode=mode, cap=cap)
         if (a, b) == (c.start_char, c.end_char):
             out.append(h)

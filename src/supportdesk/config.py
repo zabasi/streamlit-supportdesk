@@ -238,7 +238,8 @@ class Retrieval:
                            "searches with the cleaned report alone and reranks without the mechanisms list", True)
     complete: str = _opt("after reranking, repair each kept documentation chunk's edges: none | neighbors (add "
                          "the chunk before and after it) | section (grow to the whole top-level sections it "
-                         "touches) | trim (drop a short leading fragment, so it starts at a heading) | "
+                         "touches) | subsection (grow each edge only to the innermost section around it) | "
+                         "trim (drop a short leading fragment, so it starts at a heading) | "
                          "section_trim (trim the start, complete the last section)", "none")
     complete_max_tokens: int = _opt("retrieval.complete: the most tokens a repaired chunk may grow to", 900)
     cluster_size: int = _opt("cluster routing: about how many chunks scripts/build_clusters.py puts in each "
@@ -537,8 +538,8 @@ class Settings:
             (1 <= r.hier_sections <= 10, "retrieval.hier_sections must be between 1 and 10"),
             (r.hier_places >= 0, "retrieval.hier_places must be >= 0 (a search never takes more than it returns)"),
             (r.cluster_size >= 1, "retrieval.cluster_size must be >= 1"),
-            (r.complete in ("none", "neighbors", "section", "trim", "section_trim"),
-             f"retrieval.complete must be none, neighbors, section, trim or section_trim, got {r.complete!r}"),
+            (r.complete in ("none", "neighbors", "section", "subsection", "trim", "section_trim"),
+             f"retrieval.complete must be one of the completion modes, got {r.complete!r}"),
             (r.complete_max_tokens >= 1, "retrieval.complete_max_tokens must be >= 1"),
             (0.0 <= r.concept_weight <= 1.0, "retrieval.concept_weight must be between 0 and 1"),
             (all(v.strip() in ("none", "title", "code") for v in r.report_views.split(",")),
