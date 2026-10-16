@@ -15,6 +15,15 @@ EXPECTED = {
     "candidate-4-dense-rerank-section-6chunks": {"retrieval.top_k": 6, "retrieval.rerank_keep_docs": 3,
                                                  "context.max_tokens": 3200},
     "candidate-5-dense-rerank-section-controlled-v2": {"pipeline.generator": "controlled_v2"},
+    "candidate-6-doc2query15-rerank-section-controlled-v2": {"pipeline.retriever": "question_doc_slots",
+                                                             "retrieval.question_sections": 15,
+                                                             "pipeline.generator": "controlled_v2"},
+    "candidate-7-dense-dualrerank-section-controlled-v2": {
+        "prompts.rerank_second": "configs/prompts/rerank_explain_system.txt", "retrieval.rerank_merge": "alternate",
+        "pipeline.generator": "controlled_v2"},
+    "candidate-8-dense-rerank-section-6chunks-controlled-v2": {"retrieval.top_k": 6, "retrieval.rerank_keep_docs": 3,
+                                                               "context.max_tokens": 3200,
+                                                               "pipeline.generator": "controlled_v2"},
 }
 SECTIONS = ("chunking", "retrieval", "context", "prompts", "pipeline")
 
