@@ -309,7 +309,8 @@ def test_the_structure_experiments_change_only_chunking_room_and_expansion():
         return {f"{section}.{key}": value for section, keys in d.items() for key, value in keys.items()}
     base, d = flat("advanced"), "clean_doc_slots_rerank_docs_prompt_decompose"
     structure = {"pipeline.name", "pipeline.scope_gate", "retrieval.decompose", "retrieval.complete", "chunking.method", "chunking.context_header", "retrieval.top_k",
-                 "retrieval.candidate_k", "retrieval.doc_slots", "retrieval.rerank_keep_docs", "paths.index_dir"}
+                 "retrieval.candidate_k", "retrieval.doc_slots", "retrieval.rerank_keep_docs", "paths.index_dir",
+                 "context.max_tokens"}
     ref, branch = flat(f"{d}_structure_advanced"), flat(f"{d}_structure_advanced_branch")
     assert {k for k in base if base[k] != ref[k]} == structure
     assert {k for k in ref if ref[k] != branch[k]} == {"pipeline.name", "retrieval.expand", "retrieval.expand_max_candidates"}

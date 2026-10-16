@@ -626,8 +626,13 @@ def test_shipped_advanced_template_is_valid_and_differs_from_the_baseline(monkey
     adv = Settings.load(env={}, overrides=["pipeline.name=advanced"])
     assert adv.profile == "configs/pipelines/advanced.toml"
     base = Settings.load(env={})
-    # the same amount of evidence as the baseline, chosen differently: a fair comparison
-    assert (adv.retrieval.top_k, adv.context.max_tokens) == (base.retrieval.top_k, base.context.max_tokens)
+    # advanced shows more evidence than the baseline (8 pieces within 4,300 tokens against 6 within 3,200),
+    # so a fair comparison runs the baseline at advanced's budget too; the profile says so, and the baseline
+    # itself stays frozen
+    assert (adv.retrieval.top_k, adv.context.max_tokens) == (8, 4300)
+    assert (base.retrieval.top_k, base.context.max_tokens) == (6, 3200)
+    profile = (ROOT / "configs/pipelines/advanced.toml").read_text(encoding="utf-8")
+    assert "--set retrieval.top_k=8 --set context.max_tokens=4300" in profile  # the fairness rule, stated
     assert adv.pipeline.retriever != base.pipeline.retriever and adv.pool_size > adv.retrieval.top_k
 
 
@@ -640,8 +645,8 @@ def test_cli_shows_each_pipelines_own_chunk_count_and_where_it_comes_from(capsys
     assert "chunks allowed in the prompt = 6" in base and "pipeline: baseline | retriever: dense | top_k: 6" in base
     assert main(["config", "--pipeline", "advanced"]) == 0
     adv = capsys.readouterr().out
-    assert re.search(r"top_k\s+= 6\s+\(file:configs/pipelines/advanced\.toml\)", adv)
-    assert "chunks allowed in the prompt = 6" in adv and "retrieval pool = 15" in adv
+    assert re.search(r"top_k\s+= 8\s+\(file:configs/pipelines/advanced\.toml\)", adv)
+    assert "chunks allowed in the prompt = 8" in adv and "retrieval pool = 15" in adv
     assert re.search(r"retriever\s+= dense_doc_slots\s+\(file:configs/pipelines/advanced\.toml\)", adv)
     # ...and the shared settings are the same for both
     assert re.search(r"chat\s+= gpt-4o-mini\s+\(file:configs/default\.toml\)", adv)

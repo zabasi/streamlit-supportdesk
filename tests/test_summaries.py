@@ -100,5 +100,7 @@ def test_the_summaries_experiment_changes_only_the_summary_level():
     a = flat("advanced")
     b = flat("clean_doc_slots_rerank_docs_prompt_decompose_merged_focused_concepts_summaries")
     assert {k for k in a if a[k] != b[k]} == {"pipeline.name", "pipeline.scope_gate", "retrieval.decompose",
-                                                "retrieval.complete", "retrieval.summary_sections"}
+                                                "retrieval.complete", "retrieval.summary_sections",
+                                                "retrieval.top_k", "retrieval.rerank_keep_docs",
+                                                "context.max_tokens"}
     assert b["retrieval.summary_sections"] == 3
