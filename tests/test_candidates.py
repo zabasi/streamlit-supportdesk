@@ -21,6 +21,8 @@ EXPECTED = {
     "candidate-7-dense-dualrerank-section-controlled-v2": {
         "prompts.rerank_second": "configs/prompts/rerank_explain_system.txt", "retrieval.rerank_merge": "alternate",
         "pipeline.generator": "controlled_v2"},
+    "candidate-9-dense-rerank-section-policy-v3b": {"pipeline.generator": "policy_v3",
+                                                    "prompts.policy": "configs/prompts/policy_v3b_system.txt"},
     "candidate-8-dense-rerank-section-6chunks-controlled-v2": {"retrieval.top_k": 6, "retrieval.rerank_keep_docs": 3,
                                                                "context.max_tokens": 3200,
                                                                "pipeline.generator": "controlled_v2"},

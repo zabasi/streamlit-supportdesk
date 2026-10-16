@@ -1,0 +1,47 @@
+# candidate-9-dense-rerank-section-policy-v3b: candidate 1's retrieval (the same as candidate 5's) with the
+# policy-v3 answer step and the v3b prompt (supportdesk/generation/policy_v3, configs/prompts/policy_v3b_system.txt):
+# gpt-5.4-mini (reasoning_effort medium, 8,000 completion tokens) chooses the action itself. Compare with
+# candidate 5, where the model writes an assessment and Python routes the action. About $0.02 per case.
+# Fair comparison: run the baseline at this budget too (--set retrieval.top_k=8 --set context.max_tokens=4300).
+
+[chunking]
+method = "fixed"
+max_tokens = 512
+overlap_tokens = 128
+
+[retrieval]
+top_k = 8                    # pieces the model sees
+candidate_k = 15             # candidates the reranker orders
+rerank_snippet_chars = 400   # characters of each candidate the reranker sees
+rerank_snippet = "focused"   # the reranker sees each candidate's best-matching window
+rerank_show_concepts = true  # with decompose: the concept queries ("Mechanisms involved")
+keep_report_query = true     # with decompose: search with the cleaned report too
+max_queries = 3              # with decompose: up to 3 model-written queries
+doc_slots = 10               # documentation among the 15 candidates
+decompose = false            # the cleaned report is the only query (no concept queries)
+complete = "section"         # grow each kept documentation chunk to the whole sections it touches
+rerank_keep_docs = 5         # documentation kept in the final 8 after reranking (3 places for the rest)
+historical_filter = true
+
+[context]
+max_tokens = 4300            # room for 8 pieces after section completion
+max_query_chars = 4000
+max_body_chars = 4000
+
+[pipeline]
+generator = "policy_v3"          # gpt-5.4-mini chooses the action, guided by prompts.policy
+retriever = "dense_doc_slots"
+scope_gate = "llm"           # the scope check before retrieval is part of advanced's design
+
+[prompts]
+policy = "configs/prompts/policy_v3b_system.txt"  # the v3b policy prompt
+rewrite = "configs/prompts/rewrite_concepts_system.txt"
+# Its own answer prompt (copy and edit configs/prompts/answer_system.txt):
+# system = "configs/prompts/advanced_system.txt"
+rerank = "configs/prompts/rerank_docs_concepts_system.txt"
+
+# If advanced uses different chunking, give it its own index so the two never collide
+# (an index built with other chunking is refused). Then build it with:
+#   supportdesk index --pipeline advanced
+# [paths]
+# index_dir = "index/advanced"

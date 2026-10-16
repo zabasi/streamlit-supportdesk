@@ -97,6 +97,8 @@ class Prompts:
     rewrite: Path = _opt("system prompt of the query-rewriting call (QueryRewriter)",
                          Path("configs/prompts/rewrite_system.txt"))
     rerank: Path = _opt("system prompt of the reranking call (LLMReranker)", Path("configs/prompts/rerank_system.txt"))
+    policy: str = _opt("pipeline.generator = policy_v3: its system prompt (configs/prompts/policy_v3_system.txt, "
+                       "policy_v3b_system.txt or policy_v3c_system.txt)", "configs/prompts/policy_v3_system.txt")
     rerank_second: str = _opt("a second reranking prompt (for example configs/prompts/rerank_explain_system.txt): "
                               "both rankings are made and merged by retrieval.rerank_merge; empty: one ranking", "")
     scope: Path = _opt("system prompt of the pre-retrieval scope classifier (scope gate on advanced)",
@@ -382,7 +384,8 @@ class PipelineCfg:
                            "(no check); advanced's profile turns it on (llm)", "off")
     generator: str = _opt("advanced-based pipelines only: the answer step: single_call (the baseline's prompt "
                           "and parser) | controlled_v2 (one structured assessment by gpt-5.4-mini, the action "
-                          "routed by Python; supportdesk/generation/controlled_v2)", "single_call")
+                          "routed by Python; supportdesk/generation/controlled_v2) | policy_v3 (gpt-5.4-mini "
+                          "chooses the action itself, guided by prompts.policy)", "single_call")
 
 
 @dataclass(frozen=True)
@@ -698,8 +701,8 @@ class Settings:
              "pipeline.name and pipeline.retriever must not be empty"),
             (self.pipeline.scope_gate in ("llm", "rules", "combined", "off"),
              f"pipeline.scope_gate must be llm, rules, combined or off, got {self.pipeline.scope_gate!r}"),
-            (self.pipeline.generator in ("single_call", "controlled_v2"),
-             f"pipeline.generator must be single_call or controlled_v2, got {self.pipeline.generator!r}"),
+            (self.pipeline.generator in ("single_call", "controlled_v2", "policy_v3"),
+             f"pipeline.generator must be single_call, controlled_v2 or policy_v3, got {self.pipeline.generator!r}"),
             (len(e.case_files) >= 1, "eval.case_files must list at least one file"),
             (0 < e.test_fraction < 1, "eval.test_fraction must be between 0 and 1 (exclusive)"),
             (0 < e.passage_found_fraction <= 1, "eval.passage_found_fraction must be in (0, 1]"),

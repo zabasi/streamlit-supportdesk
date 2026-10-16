@@ -129,6 +129,7 @@ Defaults shown are the built-in ones. `*unset*` means the key is optional and no
 | `output_format` | `configs/prompts/answer_output_format.txt` | JSON shape the answer must follow |
 | `rewrite` | `configs/prompts/rewrite_system.txt` | system prompt of the query-rewriting call (QueryRewriter) |
 | `rerank` | `configs/prompts/rerank_system.txt` | system prompt of the reranking call (LLMReranker) |
+| `policy` | `configs/prompts/policy_v3_system.txt` | pipeline.generator = policy_v3: its system prompt (configs/prompts/policy_v3_system.txt, policy_v3b_system.txt or policy_v3c_system.txt) |
 | `rerank_second` | `` | a second reranking prompt (for example configs/prompts/rerank_explain_system.txt): both rankings are made and merged by retrieval.rerank_merge; empty: one ranking |
 | `scope` | `configs/prompts/scope_system.txt` | system prompt of the pre-retrieval scope classifier (scope gate on advanced) |
 | `section_questions` | `configs/prompts/section_questions_system.txt` | system prompt that writes user-style problem descriptions for one documentation section |
@@ -292,7 +293,7 @@ Defaults shown are the built-in ones. `*unset*` means the key is optional and no
 | `name` | `baseline` | registered pipeline to run (see registry.py) |
 | `retriever` | `dense` | registered retriever: dense \| bm25 \| hybrid |
 | `scope_gate` | `off` | advanced only: the scope check before retrieval: llm (a model call), rules (free keyword rules), combined (the same call that writes the concept queries) or off (no check); advanced's profile turns it on (llm) |
-| `generator` | `single_call` | advanced-based pipelines only: the answer step: single_call (the baseline's prompt and parser) \| controlled_v2 (one structured assessment by gpt-5.4-mini, the action routed by Python; supportdesk/generation/controlled_v2) |
+| `generator` | `single_call` | advanced-based pipelines only: the answer step: single_call (the baseline's prompt and parser) \| controlled_v2 (one structured assessment by gpt-5.4-mini, the action routed by Python; supportdesk/generation/controlled_v2) \| policy_v3 (gpt-5.4-mini chooses the action itself, guided by prompts.policy) |
 
 ### `[eval]`
 

@@ -157,6 +157,10 @@ def build_advanced(retriever: Retriever, clients: Clients, settings: Settings) -
         from .stages.controlled import ControlledGenerator
 
         stages["generator"] = ControlledGenerator(clients, settings)
+    elif settings.pipeline.generator == "policy_v3":  # the model chooses the action (prompts.policy)
+        from .stages.policy import PolicyV3Generator
+
+        stages["generator"] = PolicyV3Generator(clients, settings)
     extra_nodes: list = []
     return WeightedFusionPipeline(name="advanced", clients=clients, settings=settings, extra_nodes=extra_nodes,
                                   **stages)

@@ -29,6 +29,7 @@ summarize_section = "configs/prompts/summarize_section_system.txt"
 label_cluster = "configs/prompts/label_cluster_system.txt"
 topic_classify = "configs/prompts/topic_classify_system.txt"
 section_questions = "configs/prompts/section_questions_system.txt"
+policy = "configs/prompts/policy_v3_system.txt"   # pipeline.generator = policy_v3: its prompt (v3, v3b or v3c)
 rerank_second = ""                                  # a second reranking prompt, merged with the first; "" = one ranking
 topic_discover = "configs/prompts/topic_discover_system.txt"
 topic_refine = "configs/prompts/topic_refine_system.txt"
@@ -162,7 +163,7 @@ max_input_chars = 60000
 name = "baseline"
 retriever = "dense"              # dense | bm25 | hybrid
 scope_gate = "off"               # advanced only: scope check before retrieval: llm | rules | combined | off (advanced.toml: llm)
-generator = "single_call"        # advanced-based only: the answer step: single_call | controlled_v2
+generator = "single_call"        # advanced-based only: the answer step: single_call | controlled_v2 | policy_v3
 
 [eval]
 case_files = ["data/eval"]               # a folder of evaluation files, or case .jsonl files; `index` keeps their issues out of the index
