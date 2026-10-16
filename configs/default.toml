@@ -95,6 +95,7 @@ hier_places = 3                  # hierarchical retrievers: returned chunks take
 second_weight = 0.5              # dual_doc_slots: the second embedding model's weight in the fusion
 report_views = "none"            # advanced: extra searches: none | title | code | title,code
 view_weight = 0.5                # report_views: each view's weight in the fusion against the report
+rerank_show_question = false     # the reranker sees the symptom question that found a candidate
 rerank_show_sections = false     # the reranker also sees the section headings inside each candidate
 pool_mode = "fuse"               # advanced: fuse (RRF of all queries) | quota (fixed shares) | union (all, no fusion)
 union_report = 15                # pool_mode = union: the report's own candidates, all kept

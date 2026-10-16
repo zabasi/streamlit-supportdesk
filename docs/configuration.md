@@ -216,6 +216,7 @@ Defaults shown are the built-in ones. `*unset*` means the key is optional and no
 | `second_weight` | `0.5` | dual_doc_slots: how much the second embedding model's ranking counts against the main model's in the fusion |
 | `report_views` | `none` | advanced: extra searches besides the queries, comma-separated: title (the report's title alone), code (its st.* commands, their parameter names and its error lines), or none; fused with the report's ranking at view_weight |
 | `view_weight` | `0.5` | report_views: how much each view's ranking counts against the report's |
+| `rerank_show_question` | `False` | the reranker also sees, for a candidate found through a documentation section's symptom question (question_doc_slots), the question that matched the report |
 | `rerank_show_sections` | `False` | the reranker also sees the headings of the sections each candidate contains, which its window may not show |
 | `pool_mode` | `fuse` | advanced: how the reranker's candidates are chosen: fuse (every query's ranking merged with RRF, the best candidate_k kept) \| quota (fixed shares: the report's best dense and BM25 chunks, and the concept queries' best dense chunks) \| union (no fusion: the report's own candidates all kept, each concept query adding its best new ones) |
 | `union_report` | `15` | pool_mode = union: the cleaned report's own candidates, all kept |

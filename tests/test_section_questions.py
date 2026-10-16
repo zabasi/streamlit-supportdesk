@@ -86,3 +86,41 @@ def test_advanced_runs_with_it_and_the_diagnostic_counts(index, clients, setting
 
 def test_question_sections_defaults_to_five():
     assert Settings.load(env={}).retrieval.question_sections == 5
+
+
+def test_question_found_candidates_carry_their_best_question(index, clients):
+    from supportdesk.pipelines.state import hit_from_dict, hit_to_dict
+
+    bank = bank_for(index, clients)
+    base = DocSlotsRetriever(index, clients.embedding, doc_slots=3)
+    hits = QuestionExpandedRetriever(base, bank, extra=3).search("widget value lost", k=2)
+    vec = clients.embedding.embed(["widget value lost"])[0][0]
+    best = {bank.sections[s]["source_id"]: q for s, _, q in bank.matches(vec)}
+    for h in hits:
+        q = (h.chunk.meta or {}).get("matched_question")
+        assert (q is not None) == (h.source == "question")
+        if q is not None:
+            assert q in {x for qs in bank.questions for x in qs}
+            assert hit_from_dict(hit_to_dict(h)).chunk.meta["matched_question"] == q  # survives the state
+    assert all(s in {r[0] for r in bank.matches(vec)} for s in range(len(bank.sections)))
+    assert best  # every section has a best question
+
+
+def test_the_reranker_shows_the_question_only_when_asked(index, clients, settings):
+    import dataclasses as dc
+
+    from supportdesk.pipelines.packet import assemble_packet
+    from supportdesk.pipelines.prompts import build_messages, load_prompts
+    from supportdesk.pipelines.stages.llm_rerank import LLMReranker
+    from supportdesk.retrieval.retriever import Hit
+
+    chunk = next(c for c in index.chunks if c.source_type == "documentation")
+    tagged = dc.replace(chunk, meta={**(chunk.meta or {}), "matched_question": "Why does my form reset?"})
+    case = CaseInput(case_id="c", title="t", body="b")
+    for show, seen in ((True, True), (False, False)):
+        s = dc.replace(settings, retrieval=dc.replace(settings.retrieval, rerank_show_question=show))
+        LLMReranker(clients, s).model_text(case, [Hit(tagged, 1.0, 1, "question")])
+        assert ('Found for: "Why does my form reset?"' in clients.chat.seen[-1][1]["content"]) == seen
+    packet = assemble_packet([Hit(tagged, 1.0, 1, "question")], max_chunks=4, max_tokens=4000)
+    answer_input = build_messages(case, {}, packet, load_prompts(settings), max_body_chars=4000)
+    assert "Why does my form reset?" not in str(answer_input)  # the answer model never sees it

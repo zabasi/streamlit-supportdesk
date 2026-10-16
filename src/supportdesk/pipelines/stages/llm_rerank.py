@@ -126,6 +126,7 @@ class LLMReranker:
         self.clients, self.snippet = clients, settings.retrieval.rerank_snippet_chars
         self.snippet_mode = settings.retrieval.rerank_snippet  # start | focused
         self.show_sections = settings.retrieval.rerank_show_sections
+        self.show_question = settings.retrieval.rerank_show_question
         from ...llm.factory import chat_client_for
         self.chat = chat_client_for(clients, settings, settings.models.rerank)  # models.rerank, or the chat model
         self.concepts = None
@@ -152,9 +153,13 @@ class LLMReranker:
             snippets = [focused_snippet(h.chunk.text, weights, self.snippet) for h in hits]
         else:
             snippets = [" ".join(h.chunk.text.split())[: self.snippet] for h in hits]
-        def header(h: Hit) -> str:  # with rerank_show_sections, the sections the whole chunk contains
+        def header(h: Hit) -> str:
+            # rerank_show_sections: the sections the whole chunk contains; rerank_show_question: for a
+            # candidate found through a section's symptom question, the question that matched the report
             sections = chunk_headings(h.chunk.text) if self.show_sections else []
-            return "Sections: " + " · ".join(sections) + "\n" if sections else ""
+            question = (h.chunk.meta or {}).get("matched_question") if self.show_question else None
+            return (("Sections: " + " · ".join(sections) + "\n" if sections else "")
+                    + (f'Found for: "{question}"\n' if question else ""))
 
         listing = "\n\n".join(f"C{n}: [{h.chunk.source_type}] {h.chunk.title}\n{header(h)}{snippet}"
                                 for n, (h, snippet) in enumerate(zip(hits, snippets), start=1))

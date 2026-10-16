@@ -242,6 +242,9 @@ class Retrieval:
                              "title alone), code (its st.* commands, their parameter names and its error lines), or "
                              "none; fused with the report's ranking at view_weight", "none")
     view_weight: float = _opt("report_views: how much each view's ranking counts against the report's", 0.5)
+    rerank_show_question: bool = _opt("the reranker also sees, for a candidate found through a documentation "
+                                      "section's symptom question (question_doc_slots), the question that matched "
+                                      "the report", False)
     rerank_show_sections: bool = _opt("the reranker also sees the headings of the sections each candidate "
                                       "contains, which its window may not show", False)
     pool_mode: str = _opt("advanced: how the reranker's candidates are chosen: fuse (every query's ranking merged "

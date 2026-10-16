@@ -8,6 +8,7 @@ documentation only (no evaluation case is involved).
 """
 from __future__ import annotations
 
+import dataclasses
 import json
 from collections import defaultdict
 from pathlib import Path
@@ -73,14 +74,22 @@ class QuestionBank:
 
     def ranking(self, query_vector) -> list[tuple[int, float]]:
         """(section, score) by each section's best-matching question, best first."""
+        return [(section, score) for section, score, _ in self.matches(query_vector)]
+
+    def matches(self, query_vector) -> list[tuple[int, float, str]]:
+        """(section, score, the question that matched best), best first."""
         if not len(self.vectors):
             return []
         q = np.asarray(query_vector, dtype=np.float64)
         scores = self.vectors @ (q / (np.linalg.norm(q) or 1.0))
-        best: dict[int, float] = defaultdict(lambda: -2.0)
+        flat = [question for qs in self.questions for question in qs]
+        best: dict[int, tuple[float, str]] = {}
         for row, score in enumerate(scores):
-            best[self.owner[row]] = max(best[self.owner[row]], float(score))
-        return sorted(best.items(), key=lambda kv: (-round(kv[1], 6), kv[0]))
+            section = self.owner[row]
+            if section not in best or float(score) > best[section][0]:
+                best[section] = (float(score), flat[row])
+        ranked = sorted(best.items(), key=lambda kv: (-round(kv[1][0], 6), kv[0]))
+        return [(section, score, question) for section, (score, question) in ranked]
 
 
 def section_chunk(index: VectorIndex, by_source: dict[str, list[int]], section: dict) -> int | None:
@@ -111,14 +120,16 @@ class QuestionExpandedRetriever:
         have = {h.chunk.chunk_id for h in hits}
         vec, _ = self.embedder.embed([query], stage="query")  # cached: the base search embedded it already
         added = 0
-        for section, score in self.bank.ranking(vec[0]):
+        for section, score, question in self.bank.matches(vec[0]):
             if added >= self.extra:
                 break
             pos = section_chunk(self.index, self.by_source, self.bank.sections[section])
             if pos is None or self.index.chunks[pos].chunk_id in have:
                 continue
             have.add(self.index.chunks[pos].chunk_id)
-            hits.append(Hit(self.index.chunks[pos], score, len(hits) + 1, "question"))
+            chunk = self.index.chunks[pos]  # carries the question that found it (the reranker may show it)
+            chunk = dataclasses.replace(chunk, meta={**(chunk.meta or {}), "matched_question": question})
+            hits.append(Hit(chunk, score, len(hits) + 1, "question"))
             added += 1
         return hits
 
