@@ -114,3 +114,36 @@ def test_a_test_split_run_imports_from_the_case_files_it_used(app, tmp_path):
     result = app.import_run({"run_id": "test-final"})
     assert result["imported"] == 2 and result["without_case_input"] == 0
     assert {app.store.get(c["id"])["case_id"] for c in app.store.listing()} == set(ids)
+
+
+def test_evaluation_cases_carry_their_label_for_the_page_only(app):
+    ids = write_run(app, "e2e-labels", ["answer"])
+    app.import_run({"run_id": "e2e-labels"})
+    conv = app.store.find(kind="run", run_id="e2e-labels", case_id=ids[0])
+    case = app._cases()[ids[0]]
+    assert conv["label"]["category"] == case.category and conv["label"]["expected"] == case.acceptable_outcomes[0]
+    assert conv["label"]["split"] == "dev" and conv["label"]["category_name"]
+    seen = []
+
+    def run(case_input, pipeline, retriever, *, questions_used=None, keep_result=False):
+        seen.append(case_input)
+        return {"result": {"outcome": "answer", "user_reply": "ok", "citations": [], "violations": [], "usage": {},
+                           "error": None}, "evidence": [], "retriever": retriever, "applied": None}
+    app._run = run
+    dev = app.dev_case(ids[0])
+    started = app.conversation_new({"title": dev["title"], "body": dev["body"], "created_at": dev["created_at"],
+                                    "history": dev["history"], "environment": dev["environment"], "pipeline": "baseline",
+                                    "source": {"kind": "dev", "case_id": ids[0]}})
+    assert started["label"]["expected"] == case.acceptable_outcomes[0]
+    app.conversation_turn({"id": started["id"]})
+    given = repr(seen[-1])
+    assert "acceptable_outcomes" not in given and "label" not in given and "rubric" not in given
+
+
+def test_an_older_saved_conversation_gets_its_label_when_opened(app):
+    ids = write_run(app, "e2e-old", ["answer"])
+    app.import_run({"run_id": "e2e-old"})
+    conv = app.store.find(kind="run", run_id="e2e-old", case_id=ids[0])
+    del conv["label"]
+    app.store.save(conv)  # as saved before labels were kept
+    assert app.conversation_view(conv["id"])["label"]["expected"]

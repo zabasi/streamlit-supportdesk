@@ -204,6 +204,7 @@ let devHistory = null;  // a development case's earlier messages, with their rol
 let devEnv = {};        // and its reported environment
 let limits = { followups: 5, turns: 6 };
 let busy = false;
+let picked = "";        // the saved conversation the user chose in the list (the list never changes it by itself)
 
 const post = (path, body) => api(path, { method: "POST",
   headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
@@ -232,13 +233,20 @@ async function loadCases() {
 async function loadSaved() {
   const data = await api("/api/conversations");
   limits = data.limits || limits;
-  const keep = conv ? conv.id : "";
+
   $("saved").replaceChildren(h("option", { value: "" }, "— choose a saved conversation —"),
     ...data.conversations.map((c) => h("option", { value: c.id },
       `${c.title} · ${(STATUS[c.status] || [c.status])[0]} · ${c.pipeline} · ` +
       (c.source && c.source.run_id ? `from run ${c.source.run_id} · ` : "") +
       `${new Date(c.updated_at).toLocaleString()}`)));
-  $("saved").value = keep;
+  if ($("follow").checked) {  // ticked: select, and open, the latest conversation
+    const latest = data.conversations.length ? data.conversations[0].id : "";
+    $("saved").value = latest;
+    picked = latest;
+    if (latest && (!conv || conv.id !== latest)) await resume();
+  } else {
+    $("saved").value = data.conversations.some((c) => c.id === picked) ? picked : "";
+  }
 }
 
 async function chooseSource() {
@@ -275,10 +283,18 @@ function historyItems() {
 function renderConversation(c) {
   conv = c;
   const [label, kind] = STATUS[c.status] || [c.status, ""];
+  const lastTurn = c.turns[c.turns.length - 1];
   // replaceChildren() takes nodes only: an array or null would be shown as text
   const badges = [pill(label, kind), " ", pill(c.pipeline), " ",
     pill(`questions ${c.questions_used} of ${limits.followups}`), " ", pill(`turns ${c.turns.length} of ${limits.turns}`)];
   if (c.source && c.source.case_id) badges.push(" ", pill(c.source.case_id));
+  if (c.label && c.label.expected) {  // the evaluation label: shown here only, never sent to the model
+    badges.push(" ", pill(`label: ${c.label.category_name} → ${c.label.expected}`));
+    if (lastTurn) {
+      const match = lastTurn.outcome === c.label.expected;
+      badges.push(" ", pill(`decided: ${lastTurn.outcome} ${match ? "✓" : "✗"}`, match ? "ok" : "bad"));
+    }
+  }
   $("convhead").replaceChildren(...badges);
   const r = c.report;
   $("thread").replaceChildren(
@@ -297,9 +313,8 @@ function renderConversation(c) {
   $("convo").hidden = false;
   $("empty").hidden = true;
   $("delete").disabled = false;
-  const last = c.turns[c.turns.length - 1];
-  if (last) renderResult({ result: last.result, evidence: last.evidence, pipeline: c.pipeline,
-                           retriever: last.retriever, applied: last.applied });
+  if (lastTurn) renderResult({ result: lastTurn.result, evidence: lastTurn.evidence, pipeline: c.pipeline,
+                               retriever: lastTurn.retriever, applied: lastTurn.applied });
   else { $("result").hidden = true; }
 }
 
@@ -333,6 +348,7 @@ async function start() {
   };
   if (!payload.title.trim()) { showError("Please enter a title."); return; }
   setBusy(true, "Starting… ");
+  picked = "";  // a new conversation is not one the user picked in the list
   try {
     renderConversation(await post("/api/conversations/new", payload));
   } catch (error) {
@@ -346,6 +362,7 @@ async function start() {
 
 async function resume() {
   const id = $("saved").value;
+  picked = id;
   if (!id) return;
   showError("");
   try { renderConversation(await api("/api/conversation?id=" + encodeURIComponent(id))); }
@@ -357,6 +374,7 @@ async function remove() {
   try {
     await post("/api/conversations/delete", { id: conv.id });
     conv = null;
+    picked = "";
     $("convo").hidden = true; $("result").hidden = true; $("empty").hidden = false;
     $("delete").disabled = true;
     await loadSaved();
@@ -414,6 +432,7 @@ function init() {
   $("saved").addEventListener("change", resume);
   $("delete").addEventListener("click", remove);
   $("source").addEventListener("change", chooseSource);
+  $("follow").addEventListener("change", () => loadSaved().catch((error) => showError(error.message)));
   $("runs").addEventListener("change", () => { $("importrun").disabled = !$("runs").value; $("importmsg").textContent = ""; });
   $("importrun").addEventListener("click", importRun);
   $("dljson").addEventListener("click", () => conv && download(JSON.stringify(conv, null, 2),

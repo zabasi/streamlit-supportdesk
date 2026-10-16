@@ -185,7 +185,11 @@ class App:
                          [{"role": m["role"], "body": m["body"].strip()} for m in dev["history"] if m["body"].strip()])
             if unchanged == (case.title, case.body, case.created_at, env, case.history):
                 case_id = dev["id"]  # the case as evaluated: its first turn can replay the evaluation's answer
-        return self.store.create(pipeline=pipeline, source=src, report=report, history=case.history, case_id=case_id)
+        conv = self.store.create(pipeline=pipeline, source=src, report=report, history=case.history, case_id=case_id)
+        if kind == "dev":
+            conv["label"] = self.label_for(src["case_id"])
+            self.store.save(conv)
+        return conv
 
     def conversation_turn(self, payload: object) -> dict:
         """One pipeline turn: with the user's reply when the assistant asked for information."""
@@ -269,19 +273,40 @@ class App:
                         "cases": (summary.get("metrics") or {}).get("n_cases")})
         return out
 
-    def _case_inputs(self, paths=None) -> dict:
-        """Every case's input (title, body, environment, history) by case ID, from these case files (every
-        split they hold, test included): inputs only, never rubrics or gold."""
+    def _cases(self, paths=None) -> dict:
+        """Every evaluation case by case ID, from these case files (every split they hold, test included)."""
         key = tuple(str(p) for p in (paths or self.settings.eval.case_files))
-        cache = self.__dict__.setdefault("_inputs_by_files", {})
+        cache = self.__dict__.setdefault("_cases_by_files", {})
         if key not in cache:
             try:
                 from ..eval.cases import load_cases
 
-                cache[key] = {c.case_id: c.input for c in load_cases(*key)}
+                cache[key] = {c.case_id: c for c in load_cases(*key)}
             except Exception:  # noqa: BLE001 - those files are not on this computer
                 cache[key] = {}
         return cache[key]
+
+    def _case_inputs(self, paths=None) -> dict:
+        """Every case's input (title, body, environment, history) by case ID: inputs only."""
+        return {cid: c.input for cid, c in self._cases(paths).items()}
+
+    def label_for(self, case_id: str, paths=None) -> dict | None:
+        """An evaluation case's label, for the page only: its category and the decision it expects. It is
+        never part of what the pipeline receives."""
+        case = self._cases(paths).get(case_id)
+        if case is None:
+            return None
+        names = {"answerable": "answerable", "ambiguous": "needs clarification", "escalation": "needs escalation"}
+        return {"split": case.split, "category": case.category, "category_name": names.get(case.category, case.category),
+                "expected": (case.acceptable_outcomes or [None])[0]}
+
+    def conversation_view(self, conv_id: str) -> dict:
+        """A conversation for the page: with its evaluation label when it comes from an evaluation case."""
+        conv = self.conversation(conv_id)
+        src = conv.get("source") or {}
+        if "label" not in conv and src.get("case_id"):  # saved before labels were kept
+            conv["label"] = self.label_for(src["case_id"])
+        return conv
 
     def import_run(self, payload: object) -> dict:
         """Each case of a finished run becomes a saved conversation with its turn as the run recorded it:
@@ -312,6 +337,7 @@ class App:
                       "environment": dict(inp.environment or {})}
             conv = self.store.create(pipeline=pipeline, source={"kind": "run", "run_id": run_id, "case_id": case_id},
                                      report=report, history=history, case_id=case_id)
+            conv["label"] = self.label_for(case_id, summary.get("case_files"))
             view = SimpleNamespace(trace=row.get("trace") or {}, retrieved=row.get("retrieved") or [],
                                    citations=row.get("citations") or [])
             conv["turns"].append({"n": 1, "at": summary.get("created_at") or now(), "outcome": outcome, "result": row,
@@ -445,7 +471,7 @@ GET_ROUTES = {
     "/api/case": lambda app, q: ("json", app.dev_case(q.get("id", ""))),
     "/api/conversations": lambda app, q: ("json", {"conversations": app.store.listing(),
                                                    "limits": {"followups": MAX_FOLLOWUPS, "turns": MAX_TURNS}}),
-    "/api/conversation": lambda app, q: ("json", app.conversation(q.get("id", ""))),
+    "/api/conversation": lambda app, q: ("json", app.conversation_view(q.get("id", ""))),
     "/api/conversation/summary": lambda app, q: ("text/markdown; charset=utf-8",
                                                  summary_markdown(app.conversation(q.get("id", "")))),
     "/api/report": lambda app, q: ("text/html; charset=utf-8", report_html(app.store.all())),
