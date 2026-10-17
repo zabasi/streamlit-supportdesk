@@ -1,0 +1,80 @@
+{
+  "topics": [
+    {
+      "name": "session_state",
+      "definition": "Session State allows sharing variables between script reruns within a user session, enabling stateful data management in Streamlit apps."
+    },
+    {
+      "name": "widget_state_management",
+      "definition": "Widget state management covers how Streamlit widgets retain their values across reruns and the implications of using `st.session_state` for state persistence."
+    },
+    {
+      "name": "form_submission",
+      "definition": "Form submission in Streamlit allows users to group inputs and submit them all at once, triggering a rerun of the script with updated values."
+    },
+    {
+      "name": "caching_mechanism",
+      "definition": "The caching mechanism in Streamlit helps store results of slow function calls to improve app performance and manage object persistence across reruns."
+    },
+    {
+      "name": "navigation_in_multipage_apps",
+      "definition": "Navigation in multipage apps allows users to define and manage available pages, facilitating dynamic updates and user interaction."
+    },
+    {
+      "name": "widget_behavior",
+      "definition": "Widget behavior encompasses how different Streamlit widgets function, including their return values, callback functionality, and session dependency."
+    },
+    {
+      "name": "app_testing",
+      "definition": "App testing in Streamlit involves verifying user interactions and state management to ensure app reliability and correctness."
+    },
+    {
+      "name": "serialization_constraints",
+      "definition": "Serialization constraints address the limitations and security risks associated with using Python's `pickle` module for object serialization in Streamlit."
+    },
+    {
+      "name": "displaying_dataframes",
+      "definition": "Displaying dataframes in Streamlit involves rendering pandas DataFrames using `st.dataframe` and `st.table`, with options for interactivity and static views."
+    },
+    {
+      "name": "unexpected_widget_behavior",
+      "definition": "Unexpected widget behavior refers to issues where widgets do not function as intended, such as losing state or failing to respond to changes."
+    },
+    {
+      "name": "asynchronous_code_issues",
+      "definition": "Asynchronous code issues involve problems encountered when using asynchronous programming patterns with Streamlit, particularly regarding session state."
+    },
+    {
+      "name": "fragment_behavior",
+      "definition": "Fragment behavior describes how reusable components interact with the main app, including state management and rerun implications."
+    },
+    {
+      "name": "data_editor_behavior",
+      "definition": "Data editor behavior explains how `st.data_editor` allows users to edit dataframes interactively, tracking changes through `st.session_state`."
+    },
+    {
+      "name": "form_limitations",
+      "definition": "Form limitations in Streamlit detail the constraints and requirements for using forms, including restrictions on nested forms and widget interactions."
+    },
+    {
+      "name": "widget_interaction_order",
+      "definition": "Widget interaction order describes the sequence of operations that occur when a user interacts with a widget, including state updates and callback executions."
+    },
+    {
+      "name": "other",
+      "definition": "none of the other topics, or too mixed to pick one"
+    }
+  ],
+  "made": {
+    "created_at": "2026-10-16T09:21:33+00:00",
+    "model": "gpt-4o-mini",
+    "summaries": 146,
+    "sampled": {
+      "issue": 25,
+      "comment": 25,
+      "release_section": 12,
+      "linked_reference": 8
+    },
+    "seed": 0
+  }
+}

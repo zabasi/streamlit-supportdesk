@@ -1,0 +1,5 @@
+{
+  "embedding_model": "text-embedding-3-small",
+  "sections": 146,
+  "questions": 730
+}

@@ -1,0 +1,11 @@
+{
+  "created_at": "2026-10-16T08:17:59+00:00",
+  "chunks": 636,
+  "clusters": 7,
+  "cluster_size": 100,
+  "method": "doc_anchored",
+  "seed": 0,
+  "embedding_model": "text-embedding-3-small",
+  "label_model": "gpt-4o-mini",
+  "index_dir": "index"
+}

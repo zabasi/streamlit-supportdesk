@@ -1,0 +1,36 @@
+{
+  "topics": [
+    {
+      "name": "session_state",
+      "definition": "Session State init, keys, persistence, widget binding, deleting keys"
+    },
+    {
+      "name": "widgets_keys",
+      "definition": "widget identity, keys, default values, min/max, disabled, stale UI"
+    },
+    {
+      "name": "callbacks_forms",
+      "definition": "on_change, on_click, callbacks, forms, form_submit_button"
+    },
+    {
+      "name": "data_editor",
+      "definition": "st.data_editor, dataframes, tables, column config"
+    },
+    {
+      "name": "caching",
+      "definition": "cache, cache_data, cache_resource, performance"
+    },
+    {
+      "name": "multipage_navigation",
+      "definition": "multipage apps, pages, sidebar navigation, switching pages"
+    },
+    {
+      "name": "expanders_layout",
+      "definition": "expander, containers, layout, sidebar widgets appearing/disappearing"
+    },
+    {
+      "name": "other",
+      "definition": "none of the above"
+    }
+  ]
+}
