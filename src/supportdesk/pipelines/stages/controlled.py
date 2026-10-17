@@ -24,6 +24,7 @@ from ..packet import Packet
 from ..parsing import ParsedAnswer
 from .conversation import QUESTIONS_USED
 from .protocols import GenerationFailed
+from .version_notes import annotate
 
 MODEL = "gpt-5.4-mini"  # the package's request builder accepts only this model
 MAX_COMPLETION_TOKENS = 8000  # the package's request sets this; the gateway sends its own limit
@@ -35,6 +36,7 @@ class ControlledGenerator:
     def __init__(self, clients: Clients, settings: Settings):
         limit = dataclasses.replace(settings.generation, max_output_tokens=MAX_COMPLETION_TOKENS)
         self.chat = chat_client_for(clients, dataclasses.replace(settings, generation=limit), MODEL)
+        self.version_notes = settings.pipeline.version_notes
 
     def complete(self, request: dict) -> dict:
         """The package's transport: one call through the gateway, returned as a raw response dict."""
@@ -55,6 +57,9 @@ class ControlledGenerator:
             # the pipeline extracted from the report (an evaluation case keeps its reported environment, as
             # in the package's verified run)
             case = dataclasses.replace(case, environment=dict(env))
+        if self.version_notes:  # each evidence piece says what version it describes, and how it may be used
+            reported = (case.environment or {}).get("streamlit_version")
+            packet = dataclasses.replace(packet, chunks=annotate(list(packet.chunks), reported))
         try:
             # a web conversation passes how many clarification questions it has asked; elsewhere 0
             result = generate_from_packet(case, packet, self.complete, questions_used=QUESTIONS_USED.get() or 0)

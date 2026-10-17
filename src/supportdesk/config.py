@@ -48,7 +48,7 @@ PROFILE_DIR = Path("configs/pipelines")
 #: ``None`` means any key in the section.
 PROFILE_ALLOWED: dict[str, set[str] | None] = {
     "chunking": None, "retrieval": None, "context": None, "prompts": None,
-    "pipeline": {"retriever", "scope_gate", "generator"}, "paths": {"index_dir"},
+    "pipeline": {"retriever", "scope_gate", "generator", "version_notes"}, "paths": {"index_dir"},
 }
 
 SECRET_PATTERN = re.compile(
@@ -382,6 +382,9 @@ class PipelineCfg:
     scope_gate: str = _opt("advanced only: the scope check before retrieval: llm (a model call), rules (free "
                            "keyword rules), combined (the same call that writes the concept queries) or off "
                            "(no check); advanced's profile turns it on (llm)", "off")
+    version_notes: bool = _opt("controlled_v2 answer step: add version and usage notes to each evidence piece "
+                               "(what version it describes, compared with the reporter's; how it may be used); "
+                               "pipelines/stages/version_notes.py", False)
     generator: str = _opt("advanced-based pipelines only: the answer step: single_call (the baseline's prompt "
                           "and parser) | controlled_v2 (one structured assessment by gpt-5.4-mini, the action "
                           "routed by Python; supportdesk/generation/controlled_v2) | policy_v3 (gpt-5.4-mini "
