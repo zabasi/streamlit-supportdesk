@@ -81,5 +81,41 @@ def test_export_cases_writes_one_complete_file_per_case(tmp_path):
     assert module.main([str(run)]) == 0
     record = json.loads((run / "cases" / f"{case.case_id}.json").read_text())
     assert record["report"]["title"] == case.input.title and record["matches_label"] is True
-    assert record["controlled_v2"]["assessment"] == {"main_need": "x"} and record["evidence_in_prompt"] == ["c1"]
+    assert record["controlled_v2"]["assessment"] == {"main_need": "x"}
+    assert [(e["label"], e["chunk_id"]) for e in record["evidence_in_prompt"]] == [("S1", "c1")]
+    assert record["judge_reference"]["acceptable_outcomes"] == list(case.acceptable_outcomes)
+    assert record["judge_reference"]["for_judging_only"]
+    assert module.main([str(run), "--no-reference", "--output-dir", str(tmp_path / "blind")]) == 0
+    assert "judge_reference" not in json.loads((tmp_path / "blind" / f"{case.case_id}.json").read_text())
     assert json.loads((run / "cases" / "index.json").read_text())[0]["case_id"] == case.case_id
+
+
+def test_judge_agreement_compares_field_by_field(tmp_path, capsys):
+    spec = importlib.util.spec_from_file_location("judge_agreement", ROOT / "scripts" / "judge_agreement.py")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+
+    def judgement(verdict, score):
+        return {"overall": {"verdict": verdict}, "decision_quality": {"decision_acceptable": verdict == "pass",
+                                                                      "score": score}}
+    (tmp_path / "m").mkdir()
+    (tmp_path / "h").mkdir()
+    for case, m, h in (("A", ("pass", 2), ("pass", 2)), ("B", ("fail", 0), ("partial", 1))):
+        (tmp_path / "m" / f"{case}.json").write_text(json.dumps(judgement(*m)))
+        (tmp_path / "h" / f"{case}.json").write_text(json.dumps(judgement(*h)))
+    (tmp_path / "m" / "C.json").write_text(json.dumps(judgement("pass", 2)))  # judged by the model only
+    result = module.compare(tmp_path / "m", tmp_path / "h")
+    assert result["cases"] == ["A", "B"]
+    assert result["fields"]["verdict"] == {"compared": 2, "exact": 1}
+    assert result["fields"]["decision score"] == {"compared": 2, "exact": 1, "within_one": 2}
+    assert {d["case_id"] for d in result["disagreements"]} == {"B"}
+    assert module.main([str(tmp_path / "m"), str(tmp_path / "h")]) == 0
+    assert "cases judged by both: 2" in capsys.readouterr().out
+
+
+def test_the_judge_prompt_and_its_document_are_published():
+    prompt = (ROOT / "configs" / "prompts" / "judge_case_system.txt").read_text()
+    for field in ("evidence_quality", "decision_quality", "operational_success", "failure_analysis", "judge_reference"):
+        assert field in prompt
+    doc = (ROOT / "docs" / "evaluation" / "judge_prompt.md").read_text()
+    assert "judge_case_system.txt" in doc and "human" in doc.lower()
