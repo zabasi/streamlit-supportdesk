@@ -1,0 +1,52 @@
+# advanced-notes-questions-gpt5mini: advanced-notes-questions with the answer model gpt-5-mini.
+# advanced (configs/pipelines/advanced.toml) with the two answer-step fixes from the failure analysis:
+# - version notes (pipeline.version_notes): each evidence piece says what version it describes, compared
+#   with the reporter's, and how it may be used (pipelines/stages/version_notes.py);
+# - complete questions (pipeline.complete_questions): a question asks for every material gap the user can
+#   supply, not only the first (pipelines/stages/complete_questions.py).
+# Retrieval, the answer package (controlled v2) and everything else are advanced's.
+
+[chunking]
+method = "fixed"
+max_tokens = 512
+overlap_tokens = 128
+
+[retrieval]
+question_sections = 15         # documentation sections added through their symptom questions
+top_k = 8                    # pieces the model sees
+candidate_k = 15             # candidates the reranker orders
+rerank_snippet_chars = 400   # characters of each candidate the reranker sees
+rerank_snippet = "focused"   # the reranker sees each candidate's best-matching window
+rerank_show_concepts = true  # with decompose: the concept queries ("Mechanisms involved")
+keep_report_query = true     # with decompose: search with the cleaned report too
+max_queries = 3              # with decompose: up to 3 model-written queries
+doc_slots = 10               # documentation among the 15 candidates
+decompose = false            # the cleaned report is the only query (no concept queries)
+complete = "section"         # grow each kept documentation chunk to the whole sections it touches
+rerank_keep_docs = 5         # documentation kept in the final 8 after reranking (3 places for the rest)
+historical_filter = true
+
+[context]
+max_tokens = 4300            # room for 8 pieces after section completion
+max_query_chars = 4000
+max_body_chars = 4000
+
+[pipeline]
+version_notes = true             # each evidence piece says what version it describes, and how it may be used
+complete_questions = true        # a question asks for every material gap the user can supply
+answer_model = "gpt-5-mini"      # the cheaper answer model
+generator = "controlled_v2"    # one structured assessment by gpt-5.4-mini; Python routes the action
+retriever = "question_doc_slots"  # dense candidates plus sections found through their symptom questions
+scope_gate = "llm"           # the scope check before retrieval is part of advanced's design
+
+[prompts]
+rewrite = "configs/prompts/rewrite_concepts_system.txt"
+# Its own answer prompt (copy and edit configs/prompts/answer_system.txt):
+# system = "configs/prompts/advanced_system.txt"
+rerank = "configs/prompts/rerank_docs_concepts_system.txt"
+
+# If advanced uses different chunking, give it its own index so the two never collide
+# (an index built with other chunking is refused). Then build it with:
+#   supportdesk index --pipeline advanced
+# [paths]
+# index_dir = "index/advanced"

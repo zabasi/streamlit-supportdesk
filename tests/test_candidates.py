@@ -70,3 +70,15 @@ def test_advanced_version_notes_is_advanced_with_the_notes_on(monkeypatch):
     notes = flat(Settings.load(env={}, overrides=["pipeline.name=advanced-version-notes"]))
     assert {k: notes[k] for k in notes if notes[k] != advanced[k]} == {"pipeline.version_notes": "True"}
     assert advanced["pipeline.version_notes"] == "False"
+
+
+def test_the_notes_and_questions_pipelines_differ_from_advanced_only_in_those_settings(monkeypatch):
+    from pathlib import Path
+
+    monkeypatch.chdir(Path(__file__).resolve().parents[1])
+    advanced = flat(Settings.load(env={}, overrides=["pipeline.name=advanced"]))
+    fixes = {"pipeline.version_notes": "True", "pipeline.complete_questions": "True"}
+    for name, extra in (("advanced-notes-questions", {}),
+                        ("advanced-notes-questions-gpt5mini", {"pipeline.answer_model": "gpt-5-mini"})):
+        other = flat(Settings.load(env={}, overrides=[f"pipeline.name={name}"]))
+        assert {k: other[k] for k in other if other[k] != advanced[k]} == {**fixes, **extra}, name
