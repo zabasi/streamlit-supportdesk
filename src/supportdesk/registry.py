@@ -108,6 +108,8 @@ from .retrieval.section_questions import build_question_retriever
 PIPELINES = {"baseline": build_baseline, "advanced": build_advanced_scoped,
              # the four candidate retrieval designs (configs/pipelines/candidate-*.toml): advanced's stages
              # with their own settings
+             # advanced with version and usage notes on each evidence piece (configs/pipelines/advanced-version-notes.toml)
+             "advanced-version-notes": build_advanced_scoped,
              "candidate-1-dense-rerank-section": build_advanced_scoped,
              "candidate-2-doc2query15-rerank-section": build_advanced_scoped,
              "candidate-3-dense-dualrerank-section": build_advanced_scoped,

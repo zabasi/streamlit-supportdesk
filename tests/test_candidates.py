@@ -59,3 +59,14 @@ def test_advanced_is_candidate_6_in_every_setting(monkeypatch):
     advanced = flat(Settings.load(env={}, overrides=["pipeline.name=advanced"]))
     chosen = flat(Settings.load(env={}, overrides=["pipeline.name=candidate-6-doc2query15-rerank-section-controlled-v2"]))
     assert advanced == chosen
+
+
+def test_advanced_version_notes_is_advanced_with_the_notes_on(monkeypatch):
+    """The version-notes pipeline differs from advanced in that one setting, so advanced stays untouched."""
+    from pathlib import Path
+
+    monkeypatch.chdir(Path(__file__).resolve().parents[1])
+    advanced = flat(Settings.load(env={}, overrides=["pipeline.name=advanced"]))
+    notes = flat(Settings.load(env={}, overrides=["pipeline.name=advanced-version-notes"]))
+    assert {k: notes[k] for k in notes if notes[k] != advanced[k]} == {"pipeline.version_notes": "True"}
+    assert advanced["pipeline.version_notes"] == "False"
