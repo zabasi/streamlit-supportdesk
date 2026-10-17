@@ -51,14 +51,18 @@ def test_a_candidate_is_candidate_1_but_for_its_differences(name, monkeypatch):
     assert differs == {k: str(v) for k, v in EXPECTED[name].items()}
 
 
-def test_advanced_is_candidate_6_in_every_setting(monkeypatch):
-    """The final design: candidate 6 (symptom questions, controlled routing v2), chosen on the development cases."""
+def test_advanced_is_the_previous_design_plus_the_two_fixes(monkeypatch):
+    """advanced is candidate 6 (the previous advanced) with version notes and complete questions, the same
+    in every setting as advanced-notes-questions."""
     from pathlib import Path
 
     monkeypatch.chdir(Path(__file__).resolve().parents[1])
     advanced = flat(Settings.load(env={}, overrides=["pipeline.name=advanced"]))
-    chosen = flat(Settings.load(env={}, overrides=["pipeline.name=candidate-6-doc2query15-rerank-section-controlled-v2"]))
-    assert advanced == chosen
+    previous = flat(Settings.load(env={}, overrides=["pipeline.name=candidate-6-doc2query15-rerank-section-controlled-v2"]))
+    named = flat(Settings.load(env={}, overrides=["pipeline.name=advanced-notes-questions"]))
+    assert {k: advanced[k] for k in advanced if advanced[k] != previous[k]} == {
+        "pipeline.version_notes": "True", "pipeline.complete_questions": "True"}
+    assert {k: advanced[k] for k in advanced if k != "pipeline.name" and advanced[k] != named[k]} == {}
 
 
 def test_advanced_version_notes_is_advanced_with_the_notes_on(monkeypatch):
@@ -66,7 +70,7 @@ def test_advanced_version_notes_is_advanced_with_the_notes_on(monkeypatch):
     from pathlib import Path
 
     monkeypatch.chdir(Path(__file__).resolve().parents[1])
-    advanced = flat(Settings.load(env={}, overrides=["pipeline.name=advanced"]))
+    advanced = flat(Settings.load(env={}, overrides=["pipeline.name=candidate-6-doc2query15-rerank-section-controlled-v2"]))  # the previous advanced
     notes = flat(Settings.load(env={}, overrides=["pipeline.name=advanced-version-notes"]))
     assert {k: notes[k] for k in notes if notes[k] != advanced[k]} == {"pipeline.version_notes": "True"}
     assert advanced["pipeline.version_notes"] == "False"
@@ -76,7 +80,7 @@ def test_the_notes_and_questions_pipelines_differ_from_advanced_only_in_those_se
     from pathlib import Path
 
     monkeypatch.chdir(Path(__file__).resolve().parents[1])
-    advanced = flat(Settings.load(env={}, overrides=["pipeline.name=advanced"]))
+    advanced = flat(Settings.load(env={}, overrides=["pipeline.name=candidate-6-doc2query15-rerank-section-controlled-v2"]))  # the previous advanced
     fixes = {"pipeline.version_notes": "True", "pipeline.complete_questions": "True"}
     for name, extra in (("advanced-notes-questions", {}),
                         ("advanced-notes-questions-gpt5mini", {"pipeline.answer_model": "gpt-5-mini"}),
