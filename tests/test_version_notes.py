@@ -83,3 +83,11 @@ def test_on_the_notes_reach_the_models_request_through_the_package(clients, sett
     assert "The reporter's version (1.11.0) is older than this release, so this change is not in it." in request
     assert "which is older: options, defaults and behaviour" in request
     assert all(not c.meta for c in packet.chunks)  # the recorded packet is not changed
+
+
+def test_without_a_stated_version_documentation_gets_no_instruction_to_check_one():
+    """No evidence of a mismatch: a neutral description, no usage constraint pushing a version question."""
+    n = notes(chunk("documentation", "1.65.0"), None)
+    assert n == {"version_applicability": "Current documentation, describing Streamlit 1.65.0."}
+    assert "usage_constraint" in notes(chunk("documentation", "1.65.0"), "1.11.0")
+    assert "does not show the cause" in notes(chunk("release_section", "1.46.0"), None)["usage_constraint"]

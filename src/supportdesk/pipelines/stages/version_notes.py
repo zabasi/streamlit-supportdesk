@@ -62,6 +62,10 @@ def notes(chunk: Chunk, reported_version: str | None) -> dict[str, str]:
         if reported and (not own or max(reported) < own[0]):
             applicability += (f" The report is on {show(max(reported))}, which is older: options, defaults and "
                               "behaviour described here may not exist or may differ in that version.")
+        if not reported:
+            # no stated version: no evidence of a mismatch, so no instruction to check one (it only made the
+            # model ask for a version it did not need)
+            return {"version_applicability": applicability}
         return {"version_applicability": applicability,
                 "usage_constraint": ("Before recommending an option from this page, check that it exists in the "
                                      "reporter's version and fits their setup (for example st.navigation pages "
