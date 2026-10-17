@@ -52,8 +52,10 @@ def chat_client_for(clients: Clients, settings: Settings, model: str):
     if clients.mode == "offline":
         return FakeChatClient(ledger=clients.ledger)
     other = dataclasses.replace(settings, models=dataclasses.replace(settings.models, chat=model))
+    # the same provider connection as the main client (the model is chosen per call)
     return Gateway(mode=clients.mode, settings=other, ledger=clients.ledger,
-                   cache=DiskCache(settings.paths.cache_path), pricing=load_pricing(other))
+                   cache=DiskCache(settings.paths.cache_path), pricing=load_pricing(other),
+                   transport=getattr(clients.chat, "transport", None))
 
 
 def second_embedding_client(clients: Clients, settings: Settings, model: str):
@@ -63,4 +65,5 @@ def second_embedding_client(clients: Clients, settings: Settings, model: str):
         return FakeEmbeddingClient(ledger=clients.ledger)
     other = dataclasses.replace(settings, models=dataclasses.replace(settings.models, embedding=model))
     return Gateway(mode=clients.mode, settings=other, ledger=clients.ledger,
-                   cache=DiskCache(settings.paths.cache_path), pricing=load_pricing(other))
+                   cache=DiskCache(settings.paths.cache_path), pricing=load_pricing(other),
+                   transport=getattr(clients.embedding, "transport", None))

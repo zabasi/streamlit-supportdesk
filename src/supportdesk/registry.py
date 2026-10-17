@@ -110,6 +110,8 @@ PIPELINES = {"baseline": build_baseline, "advanced": build_advanced_scoped,
              # with their own settings
              # advanced with version and usage notes on each evidence piece (configs/pipelines/advanced-version-notes.toml)
              "advanced-version-notes": build_advanced_scoped,
+             # advanced with the answer step's model changed to gpt-5-mini (configs/pipelines/advanced-gpt5mini.toml)
+             "advanced-gpt5mini": build_advanced_scoped,
              "candidate-1-dense-rerank-section": build_advanced_scoped,
              "candidate-2-doc2query15-rerank-section": build_advanced_scoped,
              "candidate-3-dense-dualrerank-section": build_advanced_scoped,

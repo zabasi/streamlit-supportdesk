@@ -26,7 +26,10 @@ from .conversation import QUESTIONS_USED
 from .protocols import GenerationFailed
 from .version_notes import annotate
 
-MODEL = "gpt-5.4-mini"  # the package's request builder accepts only this model
+MODEL = "gpt-5.4-mini"  # the model the package builds its request for (and validated its decisions with)
+#: Models the stage may send the package's request to (pipeline.answer_model): reasoning models that accept
+#: its reasoning_effort, and gpt-4.1-mini, which does not reason (the gateway leaves that parameter out).
+ANSWER_MODELS = ("gpt-5.4-mini", "gpt-5-mini", "gpt-4.1-mini")
 MAX_COMPLETION_TOKENS = 8000  # the package's request sets this; the gateway sends its own limit
 
 
@@ -35,7 +38,9 @@ class ControlledGenerator:
 
     def __init__(self, clients: Clients, settings: Settings):
         limit = dataclasses.replace(settings.generation, max_output_tokens=MAX_COMPLETION_TOKENS)
-        self.chat = chat_client_for(clients, dataclasses.replace(settings, generation=limit), MODEL)
+        # the package's request is sent unchanged to the chosen model; gpt-5.4-mini unless pipeline.answer_model
+        self.model = settings.pipeline.answer_model
+        self.chat = chat_client_for(clients, dataclasses.replace(settings, generation=limit), self.model)
         self.version_notes = settings.pipeline.version_notes
 
     def complete(self, request: dict) -> dict:
@@ -70,8 +75,8 @@ class ControlledGenerator:
         # the full controlled result (the model's structured assessment, the routing, the reference map and
         # the maintainer summary) is kept with the call's usage, as the package's README recommends; it is
         # what results.jsonl saves for each case (trace.attempts), so the assessment can be studied later
-        answer.attempts = [{"controlled_v2": dict(result), "usage": result.get("usage", {})}]
+        answer.attempts = [{"controlled_v2": dict(result), "usage": result.get("usage", {}), "model": self.model}]
         return answer
 
 
-__all__ = ["MAX_COMPLETION_TOKENS", "MODEL", "ControlledGenerator"]
+__all__ = ["ANSWER_MODELS", "MAX_COMPLETION_TOKENS", "MODEL", "ControlledGenerator"]
