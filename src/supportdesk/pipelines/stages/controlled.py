@@ -17,11 +17,12 @@ from __future__ import annotations
 import dataclasses
 
 from ...config import Settings
-from ...generation import controlled_v2, controlled_v3
+from ...generation import controlled_v2, controlled_v3, controlled_v4
 
 #: The answer-step versions (pipeline.controlled_version): v2 as delivered; v3 is v2 with one added prompt
-#: rule on internal investigation (generation/controlled_v3/manifest.json says exactly what changed).
-PACKAGES = {"v2": controlled_v2, "v3": controlled_v3}
+#: rule on internal investigation; v4 is v2 with three rules (already-supplied facts, escalation with complete
+#: controls, length limits). Each version's manifest.json says exactly what changed.
+PACKAGES = {"v2": controlled_v2, "v3": controlled_v3, "v4": controlled_v4}
 from ...llm.errors import ProviderError
 from ...llm.factory import Clients, chat_client_for
 from ...types import CaseInput

@@ -79,6 +79,8 @@ def test_the_notes_and_questions_pipelines_differ_from_advanced_only_in_those_se
     advanced = flat(Settings.load(env={}, overrides=["pipeline.name=advanced"]))
     fixes = {"pipeline.version_notes": "True", "pipeline.complete_questions": "True"}
     for name, extra in (("advanced-notes-questions", {}),
-                        ("advanced-notes-questions-gpt5mini", {"pipeline.answer_model": "gpt-5-mini"})):
+                        ("advanced-notes-questions-gpt5mini", {"pipeline.answer_model": "gpt-5-mini"}),
+                        ("advanced-notes-questions-v4-gpt5mini",
+                         {"pipeline.answer_model": "gpt-5-mini", "pipeline.controlled_version": "v4"})):
         other = flat(Settings.load(env={}, overrides=[f"pipeline.name={name}"]))
         assert {k: other[k] for k in other if other[k] != advanced[k]} == {**fixes, **extra}, name

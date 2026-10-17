@@ -384,8 +384,9 @@ class PipelineCfg:
                            "(no check); advanced's profile turns it on (llm)", "off")
     answer_model: str = _opt("controlled_v2 answer step: the model the package's request is sent to (the package "
                              "builds it for gpt-5.4-mini; gpt-5-mini and gpt-4.1-mini are cheaper)", "gpt-5.4-mini")
-    controlled_version: str = _opt("controlled answer step's package: v2 (as delivered) or v3 (v2 with one added "
-                                   "prompt rule on internal investigation; generation/controlled_v3)", "v2")
+    controlled_version: str = _opt("controlled answer step's package: v2 (as delivered), v3 (v2 + an investigation rule) "
+                                   "or v4 (v2 + already-supplied facts, escalation with complete controls and length "
+                                   "limits); generation/controlled_v3 and _v4", "v2")
     complete_questions: bool = _opt("controlled_v2 answer step: a question asks for every material gap the user "
                                     "can supply in one message, not only the first; the decision is unchanged "
                                     "(pipelines/stages/complete_questions.py)", False)
@@ -711,8 +712,8 @@ class Settings:
              "pipeline.name and pipeline.retriever must not be empty"),
             (self.pipeline.scope_gate in ("llm", "rules", "combined", "off"),
              f"pipeline.scope_gate must be llm, rules, combined or off, got {self.pipeline.scope_gate!r}"),
-            (self.pipeline.controlled_version in ("v2", "v3"),
-             f"pipeline.controlled_version must be v2 or v3, got {self.pipeline.controlled_version!r}"),
+            (self.pipeline.controlled_version in ("v2", "v3", "v4"),
+             f"pipeline.controlled_version must be v2, v3 or v4, got {self.pipeline.controlled_version!r}"),
             (self.pipeline.answer_model in ("gpt-5.4-mini", "gpt-5-mini", "gpt-4.1-mini"),
              f"pipeline.answer_model must be gpt-5.4-mini, gpt-5-mini or gpt-4.1-mini, got {self.pipeline.answer_model!r}"),
             (self.pipeline.generator in ("single_call", "controlled_v2", "policy_v3"),

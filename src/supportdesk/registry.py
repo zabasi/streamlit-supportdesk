@@ -115,6 +115,8 @@ PIPELINES = {"baseline": build_baseline, "advanced": build_advanced_scoped,
              # advanced with version notes and complete questions, with gpt-5.4-mini or gpt-5-mini
              "advanced-notes-questions": build_advanced_scoped,
              "advanced-notes-questions-gpt5mini": build_advanced_scoped,
+             # the same with the answer package v4 (configs/pipelines/advanced-notes-questions-v4-gpt5mini.toml)
+             "advanced-notes-questions-v4-gpt5mini": build_advanced_scoped,
              "candidate-1-dense-rerank-section": build_advanced_scoped,
              "candidate-2-doc2query15-rerank-section": build_advanced_scoped,
              "candidate-3-dense-dualrerank-section": build_advanced_scoped,

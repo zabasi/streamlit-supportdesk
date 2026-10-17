@@ -1,0 +1,11 @@
+{
+ "version": "controlled-routing-v4-20261017",
+ "based_on": "controlled-routing-v2-packaged-20261016",
+ "frozen_files": {
+  "generation.py": "cf024c5feb76d0a1dc1f7b9d6189958911cfe1d1ca9359d7999844f902f1f445",
+  "context.py": "b594151b28144b68bfd84f6fe5d9aba7bdc09a1943731923195d253a13f4d3c4",
+  "prompt.txt": "451a8e27f3f287aa7c84691a8f0131e9bcb97e459a6f8ff46d8fc9228ac2fa1f"
+ },
+ "change": "prompt.txt, three added rules: item 3, a gap the report's title, body, code or environment already states is marked already supplied; item 6, a report with runnable code or exact steps, the version and observed versus expected behavior that the evidence does not explain records internal_investigation, and optional confirmations are not material gaps; the closing line, word limits on user-facing text. Built from v2, not v3 (v3's rule against answering a partly explained symptom is not included). generation.py, context.py and adapter.py are identical to v2; v2's development inputs are not copied.",
+ "note": "Package-relative import only. Any further change needs a new version."
+}
