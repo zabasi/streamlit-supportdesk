@@ -164,6 +164,7 @@ name = "baseline"
 retriever = "dense"              # dense | bm25 | hybrid
 scope_gate = "off"               # advanced only: scope check before retrieval: llm | rules | combined | off (advanced.toml: llm)
 answer_model = "gpt-5.4-mini"    # controlled_v2: the model the package's request is sent to
+complete_questions = false       # controlled_v2: one question message for every material gap
 version_notes = false            # controlled_v2: version and usage notes on each evidence piece
 generator = "single_call"        # advanced-based only: the answer step: single_call | controlled_v2 | policy_v3
 

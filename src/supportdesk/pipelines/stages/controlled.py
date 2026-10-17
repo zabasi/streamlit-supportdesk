@@ -22,6 +22,7 @@ from ...llm.factory import Clients, chat_client_for
 from ...types import CaseInput
 from ..packet import Packet
 from ..parsing import ParsedAnswer
+from .complete_questions import askable, combine
 from .conversation import QUESTIONS_USED
 from .protocols import GenerationFailed
 from .version_notes import annotate
@@ -42,6 +43,7 @@ class ControlledGenerator:
         self.model = settings.pipeline.answer_model
         self.chat = chat_client_for(clients, dataclasses.replace(settings, generation=limit), self.model)
         self.version_notes = settings.pipeline.version_notes
+        self.complete_questions = settings.pipeline.complete_questions
 
     def complete(self, request: dict) -> dict:
         """The package's transport: one call through the gateway, returned as a raw response dict."""
@@ -71,7 +73,11 @@ class ControlledGenerator:
         except ValueError as exc:  # no usable assessment: an error for this case, with the call's usage
             raise GenerationFailed(f"controlled_v2: {exc}", attempts=[
                 {"error": str(exc), "usage": self.last_usage}]) from None
+        if self.complete_questions:  # one message asking for every material gap, not only the first
+            result = combine(result)
         answer = to_pipeline_answer(result)
+        if (result.get("routing") or {}).get("questions_combined"):
+            answer.open_questions = [gap["question"] for gap in askable(result["assessment"])]
         # the full controlled result (the model's structured assessment, the routing, the reference map and
         # the maintainer summary) is kept with the call's usage, as the package's README recommends; it is
         # what results.jsonl saves for each case (trace.attempts), so the assessment can be studied later

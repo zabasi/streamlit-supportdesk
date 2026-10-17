@@ -48,7 +48,7 @@ PROFILE_DIR = Path("configs/pipelines")
 #: ``None`` means any key in the section.
 PROFILE_ALLOWED: dict[str, set[str] | None] = {
     "chunking": None, "retrieval": None, "context": None, "prompts": None,
-    "pipeline": {"retriever", "scope_gate", "generator", "version_notes", "answer_model"}, "paths": {"index_dir"},
+    "pipeline": {"retriever", "scope_gate", "generator", "version_notes", "answer_model", "complete_questions"}, "paths": {"index_dir"},
 }
 
 SECRET_PATTERN = re.compile(
@@ -384,6 +384,9 @@ class PipelineCfg:
                            "(no check); advanced's profile turns it on (llm)", "off")
     answer_model: str = _opt("controlled_v2 answer step: the model the package's request is sent to (the package "
                              "builds it for gpt-5.4-mini; gpt-5-mini and gpt-4.1-mini are cheaper)", "gpt-5.4-mini")
+    complete_questions: bool = _opt("controlled_v2 answer step: a question asks for every material gap the user "
+                                    "can supply in one message, not only the first; the decision is unchanged "
+                                    "(pipelines/stages/complete_questions.py)", False)
     version_notes: bool = _opt("controlled_v2 answer step: add version and usage notes to each evidence piece "
                                "(what version it describes, compared with the reporter's; how it may be used); "
                                "pipelines/stages/version_notes.py", False)
