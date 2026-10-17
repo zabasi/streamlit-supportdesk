@@ -97,7 +97,7 @@ def test_the_summaries_experiment_changes_only_the_summary_level():
     def flat(name):
         d = Settings.load(env={}, overrides=[f"pipeline.name={name}"]).to_dict()
         return {f"{section}.{key}": value for section, keys in d.items() for key, value in keys.items()}
-    a = flat("advanced")
+    a = flat("candidate-1-dense-rerank-section")  # the earlier advanced, which this variant was built on
     b = flat("clean_doc_slots_rerank_docs_prompt_decompose_merged_focused_concepts_summaries")
     assert {k for k in a if a[k] != b[k]} == {"pipeline.name", "pipeline.scope_gate", "retrieval.decompose",
                                                 "retrieval.complete", "retrieval.summary_sections",

@@ -473,7 +473,7 @@ def test_the_variants_of_the_advanced_design_each_change_one_thing():
     assert hybrid["pipeline.retriever"] == "hybrid_doc_slots"
     assert {k for k in base if base[k] != wide[k]} == {"pipeline.name", "retrieval.candidate_k", "retrieval.doc_slots"}
     assert (wide["retrieval.candidate_k"], wide["retrieval.doc_slots"], wide["retrieval.rerank_keep_docs"]) == (20, 15, 3)
-    best, advanced = flat("clean_doc_slots_rerank_docs_prompt_decompose_merged_focused_concepts"), flat("advanced")
+    best, advanced = flat("clean_doc_slots_rerank_docs_prompt_decompose_merged_focused_concepts"), flat("candidate-1-dense-rerank-section")  # the earlier advanced, which these variants were built on
     # advanced is that design, plus the scope check its profile turns on
     # advanced is that design, plus the scope check, and since the reviewed labels without the concept
     # queries and with section completion

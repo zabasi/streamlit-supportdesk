@@ -1,14 +1,23 @@
-# Settings for the advanced pipeline (--pipeline advanced). Every key here overrides
-# configs/default.toml for this pipeline only; --config and --set still override it.
+# Settings for the advanced pipeline (--pipeline advanced): the final design, the same as
+# candidate-6-doc2query15-rerank-section-controlled-v2. Every key here overrides configs/default.toml for
+# this pipeline only; --config and --set still override it.
 #
-# The best retrieval found on the development cases with the reviewed evidence labels: the cleaned report
-# is the only query (retrieval.decompose = false); it returns 15 candidates, 10 of them documentation
-# (retriever dense_doc_slots); one model call ranks the 15, seeing each candidate's best-matching window
-# (rerank_snippet = focused); the best 8 are kept, with at least 5 documentation chunks; each kept
-# documentation chunk is grown to the whole top-level sections it touches (retrieval.complete = section, at
-# most 900 tokens), and kept pieces of one page that overlap or touch are merged. The model sees at most 8
-# pieces within 4,300 tokens. Per case: one model call for retrieval (the reranking), after the scope check.
-# On the development cases (retrieval only): 70.1% of gold passages in the prompt, gold for all 15 cases.
+# Retrieval: the cleaned report is the only query; dense search returns 15 candidates, 10 of them
+# documentation; the 15 documentation sections whose symptom questions best match the report each add a
+# chunk (retriever question_doc_slots; the questions are written once, offline, by
+# scripts/build_section_questions.py into data/questions, and rebuilt when the documentation changes); one
+# model call ranks the candidates; the best 8 are kept, at least 5 of them documentation; each kept
+# documentation chunk is grown to its whole sections, and pieces of one page that overlap are merged. The
+# model sees at most 8 pieces within 4,300 tokens.
+# Answer: controlled routing v2 (supportdesk/generation/controlled_v2): gpt-5.4-mini writes a structured
+# assessment and Python routes the action (answer, request_info or escalate). About $0.02 per case.
+#
+# Development cases, end to end: 12 of 15 decisions correct (answerable 6/6, clarification 5/6, escalation
+# 1/3), every answer citing gold evidence; the baseline made 5 (6 pieces) or 6 (8 pieces). Candidate 5
+# (the same without the symptom questions) made 11, agreeing on 14 of 15 cases; the one difference,
+# DEV-5591, came from the questions bringing in the "Statefulness of widgets" section, after which the
+# model asked for the user's code instead of answering. One case of 15 is not a statistical difference:
+# the test split decides whether it holds, with candidate 5 run beside it as the labelled alternative.
 #
 # Fair comparison: advanced uses more room than the baseline (8 pieces and 4,300 tokens against 6 and
 # 3,200). Any comparison of the two must also run the baseline at the same budget
@@ -33,6 +42,7 @@ max_tokens = 512
 overlap_tokens = 128
 
 [retrieval]
+question_sections = 15         # documentation sections added through their symptom questions
 top_k = 8                    # pieces the model sees
 candidate_k = 15             # candidates the reranker orders
 rerank_snippet_chars = 400   # characters of each candidate the reranker sees
@@ -52,7 +62,8 @@ max_query_chars = 4000
 max_body_chars = 4000
 
 [pipeline]
-retriever = "dense_doc_slots"
+generator = "controlled_v2"    # one structured assessment by gpt-5.4-mini; Python routes the action
+retriever = "question_doc_slots"  # dense candidates plus sections found through their symptom questions
 scope_gate = "llm"           # the scope check before retrieval is part of advanced's design
 
 [prompts]

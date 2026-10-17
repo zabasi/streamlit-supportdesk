@@ -647,7 +647,7 @@ def test_cli_shows_each_pipelines_own_chunk_count_and_where_it_comes_from(capsys
     adv = capsys.readouterr().out
     assert re.search(r"top_k\s+= 8\s+\(file:configs/pipelines/advanced\.toml\)", adv)
     assert "chunks allowed in the prompt = 8" in adv and "retrieval pool = 15" in adv
-    assert re.search(r"retriever\s+= dense_doc_slots\s+\(file:configs/pipelines/advanced\.toml\)", adv)
+    assert re.search(r"retriever\s+= question_doc_slots\s+\(file:configs/pipelines/advanced\.toml\)", adv)
     # ...and the shared settings are the same for both
     assert re.search(r"chat\s+= gpt-4o-mini\s+\(file:configs/default\.toml\)", adv)
     assert main(["ask", "--pipeline", "nope", "--title", "t", "--body", "b"]) == 1

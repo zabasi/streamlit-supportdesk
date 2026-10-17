@@ -1,4 +1,4 @@
-"""The four candidate retrieval designs are advanced except for their stated differences."""
+"""The candidate designs are candidate 1 except for their stated differences; advanced is candidate 6."""
 import dataclasses
 
 import pytest
@@ -40,12 +40,22 @@ def flat(settings: Settings) -> dict:
 
 
 @pytest.mark.parametrize("name", sorted(EXPECTED))
-def test_a_candidate_is_advanced_but_for_its_differences(name, monkeypatch):
+def test_a_candidate_is_candidate_1_but_for_its_differences(name, monkeypatch):
     from pathlib import Path
 
     monkeypatch.chdir(Path(__file__).resolve().parents[1])
     assert name in PIPELINES
-    advanced = flat(Settings.load(env={}, overrides=["pipeline.name=advanced"]))
+    reference = flat(Settings.load(env={}, overrides=["pipeline.name=candidate-1-dense-rerank-section"]))
     candidate = flat(Settings.load(env={}, overrides=[f"pipeline.name={name}"]))
-    differs = {k: candidate[k] for k in candidate if candidate[k] != advanced[k]}
+    differs = {k: candidate[k] for k in candidate if candidate[k] != reference[k]}
     assert differs == {k: str(v) for k, v in EXPECTED[name].items()}
+
+
+def test_advanced_is_candidate_6_in_every_setting(monkeypatch):
+    """The final design: candidate 6 (symptom questions, controlled routing v2), chosen on the development cases."""
+    from pathlib import Path
+
+    monkeypatch.chdir(Path(__file__).resolve().parents[1])
+    advanced = flat(Settings.load(env={}, overrides=["pipeline.name=advanced"]))
+    chosen = flat(Settings.load(env={}, overrides=["pipeline.name=candidate-6-doc2query15-rerank-section-controlled-v2"]))
+    assert advanced == chosen

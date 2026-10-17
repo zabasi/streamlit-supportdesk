@@ -63,10 +63,14 @@ def test_cli_snapshot_writes_one_file_per_pipeline_with_latest_results(tmp_path,
     assert main(["eval", *base, "--pipeline", "baseline", "--run-id", "b1"]) == 0
     capsys.readouterr()
     assert main(["snapshot", *base, "--all"]) == 0
-    out = capsys.readouterr().out
-    assert "pipeline: baseline" in out and "pipeline: advanced" in out
+    captured = capsys.readouterr()
+    both = captured.out + captured.err
+    assert "pipeline: baseline" in both and "pipeline: advanced" in both
+    # advanced uses the symptom questions, which the sample data has none of: skipped, with what to do
+    assert "advanced: skipped: section questions" in both and "build_section_questions.py" in both
     snapshots = tmp_path / "art" / "snapshots"
-    base_md, adv_md = (snapshots / "baseline.md").read_text(), (snapshots / "advanced.md").read_text()
+    base_md = (snapshots / "baseline.md").read_text()
+    adv_md = (snapshots / "candidate-1-dense-rerank-section.md").read_text()  # the design without questions
     assert "**full** run `b1`" in base_md and "outcome accuracy" in base_md
     assert "No runs yet" in adv_md and "`HybridRetriever`" not in base_md
     assert "Gold evidence for this case: `fixture-doc-session-state`" in base_md  # first dev case
@@ -76,9 +80,9 @@ def test_cli_snapshot_can_run_any_report_and_explains_when_there_is_no_case(tmp_
     base = ["--data-dir", str(SAMPLE), "--index-dir", str(tmp_path / "idx"),
             "--artifacts-dir", str(tmp_path / "art"), "--mode", "offline"]
     assert main(["index", *base, "--cases", CASES]) == 0
-    assert main(["snapshot", *base, "--pipeline", "advanced", "--title", "App stuck on loading",
+    assert main(["snapshot", *base, "--pipeline", "candidate-1-dense-rerank-section", "--title", "App stuck on loading",
                  "--body", "works locally", "--output-dir", str(tmp_path / "snap")]) == 0
-    assert "**App stuck on loading**" in (tmp_path / "snap" / "advanced.md").read_text()
+    assert "**App stuck on loading**" in (tmp_path / "snap" / "candidate-1-dense-rerank-section.md").read_text()
     capsys.readouterr()
     assert main(["snapshot", *base, "--cases", str(tmp_path / "none.jsonl")]) == 1
     assert "no case to run" in capsys.readouterr().err
@@ -95,7 +99,7 @@ def test_latest_runs_picks_the_newest_run_of_each_kind_by_date_not_name(tmp_path
     run("zzz-new", "2026-01-01T00:00:00+00:00")
     run("aaa-ret-new", "2026-02-01T00:00:00+00:00", kind="retrieval")
     run("zzz-ret-old", "2020-02-01T00:00:00+00:00", kind="retrieval")
-    run("mmm-other", "2027-01-01T00:00:00+00:00", pipeline="advanced")
+    run("mmm-other", "2027-01-01T00:00:00+00:00", pipeline="candidate-1-dense-rerank-section")
     found = latest_runs(tmp_path, "baseline")
     assert found["full"][0] == "zzz-new" and found["retrieval"][0] == "aaa-ret-new"
     assert latest_runs(tmp_path, "nothing") == {}

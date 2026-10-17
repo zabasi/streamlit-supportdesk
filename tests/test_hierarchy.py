@@ -99,7 +99,7 @@ def test_the_shipped_hierarchical_profiles_differ_from_their_bases_only_in_the_r
     base, hier_baseline = flat("baseline"), flat("hier_baseline")
     assert {k for k in base if base[k] != hier_baseline[k]} == {"pipeline.name", "pipeline.retriever"}
     assert hier_baseline["pipeline.retriever"] == "hierarchical"
-    adv, adv_hier = flat("advanced"), flat("advanced_hier")
+    adv, adv_hier = flat("candidate-1-dense-rerank-section"), flat("advanced_hier")  # advanced_hier was built on the earlier advanced
     assert {k for k in adv if adv[k] != adv_hier[k]} == {"pipeline.name", "pipeline.retriever", "pipeline.scope_gate",
                                                                "retrieval.decompose", "retrieval.complete",
                                                                "retrieval.top_k", "retrieval.rerank_keep_docs",

@@ -29,7 +29,7 @@ def test_pipelines_lists_what_you_can_select_and_how_each_is_configured(monkeypa
     code, out, _ = run("pipelines", bare=True)
     assert code == 0
     assert re.search(r"baseline\s+dense\s+6\s+configs/pipelines/baseline\.toml\s+Reference", out)
-    assert re.search(r"advanced\s+dense_doc_slots\s+8\s+configs/pipelines/advanced\.toml\s+Improved", out)
+    assert re.search(r"advanced\s+question_doc_slots\s+8\s+configs/pipelines/advanced\.toml\s+Improved", out)
     assert "selected: baseline" in out
     assert "selected: advanced" in run("pipelines", "--pipeline", "advanced", bare=True)[1]
 
@@ -45,7 +45,7 @@ def test_every_command_that_runs_a_pipeline_says_which_one(run):
     code, out, err = run("ask", "--pipeline", "advanced", "--retriever", "bm25", "--title", "t",
                          "--body", "session state")
     # an overridden retriever is announced, so the run is never mistaken for the pipeline as defined
-    assert err.startswith("pipeline: advanced | retriever: bm25 (OVERRIDE: advanced's own is dense_doc_slots) | top_k: 8")
+    assert err.startswith("pipeline: advanced | retriever: bm25 (OVERRIDE: advanced's own is question_doc_slots) | top_k: 8")
     assert json.loads(out)["pipeline"] == "advanced" and len(json.loads(out)["retrieved"]) <= 6
 
 
