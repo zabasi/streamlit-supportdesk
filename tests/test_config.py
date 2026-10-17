@@ -589,7 +589,7 @@ def test_a_profile_may_only_set_what_defines_a_pipeline(tmp_path, monkeypatch):
     profile = tmp_path / "configs" / "pipelines" / "baseline.toml"
     for body, fragment in (('[models]\nchat = "x"\n', "found [models]"),
                            ('[generation]\ntemperature = 0.5\n', "found [generation]"),
-                           ('[pipeline]\nname = "advanced"\n', "pipeline.['answer_model', 'complete_questions', 'generator', 'retriever', 'scope_gate', 'version_notes']; found pipeline.name"),
+                           ('[pipeline]\nname = "advanced"\n', "pipeline.['answer_model', 'complete_questions', 'controlled_version', 'generator', 'retriever', 'scope_gate', 'version_notes']; found pipeline.name"),
                            ('[paths]\ndata_dir = "x"\n', "paths.['index_dir']; found paths.data_dir")):
         profile.write_text(body)
         with pytest.raises(ConfigError, match="may only set") as info:

@@ -294,6 +294,7 @@ Defaults shown are the built-in ones. `*unset*` means the key is optional and no
 | `retriever` | `dense` | registered retriever: dense \| bm25 \| hybrid |
 | `scope_gate` | `off` | advanced only: the scope check before retrieval: llm (a model call), rules (free keyword rules), combined (the same call that writes the concept queries) or off (no check); advanced's profile turns it on (llm) |
 | `answer_model` | `gpt-5.4-mini` | controlled_v2 answer step: the model the package's request is sent to (the package builds it for gpt-5.4-mini; gpt-5-mini and gpt-4.1-mini are cheaper) |
+| `controlled_version` | `v2` | controlled answer step's package: v2 (as delivered) or v3 (v2 with one added prompt rule on internal investigation; generation/controlled_v3) |
 | `complete_questions` | `False` | controlled_v2 answer step: a question asks for every material gap the user can supply in one message, not only the first; the decision is unchanged (pipelines/stages/complete_questions.py) |
 | `version_notes` | `False` | controlled_v2 answer step: add version and usage notes to each evidence piece (what version it describes, compared with the reporter's; how it may be used); pipelines/stages/version_notes.py |
 | `generator` | `single_call` | advanced-based pipelines only: the answer step: single_call (the baseline's prompt and parser) \| controlled_v2 (one structured assessment by gpt-5.4-mini, the action routed by Python; supportdesk/generation/controlled_v2) \| policy_v3 (gpt-5.4-mini chooses the action itself, guided by prompts.policy) |

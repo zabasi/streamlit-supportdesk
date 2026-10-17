@@ -17,7 +17,11 @@ from __future__ import annotations
 import dataclasses
 
 from ...config import Settings
-from ...generation.controlled_v2 import generate_from_packet, to_pipeline_answer
+from ...generation import controlled_v2, controlled_v3
+
+#: The answer-step versions (pipeline.controlled_version): v2 as delivered; v3 is v2 with one added prompt
+#: rule on internal investigation (generation/controlled_v3/manifest.json says exactly what changed).
+PACKAGES = {"v2": controlled_v2, "v3": controlled_v3}
 from ...llm.factory import Clients, chat_client_for
 from ...types import CaseInput
 from ..packet import Packet
@@ -42,6 +46,7 @@ class ControlledGenerator:
         # the package's request is sent unchanged to the chosen model; gpt-5.4-mini unless pipeline.answer_model
         self.model = settings.pipeline.answer_model
         self.chat = chat_client_for(clients, dataclasses.replace(settings, generation=limit), self.model)
+        self.package = PACKAGES[settings.pipeline.controlled_version]
         self.version_notes = settings.pipeline.version_notes
         self.complete_questions = settings.pipeline.complete_questions
 
@@ -69,19 +74,20 @@ class ControlledGenerator:
             packet = dataclasses.replace(packet, chunks=annotate(list(packet.chunks), reported))
         try:
             # a web conversation passes how many clarification questions it has asked; elsewhere 0
-            result = generate_from_packet(case, packet, self.complete, questions_used=QUESTIONS_USED.get() or 0)
+            result = self.package.generate_from_packet(case, packet, self.complete, questions_used=QUESTIONS_USED.get() or 0)
         except ValueError as exc:  # no usable assessment: an error for this case, with the call's usage
             raise GenerationFailed(f"controlled_v2: {exc}", attempts=[
                 {"error": str(exc), "usage": self.last_usage}]) from None
         if self.complete_questions:  # one message asking for every material gap, not only the first
             result = combine(result)
-        answer = to_pipeline_answer(result)
+        answer = self.package.to_pipeline_answer(result)
         if (result.get("routing") or {}).get("questions_combined"):
             answer.open_questions = [gap["question"] for gap in askable(result["assessment"])]
         # the full controlled result (the model's structured assessment, the routing, the reference map and
         # the maintainer summary) is kept with the call's usage, as the package's README recommends; it is
         # what results.jsonl saves for each case (trace.attempts), so the assessment can be studied later
-        answer.attempts = [{"controlled_v2": dict(result), "usage": result.get("usage", {}), "model": self.model}]
+        answer.attempts = [{"controlled_v2": dict(result), "usage": result.get("usage", {}), "model": self.model,
+                            "package": self.package.__name__.rsplit(".", 1)[-1]}]
         return answer
 
 

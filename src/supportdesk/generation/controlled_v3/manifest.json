@@ -1,0 +1,11 @@
+{
+ "version": "controlled-routing-v3-20261017",
+ "based_on": "controlled-routing-v2-packaged-20261016",
+ "frozen_files": {
+  "generation.py": "cf024c5feb76d0a1dc1f7b9d6189958911cfe1d1ca9359d7999844f902f1f445",
+  "context.py": "b594151b28144b68bfd84f6fe5d9aba7bdc09a1943731923195d253a13f4d3c4",
+  "prompt.txt": "82216bd9613694ecef93614cd752081c842a300b787785d3475ad3e9456fe655"
+ },
+ "change": "prompt.txt item 6: one added rule on when to record internal_investigation, not to answer a partially explained symptom, and which gaps stay material once an investigation can start. generation.py, context.py and adapter.py are identical to v2. The v2 bundle's development inputs (inputs/model_inputs.jsonl) are not copied, so rows() is not available in v3.",
+ "note": "Package-relative import only. Any further change needs a new version."
+}

@@ -167,7 +167,7 @@ def test_the_extracted_environment_is_used_only_when_the_case_has_none(clients, 
     from supportdesk.pipelines.stages import controlled
 
     seen = []
-    monkeypatch.setattr(controlled, "generate_from_packet",
+    monkeypatch.setattr(controlled.PACKAGES["v2"], "generate_from_packet",
                         lambda case, packet, complete, **_: seen.append(case.environment) or (_ for _ in ()).throw(
                             ValueError("stop here")))
     gen = controlled.ControlledGenerator(clients, settings)

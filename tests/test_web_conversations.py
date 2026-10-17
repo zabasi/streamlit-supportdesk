@@ -112,7 +112,7 @@ def test_the_question_count_reaches_the_controlled_answer_step(clients, settings
     def fake(case, packet, complete, questions_used=0):
         seen.append(questions_used)
         raise ValueError("stop here")
-    monkeypatch.setattr(controlled, "generate_from_packet", fake)
+    monkeypatch.setattr(controlled.PACKAGES["v2"], "generate_from_packet", fake)
     gen = controlled.ControlledGenerator(clients, settings)
     case = CaseInput(case_id="c", title="t", body="b")
     with pytest.raises(GenerationFailed):
