@@ -57,3 +57,29 @@ def test_the_script_prints_markdown(tmp_path, capsys):
     assert module.main(["e2e-y", "--runs-dir", str(tmp_path)]) == 0
     out = capsys.readouterr().out
     assert "### e2e-y: 2 of 4 correct" in out and "| escalate | 0 | 0 | 0 | 1 | 1 |" in out
+
+
+def test_export_cases_writes_one_complete_file_per_case(tmp_path):
+    spec = importlib.util.spec_from_file_location("export_cases", ROOT / "scripts" / "export_cases.py")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    from supportdesk.eval.cases import load_cases
+
+    cases = load_cases(str(ROOT / "data" / "eval"), split="dev")
+    if not cases:
+        import pytest
+        pytest.skip("no development cases in this checkout")
+    case = cases[0]
+    controlled = {"assessment": {"main_need": "x"}, "maintainer_summary": {"next_step": "y"}, "routing": {}}
+    row = {"case_id": case.case_id, "outcome": case.acceptable_outcomes[0], "user_reply": "r", "citations": [],
+           "maintainer_summary": {"problem": "p"}, "usage": {"cost_usd": 0.02}, "split": "dev",
+           "trace": {"packet": [{"label": "S1", "chunk_id": "c1"}], "attempts": [{"controlled_v2": controlled}]}}
+    run = tmp_path / "e2e-z"
+    run.mkdir()
+    (run / "results.jsonl").write_text(json.dumps(row) + "\n")
+    (run / "summary.json").write_text(json.dumps({"case_files": [str(ROOT / "data" / "eval")]}))
+    assert module.main([str(run)]) == 0
+    record = json.loads((run / "cases" / f"{case.case_id}.json").read_text())
+    assert record["report"]["title"] == case.input.title and record["matches_label"] is True
+    assert record["controlled_v2"]["assessment"] == {"main_need": "x"} and record["evidence_in_prompt"] == ["c1"]
+    assert json.loads((run / "cases" / "index.json").read_text())[0]["case_id"] == case.case_id

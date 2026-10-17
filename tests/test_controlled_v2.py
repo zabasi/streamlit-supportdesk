@@ -119,6 +119,9 @@ def test_an_answer_with_citations_mapped_to_chunk_ids(clients, settings):
     assert seen["extra"]["response_format"]["json_schema"]["strict"] is True
     assert seen["extra"]["reasoning_effort"] == "medium"
     assert answer.attempts and "controlled_v2" in answer.attempts[0]
+    saved = answer.attempts[0]["controlled_v2"]  # what results.jsonl keeps for the case
+    assert saved["assessment"] == assessment()  # the model's structured assessment, as it wrote it
+    assert "maintainer_summary" in saved
 
 
 def test_a_cut_off_answer_is_an_error_not_an_escalation(clients, settings):

@@ -62,10 +62,10 @@ class ControlledGenerator:
             raise GenerationFailed(f"controlled_v2: {exc}", attempts=[
                 {"error": str(exc), "usage": self.last_usage}]) from None
         answer = to_pipeline_answer(result)
-        # the full controlled result (routing, assessment, reference map, maintainer summary) is kept for
-        # diagnostics with the call's usage, as the package's README recommends
-        answer.attempts = [{"controlled_v2": {k: v for k, v in result.items() if k != "assessment"},
-                            "usage": result.get("usage", {})}]
+        # the full controlled result (the model's structured assessment, the routing, the reference map and
+        # the maintainer summary) is kept with the call's usage, as the package's README recommends; it is
+        # what results.jsonl saves for each case (trace.attempts), so the assessment can be studied later
+        answer.attempts = [{"controlled_v2": dict(result), "usage": result.get("usage", {})}]
         return answer
 
 
