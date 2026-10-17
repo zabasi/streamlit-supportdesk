@@ -14,7 +14,8 @@ from .pipelines.staged import STAGE_NAMES, StagedPipeline
 from .tokenizer import count_tokens
 from .types import CaseInput
 
-SETTING_SECTIONS = ("models", "prompts", "chunking", "retrieval", "context", "generation")
+# "pipeline" holds the design's switches (retriever, scope gate, answer step, its model, package and fixes)
+SETTING_SECTIONS = ("pipeline", "models", "prompts", "chunking", "retrieval", "context", "generation")
 
 
 def _cell(value) -> str:
@@ -91,7 +92,10 @@ def take_snapshot(pipeline: StagedPipeline, settings: Settings, case: CaseInput,
             f"| Retriever | `{settings.pipeline.retriever}`"
             + (f" (**override**: {pipeline.name}'s own is `{settings.retriever_override()}`)"
                if settings.retriever_override() else "") + " |",
-            f"| Models | chat `{settings.models.chat}`, embedding `{settings.models.embedding}` |",
+            f"| Models | chat `{settings.models.chat}`, embedding `{settings.models.embedding}`"
+            + (f", answer `{settings.pipeline.answer_model}` (controlled package "
+               f"{settings.pipeline.controlled_version})" if settings.pipeline.generator == "controlled_v2" else "")
+            + " |",
             f"| Config fingerprint | `{settings.fingerprint()}` |", ""]
 
     out += ["## Stages", "", "| # | Stage | Implementation | What it does |", "|---|---|---|---|"]

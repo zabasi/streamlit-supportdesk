@@ -74,6 +74,14 @@ write one for every stage you add. It then shows what each stage produced on one
 pipeline's latest evaluation results. In code, `pipeline.run(case, observe=callback)` reports each
 step's output as it happens; the snapshot is built on that.
 
+`docs/snapshots/advanced.md` is a committed snapshot of the final design, with real outputs for one
+development case. Regenerate it after any change to `advanced` (almost free: everything but the scope
+check replays from the cache of an earlier evaluation run):
+
+```bash
+supportdesk snapshot --pipeline advanced --mode live --case-id DEV-16388 --output-dir docs/snapshots
+```
+
 ## Rules for stages
 
 - **Model calls go through `clients`,** with their own `stage="..."` name. That way the budget guard, the cache and the cost ledger see them. Never call a provider SDK directly.
@@ -111,6 +119,27 @@ The report shows:
 identical output. If you change the baseline on purpose, regenerate with
 `PYTHONPATH=src:. python -m tests.golden.generate` and review the diff. Prefer adding stages to
 `advanced` over editing baseline stages.
+
+## End-to-end designs
+
+Each is a complete design (retrieval and answer step), run with `supportdesk eval` on the development
+cases with the scope gate off. "Correct" counts decisions matching the label, out of 15.
+
+| Pipeline | Retrieval | Answer step | Correct |
+| --- | --- | --- | --- |
+| `baseline` | dense, 6 chunks | one `gpt-4o-mini` call | 5 (6 with 8 chunks) |
+| `candidate-1-dense-rerank-section` … `candidate-4-…` | reranked, whole sections; with symptom questions (2), two ranking prompts (3) or 6 chunks (4) | one `gpt-4o-mini` call | 5 to 7 |
+| `candidate-5-dense-rerank-section-controlled-v2` | as candidate 1 | controlled routing v2 (`gpt-5.4-mini`) | 11 |
+| `candidate-6-doc2query15-rerank-section-controlled-v2` | as candidate 1, plus symptom questions | controlled routing v2 | 12 (the previous `advanced`) |
+| `candidate-7-…`, `candidate-8-…` | two ranking prompts; 6 chunks | controlled routing v2 | 10; 9 |
+| `candidate-9-dense-rerank-section-policy-v3b` | as candidate 1 | the model chooses the action (policy v3b) | 10 |
+| `advanced-version-notes` | as candidate 6 | controlled v2 + version notes | 11 with `gpt-5-mini` (a screening run) |
+| `advanced-gpt5mini` | as candidate 6 | controlled v2, `gpt-5-mini` | 10 |
+| **`advanced`** (= `advanced-notes-questions`) | as candidate 6 | controlled v2 + version notes + complete questions | **12** (escalation 2 of 3) |
+| `advanced-notes-questions-gpt5mini` | as candidate 6 | the same with `gpt-5-mini` | 11 (never escalates) |
+| `advanced-notes-questions-v4-gpt5mini` | as candidate 6 | the same with the v4 prompt rules | 11 (replies about 75% shorter) |
+
+The answer-step settings are described in `docs/generation/README.md`.
 
 ## Experiments
 

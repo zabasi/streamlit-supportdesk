@@ -118,3 +118,14 @@ def test_snapshot_all_skips_pipelines_whose_own_index_is_not_built(tmp_path, cap
     assert "clean_doc_slots_rerank_docs_prompt_structure: skipped:" in err and "pipeline(s) skipped" in err
     one = ["snapshot", *base, "--pipeline", "clean_doc_slots_rerank_docs_prompt_structure"]
     assert main(one) == 1  # asked for by name: an unusable index is still an error
+
+
+def test_a_controlled_answer_step_shows_its_model_package_and_switches(index, clients, settings):
+    """The answer model, its package and the pipeline switches (such as the two fixes) are in the snapshot."""
+    import dataclasses
+
+    s = dataclasses.replace(settings, pipeline=dataclasses.replace(
+        settings.pipeline, generator="controlled_v2", version_notes=True, complete_questions=True))
+    text = take_snapshot(baseline(index, clients, settings), s, CASE)
+    assert "answer `gpt-5.4-mini` (controlled package v2)" in text
+    assert "| `pipeline.version_notes` | True |" in text and "| `pipeline.complete_questions` | True |" in text

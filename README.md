@@ -15,28 +15,30 @@ per report:        intake -> query -> retrieve -> rerank -> packet -> generate -
 ```
 
 - **generate** decides: `answer` when the evidence supports a confident answer, `request_info` when
-  one missing fact decides the case, `escalate` when a maintainer must look. An answer the model
-  rates low-confidence is escalated in code.
-- **`supportdesk case`** then acts: answers and questions are posted to the local tracker;
-  escalations wait for a maintainer's approval (`case.review = all` makes every reply wait).
+  missing facts decide the case, `escalate` when a maintainer must look. In the baseline one model
+  call decides; in `advanced` the model writes a structured assessment and fixed Python rules choose
+  the action (controlled routing, `docs/generation/README.md`).
+- **`supportdesk case`** then acts: by default answers and questions are posted to the local tracker
+  and escalations wait for a maintainer's approval. Use `--set case.review=all` so every reply waits
+  for approval, as the project brief requires for any visible change.
   `ask`, `eval` and the web page stop after summarize and post nothing.
-- **Pipelines:** `baseline` (dense search, 6 chunks) is the reference. `advanced` is the best found
-  on the development cases: the cleaned report plus up to 3 model-written queries about the Streamlit
-  concepts involved, 15 candidates per query of which 10 are documentation, merged and ranked by one
-  model call that sees each candidate's best-matching part and the concepts involved, the best 6
-  kept with at least 3 documentation chunks; kept chunks of one page that overlap are joined, so
-  their shared text appears once. Experiments each change one thing in the baseline, so their
-  effect can be measured alone: `clean_query` (the query without the issue template),
-  `doc_slots` (3 of the 6 results kept for documentation), `hybrid_rrf` and `hybrid_split` (dense
-  and keyword search, merged or side by side), `rewrite_llm` and `split_llm` (a model writes one or several search queries) and
-  `split_sentences` (several queries without a model). Combinations build on the cleaned query:
-  `clean_doc_slots`, `clean_hybrid_doc_slots`, `clean_split_doc_slots` and `clean_hybrid_split`;
-  `clean_doc_slots_rerank` and `clean_hybrid_doc_slots_rerank` add a reranking model call to the two best.
-  `retrieve_loop` judges the 6 retrieved chunks and may search again (one repeat at most), still inside
-  the corpus; `retrieve_loop_best` and `retrieve_loop_mixed` keep every scored chunk of every try and
-  return the best, or a third best, middle and worst, once the loop ends. `hier_baseline` and
-  `advanced_hier` search the documentation section summaries first (hierarchical retrieval; they need
-  `python scripts/summarize_sections.py --mode live` once). `supportdesk pipelines` lists them all.
+- **Pipelines:** `baseline` (dense search, 6 chunks, one `gpt-4o-mini` call) is the reference.
+  `advanced` is the final design:
+  - **scope check:** one `gpt-4o-mini` call first turns away reports that are not about Streamlit;
+  - **retrieval:** the cleaned report is the query; dense search returns 15 candidates, 10 of them
+    documentation, and the 15 documentation sections whose *symptom questions* (written once per
+    section, offline) best match the report add a chunk each; one `gpt-4o-mini` call reranks them; the
+    best 8 are kept (at least 5 documentation), each grown to its whole sections, within 4,300 tokens;
+  - **answer:** `gpt-5.4-mini` writes a structured assessment and Python routes the action; each
+    evidence piece carries **version notes** (what version it describes, compared with the reporter's,
+    and how it may be used), and a question asks for **every** material missing fact at once.
+
+  On the 15 development cases: 12 correct decisions (the baseline 5), every answer citing gold
+  evidence, about $0.024 per case. The previous design (without the two answer-step fixes) is
+  `candidate-6-doc2query15-rerank-section-controlled-v2`; the same final design with the cheaper
+  `gpt-5-mini` is `advanced-notes-questions-gpt5mini` (11 correct, never escalates). Dozens of
+  experiment pipelines change one thing at a time; `supportdesk pipelines` lists them all and
+  `docs/pipelines.md` describes them.
 
 ## 2. Set up
 
@@ -98,9 +100,12 @@ Otherwise every command, live ones included, keeps using the sample corpus and `
    one cent) and is also the first check that the key works. Share the `index/` folder: unpacked to
    `index/` on another machine, it is used as is, with no need to index again. Rebuild it when the
    corpus or the evaluation cases change.
-5. **Ask one question:** `supportdesk ask --mode live --title "..." --body "..."`. Commands refuse
+5. **Symptom questions (for `advanced`):** `python scripts/build_section_questions.py --mode live`
+   writes them once into `data/questions` (about $0.02). `advanced` stops with a clear message
+   without them; rebuild them whenever the documentation in the corpus changes.
+6. **Ask one question:** `supportdesk ask --mode live --title "..." --body "..."`. Commands refuse
    an index built with another embedding model, so an offline index has to be rebuilt first.
-6. **Stay live:** to stop typing `--mode live`, add `SUPPORTDESK__RUN__MODE=live` to `.env`. Every
+7. **Stay live:** to stop typing `--mode live`, add `SUPPORTDESK__RUN__MODE=live` to `.env`. Every
    command then runs live, and spends money, until you remove the line; `--mode offline` on a
    command still overrides it.
 
@@ -109,14 +114,19 @@ Otherwise every command, live ones included, keeps using the sample corpus and `
 | Command | What it does |
 |---|---|
 | `supportdesk ask --title "..." --body "..."` | Answer one report; nothing is posted |
-| `supportdesk web` | Local web page at http://127.0.0.1:8765 |
+| `supportdesk web` | Local web page at http://127.0.0.1:8765: saved multi-turn conversations, the evidence the model saw, runs imported from `eval`, downloads |
 | `supportdesk case CASE-1 --title "..." --body "..."` | Open a case (a follow-up is `--body` only) and act on the answer |
 | `supportdesk review CASE-1` | Show what is waiting; decide with `--approve`, `--edit "TEXT"` or `--reject` |
 | `supportdesk tracker CASE-1` | The case's messages, notes and events (`--reset` clears the tracker) |
 | `supportdesk eval-retrieval --pipeline baseline --split dev` | Retrieval quality only: Recall@k, MRR; almost free |
 | `supportdesk eval --pipeline baseline --split dev` | Full evaluation, one model call per case |
+| `supportdesk eval --pipeline advanced --split test --final` | The test split: run once, at the very end |
 | `supportdesk report RUN_ID RUN_ID` | Compare runs side by side (HTML) |
 | `supportdesk snapshot --all` | Each pipeline's steps, settings and one traced run |
+| `supportdesk pipelines` | Every registered pipeline |
+| `python scripts/confusion_matrix.py RUN_ID ...` | Decision confusion matrices, as Markdown |
+| `python scripts/export_cases.py RUN_ID` | One JSON file per case for review (`--no-reference` for blind reading) |
+| `python scripts/judge_agreement.py MODEL_DIR HUMAN_DIR` | Agreement between the LLM judge and human reviews |
 | `supportdesk check-cases` | Check the evaluation files against the corpus and index |
 | `supportdesk config` | Every setting and where its value comes from |
 | `make test` / `make demo` | All tests, offline / the full offline demo on the sample |
@@ -128,5 +138,10 @@ Otherwise every command, live ones included, keeps using the sample corpus and `
 | `CLAUDE.md` | Adding a stage or node, and the rules all code follows |
 | `docs/schemas.md` | The output of every step, field by field |
 | `docs/pipelines.md` | Stages, pipelines, comparing changes |
-| `docs/evaluation.md` | Evaluation files, metrics, the test split |
+| `docs/evaluation.md` | Evaluation files, metrics, case analysis, the test split |
+| `docs/generation/README.md` | The answer step: controlled routing, its fixes and versions |
+| `docs/evaluation/judge_prompt.md` | The LLM judge's criteria (the prompt is `configs/prompts/judge_case_system.txt`) |
+| `docs/evaluation/human_review_form.md` | The form for human review of a case |
+| `docs/snapshots/advanced.md` | A snapshot of the final design: stages, settings, one traced case |
+| `docs/configuration.md` | Every setting |
 | `docs/configuration.md` | Every setting |

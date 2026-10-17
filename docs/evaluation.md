@@ -100,12 +100,39 @@ noise. Report counts next to percentages, and read the per-case table in the rep
 - **`summary.json`:** metrics, the pipeline's stages, the full configuration and its fingerprint, the index manifest and any warnings.
 - **`cost_ledger.csv`:** every model call.
 
+## Case analysis: the LLM judge and human review
+
+What code measures (recall, decisions per category, citations, cost and time) is computed by code. What
+needs judgement (whether the evidence supports each claim, whether a question is the right one) is
+judged against each case's rubric in `data/eval/development_rubrics.jsonl`, never against the
+system's own output. The criteria are in `docs/evaluation/judge_prompt.md`, the exact prompt in
+`configs/prompts/judge_case_system.txt`.
+
+```bash
+python scripts/export_cases.py RUN_ID                     # cases/: one JSON per case, with the rubric
+python scripts/export_cases.py RUN_ID --no-reference \
+    --output-dir artifacts/runs/RUN_ID/cases-blind        # the same without the rubric, for blind reading
+python scripts/judge_agreement.py MODEL_DIR HUMAN_DIR     # judge against human, field by field
+```
+
+- **The judge** must not be the answering model. The development runs were judged by Claude Opus 5.5,
+  used outside the project (through its chat interface, not the project's API, so at no cost to the
+  budget): each case separately, with `judge_case_system.txt` as instructions and one file from
+  `cases/` as input. Each judgement should record the judge model and the date.
+- **Human review** checks the judge: pick the sample first (failures and random passes), read each case
+  in `cases-blind/` and decide without the rubric, then fill `docs/evaluation/human_review_form.md`.
+  Where judge and human disagree, the human's verdict is reported.
+- **The rubrics** were drafted and source-checked with an AI assistant; the team's human sign-off is
+  still pending (`review_status`), so human review checks the rubric as well as the judge.
+- **Results (development):** the final `advanced` 9 pass, 3 partial, 3 fail; the previous design 8 / 4 / 3;
+  the final design with `gpt-5-mini` 10 / 2 / 3 (but 11 correct decisions against 12, and no escalation).
+
 ## Not built yet
 
-- **LLM judge:** an LLM judge, and its comparison with human judgements.
 - **Claim-level support:** today, citations are only checked to point at retrieved chunks.
 - **`missing_info`:** scoring whether the reply asked for the right missing information.
 - **Multi-turn scenarios:** running the staged scenarios against the case workflow.
+- **Human review comparison:** the form and the agreement script exist; the human sample is not done yet.
 
 ## Where gold passages are lost
 

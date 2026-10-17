@@ -48,8 +48,34 @@ evaluation, before a live run.
 - Measured (by the teammate, on curated gold passages, not retrieval): 11 of 15 actions matched the
   development labels (73.3%): answer 5 of 6, request_info 3 of 6, escalate 3 of 3. This is action
   agreement, not answer quality.
-- Not yet measured: on **retrieved** evidence (our pipeline's packets), on the test split, and over
-  several conversation turns. The first live run of candidate 5 gives the first two.
+- Measured on **retrieved** evidence (our pipeline's packets), development cases: the previous advanced
+  12 of 15 (answer 6/6, request_info 5/6, escalate 1/3); the final advanced, with the two fixes below,
+  12 of 15 (6/6, 4/6, 2/3). Not yet measured: the test split, and several conversation turns.
 - The pipeline evaluates single turns: questions_used is 0 and no follow-up loop runs.
 - The package's own limits: it can omit an information gap or a correction, and reference validation
   does not prove that the evidence entails the claim (see `controlled-v2/README.md`).
+
+## Added since the handoff
+
+The package's files are unchanged; everything below is in the stage (`pipelines/stages/controlled.py`) or
+in new, separately versioned copies of the package. Each switch is a setting, off or unchanged by default,
+so a pipeline uses it only when its profile says so.
+
+| Setting | What it does | In `advanced` |
+| --- | --- | --- |
+| `pipeline.version_notes` | Before the model: each evidence piece gets two notes, computed in code from its type, version and date and the reporter's version (`pipelines/stages/version_notes.py`). Documentation is today's snapshot; a release is older or newer than the reporter's version; a release note shows a change, not a cause; another user's report is an observation, not documentation. Without a stated version, documentation gets no instruction to check one. | on |
+| `pipeline.complete_questions` | After routing (the decision never changes): a question asks for every material gap the user can supply, with a numbered list, instead of only the first (`pipelines/stages/complete_questions.py`). | on |
+| `pipeline.answer_model` | The model the package's request is sent to: `gpt-5.4-mini` (as built and validated), `gpt-5-mini` or `gpt-4.1-mini`. Each answer records which model wrote it. | `gpt-5.4-mini` |
+| `pipeline.controlled_version` | `v2` (as delivered), `v3` or `v4`: copies of v2 with added prompt rules, each with its own `manifest.json` saying exactly what changed, and a test that its prompt holds no evaluation case. | `v2` |
+| `generation.max_retries` | A dropped connection is retried (default once); a budget stop, refusal, cut-off answer or invalid assessment never is. | 1 |
+
+What was tried and not adopted, on the development cases:
+
+- **`gpt-5-mini`** as the answer model: about 2.5 times cheaper, 11 of 15 with the two fixes, the best
+  clarifying questions, but it never escalated in any of its runs, with any of three prompts.
+- **v3** (one rule: record an internal investigation when a reproduction meets unexplained behavior, and
+  do not answer a partly explained symptom): with `gpt-5-mini`, two correct answers became questions and
+  nothing was escalated.
+- **v4** (three rules: facts the report already gives are not gaps; escalate when the report's controls
+  are complete; word limits): with `gpt-5-mini`, no decision changed, but replies became about three
+  quarters shorter (median 175 to 47 words).
