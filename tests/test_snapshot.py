@@ -129,3 +129,35 @@ def test_a_controlled_answer_step_shows_its_model_package_and_switches(index, cl
     text = take_snapshot(baseline(index, clients, settings), s, CASE)
     assert "answer `gpt-5.4-mini` (controlled package v2)" in text
     assert "| `pipeline.version_notes` | True |" in text and "| `pipeline.complete_questions` | True |" in text
+
+
+
+def test_a_controlled_answers_attempts_are_described():
+    """The controlled answer step's attempts have no status: the snapshot names the model, package and routing."""
+    from supportdesk.snapshot import _attempts
+
+    controlled = [{"controlled_v2": {"routing": {"reason": "required_human_review"}}, "model": "gpt-5.4-mini",
+                   "package": "controlled_v2", "retries": 1}]
+    assert _attempts(controlled) == ("assessment by `gpt-5.4-mini` (controlled_v2), routed by "
+                                     "`required_human_review`, 1 retry")
+    assert _attempts([{"status": "ok"}]) == "ok" and _attempts([]) == "n/a"
+
+
+
+def test_a_full_snapshot_of_a_controlled_answer_step(index, clients, settings):
+    """A whole snapshot run through the controlled answer step, with a valid assessment from the fake model."""
+    import dataclasses
+
+    from supportdesk.pipelines.staged import StagedPipeline
+    from supportdesk.pipelines.stages.controlled import ControlledGenerator
+    from supportdesk.pipelines.stages.defaults import default_stages
+    from tests.test_controlled_v2 import assessment
+
+    s = dataclasses.replace(settings, pipeline=dataclasses.replace(settings.pipeline, generator="controlled_v2"))
+    generator = ControlledGenerator(clients, s)
+    generator.chat.script[1] = json.dumps(assessment(case_id=CASE.case_id, evidence="S1"))
+    stages = {**default_stages(DenseRetriever(index, clients.embedding), clients, s), "generator": generator}
+    pipeline = StagedPipeline(name="controlled", clients=clients, settings=s, **stages)
+    text = take_snapshot(pipeline, s, CASE)
+    assert "### 5. generator: `ControlledGenerator`" in text
+    assert "assessment by `gpt-5.4-mini` (controlled_v2), routed by `supported_answer_candidate`" in text

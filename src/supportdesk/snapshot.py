@@ -72,6 +72,22 @@ def latest_runs(runs_dir: Path, pipeline: str) -> dict[str, tuple[str, dict]]:
     return found
 
 
+def _attempts(attempts: list[dict]) -> str:
+    """The answer's attempts: a status for the single-call step; for the controlled step, which model and
+    package wrote the assessment, the routing reason and any retries of a dropped connection."""
+    parts = []
+    for attempt in attempts or []:
+        if "controlled_v2" in attempt:
+            routing = attempt["controlled_v2"].get("routing") or {}
+            retries = attempt.get("retries") or 0
+            parts.append(f"assessment by `{attempt.get('model', '?')}` ({attempt.get('package', 'controlled_v2')}), "
+                         f"routed by `{routing.get('reason', '?')}`"
+                         + (f", {retries} {'retry' if retries == 1 else 'retries'}" if retries else ""))
+        else:
+            parts.append(str(attempt.get("status", "?")))
+    return ", ".join(parts) or "n/a"
+
+
 def take_snapshot(pipeline: StagedPipeline, settings: Settings, case: CaseInput, *,
                   gold: list[str] | None = None, runs_dir: Path | None = None) -> str:
     """Run ``pipeline`` on ``case`` once, recording every step, and describe it as Markdown."""
@@ -150,7 +166,7 @@ def take_snapshot(pipeline: StagedPipeline, settings: Settings, case: CaseInput,
     if "generator" in steps:
         answer = steps["generator"]
         out += [f"### 5. generator: `{_implementation(pipeline.generator)}`", "",
-                (f"Attempts: {', '.join(a['status'] for a in answer.attempts) or 'n/a'}. "
+                (f"Attempts: {_attempts(answer.attempts)}. "
                  f"Proposed outcome: **{answer.outcome}**. Raw model output:"), "",
                 _fence(_pretty(answer.raw_output)[:4000], "json"), ""]
     if "validator" in steps:
