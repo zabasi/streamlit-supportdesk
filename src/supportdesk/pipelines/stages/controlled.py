@@ -22,6 +22,7 @@ from ...generation import controlled_v2, controlled_v3
 #: The answer-step versions (pipeline.controlled_version): v2 as delivered; v3 is v2 with one added prompt
 #: rule on internal investigation (generation/controlled_v3/manifest.json says exactly what changed).
 PACKAGES = {"v2": controlled_v2, "v3": controlled_v3}
+from ...llm.errors import ProviderError
 from ...llm.factory import Clients, chat_client_for
 from ...types import CaseInput
 from ..packet import Packet
@@ -47,6 +48,7 @@ class ControlledGenerator:
         self.model = settings.pipeline.answer_model
         self.chat = chat_client_for(clients, dataclasses.replace(settings, generation=limit), self.model)
         self.package = PACKAGES[settings.pipeline.controlled_version]
+        self.max_retries = settings.generation.max_retries
         self.version_notes = settings.pipeline.version_notes
         self.complete_questions = settings.pipeline.complete_questions
 
@@ -55,7 +57,16 @@ class ControlledGenerator:
         if request.get("model") != MODEL:
             raise ValueError(f"controlled_v2 expects the model {MODEL}, got {request.get('model')!r}")
         extra = {"response_format": request["response_format"], "reasoning_effort": request["reasoning_effort"]}
-        text, usage = self.chat.complete(request["messages"], stage="answer", json_mode=True, extra=extra)
+        # a dropped connection is retried (generation.max_retries); nothing else is: a budget stop, a refusal,
+        # a cut-off answer or an invalid assessment is decided after the call and never repeated
+        for attempt in range(self.max_retries + 1):
+            try:
+                text, usage = self.chat.complete(request["messages"], stage="answer", json_mode=True, extra=extra)
+                break
+            except ProviderError:
+                if attempt == self.max_retries:
+                    raise
+                self.retries += 1
         self.last_usage = usage
         return {"choices": [{"finish_reason": usage.get("finish_reason") or "stop",
                              "message": {"content": text, "refusal": usage.get("refusal")}}],
@@ -63,7 +74,7 @@ class ControlledGenerator:
                           "completion_tokens": usage.get("output_tokens", 0)}}
 
     def __call__(self, case: CaseInput, env: dict, packet: Packet) -> ParsedAnswer:
-        self.last_usage = None
+        self.last_usage, self.retries = None, 0
         if not case.environment and env:
             # a case typed into the app has no reported environment of its own: give the package the one
             # the pipeline extracted from the report (an evaluation case keeps its reported environment, as
@@ -87,7 +98,7 @@ class ControlledGenerator:
         # the maintainer summary) is kept with the call's usage, as the package's README recommends; it is
         # what results.jsonl saves for each case (trace.attempts), so the assessment can be studied later
         answer.attempts = [{"controlled_v2": dict(result), "usage": result.get("usage", {}), "model": self.model,
-                            "package": self.package.__name__.rsplit(".", 1)[-1]}]
+                            "package": self.package.__name__.rsplit(".", 1)[-1], "retries": self.retries}]
         return answer
 
 
