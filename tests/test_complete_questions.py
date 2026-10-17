@@ -69,3 +69,11 @@ def test_on_the_reply_and_open_questions_cover_every_gap(clients, settings):
     assert answer.outcome == "request_info"
     assert answer.open_questions == ["Which version do you use?", "Can you share the script?"]
     assert "1. Which version do you use?\n2. Can you share the script?" in answer.user_reply
+
+
+def test_a_reference_the_reason_already_cites_is_not_repeated():
+    first, second = gap("library version", "Which version?"), gap("full script", "The script?")
+    first["why_it_matters"], first["basis_refs"] = "The fix differs by version [R1].", ["R1", "S2"]
+    out = combine(result(asking(first, second)))
+    assert "The fix differs by version [R1]. [S2]" in out["user_reply"]
+    assert out["user_reply"].count("[R1]") == 2  # once in the first reason, once for the second gap

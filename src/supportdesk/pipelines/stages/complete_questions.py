@@ -22,6 +22,13 @@ def askable(assessment: dict) -> list[dict]:
             and not gap.get("already_supplied_or_tested") and gap.get("question")]
 
 
+def _reason(gap: dict) -> str:
+    """A gap's reason with its references, leaving out any the reason already cites (no "[S3]. [S3]")."""
+    text = gap["why_it_matters"].strip()
+    missing = [ref for ref in gap["basis_refs"] if f"[{ref}]" not in text]
+    return f"{text} {citations(missing)}".strip()
+
+
 def combine(result: dict) -> dict:
     """The result with one message asking for every askable gap; unchanged unless it asks about two or more."""
     if result.get("outcome") != "request_info" or (result.get("routing") or {}).get("reason") != "material_user_providable_gap":
@@ -30,7 +37,7 @@ def combine(result: dict) -> dict:
     if len(gaps) < 2:
         return result
     out = copy.deepcopy(result)
-    message = " ".join(f"{gap['why_it_matters']} {citations(gap['basis_refs'])}".strip() for gap in gaps)
+    message = " ".join(_reason(gap) for gap in gaps)
     question = "\n".join(f"{n}. {gap['question']}" for n, gap in enumerate(gaps, start=1))
     out["action"] = {**out["action"], "message": message, "question": question}
     out["user_reply"] = message + "\n\n" + question
