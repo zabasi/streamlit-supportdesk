@@ -11,6 +11,7 @@ from ...tokenizer import lexical_tokens
 from ...types import CaseInput
 from ..parsing import NotJson, extract_json
 from .clean_query import CleanQuery
+from .version_notes import tag
 
 _LABEL = re.compile(r"^C(\d+)$")
 _HEADING = re.compile(r"^#{1,6} .+$", re.MULTILINE)
@@ -190,6 +191,15 @@ def chunk_headings(text: str, *, limit: int = 6) -> list[str]:
     return out[:limit]
 
 
+def with_rule(prompt: str, rule: str) -> str:
+    """The prompt with ``rule`` inserted before its closing output instruction (or appended)."""
+    lines = prompt.rstrip("\n").split("\n")
+    last = next((i for i in range(len(lines) - 1, -1, -1) if "Return only" in lines[i]), None)
+    if last is None:
+        return prompt.rstrip("\n") + "\n" + rule + "\n"
+    return "\n".join(lines[:last] + [rule] + lines[last:]) + "\n"
+
+
 class LLMReranker:
     """Reorders the candidates with one model call: the most useful for the report first."""
 
@@ -219,6 +229,10 @@ class LLMReranker:
         self.merge, self.merge_k = settings.retrieval.rerank_merge, settings.retrieval.rerank_merge_k
         self.split = settings.retrieval.rerank_split
         self.mode = settings.retrieval.rerank_mode
+        self.versions = settings.retrieval.rerank_versions
+        if self.versions:  # the version rule goes just before the prompt's closing output instruction
+            rule = Path("configs/prompts/rerank_version_rule.txt").read_text(encoding="utf-8").strip()
+            self.prompt, self.prompt_second = (with_rule(p, rule) if p else p for p in (self.prompt, self.prompt_second))
 
     def model_order(self, case: CaseInput, hits: list[Hit], *, prompt: str | None = None) -> list[int]:
         """One model call: positions in ``hits``, most useful first; [] if the output is unusable."""
@@ -227,6 +241,7 @@ class LLMReranker:
     def model_text(self, case: CaseInput, hits: list[Hit], *, prompt: str | None = None) -> str:
         """The model's raw answer to the reranking request for ``hits``."""
         report = self.clean(case, {})[0]
+        reported = (case.environment or {}).get("streamlit_version")
         if self.snippet_mode == "focused":
             texts = [h.chunk.text for h in hits]
             weights = term_weights(report, texts)
@@ -249,12 +264,15 @@ class LLMReranker:
             # candidate found through a section's symptom question, the question that matched the report
             sections = chunk_headings(h.chunk.text) if self.show_sections else []
             question = (h.chunk.meta or {}).get("matched_question") if self.show_question else None
-            return (("Sections: " + " · ".join(sections) + "\n" if sections else "")
+            version = f"Version: {tag(h.chunk, reported)}\n" if self.versions else ""
+            return (version + ("Sections: " + " · ".join(sections) + "\n" if sections else "")
                     + (f'Found for: "{question}"\n' if question else ""))
 
         listing = "\n\n".join(f"C{n}: [{h.chunk.source_type}] {h.chunk.title}\n{header(h)}{snippet}"
                                 for n, (h, snippet) in enumerate(zip(hits, snippets), start=1))
         content = f"## Report\n{report}\n\n"
+        if self.versions:
+            content += f"## The user's Streamlit version\n{reported or 'not stated'}\n\n"
         if self.concepts is not None:
             mechanisms = self.concepts(case, {})[self.skip:]
             if mechanisms:

@@ -114,6 +114,8 @@ PIPELINES = {"baseline": build_baseline, "advanced": build_advanced_scoped,
              "advanced-gpt5mini": build_advanced_scoped,
              # advanced with version notes and complete questions, with gpt-5.4-mini or gpt-5-mini
              "advanced-notes-questions": build_advanced_scoped,
+             # advanced with version-aware retrieval (configs/pipelines/advanced-version-retrieval.toml)
+             "advanced-version-retrieval": build_advanced_scoped,
              "advanced-notes-questions-gpt5mini": build_advanced_scoped,
              # the same with the answer package v4 (configs/pipelines/advanced-notes-questions-v4-gpt5mini.toml)
              "advanced-notes-questions-v4-gpt5mini": build_advanced_scoped,

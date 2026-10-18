@@ -104,6 +104,8 @@ rerank_merge_k = 10              # rerank_merge = rrf: the RRF constant
 bm25_extra = 0                   # question_doc_slots: BM25 documentation chunks added (exact identifiers)
 rerank_fuse_weight = 0.0         # blend the reranker's order with each candidate's own search rank (0: off)
 rerank_fuse_k = 10               # rerank_fuse_weight: the RRF constant
+rerank_versions = false          # reranking: the reporter's version and a version tag per candidate
+release_slots = 0                # release notes newer than the reported version added to the candidates
 rerank_show_question = false     # the reranker sees the symptom question that found a candidate
 rerank_show_sections = false     # the reranker also sees the section headings inside each candidate
 pool_mode = "fuse"               # advanced: fuse (RRF of all queries) | quota (fixed shares) | union (all, no fusion)

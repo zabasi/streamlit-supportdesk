@@ -225,6 +225,8 @@ Defaults shown are the built-in ones. `*unset*` means the key is optional and no
 | `bm25_extra` | `0` | question_doc_slots: add the best BM25 documentation chunks for the report that are not already candidates (exact identifiers); 0 adds none |
 | `rerank_fuse_weight` | `0.0` | blend the reranker's order with each candidate's own search rank (among the candidates of its source) by weighted RRF; 0 uses the reranker's order alone |
 | `rerank_fuse_k` | `10` | rerank_fuse_weight: the RRF constant (smaller makes the top ranks count more) |
+| `rerank_versions` | `False` | reranking: state the reporter's Streamlit version and tag each candidate with the version it describes, and add a version rule to the prompt (configs/prompts/rerank_version_rule.txt) |
+| `release_slots` | `0` | retrieval: add up to this many release notes for versions newer than the reported one, best matching the query, to the candidates (retrieval/release_slots.py); 0 = off |
 | `rerank_show_question` | `False` | the reranker also sees, for a candidate found through a documentation section's symptom question (question_doc_slots), the question that matched the report |
 | `rerank_show_sections` | `False` | the reranker also sees the headings of the sections each candidate contains, which its window may not show |
 | `pool_mode` | `fuse` | advanced: how the reranker's candidates are chosen: fuse (every query's ranking merged with RRF, the best candidate_k kept) \| quota (fixed shares: the report's best dense and BM25 chunks, and the concept queries' best dense chunks) \| union (no fusion: the report's own candidates all kept, each concept query adding its best new ones) |

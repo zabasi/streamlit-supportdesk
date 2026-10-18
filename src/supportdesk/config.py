@@ -261,6 +261,12 @@ class Retrieval:
                                      "the candidates of its source) by weighted RRF; 0 uses the reranker's order "
                                      "alone", 0.0)
     rerank_fuse_k: int = _opt("rerank_fuse_weight: the RRF constant (smaller makes the top ranks count more)", 10)
+    rerank_versions: bool = _opt("reranking: state the reporter's Streamlit version and tag each candidate with the "
+                                 "version it describes, and add a version rule to the prompt "
+                                 "(configs/prompts/rerank_version_rule.txt)", False)
+    release_slots: int = _opt("retrieval: add up to this many release notes for versions newer than the reported "
+                              "one, best matching the query, to the candidates (retrieval/release_slots.py); 0 = off",
+                              0)
     rerank_show_question: bool = _opt("the reranker also sees, for a candidate found through a documentation "
                                       "section's symptom question (question_doc_slots), the question that matched "
                                       "the report", False)

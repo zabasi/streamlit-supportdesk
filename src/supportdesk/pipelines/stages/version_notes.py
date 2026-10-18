@@ -91,6 +91,30 @@ def notes(chunk: Chunk, reported_version: str | None) -> dict[str, str]:
     return {}
 
 
+def tag(chunk: Chunk, reported_version: str | None) -> str:
+    """A one-line version label for a candidate shown to the reranker (retrieval.rerank_versions)."""
+    reported, own = versions(reported_version), versions(chunk.version)
+    kind = chunk.source_type
+    if kind == "documentation":
+        label = f"current documentation (Streamlit {show(own[0])})" if own else "current documentation"
+        if reported and (not own or max(reported) < own[0]):
+            label += f", newer than the reporter's {show(max(reported))}"
+        return label
+    if kind == "release_section":
+        label = f"release note for {show(own[0])}" if own else "release note"
+        if reported and own:
+            low, high = min(reported), max(reported)
+            if high < own[0]:
+                label += f", newer than the reporter's {show(high)}: not in their version"
+            elif low >= own[0]:
+                label += f", already in the reporter's {show(low)}"
+        return label
+    if kind in ("issue", "comment"):
+        return ("another user's report" if kind == "issue" else "a comment on another report") + (
+            f", on Streamlit {show(own[0])}" if own else "")
+    return "linked material"
+
+
 def annotate(chunks: list[Chunk], reported_version: str | None) -> list[Chunk]:
     """The chunks with their notes added (a note the source already has is kept)."""
     out = []
@@ -103,4 +127,4 @@ def annotate(chunks: list[Chunk], reported_version: str | None) -> list[Chunk]:
     return out
 
 
-__all__ = ["annotate", "notes", "versions"]
+__all__ = ["annotate", "notes", "tag", "versions"]
