@@ -188,3 +188,20 @@ def test_completed_and_merged_pieces_are_shown_with_the_text_the_model_saw(app):
     assert [e["label"] for e in shown] == ["S1", "S2"]  # an unknown piece is still left out
     assert shown[0]["text"] == page[:end] and shown[0]["completed"] and shown[0]["cited"]
     assert not shown[1]["completed"]
+
+
+def test_test_cases_are_offered_too_after_the_development_cases(app, monkeypatch):
+    from types import SimpleNamespace
+
+    from supportdesk.eval import cases as cases_module
+    from supportdesk.types import CaseInput
+
+    def case(cid, split):
+        return SimpleNamespace(case_id=cid, split=split,
+                               input=CaseInput(case_id=cid, title=f"title {cid}", body=f"body {cid}", environment={}))
+    monkeypatch.setattr(cases_module, "load_cases", lambda *files, **kw: [case("TEST-1", "test"), case("DEV-1", "dev")])
+    app._dev_cases = None
+    listed = app.dev_cases()
+    assert [(c["id"], c["split"]) for c in listed] == [("DEV-1", "dev"), ("TEST-1", "test")]
+    opened = app.dev_case("TEST-1")
+    assert opened["body"] == "body TEST-1" and set(opened) == {"id", "title", "body", "created_at", "environment", "history"}

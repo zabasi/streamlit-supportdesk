@@ -75,6 +75,7 @@ class App:
         # saved conversations: local, like the cache and the ledger
         self.store = ConversationStore(store_path or settings.paths.artifacts_dir / "web" / "conversations.sqlite")
         self._dev_cases = None
+        self._case_splits: dict = {}
 
     def settings_for(self, pipeline: str) -> Settings:
         if pipeline not in self._resolved:
@@ -135,23 +136,27 @@ class App:
                             "prompt_chunks": settings.prompt_chunks,
                             "candidate_k": settings.pool_size}}
 
-    # --- development cases (inputs only: never rubrics, labels or gold evidence) ----------------
+    # --- evaluation cases, development and test (inputs only: never rubrics, labels or gold evidence) --
     def dev_cases(self) -> list[dict]:
+        """Every evaluation case to start a conversation from, development first, then test, each with its split."""
         if self._dev_cases is None:
             try:
                 from ..eval.cases import load_cases
 
-                cases = load_cases(*self.settings.eval.case_files, split="dev")
+                cases = load_cases(*self.settings.eval.case_files)
             except Exception:  # noqa: BLE001 - no evaluation data on this computer: just none to offer
                 cases = []
+            cases = sorted(cases, key=lambda c: (c.split != "dev", c.split))  # stable: each split keeps its order
             self._dev_cases = {c.case_id: c.input for c in cases}
-        return [{"id": cid, "title": inp.title} for cid, inp in self._dev_cases.items()]
+            self._case_splits = {c.case_id: c.split for c in cases}
+        return [{"id": cid, "title": inp.title, "split": self._case_splits.get(cid, "dev")}
+                for cid, inp in self._dev_cases.items()]
 
     def dev_case(self, case_id: str) -> dict:
         self.dev_cases()
         inp = (self._dev_cases or {}).get(case_id)
         if inp is None:
-            raise BadRequest("unknown development case")
+            raise BadRequest("unknown evaluation case")
         return {"id": case_id, "title": inp.title, "body": inp.body, "created_at": inp.created_at,
                 "environment": dict(inp.environment or {}),
                 "history": [{"role": h.get("role", "user"), "body": h.get("body", "")} for h in inp.history or []]}

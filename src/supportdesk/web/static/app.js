@@ -222,11 +222,13 @@ async function loadCases() {
     h("optgroup", { label: "Examples" }, EXAMPLES.map((ex, i) => h("option", { value: "example:" + i }, ex.title)))];
   try {
     const data = await api("/api/cases");
-    if (data.cases.length) {
-      options.push(h("optgroup", { label: "Development cases" },
-        data.cases.map((c) => h("option", { value: "dev:" + c.id }, `${c.id} — ${c.title}`))));
+    for (const [split, label] of [["dev", "Development cases"], ["test", "Test cases"]]) {
+      const group = data.cases.filter((c) => (c.split || "dev") === split);
+      if (group.length) {
+        options.push(h("optgroup", { label }, group.map((c) => h("option", { value: "dev:" + c.id }, `${c.id} — ${c.title}`))));
+      }
     }
-  } catch (_) { /* no development cases on this computer */ }
+  } catch (_) { /* no evaluation cases on this computer */ }
   select.replaceChildren(...options);
 }
 
