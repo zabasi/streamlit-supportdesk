@@ -20,6 +20,14 @@ _GREETING_ONLY = re.compile(
 )
 
 
+def scope_text(case: CaseInput) -> str:
+    """What the classifier reads: the report's title and cleaned body, then the user's own follow-up messages.
+    A user turned away can clarify ("it is a Streamlit app") and be classified again on what they added;
+    with no follow-ups this is exactly the title and body, so a first turn's request is unchanged."""
+    follow_ups = [clean_report(h.get("body", "")) for h in case.history if h.get("role", "user") == "user"]
+    return "\n".join(x for x in (case.title, clean_report(case.body), *follow_ups) if x).strip()
+
+
 @dataclass(frozen=True)
 class ScopeDecision:
     """Plain-data classification result safe to store in a trace or checkpoint."""
@@ -40,7 +48,7 @@ class RuleScopeClassifier:
     """Free conservative baseline: reject only obvious non-Streamlit input; ambiguous input passes."""
 
     def __call__(self, case: CaseInput) -> ScopeDecision:
-        text = "\n".join(x for x in (case.title, clean_report(case.body)) if x).strip()
+        text = scope_text(case)
         if _STREAMLIT_API.search(text):
             return ScopeDecision("IN_SCOPE", "contains a Streamlit st.* API", "rule")
         if _STREAMLIT_TERMS.search(text):
@@ -75,7 +83,7 @@ class LLMScopeClassifier:
         self.prompt = prompt_path.read_text(encoding="utf-8")
 
     def __call__(self, case: CaseInput) -> ScopeDecision:
-        report = "\n".join(x for x in (case.title, clean_report(case.body)) if x).strip()
+        report = scope_text(case)  # with the user's follow-ups, so a clarified report is classified again
         # Preserve Streamlit APIs from code: clean_report deliberately keeps st.* lines.
         messages = [
             {"role": "system", "content": self.prompt},
@@ -85,4 +93,4 @@ class LLMScopeClassifier:
         return scope_from_text(text, "llm")
 
 
-__all__ = ["LLMScopeClassifier", "RuleScopeClassifier", "ScopeDecision", "scope_from_text"]
+__all__ = ["LLMScopeClassifier", "RuleScopeClassifier", "ScopeDecision", "scope_from_text", "scope_text"]
