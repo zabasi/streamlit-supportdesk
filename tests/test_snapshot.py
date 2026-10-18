@@ -62,7 +62,9 @@ def test_cli_snapshot_writes_one_file_per_pipeline_with_latest_results(tmp_path,
     assert main(["index", *base]) == 0
     assert main(["eval", *base, "--pipeline", "baseline", "--run-id", "b1"]) == 0
     capsys.readouterr()
-    assert main(["snapshot", *base, "--all"]) == 0
+    # point the question bank at an empty place: the result must not depend on the project's data/questions
+    no_bank = ["--set", f"paths.section_questions={tmp_path / 'no-questions'}"]
+    assert main(["snapshot", *base, "--all", *no_bank]) == 0
     captured = capsys.readouterr()
     both = captured.out + captured.err
     assert "pipeline: baseline" in both and "pipeline: advanced" in both
