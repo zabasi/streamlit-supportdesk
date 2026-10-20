@@ -119,7 +119,7 @@ def _wrap(base: StagedPipeline, classifier, *, name: str) -> ScopeGatedPipeline:
 
 
 def build_advanced_scoped(retriever: Retriever, clients: Clients, settings: Settings) -> StagedPipeline:
-    """Improved: scope check first; then report + concept queries, reranked with focused snippets; best 6 merged."""
+    """Improved: scope check first, then cleaned query, doc2query sections, model reranking, controlled answer."""
     base = build_advanced(retriever, clients, settings)
     gate = settings.pipeline.scope_gate  # llm | rules | combined | off
     if gate == "off":  # advanced exactly as without the gate: no check, no extra call

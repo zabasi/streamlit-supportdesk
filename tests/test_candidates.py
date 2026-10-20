@@ -52,17 +52,14 @@ def test_a_candidate_is_candidate_1_but_for_its_differences(name, monkeypatch):
 
 
 def test_advanced_is_the_previous_design_plus_the_two_fixes(monkeypatch):
-    """advanced is candidate 6 (the previous advanced) with version notes and complete questions, the same
-    in every setting as advanced-notes-questions."""
+    """advanced is candidate 6 (the previous design) with version notes and complete questions."""
     from pathlib import Path
 
     monkeypatch.chdir(Path(__file__).resolve().parents[1])
     advanced = flat(Settings.load(env={}, overrides=["pipeline.name=advanced"]))
     previous = flat(Settings.load(env={}, overrides=["pipeline.name=candidate-6-doc2query15-rerank-section-controlled-v2"]))
-    named = flat(Settings.load(env={}, overrides=["pipeline.name=advanced-notes-questions"]))
     assert {k: advanced[k] for k in advanced if advanced[k] != previous[k]} == {
         "pipeline.version_notes": "True", "pipeline.complete_questions": "True"}
-    assert {k: advanced[k] for k in advanced if k != "pipeline.name" and advanced[k] != named[k]} == {}
 
 
 def test_advanced_version_notes_is_advanced_with_the_notes_on(monkeypatch):
@@ -82,9 +79,9 @@ def test_the_notes_and_questions_pipelines_differ_from_advanced_only_in_those_se
     monkeypatch.chdir(Path(__file__).resolve().parents[1])
     advanced = flat(Settings.load(env={}, overrides=["pipeline.name=candidate-6-doc2query15-rerank-section-controlled-v2"]))  # the previous advanced
     fixes = {"pipeline.version_notes": "True", "pipeline.complete_questions": "True"}
-    for name, extra in (("advanced-notes-questions", {}),
-                        ("advanced-notes-questions-gpt5mini", {"pipeline.answer_model": "gpt-5-mini"}),
-                        ("advanced-notes-questions-v4-gpt5mini",
+    for name, extra in (("advanced", {}),
+                        ("advanced-gpt5mini", {"pipeline.answer_model": "gpt-5-mini"}),
+                        ("advanced-v4-gpt5mini",
                          {"pipeline.answer_model": "gpt-5-mini", "pipeline.controlled_version": "v4"})):
         other = flat(Settings.load(env={}, overrides=[f"pipeline.name={name}"]))
         assert {k: other[k] for k in other if other[k] != advanced[k]} == {**fixes, **extra}, name

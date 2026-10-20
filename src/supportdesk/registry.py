@@ -106,19 +106,16 @@ from .retrieval.section_questions import build_question_retriever
 
 #: Pipelines by name: each builds the pipeline from (retriever, clients, settings); its docstring is its one-line description.
 PIPELINES = {"baseline": build_baseline, "advanced": build_advanced_scoped,
-             # the four candidate retrieval designs (configs/pipelines/candidate-*.toml): advanced's stages
-             # with their own settings
-             # advanced with version and usage notes on each evidence piece (configs/pipelines/advanced-version-notes.toml)
-             "advanced-version-notes": build_advanced_scoped,
-             # advanced with the answer step's model changed to gpt-5-mini (configs/pipelines/advanced-gpt5mini.toml)
+             # the final design with the cheaper gpt-5-mini answer model (configs/pipelines/advanced-gpt5mini.toml)
              "advanced-gpt5mini": build_advanced_scoped,
-             # advanced with version notes and complete questions, with gpt-5.4-mini or gpt-5-mini
-             "advanced-notes-questions": build_advanced_scoped,
-             # advanced with version-aware retrieval (configs/pipelines/advanced-version-retrieval.toml)
+             # ---- experiments: profiles in configs/pipelines/experiments/<group>/ ----
+             # answer step (experiments/answer/): version notes alone, version-aware retrieval, the v4 answer
+             # rules with gpt-5-mini, and the previous design (candidate 6) with gpt-5-mini
+             "advanced-version-notes": build_advanced_scoped,
              "advanced-version-retrieval": build_advanced_scoped,
-             "advanced-notes-questions-gpt5mini": build_advanced_scoped,
-             # the same with the answer package v4 (configs/pipelines/advanced-notes-questions-v4-gpt5mini.toml)
-             "advanced-notes-questions-v4-gpt5mini": build_advanced_scoped,
+             "advanced-v4-gpt5mini": build_advanced_scoped,
+             "previous-design-gpt5mini": build_advanced_scoped,
+             # the nine end-to-end candidates compared before the final choice (experiments/candidates/)
              "candidate-1-dense-rerank-section": build_advanced_scoped,
              "candidate-2-doc2query15-rerank-section": build_advanced_scoped,
              "candidate-3-dense-dualrerank-section": build_advanced_scoped,

@@ -1,7 +1,7 @@
 """Configuration: one typed, validated object; every tunable lives here, none elsewhere.
 
 Precedence, lowest to highest: built-in defaults, ``configs/default.toml``, the pipeline profile
-(``configs/pipelines/<pipeline.name>.toml``), ``$SUPPORTDESK_CONFIG``, each ``--config`` file,
+(``configs/pipelines/<pipeline.name>.toml``, or under ``configs/pipelines/experiments/``), ``$SUPPORTDESK_CONFIG``, each ``--config`` file,
 ``SUPPORTDESK__SECTION__KEY`` environment variables, then ``--set section.key=value``.
 
 Each value remembers which layer set it (``supportdesk config`` prints it). Unknown keys, wrong
@@ -556,9 +556,16 @@ def _check_profile(layer: dict, path: Path) -> None:
 
 
 def _profile_path(name: str) -> Path | None:
-    if re.fullmatch(r"[A-Za-z0-9_-]+", name) and (PROFILE_DIR / f"{name}.toml").is_file():
+    """The profile for a pipeline name: ``configs/pipelines/<name>.toml`` for the main pipelines, or
+    the one file of that name under ``configs/pipelines/experiments/`` (grouped by what they test)."""
+    if not re.fullmatch(r"[A-Za-z0-9_-]+", name):
+        return None
+    if (PROFILE_DIR / f"{name}.toml").is_file():
         return PROFILE_DIR / f"{name}.toml"
-    return None
+    found = sorted(PROFILE_DIR.glob(f"experiments/**/{name}.toml"))
+    if len(found) > 1:
+        raise ConfigError(f"pipeline {name!r} has more than one profile: {[str(p) for p in found]}")
+    return found[0] if found else None
 
 
 @dataclass(frozen=True)

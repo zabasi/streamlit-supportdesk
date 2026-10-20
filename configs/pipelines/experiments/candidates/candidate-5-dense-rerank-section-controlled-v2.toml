@@ -1,10 +1,12 @@
-# advanced-notes-questions-gpt5mini: advanced-notes-questions with the answer model gpt-5-mini.
-# advanced (configs/pipelines/advanced.toml) with the two answer-step fixes from the failure analysis:
-# - version notes (pipeline.version_notes): each evidence piece says what version it describes, compared
-#   with the reporter's, and how it may be used (pipelines/stages/version_notes.py);
-# - complete questions (pipeline.complete_questions): a question asks for every material gap the user can
-#   supply, not only the first (pipelines/stages/complete_questions.py).
-# Retrieval, the answer package (controlled v2) and everything else are advanced's.
+# candidate-5-dense-rerank-section-controlled-v2: candidate 1's retrieval with the controlled-routing v2
+# answer step (supportdesk/generation/controlled_v2, vendored unchanged from its packaged handoff).
+# Retrieval as candidate 1: 70.1% of gold passages in the prompt on the development cases. The answer step
+# makes one structured assessment with gpt-5.4-mini (reasoning_effort medium, 8,000 completion tokens, a
+# strict JSON schema), and Python routes the action: answer, request_info or escalate.
+# Its own development run used curated gold passages, not retrieval: 11 of 15 actions matched (73.3%), for
+# about $0.26 (about $0.018 per case, about 20 times the gpt-4o-mini answer step). Not yet measured on
+# retrieved evidence. See docs/generation/README.md.
+# Fair comparison: run the baseline at this budget too (--set retrieval.top_k=8 --set context.max_tokens=4300).
 
 [chunking]
 method = "fixed"
@@ -12,7 +14,6 @@ max_tokens = 512
 overlap_tokens = 128
 
 [retrieval]
-question_sections = 15         # documentation sections added through their symptom questions
 top_k = 8                    # pieces the model sees
 candidate_k = 15             # candidates the reranker orders
 rerank_snippet_chars = 400   # characters of each candidate the reranker sees
@@ -32,11 +33,8 @@ max_query_chars = 4000
 max_body_chars = 4000
 
 [pipeline]
-version_notes = true             # each evidence piece says what version it describes, and how it may be used
-complete_questions = true        # a question asks for every material gap the user can supply
-answer_model = "gpt-5-mini"      # the cheaper answer model
-generator = "controlled_v2"    # one structured assessment by gpt-5.4-mini; Python routes the action
-retriever = "question_doc_slots"  # dense candidates plus sections found through their symptom questions
+generator = "controlled_v2"      # one structured assessment by gpt-5.4-mini; Python routes the action
+retriever = "dense_doc_slots"
 scope_gate = "llm"           # the scope check before retrieval is part of advanced's design
 
 [prompts]

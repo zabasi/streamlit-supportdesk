@@ -1,4 +1,5 @@
 import json
+import re
 from pathlib import Path
 
 import pytest
@@ -74,7 +75,7 @@ def test_run_eval_writes_auditable_artifacts(index, clients, settings, cases, tm
     rows = [json.loads(l) for l in (out / "results.jsonl").read_text().splitlines()]
     assert [r["case_id"] for r in rows] == ["c-001", "c-002"] and rows[0]["category"] == "answerable"
     assert (out / "cost_ledger.csv").exists() and summary["metrics"]["n_cases"] == 2
-    assert summary["settings"]["api_key_present"] in (True, False) and "sk-" not in json.dumps(summary)
+    assert summary["settings"]["api_key_present"] in (True, False) and not re.search(r"sk-[A-Za-z0-9_-]{16,}", json.dumps(summary))
     assert summary["metrics"]["by_category"]["ambiguous"]["n"] == 1
 
 

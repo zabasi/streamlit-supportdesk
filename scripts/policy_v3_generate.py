@@ -75,8 +75,8 @@ class RelaxedChat:
             print(f"  gateway rejected {sorted(self.drop)}; retrying this call", flush=True)
             return self.inner.complete(messages, stage=stage, json_mode=json_mode, extra=extra)
 
-SNAP = ROOT / "experiments" / "generation_policy_v3" / "results" / "metrics.json"
-ORIG_CASES = ROOT / "experiments" / "generation_policy_v3" / "results" / "case-results.csv"
+SNAP = ROOT / "data" / "experiments" / "policy_v3" / "results" / "metrics.json"
+ORIG_CASES = ROOT / "data" / "experiments" / "policy_v3" / "results" / "case-results.csv"
 HW03_ADV = GEN_OUT / "advanced" / "turns.jsonl"
 POLICY_OUT = GEN_OUT / "policy_v3"
 LIVE_OUT = GEN_OUT / "policy_v3_gpt54mini"

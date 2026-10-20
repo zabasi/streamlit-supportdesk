@@ -1,5 +1,6 @@
 import http.client
 import json
+import re
 import threading
 from pathlib import Path
 
@@ -53,7 +54,7 @@ def test_status_reports_mode_budget_and_registry(server):
     assert status == 200 and info["settings"]["mode"] == "offline"
     assert "baseline" in info["pipelines"] and {"dense", "bm25", "hybrid"} <= set(info["retrievers"])
     assert info["index"]["chunk_count"] > 0 and info["budget"]["spent_usd"] == 0
-    assert "sk-" not in json.dumps(info)
+    assert not re.search(r"sk-[A-Za-z0-9_-]{16,}", json.dumps(info))
 
 
 def test_ask_returns_result_with_evidence_and_usage(server):

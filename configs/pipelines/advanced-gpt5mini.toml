@@ -1,7 +1,8 @@
-# advanced-gpt5mini: advanced (configs/pipelines/advanced.toml) with the answer step's model changed to
-# gpt-5-mini (pipeline.answer_model). Everything else is advanced's: the same retrieval, the same package
-# request (prompt, strict schema, reasoning effort), sent to gpt-5-mini instead of gpt-5.4-mini.
-# Prices: gpt-5-mini $0.25 / $2.00 per million tokens (in / out), gpt-5.4-mini $0.75 / $4.50.
+# advanced-gpt5mini: the final design (advanced) with the answer model gpt-5-mini, about a third of the
+# cost. Everything else is advanced's: the same retrieval, version notes and complete questions, the same
+# answer package request (prompt, strict schema, reasoning effort), sent to gpt-5-mini instead of gpt-5.4-mini.
+# On the development cases it made 11 correct decisions (advanced 12) and did not escalate in any run.
+# Retrieval, the answer package (controlled v2) and everything else are advanced's.
 
 [chunking]
 method = "fixed"
@@ -29,7 +30,9 @@ max_query_chars = 4000
 max_body_chars = 4000
 
 [pipeline]
-answer_model = "gpt-5-mini"      # the answer step's model: cheaper than gpt-5.4-mini
+version_notes = true             # each evidence piece says what version it describes, and how it may be used
+complete_questions = true        # a question asks for every material gap the user can supply
+answer_model = "gpt-5-mini"      # the cheaper answer model
 generator = "controlled_v2"    # one structured assessment by gpt-5.4-mini; Python routes the action
 retriever = "question_doc_slots"  # dense candidates plus sections found through their symptom questions
 scope_gate = "llm"           # the scope check before retrieval is part of advanced's design

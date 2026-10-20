@@ -1,10 +1,8 @@
-# advanced-notes-questions: answer model gpt-5.4-mini (as advanced).
-# advanced (configs/pipelines/advanced.toml) with the two answer-step fixes from the failure analysis:
-# - version notes (pipeline.version_notes): each evidence piece says what version it describes, compared
-#   with the reporter's, and how it may be used (pipelines/stages/version_notes.py);
-# - complete questions (pipeline.complete_questions): a question asks for every material gap the user can
-#   supply, not only the first (pipelines/stages/complete_questions.py).
-# Retrieval, the answer package (controlled v2) and everything else are advanced's.
+# advanced-v4-gpt5mini: advanced-gpt5mini with the answer package v4.
+# v4 is the delivered v2 with three generic prompt rules: a gap the report already states is marked as
+# supplied; a report with runnable code or exact steps, the version and observed versus expected behavior
+# that the evidence does not explain records an internal investigation (optional confirmations are not
+# material gaps); and word limits on user-facing text. Everything else as advanced-gpt5mini.
 
 [chunking]
 method = "fixed"
@@ -34,6 +32,8 @@ max_body_chars = 4000
 [pipeline]
 version_notes = true             # each evidence piece says what version it describes, and how it may be used
 complete_questions = true        # a question asks for every material gap the user can supply
+controlled_version = "v4"        # three added prompt rules (generation/controlled_v4/manifest.json)
+answer_model = "gpt-5-mini"      # the cheaper answer model
 generator = "controlled_v2"    # one structured assessment by gpt-5.4-mini; Python routes the action
 retriever = "question_doc_slots"  # dense candidates plus sections found through their symptom questions
 scope_gate = "llm"           # the scope check before retrieval is part of advanced's design

@@ -1,6 +1,6 @@
-# Settings for the advanced pipeline (--pipeline advanced): the final design, the same as
-# advanced-notes-questions: candidate-6-doc2query15-rerank-section-controlled-v2 (the previous advanced)
-# with two answer-step fixes from the failure analysis. Every key here overrides configs/default.toml for
+# Settings for the advanced pipeline (--pipeline advanced): the final design. It is the previous design
+# (experiments/candidates/candidate-6-doc2query15-rerank-section-controlled-v2) with two answer-step
+# fixes from the failure analysis. Every key here overrides configs/default.toml for
 # this pipeline only; --config and --set still override it.
 #
 # Retrieval: the cleaned report is the only query; dense search returns 15 candidates, 10 of them

@@ -136,9 +136,10 @@ class WeightedFusionPipeline(StagedPipeline):
         return self._bm25_retriever
 
 def build_advanced(retriever: Retriever, clients: Clients, settings: Settings) -> StagedPipeline:
-    """Improved: report + concept queries; reranked on focused snippets with the concepts; best 6 merged.
-    With retrieval.decompose = false, the cleaned report is the only query: no concept queries, no
-    "Mechanisms involved" for the reranker, and the reranking prompt without them; the rest is unchanged."""
+    """Improved: cleaned query, model reranking, whole sections; the answer step its profile selects.
+    Every choice comes from the pipeline's profile: with configs/pipelines/advanced.toml the cleaned report
+    is the only query (retrieval.decompose = false), doc2query sections join the candidates, one call
+    reranks them, the best 8 grow to their whole sections, and the controlled answer package decides."""
     if not settings.retrieval.decompose:
         prompts = settings.prompts
         if Path(prompts.rerank).name == CONCEPTS_RERANK:  # the concepts prompt refers to a list that is now absent

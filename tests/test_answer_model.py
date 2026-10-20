@@ -61,6 +61,8 @@ def test_advanced_gpt5mini_is_advanced_with_only_the_answer_model_changed(monkey
 
     from tests.test_candidates import flat
     monkeypatch.chdir(Path(__file__).resolve().parents[1])
-    advanced = flat(Settings.load(env={}, overrides=["pipeline.name=candidate-6-doc2query15-rerank-section-controlled-v2"]))  # the previous advanced
-    cheaper = flat(Settings.load(env={}, overrides=["pipeline.name=advanced-gpt5mini"]))
-    assert {k: cheaper[k] for k in cheaper if cheaper[k] != advanced[k]} == {"pipeline.answer_model": "gpt-5-mini"}
+    for name, reference in (("advanced-gpt5mini", "advanced"),
+                            ("previous-design-gpt5mini", "candidate-6-doc2query15-rerank-section-controlled-v2")):
+        base = flat(Settings.load(env={}, overrides=[f"pipeline.name={reference}"]))
+        cheaper = flat(Settings.load(env={}, overrides=[f"pipeline.name={name}"]))
+        assert {k: cheaper[k] for k in cheaper if cheaper[k] != base[k]} == {"pipeline.answer_model": "gpt-5-mini"}, name
