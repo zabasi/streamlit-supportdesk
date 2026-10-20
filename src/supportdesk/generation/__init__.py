@@ -1,4 +1,4 @@
-"""Generation: HW03 grounded checker, plus policy-v3 support records."""
+"""Generation: the grounded checker, plus policy-v3 support records."""
 
 from .grounded import (
     ExtractiveAnswerer,

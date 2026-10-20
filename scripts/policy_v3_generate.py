@@ -77,7 +77,7 @@ class RelaxedChat:
 
 SNAP = ROOT / "data" / "experiments" / "policy_v3" / "results" / "metrics.json"
 ORIG_CASES = ROOT / "data" / "experiments" / "policy_v3" / "results" / "case-results.csv"
-HW03_ADV = GEN_OUT / "advanced" / "turns.jsonl"
+GROUNDED_ADV = GEN_OUT / "advanced" / "turns.jsonl"
 POLICY_OUT = GEN_OUT / "policy_v3"
 LIVE_OUT = GEN_OUT / "policy_v3_gpt54mini"
 PREV_LIVE = GEN_OUT / "policy_v3_gpt54mini"
@@ -107,7 +107,7 @@ def _write_report(path: Path, *, matrix: dict, live: dict | None = None) -> None
         f"Generated {datetime.now(timezone.utc).isoformat(timespec='seconds')}.",
         "",
         ("This is the tested support-record generator (one JSON call, literal report "
-        "quotes, official `answer` / `request_info` / `escalate`). It is not the HW03 "
+        "quotes, official `answer` / `request_info` / `escalate`). It is not the the grounded checker "
         "claim-support checker."),
         "",
         "## Measured run (2026-10-16, gold passages, gpt-5.4-mini)",
@@ -207,15 +207,15 @@ def _read_csv(path: Path) -> list[dict]:
         return list(csv.DictReader(handle))
 
 
-def _hw03_advanced() -> dict:
-    if not HW03_ADV.is_file():
+def _grounded_advanced() -> dict:
+    if not GROUNDED_ADV.is_file():
         return {}
-    turns = [json.loads(line) for line in HW03_ADV.read_text(encoding="utf-8").splitlines()
+    turns = [json.loads(line) for line in GROUNDED_ADV.read_text(encoding="utf-8").splitlines()
              if line.strip()]
     summary = json.loads((GEN_OUT / "advanced" / "summary.json").read_text(encoding="utf-8"))
     total = sum(_cost_of(t) for t in turns)
     return {
-        "method": "hw03_advanced",
+        "method": "grounded_advanced",
         "model": "gpt-4o-mini",
         "evidence": "retrieval packet (advanced)",
         "outcome_accuracy": (summary.get("metrics") or {}).get("headline", {}).get("outcome_accuracy"),
@@ -352,7 +352,7 @@ def _write_head_to_head(path: Path, *, live: dict, costs: dict) -> None:
     orig_rows = _read_csv(ORIG_CASES)
     orig_cost = sum(float(r.get("cost_usd") or 0) for r in orig_rows)
     orig_match = sum(1 for r in orig_rows if str(r.get("action_label_match")).lower() == "true")
-    hw03 = _hw03_advanced()
+    grounded = _grounded_advanced()
     live_h = live["metrics"]["headline"]
     live_acc = live_h.get("outcome_accuracy")
     orig_acc = orig_match / len(orig_rows) if orig_rows else None
@@ -377,25 +377,25 @@ def _write_head_to_head(path: Path, *, live: dict, costs: dict) -> None:
             "total_cost_usd": costs.get("total_cost_usd"),
         },
         {
-            "name": "this repo HW03 grounded + advanced retrieve",
-            "model": hw03.get("model"),
-            "evidence": hw03.get("evidence"),
-            "correct": round((hw03.get("outcome_accuracy") or 0) * (hw03.get("n_cases") or 0)),
-            "n": hw03.get("n_cases") or 0,
-            "accuracy": hw03.get("outcome_accuracy"),
-            "total_cost_usd": hw03.get("total_cost_usd"),
+            "name": "this repo grounded checker + advanced retrieve",
+            "model": grounded.get("model"),
+            "evidence": grounded.get("evidence"),
+            "correct": round((grounded.get("outcome_accuracy") or 0) * (grounded.get("n_cases") or 0)),
+            "n": grounded.get("n_cases") or 0,
+            "accuracy": grounded.get("outcome_accuracy"),
+            "total_cost_usd": grounded.get("total_cost_usd"),
         },
     ]
     ranked = sorted(candidates, key=lambda c: (-(c["accuracy"] or -1), c["total_cost_usd"] or 99))
     winner = ranked[0]
 
     lines = [
-        "# Policy v3 gpt-5.4-mini vs generation-folder best vs HW03 advanced",
+        "# Policy v3 gpt-5.4-mini vs generation-folder best vs grounded advanced",
         "",
         f"Generated {datetime.now(timezone.utc).isoformat(timespec='seconds')}.",
         "",
         "Same 15 annotated development cases. Gold labels: 6 answer / 6 request_info / 3 escalate.",
-        "The generation-folder run used curated selected passages. HW03 used retrieved packets.",
+        "The generation-folder run used curated selected passages. the grounded checker used retrieved packets.",
         "This live run used the same gold passages as the generation folder.",
         "",
         "## Costs (this live run)",
@@ -433,13 +433,13 @@ def _write_head_to_head(path: Path, *, live: dict, costs: dict) -> None:
         "",
         format_confusion(live_h.get("confusion_matrix") or {}),
         "",
-        "### HW03 advanced confusion",
+        "### grounded advanced confusion",
         "",
-        format_confusion(hw03.get("confusion") or {}) if hw03.get("confusion") else "(missing)",
+        format_confusion(grounded.get("confusion") or {}) if grounded.get("confusion") else "(missing)",
         "",
         "## Per-case actions",
         "",
-        "| case_id | gold | generation-folder v3 | this live v3 | HW03 advanced | live cost | folder cost |",
+        "| case_id | gold | generation-folder v3 | this live v3 | grounded advanced | live cost | folder cost |",
         "|---|---|---|---|---|---:|---:|",
     ]
     gold_of = {r.get("case_id"): r.get("expected_action") for r in orig_rows}
@@ -447,11 +447,11 @@ def _write_head_to_head(path: Path, *, live: dict, costs: dict) -> None:
     folder_cost = {r.get("case_id"): r.get("cost_usd") for r in orig_rows}
     live_of = {t["case_id"]: t.get("outcome") for t in (live.get("turns") or [])}
     live_cost = {t["case_id"]: _cost_of(t) for t in (live.get("turns") or [])}
-    hw03_of = hw03.get("outcomes") or {}
+    grounded_of = grounded.get("outcomes") or {}
     for case_id in gold_of or live_of:
         lines.append(
             f"| {case_id} | {gold_of.get(case_id, '')} | {folder_of.get(case_id, '')} | "
-            f"{live_of.get(case_id, '')} | {hw03_of.get(case_id, '')} | "
+            f"{live_of.get(case_id, '')} | {grounded_of.get(case_id, '')} | "
             f"{live_cost.get(case_id, '')} | {folder_cost.get(case_id, '')} |")
     lines += [
         "",
@@ -462,7 +462,7 @@ def _write_head_to_head(path: Path, *, live: dict, costs: dict) -> None:
         f"(accuracy {winner['accuracy']}), total ${winner['total_cost_usd']}."),
         "",
         ("Accuracy is the official outcome match. The generation-folder and this live "
-        "v3 run share gold evidence; HW03 is harder because it only sees retrieved chunks. "
+        "v3 run share gold evidence; the grounded checker is harder because it only sees retrieved chunks. "
         "Do not treat a contract-valid JSON record as a verified Streamlit patch."),
         "",
     ]

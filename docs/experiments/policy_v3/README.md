@@ -1,6 +1,6 @@
 # Generation policy v3
 
-A second generation layer, next to the HW03 grounded checker. The HW03 path
+A second generation layer, next to the grounded checker. The the grounded checker path
 (`docs/experiments/hier_class/generation.md`) answers from a retrieval packet and **refuses**
 when claim-support fails. Policy v3 writes a **support record**: it picks
 `answer` / `request_info` / `escalate`, cites labelled evidence, and the controller
@@ -67,11 +67,11 @@ Confusion (rows gold, columns predicted):
 | escalate | 1 | 0 | 2 | 3 |
 | **total** | 6 | 2 | 7 | 15 |
 
-Compare with HW03 `advanced` on **retrieval packets** and `gpt-4o-mini`: 6/15 (0.40),
+Compare with grounded `advanced` on **retrieval packets** and `gpt-4o-mini`: 6/15 (0.40),
 and that run *did* check claim support. These two scores are not interchangeable:
 
 - Policy v3 9/15 used **gold passages** and a stronger model.
-- HW03 6/15 used **retrieved chunks** and `gpt-4o-mini`.
+- the grounded checker 6/15 used **retrieved chunks** and `gpt-4o-mini`.
 - Policy v3 does not refuse an answer whose words fail lexical claim support; it
   only checks IDs, schema, and Python syntax as a warning.
 
@@ -90,7 +90,7 @@ Same model (`gpt-5.4-mini`), same gold passages. Only the system prompt changed.
 v3b chooses `request_info` → `answer` → `escalate` before writing a patch.
 v3c keeps that order but forbids turning a reproduced product mismatch into
 `answer` just because a workaround exists; it over-escalates some clarification
-cases. HW03 `advanced` on retrieved packets remains 6/15.
+cases. grounded `advanced` on retrieved packets remains 6/15.
 
 Result files:
 
@@ -106,21 +106,21 @@ Result files:
 2. Retrieval adapter: `sources_from_packet` turns an `advanced` (or other) packet
    into the same `[S1]…` list. That is the RAG integration the original handoff
    asked for; it has **not** been live-scored yet.
-3. Metrics: `PolicyTurn.to_dict()` feeds the same confusion-matrix code as HW03.
+3. Metrics: `PolicyTurn.to_dict()` feeds the same confusion-matrix code as the grounded checker.
 
 ## What would make it better
 
-The measured 9/15 is already stronger on **action labels** than HW03 `advanced`
+The measured 9/15 is already stronger on **action labels** than grounded `advanced`
 (6/15), but it is not a finished generator. Highest-leverage changes, in order:
 
 1. **Score it on retrieval packets, not gold passages.** The 9/15 used reviewer
    spans. `sources_from_packet` is in the repo; a live `--evidence packet` run is
-   the first number that can be compared with HW03.
+   the first number that can be compared with the grounded checker.
 2. **Keep clarification and escalate from fighting each other.** v3b fixed
    most `request_info` misses (5/6) but dropped escalate to 1/3. v3c restored
    escalate (3/3) and lost two clarification cases. A prompt that holds both
    cells is still open.
-3. **Keep the HW03 claim-support check on `answer`.** Policy v3 guarantees quote
+3. **Keep the grounded checker's claim-support check on `answer`.** Policy v3 guarantees quote
    *origin*, not that the reply’s words are in `[S1]`. Attach `validate_grounded`
    as warnings or a withhold, without repairing JSON.
 4. **Do not treat 15/15 contract-valid as quality.** Assistant review still wanted

@@ -360,5 +360,5 @@
       }
     ]
   },
-  "retrieval_run": "D:\\QBC 13\\Project\\streamlit-supportdesk-main\\artifacts\\hier_class_rag\\runs\\llm_llm"
+  "retrieval_run": "artifacts\\hier_class_rag\\runs\\llm_llm"
 }

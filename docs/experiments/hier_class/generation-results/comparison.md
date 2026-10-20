@@ -2,7 +2,7 @@
 
 Generated 2026-10-16T14:19:22+00:00. Same annotated dev gold. Retrieval packets reused; only the answer call is new.
 
-A grounded assistant is not one that cites; it is one that can be checked, and refuses when the check fails (Week 3 HW03 / class lab).
+A grounded assistant is not one that cites; it is one that can be checked, and refuses when the check fails.
 
 | method | answer | request_info | escalate | validation_failed | outcome accuracy | answerable | ambiguous | escalation | claim support | citation precision |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
@@ -16,8 +16,8 @@ A grounded assistant is not one that cites; it is one that can be checked, and r
 - **answer / request_info / escalate**: the official support decision. Gold is the eval case category (`answerable` → answer, `ambiguous` → request_info, `escalation` → escalate).
 - **outcome accuracy**: share of cases whose delivered decision is in `acceptable_outcomes`. Split by category in the next three columns.
 - **confusion matrix** (below): rows are gold, columns are what the model delivered. Diagonal is correct. `validation_failed` is a blocked ungrounded `answer`, not a gold label.
-- **claim support**: share of claims whose words appear in the *cited* packet passages. HW03 bar was ≥ 0.90.
-- **citation precision**: share of cited ids that are in this turn's packet. HW03 bar was ≥ 0.95; outside packet must be 0.
+- **claim support**: share of claims whose words appear in the *cited* packet passages. The usual bar is ≥ 0.90.
+- **citation precision**: share of cited ids that are in this turn's packet. The usual bar is ≥ 0.95; outside packet must be 0.
 - **answered after failure** must be 0: a rejected payload is never shown.
 - **abstention F1**: should refuse when the packet has no gold source; should answer when it does. Precision + recall, because refusing everything or answering everything both look good on one number alone.
 - **completeness vs gold spans**: of the reviewer-selected words, how many appear in the delivered answer. Retrieval can be fine and this still low if the model hedges.

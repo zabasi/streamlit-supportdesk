@@ -9,7 +9,7 @@ Stay on `--split dev`. Do not commit `.env`.
 
 - What each method does: `docs/experiments/hier_class/methods.md`
 - Worked numbers: `docs/experiments/hier_class/examples.md`
-- Grounded generation (HW03 layer) + metrics: `docs/experiments/hier_class/generation.md`
+- Grounded generation + metrics: `docs/experiments/hier_class/generation.md`
 - Generation policy v3 (support record; best prompt v3b is 12/15 on gold passages): `docs/experiments/policy_v3/README.md`
 - HTML reports (open in a browser):
   - one change vs `advanced`: `artifacts/hier_class_rag/report_one_change.html`
@@ -258,5 +258,3 @@ python scripts/hier_class_rag.py --mode live --methods advanced_llmchunk_llmfilt
 - HyDE and query-side routing context: <https://arxiv.org/abs/2212.10496>
 - Recall@k / MRR (the metrics already in `eval/metrics.py`): <https://en.wikipedia.org/wiki/Evaluation_measures_(information_retrieval)>
 
-Class notebooks (local, not links): HW03 LangChain contents and `Week03_ClassLab_student` — text
-splitters and RAG routing are the pieces reused here.

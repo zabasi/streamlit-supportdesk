@@ -1,6 +1,6 @@
 """Grounded generation on top of finished hier_class_rag retrieval runs.
 
-Reuses each method's stored packet (no second retrieve). Asks the model with the HW03
+Reuses each method's stored packet (no second retrieve). Asks the model with the
 delimited <question>/<evidence> schema, parses without repair, validates citations and
 claim support, and refuses when the check fails.
 
@@ -122,7 +122,7 @@ def _write_comparison(rows: dict[str, dict], path: Path) -> None:
         "",
         (
             "A grounded assistant is not one that cites; it is one that can be checked, "
-            "and refuses when the check fails (Week 3 HW03 / class lab)."
+            "and refuses when the check fails."
         ),
         "",
         (
@@ -175,11 +175,11 @@ def _write_comparison(rows: dict[str, dict], path: Path) -> None:
         ),
         (
             "- **claim support**: share of claims whose words appear in the *cited* packet passages. "
-            "HW03 bar was ≥ 0.90."
+            "The usual bar is ≥ 0.90."
         ),
         (
             "- **citation precision**: share of cited ids that are in this turn's packet. "
-            "HW03 bar was ≥ 0.95; outside packet must be 0."
+            "The usual bar is ≥ 0.95; outside packet must be 0."
         ),
         "- **answered after failure** must be 0: a rejected payload is never shown.",
         (
@@ -245,7 +245,7 @@ def main() -> int:
     records = {r.source_id: r for r in load_corpus(settings.paths.data_dir).records}
     if args.mode == "offline":
         chat = ExtractiveAnswerer()
-        print("offline: extractive stand-in (class-lab style). Not a real model score.")
+        print("offline: extractive stand-in. Not a real model score.")
     else:
         chat = build_clients(settings).chat
 

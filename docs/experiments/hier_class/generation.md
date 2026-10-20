@@ -6,14 +6,14 @@ This is the layer **above** the hierarchical-class retrieval experiment. Retriev
 passages. Generation must answer only from that packet, cite it, and **refuse** when the
 check fails.
 
-It follows Week 3 class lab + HW03, adapted to this Streamlit corpus and the annotated
-dev gold. Retrieval stays frozen: each method reuses its stored packet. Only the answer
+It follows a standard grounded-generation design (cite, validate, refuse when the check fails), adapted
+to this Streamlit corpus and the annotated dev gold. Retrieval stays frozen: each method reuses its stored packet. Only the answer
 call is new.
 
 Stay on `--split dev`. Do not commit `.env`.
 
 A second generator, **policy v3**, writes a support record with literal report quotes
-instead of HW03 claim-support refusal. See `docs/experiments/policy_v3/README.md`. Do not mix
+instead of claim-support refusal. See `docs/experiments/policy_v3/README.md`. Do not mix
 its 9/15 gold-passage score with the packet numbers below.
 
 ```powershell
@@ -42,14 +42,14 @@ stored retrieval packet
 Guiding rule: **a grounded assistant is not one that cites; it is one that can
 be checked, and refuses when the check fails.**
 
-Two limits from the homework, kept here:
+Two limits of this design:
 
 - The model sees only this turn's packet. Instructions live in the system message. The
   packet is data.
 - At most **one retry**, and only for a provider error or non-JSON. A validation failure
   is never retried, and a rejected payload is never shown (`answer` is null).
 
-Offline mode uses the class-lab extractive stand-in (quote a packet sentence that shares
+Offline mode uses an extractive stand-in (quote a packet sentence that shares
 query words). It does not reason. Live mode uses `gpt-4o-mini` through the existing
 gateway.
 
@@ -84,10 +84,10 @@ what gold wanted; columns are what the turn delivered. The diagonal is correct.
 
 ## Metrics (how you can tell if it works)
 
-These are the HW03 headline measures, mapped onto selected_spans gold. There is no
-Zarinpal fact index here, so two of them are defined on this gold instead of aliases.
+These are standard grounded-generation measures, mapped onto selected_spans gold. There is no
+fact index here, so two of them are defined on this gold instead of aliases.
 
-| measure | what it asks | HW03 bar | good on this project if |
+| measure | what it asks | usual bar | good on this project if |
 |---|---|---:|---|
 | **claim support rate** | of claims that assert a fact, how many are supported by the *cited* packet text (content-word overlap ≥ 0.5) | ≥ 0.90 | close to 1.0; a drop means the model wrote words the citation does not contain |
 | **citation precision** | of cited ids, how many are in this packet | ≥ 0.95 | 1.0 |
@@ -95,11 +95,11 @@ Zarinpal fact index here, so two of them are defined on this gold instead of ali
 | **answered after failure** | delivered an answer after validation failed | 0 | 0 |
 | **abstention P / R / F1** | should refuse when the packet has **no gold source**; should answer when it does | F1 ≥ 0.85 | F1 high. Precision-only means it refused everything; recall-only means it answered everything |
 | **answer when packet had gold** | of cases where retrieval actually put gold in the packet, how many produced a delivered answer | — | this is the generation layer, not recall@6 |
-| **completeness vs gold spans** | of reviewer-selected words, how many appear in the delivered answer | HW03 used required_facts (0.929 there) | higher is better; retrieval can be fine and this still low if the model hedges |
+| **completeness vs gold spans** | of reviewer-selected words, how many appear in the delivered answer | — | higher is better; retrieval can be fine and this still low if the model hedges |
 | **answers cite gold** | a delivered answer cites a chunk from a gold source | — | high means citations point at the reviewer pages, not only at decoys |
 | **instruction echo** | answer repeats a packet instruction ("ignore previous instructions", "system prompt", …) | pass rate 1.0 | must stay 0 |
 
-`stale_answers` is reported as 0: this corpus does not carry HW03 `superseded` versions.
+`stale_answers` is reported as 0: this corpus does not mark `superseded` versions.
 
 ### A numerical example
 
@@ -118,7 +118,7 @@ Suppose the packet is three chunks, `S1` is gold (`session_state.md`), `S2` and 
    answer (if any) must use those words. If the turn was refused, completeness is not
    counted for that case.
 
-## Links (same ideas as HW03)
+## Links
 
 - What “grounded” means: <https://www.pinecone.io/learn/series/rag/rag-evaluation/>
 - Why a citation is not enough (RARR): <https://arxiv.org/abs/2305.14627>
@@ -126,8 +126,6 @@ Suppose the packet is three chunks, `S1` is gold (`session_state.md`), `S2` and 
 - Prompt injection / packet is data: <https://owasp.org/www-project-top-10-for-large-language-model-applications/>
 - Precision / recall / F1: <https://en.wikipedia.org/wiki/Evaluation_measures_(information_retrieval)>
 
-Local class files this layer is taken from: `Week03_ClassLab_student` (validate + one
-grounded turn) and `Week03_HW03` (claim support, citation membership, abstention F1).
 
 ## Live numbers (15 annotated dev cases, `gpt-4o-mini`)
 

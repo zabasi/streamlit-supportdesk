@@ -1,7 +1,7 @@
 # Generation policy v3 (tested 2026-10-16)
 
 Exact experimental generation used for the 15-case development run. It is **not** the
-HW03 grounded checker (`src/supportdesk/generation/grounded.py`) and **not** later
+grounded checker (`src/supportdesk/generation/grounded.py`) and **not** later
 policy v4.
 
 One LLM call returns a structured support record: observation reference IDs, workflow

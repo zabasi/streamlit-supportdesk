@@ -1,6 +1,6 @@
 """One grounded turn: ask, parse (never repair), validate, then deliver or refuse.
 
-This is the HW03 / Week-3 class-lab layer on top of retrieval. Course slogan: a grounded
+This is the grounded-generation layer on top of retrieval. Course slogan: a grounded
 assistant is not one that cites; it is one that can be checked, and refuses when the
 check fails.
 
@@ -93,7 +93,7 @@ def packet_lookup(packet: Packet) -> dict[str, Chunk]:
 
 
 def format_evidence(packet: Packet) -> str:
-    """JSON the model is shown, so ids travel intact (class-lab format_evidence)."""
+    """JSON the model is shown, so ids travel intact."""
     label_of = {cid: label for label, cid in packet.labels.items()}
     return json.dumps({
         "chunks": [
@@ -110,7 +110,7 @@ def format_evidence(packet: Packet) -> str:
 
 
 def build_grounded_messages(question: str, packet: Packet, *, system: str, developer: str) -> list[dict]:
-    """Three roles in HW03; developer text is folded into system so any OpenAI-compatible
+    """Three roles (system, developer, user); developer text is folded into system so any OpenAI-compatible
     gateway accepts the request."""
     return [
         {"role": "system", "content": f"{system.strip()}\n\n{developer.strip()}"},
@@ -174,7 +174,7 @@ def resolve_citation(token: str, lookup: dict[str, Chunk]) -> str | None:
 def claim_supported(text: str, cited_texts: list[str], *, threshold: float = 0.5) -> bool:
     """A claim is supported when most of its content words appear in the cited passages.
 
-    HW03 used annotated aliases + subjects. This corpus has selected_spans, not a fact
+    The original measures used annotated aliases + subjects. This corpus has selected_spans, not a fact
     index, so support is lexical overlap with the cited packet text only.
     """
     words = content_words(text)
@@ -332,7 +332,7 @@ class GroundedTurn:
 
 
 class ExtractiveAnswerer:
-    """Class-lab offline model: extract a packet sentence that shares query words.
+    """Offline model: extract a packet sentence that shares query words.
 
     It does not reason and it does not check its own citations. A live model is
     used when ``--mode live``. This exists so the turn and the metrics run offline.

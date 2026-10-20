@@ -1,4 +1,4 @@
-# Policy v3 gpt-5.4-mini vs generation-folder best vs HW03 advanced
+# Policy v3 gpt-5.4-mini vs generation-folder best vs grounded advanced
 
 Generated 2026-10-16T15:42:09+00:00.
 
@@ -6,7 +6,7 @@ Same 15 annotated development cases. Gold labels: 6 answer / 6 request_info / 3 
 
 - **Generation-folder best** is policy v3, `gpt-5.4-mini`, 81 curated gold passages (not retrieval).
 - **This live run** is the same method and evidence, executed from this repo.
-- **HW03 advanced** is the best of the earlier grounded generators in this repo (`gpt-4o-mini` on retrieved packets). It is a harder setting.
+- **grounded advanced** is the best of the earlier grounded generators in this repo (`gpt-4o-mini` on retrieved packets). It is a harder setting.
 
 ## Costs (this live run)
 
@@ -17,7 +17,7 @@ Model `gpt-5.4-mini`. Evidence: gold passages.
 | 15 unique cases | **0.256039** |
 | Actually billed (includes one duplicate DEV-10805 call) | 0.279674 |
 | Generation-folder v3 (same 15, original) | 0.215597 |
-| HW03 advanced generation (`gpt-4o-mini`) | 0.013177 |
+| grounded advanced generation (`gpt-4o-mini`) | 0.013177 |
 
 | case_id | outcome | input tokens | output tokens | cost USD |
 |---|---|---:|---:|---:|
@@ -44,7 +44,7 @@ Model `gpt-5.4-mini`. Evidence: gold passages.
 |---|---|---|---:|---:|---:|
 | generation folder policy v3 (best of that project) | `gpt-5.4-mini` | 81 gold passages | 9/15 | 0.6000 | 0.215597 |
 | this repo policy v3 live | `gpt-5.4-mini` | 81 gold passages | 9/15 | 0.6 | 0.256039 |
-| this repo HW03 grounded + advanced retrieve | `gpt-4o-mini` | retrieval packet | 6/15 | 0.4 | 0.013177 |
+| this repo grounded checker + advanced retrieve | `gpt-4o-mini` | retrieval packet | 6/15 | 0.4 | 0.013177 |
 
 ### Generation folder (best of that project)
 
@@ -64,7 +64,7 @@ Model `gpt-5.4-mini`. Evidence: gold passages.
 | escalate | 1 | 0 | 2 | 3 |
 | **total** | 10 | 1 | 4 | 15 |
 
-### HW03 advanced
+### grounded advanced
 
 | gold \ predicted | answer | request_info | escalate | total |
 |---|---:|---:|---:|---:|
@@ -75,7 +75,7 @@ Model `gpt-5.4-mini`. Evidence: gold passages.
 
 ## Per-case actions
 
-| case_id | gold | generation-folder v3 | this live v3 | HW03 advanced | live cost | folder cost | HW03 cost |
+| case_id | gold | generation-folder v3 | this live v3 | grounded advanced | live cost | folder cost | grounded cost |
 |---|---|---|---|---|---:|---:|---:|
 | DEV-5604 | request_info | escalate | escalate | escalate | 0.019872 | 0.0123165 | 0.00087495 |
 | DEV-7044 | request_info | request_info | answer | answer | 0.017499 | 0.0092415 | 0.0009342 |
@@ -96,19 +96,19 @@ Model `gpt-5.4-mini`. Evidence: gold passages.
 ## Which method is best
 
 **Policy v3 with `gpt-5.4-mini` on gold passages is the best generation method here.**
-Both the generation-folder run and this live rerun hit **9/15 (0.60)**. HW03 `advanced`
+Both the generation-folder run and this live rerun hit **9/15 (0.60)**. grounded `advanced`
 on retrieved packets is **6/15 (0.40)**.
 
 Tie-break between the two v3 samples: this live run is the better sample.
 
-- Answerable: this live **6/6**, folder 5/6, HW03 3/6.
+- Answerable: this live **6/6**, folder 5/6, the grounded checker 3/6.
 - Escalation: this live **2/3** (it correctly escalated DEV-16388; the folder answered).
-- Request_info: folder **2/6**, this live 1/6, HW03 2/6. Clarification is still the weak cell.
+- Request_info: folder **2/6**, this live 1/6, the grounded checker 2/6. Clarification is still the weak cell.
 
-This is **not** a RAG ranking. The 9/15 methods saw reviewer-selected passages. HW03 only
+This is **not** a RAG ranking. The 9/15 methods saw reviewer-selected passages. the grounded checker only
 saw six retrieved chunks, so a lower score there does not mean the packet checker is
 useless — it means retrieval-conditioned generation is harder.
 
 Cost: this live 15-case unique total is **$0.256039**, vs $0.215597 for the
-original folder run and $0.013177 for HW03 `gpt-4o-mini`. Do not treat
+original folder run and $0.013177 for the grounded checker `gpt-4o-mini`. Do not treat
 contract-valid JSON as a verified Streamlit patch.

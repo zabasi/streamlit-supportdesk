@@ -1,4 +1,4 @@
-"""HW03 grounding measures, scored against this project's annotated gold.
+"""Grounding measures, scored against this project's annotated gold.
 
 Retrieval gold is source_ids + selected_spans. There is no fact index, so:
 

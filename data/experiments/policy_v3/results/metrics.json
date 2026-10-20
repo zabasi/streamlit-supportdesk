@@ -98,7 +98,7 @@
   "selected_passages": 81,
   "historical_full_run": {
     "candidate": "generation_redesign_v4",
-    "work": "C:\\Users\\Mantis\\Documents\\ChatGPT\\Streamlit_QA\\streamlit-supportdesk\\artifacts\\reports\\gpt54mini-v4-development-20261015",
+    "work": "artifacts\\reports\\gpt54mini-v4-development-20261015",
     "action_matches": 9,
     "cases": 15,
     "category_results": {

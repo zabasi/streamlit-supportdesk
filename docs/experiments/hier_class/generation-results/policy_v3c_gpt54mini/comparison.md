@@ -2,7 +2,7 @@
 
 Generated 2026-10-16T16:01:21+00:00.
 
-This is the tested support-record generator (one JSON call, literal report quotes, official `answer` / `request_info` / `escalate`). It is not the HW03 claim-support checker.
+This is the tested support-record generator (one JSON call, literal report quotes, official `answer` / `request_info` / `escalate`). It is not the grounded checker's claim-support checker.
 
 ## Measured run (2026-10-16, gold passages, gpt-5.4-mini)
 
