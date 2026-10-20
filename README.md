@@ -210,5 +210,5 @@ tests/                    offline tests with fake models; golden tests pin the b
 | `docs/configuration.md` | Every setting, and how layers override each other |
 | `docs/schemas.md` | The output of every step, field by field |
 | `docs/snapshots/` | Each main pipeline's stages, settings and one traced case |
-| `docs/experiments/` | Write-ups of the experiments that were not adopted |
+| `docs/experiments/README.md` | How to try an option, measure it and compare it; write-ups of earlier experiments |
 | `CLAUDE.md` | For contributors: where code lives, adding a stage or pipeline, the rules every change follows |
