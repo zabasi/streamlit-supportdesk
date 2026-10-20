@@ -74,7 +74,8 @@ supportdesk eval --pipeline advanced --split dev --set pipeline.controlled_versi
 | `pipeline.controlled_version` | `v2` | `v2` (as delivered), `v3` (an investigation rule), `v4` (three rules) |
 | `pipeline.scope_gate` | `llm` | `llm`, `rules`, `combined`, `off` |
 
-**Search engine.** `--retriever` swaps the retriever for one run (`dense`, `bm25`, `hybrid`). The run is
+**Search engine.** `--retriever` swaps the retriever for one run (any of the 13 in `docs/pipelines.md`,
+under "Options for each stage"). The run is
 marked as an override everywhere, so it is never mistaken for the pipeline itself:
 
 ```bash

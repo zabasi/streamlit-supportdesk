@@ -675,3 +675,14 @@ def test_schema_reference_is_up_to_date():
     spec.loader.exec_module(module)
     assert module.render() == (ROOT / "docs" / "schemas.md").read_text(encoding="utf-8"), \
         "run: python scripts/gen_schema_docs.py"
+
+
+def test_every_registered_retriever_is_listed_in_the_retriever_setting():
+    """The reference (docs/configuration.md) is generated from this help text, so a new retriever must be named in it."""
+    import dataclasses
+
+    from supportdesk.config import PipelineCfg
+    from supportdesk.registry import RETRIEVERS
+    help_text = next(f for f in dataclasses.fields(PipelineCfg) if f.name == "retriever").metadata["help"]
+    missing = [name for name in RETRIEVERS if name not in help_text.replace("|", " ").split()]
+    assert not missing, f"retrievers missing from pipeline.retriever's help: {missing}"

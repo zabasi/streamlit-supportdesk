@@ -302,7 +302,7 @@ Defaults shown are the built-in ones. `*unset*` means the key is optional and no
 | Key | Default | What it does |
 |---|---|---|
 | `name` | `baseline` | registered pipeline to run (see registry.py) |
-| `retriever` | `dense` | registered retriever: dense \| bm25 \| hybrid |
+| `retriever` | `dense` | registered retriever (each described in docs/pipelines.md): dense \| bm25 \| hybrid \| hybrid_split \| dense_doc_slots \| hybrid_doc_slots \| split_doc_slots \| question_doc_slots \| dual_doc_slots \| cluster_doc_slots \| class_doc_slots \| hierarchical \| hierarchical_doc_slots |
 | `scope_gate` | `off` | advanced only: the scope check before retrieval: llm (a model call), rules (free keyword rules), combined (the same call that writes the concept queries) or off (no check); advanced's profile turns it on (llm) |
 | `answer_model` | `gpt-5.4-mini` | controlled_v2 answer step: the model the package's request is sent to (the package builds it for gpt-5.4-mini; gpt-5-mini and gpt-4.1-mini are cheaper) |
 | `controlled_version` | `v2` | controlled answer step's package: v2 (as delivered), v3 (v2 + an investigation rule) or v4 (v2 + already-supplied facts, escalation with complete controls and length limits); generation/controlled_v3 and _v4 |

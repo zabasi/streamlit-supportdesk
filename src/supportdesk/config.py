@@ -384,7 +384,8 @@ class Limits:
 @dataclass(frozen=True)
 class PipelineCfg:
     name: str = _opt("registered pipeline to run (see registry.py)", "baseline")
-    retriever: str = _opt("registered retriever: dense | bm25 | hybrid", "dense")
+    retriever: str = _opt("registered retriever (each described in docs/pipelines.md): "
+                          "dense | bm25 | hybrid | hybrid_split | dense_doc_slots | hybrid_doc_slots | split_doc_slots | question_doc_slots | dual_doc_slots | cluster_doc_slots | class_doc_slots | hierarchical | hierarchical_doc_slots", "dense")
     scope_gate: str = _opt("advanced only: the scope check before retrieval: llm (a model call), rules (free "
                            "keyword rules), combined (the same call that writes the concept queries) or off "
                            "(no check); advanced's profile turns it on (llm)", "off")

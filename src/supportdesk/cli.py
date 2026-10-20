@@ -394,7 +394,8 @@ def build_parser() -> argparse.ArgumentParser:
             p.add_argument("--pipeline", help="pipeline.name: which pipeline to use, and whose settings "
                                               "profile to load (see `supportdesk pipelines`)")
         if retriever:
-            p.add_argument("--retriever", help="pipeline.retriever: dense | bm25 | hybrid")
+            p.add_argument("--retriever", help="pipeline.retriever: any registered retriever, for example dense, bm25, hybrid "
+                                            "(all are listed in docs/configuration.md)")
         if cases:
             p.add_argument("--cases", nargs="+", metavar="FILE",
                            help="eval.case_files: evaluation case files (dev + test)")

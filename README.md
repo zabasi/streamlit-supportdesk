@@ -202,7 +202,7 @@ tests/                    offline tests with fake models; golden tests pin the b
 | File | For |
 |---|---|
 | `docs/results/README.md` | All results of the main pipelines, on both splits, and how to reproduce them |
-| `docs/pipelines.md` | Stages, the main and experimental pipelines, their results, comparing changes |
+| `docs/pipelines.md` | Stages and the options for each, the main and experimental pipelines, their results |
 | `docs/evaluation.md` | Evaluation files, metrics, the LLM judge, the test split |
 | `docs/evaluation/judge_prompt.md` | The LLM judge's criteria; its exact prompt is `configs/prompts/judge_case_system.txt` |
 | `docs/generation/README.md` | The answer step: structured assessment, routing, version notes, complete questions |

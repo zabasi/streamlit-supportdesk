@@ -30,6 +30,85 @@ Before these stages, `advanced` runs a scope check (`docs/scope_classifier.md`).
 
 A stage is any callable with that signature; the contracts are in `pipelines/stages/protocols.py`.
 
+## Options for each stage
+
+Every option below is a setting, so it can be tried on any pipeline with `--set` (how to measure it is in
+`docs/experiments/README.md`; every setting, with its default, is in `docs/configuration.md`).
+**B** marks what `baseline` uses, **A** what `advanced` (and `advanced-gpt5mini`) uses.
+
+**Chunking** (`chunking.method`; changes the index, so a different value needs its own index)
+
+| Option | What it does | |
+|---|---|---|
+| `fixed` | windows of `chunking.max_tokens` tokens (512) overlapping by `chunking.overlap_tokens` (128) | B, A |
+| `structure` | chunks follow headings and sections, never splitting a code block | |
+| `token_structure` | sections packed into chunks of about a target size, still following headings | |
+| `langchain_rule` | LangChain's Markdown header and recursive splitters | |
+
+**Query** (the query stage)
+
+| Option | What it does | |
+|---|---|---|
+| the report as written | title and body, up to `retrieval.max_query_chars` | B |
+| the cleaned report | without template sections, checkboxes, links and debug info | A |
+| `retrieval.decompose = true` | also up to `retrieval.max_queries` concept queries written by a model | |
+
+**Retriever** (`pipeline.retriever`)
+
+| Option | What it does | |
+|---|---|---|
+| `dense` | embedding similarity between the query and each chunk | B |
+| `bm25` | keyword match; finds exact identifiers and error strings | |
+| `hybrid` | dense and BM25 merged with Reciprocal Rank Fusion | |
+| `hybrid_split` | dense and BM25 side by side: a fixed number of results from each | |
+| `dense_doc_slots` | dense, with `retrieval.doc_slots` places kept for documentation | |
+| `hybrid_doc_slots` | hybrid, with places kept for documentation | |
+| `split_doc_slots` | dense and BM25 side by side, with places kept for documentation | |
+| `question_doc_slots` | dense with places for documentation, plus the chunks of the `retrieval.question_sections` sections whose doc2query questions best match the report | A |
+| `dual_doc_slots` | two indexes built with two embedding models, merged | |
+| `cluster_doc_slots` | routes the query to its best topic clusters, then searches | |
+| `class_doc_slots` | routes the query to topic classes (fixed or discovered), then searches | |
+| `hierarchical`, `hierarchical_doc_slots` | some results taken from inside the best-matching sections | |
+
+**Reranking**
+
+| Option | What it does | |
+|---|---|---|
+| none | the search order is kept | B |
+| one model call | orders `retrieval.candidate_k` candidates (15) and keeps `retrieval.top_k` (8), at least `retrieval.rerank_keep_docs` (5) of them documentation; it sees `retrieval.rerank_snippet_chars` characters of each, either the start or the best-matching window (`retrieval.rerank_snippet`: `start` or `focused`) | A (`focused`) |
+
+**Completion after reranking** (`retrieval.complete`)
+
+| Option | What it does | |
+|---|---|---|
+| `none` | each kept chunk as it is | B |
+| `neighbors` | add the chunk before and after it | |
+| `section` | grow it to the whole top-level sections it touches | A |
+| `subsection` | grow each edge only to the innermost section around it | |
+| `trim` | drop a short leading fragment, so it starts at a heading | |
+| `section_trim` | trim the start and complete the last section | |
+
+**Answer step** (`pipeline.generator`)
+
+| Option | What it does | |
+|---|---|---|
+| `single_call` | one `gpt-4o-mini` call writes the answer and chooses the action | B |
+| `controlled_v2` | one structured assessment by `pipeline.answer_model`; Python rules choose the action | A |
+| `policy_v3` | one call where the model chooses the action from a policy prompt | |
+
+With `controlled_v2`: `pipeline.answer_model` (`gpt-5.4-mini` in `advanced`, `gpt-5-mini` in
+`advanced-gpt5mini`, or `gpt-4.1-mini`), `pipeline.controlled_version` (`v2`, `v3`, `v4`),
+`pipeline.version_notes` and `pipeline.complete_questions` (both on in `advanced`).
+
+**Scope check** (`pipeline.scope_gate`)
+
+| Option | What it does | |
+|---|---|---|
+| `off` | no check | B |
+| `llm` | one small model call decides whether the report is about Streamlit | A |
+| `rules` | free keyword rules | |
+| `combined` | the same call that writes the concept queries also decides | |
+
 ## Improving `advanced`
 
 1. **Write the stage in its own file,** for example `src/supportdesk/pipelines/stages/rerank.py`. One file per stage keeps changes independent.
