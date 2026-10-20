@@ -122,10 +122,13 @@ python scripts/judge_agreement.py MODEL_DIR HUMAN_DIR     # judge against human,
 - **Human review** checks the judge: pick the sample first (failures and random passes), read each case
   in `cases-blind/` and decide without the rubric, then fill `docs/evaluation/human_review_form.md`.
   Where judge and human disagree, the human's verdict is reported.
-- **The rubrics** were drafted and source-checked with an AI assistant; the team's human sign-off is
+- **The rubrics** were drafted and source-checked with an AI assistant; human sign-off is
   still pending (`review_status`), so human review checks the rubric as well as the judge.
 - **Results (development):** the final `advanced` 9 pass, 3 partial, 3 fail; the previous design 8 / 4 / 3;
-  the final design with `gpt-5-mini` 10 / 2 / 3 (but 11 correct decisions against 12, and no escalation).
+  `advanced-gpt5mini` 10 / 2 / 3 (but 11 correct decisions against 12, and no escalation).
+- **Results (test, one run each):** the baseline 1 pass, 2 partial, 12 fail; `advanced` 5 / 2 / 8;
+  `advanced-gpt5mini` 6 / 3 / 6. A second judge, run separately on `advanced`, agreed on 13 of 15 cases;
+  both disagreements were between partial and fail.
 
 ## Not built yet
 

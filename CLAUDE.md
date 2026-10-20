@@ -20,12 +20,13 @@ python scripts/gen_schema_docs.py           # after changing a type in docs/sche
 | Indexing graph: load, screen, chunk, audit, embed, store | `src/supportdesk/indexing.py` |
 | Support graph: intake ... summarize; extra nodes | `src/supportdesk/pipelines/staged.py` |
 | Stage interfaces / baseline implementations | `pipelines/stages/protocols.py` / `pipelines/stages/defaults.py` |
-| The two pipelines | `pipelines/baseline.py`, `pipelines/advanced.py`, listed in `registry.py` |
+| The main pipelines | `pipelines/baseline.py`, `pipelines/advanced.py` (also `advanced-gpt5mini`), listed in `registry.py` |
+| Experiment pipelines | `pipelines/experiments.py`, profiles in `configs/pipelines/experiments/<group>/` |
 | Case workflow: routing, human review, local tracker | `src/supportdesk/casework.py` |
 | Chunkers | `data/chunking.py` (`CHUNKERS`) |
 | Retrievers | `retrieval/retriever.py`, listed in `registry.py` (`RETRIEVERS`) |
 | Model calls, budget, cache, fake models | `src/supportdesk/llm/` |
-| Settings | `config.py` (types and defaults), `configs/default.toml`, `configs/pipelines/*.toml` |
+| Settings | `config.py` (types and defaults), `configs/default.toml`, `configs/pipelines/*.toml` and `configs/pipelines/experiments/**` |
 | Prompts | `configs/prompts/*.txt` |
 | Evaluation files, metrics, leakage | `src/supportdesk/eval/` |
 
@@ -51,7 +52,8 @@ profile. Every chunk must satisfy `corpus[source_id].text[start_char:end_char] =
 `RETRIEVERS` (`registry.py`); select it with `pipeline.retriever` in a profile.
 
 **A pipeline.** A `build_<name>(retriever, clients, settings)` function, one line in `PIPELINES`,
-and a profile `configs/pipelines/<name>.toml`.
+and a profile: `configs/pipelines/<name>.toml` for a main pipeline, or
+`configs/pipelines/experiments/<group>/<name>.toml` for an experiment (names must be unique).
 
 **A setting.** A field with `_opt(help, default)` on the right section in `config.py`, the same key
 in `configs/default.toml`, then `python scripts/gen_config_docs.py`.

@@ -1,7 +1,7 @@
 # Generation policy v3
 
 A second generation layer, next to the HW03 grounded checker. The HW03 path
-(`docs/hier_class_generation.md`) answers from a retrieval packet and **refuses**
+(`docs/experiments/hier_class/generation.md`) answers from a retrieval packet and **refuses**
 when claim-support fails. Policy v3 writes a **support record**: it picks
 `answer` / `request_info` / `escalate`, cites labelled evidence, and the controller
 copies original report text so a quote cannot be silently reworded.
@@ -75,7 +75,7 @@ and that run *did* check claim support. These two scores are not interchangeable
 - Policy v3 does not refuse an answer whose words fail lexical claim support; it
   only checks IDs, schema, and Python syntax as a warning.
 
-Per-case actions: `experiments/generation_policy_v3/results/case-results.csv`.
+Per-case actions: `data/experiments/policy_v3/results/case-results.csv`.
 
 ## Prompt revisions on the same 15 new-dev cases
 
@@ -94,14 +94,14 @@ cases. HW03 `advanced` on retrieved packets remains 6/15.
 
 Result files:
 
-- `artifacts/hier_class_rag/generation/compare_prompt_v3b_vs_v3.md`
-- `artifacts/hier_class_rag/generation/compare_policy_v3c_system.md`
-- `artifacts/hier_class_rag/generation/compare_gpt54mini_vs_generation_folder.md`
+- `docs/experiments/hier_class/generation-results/compare_prompt_v3b_vs_v3.md`
+- `docs/experiments/hier_class/generation-results/compare_policy_v3c_system.md`
+- `docs/experiments/hier_class/generation-results/compare_gpt54mini_vs_generation_folder.md`
 - per-run `costs.csv` under `policy_v3_gpt54mini/`, `policy_v3b_gpt54mini/`, `policy_v3c_gpt54mini/`
 
 ## How this repo uses it
 
-1. Frozen gold rows: `experiments/generation_policy_v3/inputs/model_inputs.jsonl`
+1. Frozen gold rows: `data/experiments/policy_v3/inputs/model_inputs.jsonl`
    (the same 15 inputs as the measured run).
 2. Retrieval adapter: `sources_from_packet` turns an `advanced` (or other) packet
    into the same `[S1]…` list. That is the RAG integration the original handoff

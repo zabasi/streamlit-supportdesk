@@ -1,5 +1,5 @@
 {
-  "_note": "PLACEHOLDER prices (USD per million tokens). Replace with the Metis prices for the models you use, then set verified=true. Live mode refuses to run while verified is false, because the budget guard is only as good as these numbers.",
+  "_note": "PLACEHOLDER prices (USD per million tokens). Replace with your provider's prices for the models you use, then set verified=true. Live mode refuses to run while verified is false, because the budget guard is only as good as these numbers.",
   "verified": true,
   "unit": "usd_per_million_tokens",
   "models": {

@@ -1,7 +1,7 @@
 # The answer step: controlled routing v2
 
-The teammate's generation handoff (controlled routing v2, 2026-10-16) is merged as an alternative answer
-step for advanced-based pipelines. The baseline's answer step is unchanged.
+Controlled routing v2 (packaged 2026-10-16, in `docs/generation/controlled-v2/`) is the answer step of
+`advanced` and the pipelines built on it. The baseline's answer step is unchanged.
 
 ## How it works
 
@@ -38,19 +38,23 @@ setting.
 
 ## Cost: check the budget first
 
-The teammate's 15-case development run cost about **$0.26** (about $0.018 per case: 57,000 input and
+The package's own 15-case development run cost about **$0.26** (about $0.018 per case: 57,000 input and
 49,000 output tokens, most of the output being the model's reasoning). That is about 20 times the
-gpt-4o-mini answer step. Check the remaining budget, and keep the reserve for the final test-split
-evaluation, before a live run.
+gpt-4o-mini answer step. Check the remaining budget before a live run.
 
 ## What has and has not been measured
 
-- Measured (by the teammate, on curated gold passages, not retrieval): 11 of 15 actions matched the
+- Measured by the package, on curated gold passages (not retrieval): 11 of 15 actions matched the
   development labels (73.3%): answer 5 of 6, request_info 3 of 6, escalate 3 of 3. This is action
   agreement, not answer quality.
 - Measured on **retrieved** evidence (our pipeline's packets), development cases: the previous advanced
   12 of 15 (answer 6/6, request_info 5/6, escalate 1/3); the final advanced, with the two fixes below,
-  12 of 15 (6/6, 4/6, 2/3). Not yet measured: the test split, and several conversation turns.
+  12 of 15 (6/6, 4/6, 2/3).
+- The test split, run once on the design chosen beforehand: `advanced` 6 of 15 (answer 4/6,
+  request_info 2/6, escalate 0/3, and one case where the assessment supported no action), every answer
+  citing gold evidence; `advanced-gpt5mini` 8 of 15 (4/6, 4/6, 0/3); the baseline 6 of 15 with no gold
+  evidence at all. The decision gain on development did not carry over; the grounding gain did.
+- Not measured: several conversation turns.
 - The pipeline evaluates single turns: questions_used is 0 and no follow-up loop runs.
 - The package's own limits: it can omit an information gap or a correction, and reference validation
   does not prove that the evidence entails the claim (see `controlled-v2/README.md`).
@@ -71,8 +75,9 @@ so a pipeline uses it only when its profile says so.
 
 What was tried and not adopted, on the development cases:
 
-- **`gpt-5-mini`** as the answer model: about 2.5 times cheaper, 11 of 15 with the two fixes, the best
-  clarifying questions, but it never escalated in any of its runs, with any of three prompts.
+- **`gpt-5-mini`** as the answer model (`advanced-gpt5mini`): about 2.5 times cheaper, 11 of 15 with the
+  two fixes, the best clarifying questions, but it never escalated in any of its runs, with any of three
+  prompts. It is kept as the cheaper alternative; on the test split it made 8 correct decisions.
 - **v3** (one rule: record an internal investigation when a reproduction meets unexplained behavior, and
   do not answer a partly explained symptom): with `gpt-5-mini`, two correct answers became questions and
   nothing was escalated.

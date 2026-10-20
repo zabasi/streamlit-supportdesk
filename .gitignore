@@ -21,3 +21,5 @@ artifacts/cost_ledger.jsonl
 htmlcov/
 **/.DS_Store
 artifacts/manual_reports/
+artifacts/hier_class_rag/
+artifacts/snapshots/

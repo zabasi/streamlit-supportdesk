@@ -7,8 +7,8 @@ policy_v3c_system.txt. This stage gives it the retrieved packet as evidence and 
 project's gateway, so the call is cached, recorded in the cost ledger and capped by the budget guard like
 every other call.
 
-It runs with gpt-5.4-mini, reasoning_effort medium and 8,000 completion tokens, as in the teammate's
-policy-v3 runs. An outcome other than an action (invalid JSON, a schema violation, a withheld record)
+It runs with gpt-5.4-mini, reasoning_effort medium and 8,000 completion tokens, as in the
+original policy-v3 runs. An outcome other than an action (invalid JSON, a schema violation, a withheld record)
 is reported as GenerationFailed, so the case is an error and the run goes on, never relabelled as an
 escalation, as with the controlled-routing v2 stage.
 """

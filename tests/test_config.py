@@ -495,7 +495,7 @@ def test_generated_reference_is_up_to_date():
 def _doc_commands():
     import shlex
     commands = []
-    for doc in [ROOT / "README.md", *sorted((ROOT / "docs").glob("*.md"))]:
+    for doc in [ROOT / "README.md", *sorted((ROOT / "docs").rglob("*.md"))]:
         in_block, pending = False, ""
         for line in doc.read_text().splitlines():
             if line.strip().startswith("```"):

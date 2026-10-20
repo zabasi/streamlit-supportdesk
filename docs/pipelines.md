@@ -7,7 +7,7 @@
 | **pipeline** | a complete recipe that answers a report; what `--pipeline` selects | `src/supportdesk/pipelines/baseline.py`, `advanced.py`, listed in `registry.py` |
 | **stage** | one replaceable step of a pipeline | `src/supportdesk/pipelines/stages/` |
 | **retriever** | the search stage: `dense`, `bm25` or `hybrid`; `--retriever` swaps it for one run | `src/supportdesk/retrieval/` |
-| **profile** | a pipeline's own settings | `configs/pipelines/<name>.toml` |
+| **profile** | a pipeline's own settings | `configs/pipelines/<name>.toml` for `baseline`, `advanced`, `advanced-gpt5mini`; `configs/pipelines/experiments/<group>/<name>.toml` for experiments |
 
 ## The stages
 
@@ -16,15 +16,17 @@ then one node per stage below, in order. It owns everything that must not differ
 timing, per-case usage, failure outcomes, secret redaction and the trace. Graph state is plain data
 (see `docs/schemas.md`), converted to and from the stage objects at each node.
 
-| Stage | Signature | Baseline | Ideas for `advanced` |
+| Stage | Signature | Baseline | `advanced` (the final design) |
 |---|---|---|---|
-| `query` | `(case, env) -> list[str]` | `PlainQuery` | rewrite with a model, extract the error message, several queries (fused with RRF) |
-| `retriever` | `.search(query, *, k, as_of) -> list[Hit]` | dense | `hybrid`, version-aware filters, graph retrieval |
-| `reranker` | `(case, query, hits) -> list[Hit]` | `NoRerank` | cross-encoder or model rerank (fetch `retrieval.candidate_k`, keep `top_k`) |
-| `packet` | `(hits) -> Packet` | `DefaultPacketBuilder` | diversity, drop superseded sources |
-| `generator` | `(case, env, packet) -> ParsedAnswer` | `SingleCallGenerator` | separate "ask" and "answer" decisions |
-| `validator` | `(case, packet, answer) -> ParsedAnswer` | `NoValidator` | claim-support check, downgrade to `escalate` |
-| `summarizer` | `(case, env, packet, answer) -> dict` | `build_summary` | richer maintainer summary |
+| `query` | `(case, env) -> list[str]` | `PlainQuery` | `CleanQuery`: the report without template sections, links and debug info |
+| `retriever` | `.search(query, *, k, as_of) -> list[Hit]` | dense | `question_doc_slots`: dense with 10 of 15 places for documentation, plus the chunks of the 15 sections whose doc2query questions match the report |
+| `reranker` | `(case, query, hits) -> list[Hit]` | `NoRerank` | one `gpt-4o-mini` call ranks the candidates; 8 kept (at least 5 documentation), each grown to its whole sections |
+| `packet` | `(hits) -> Packet` | `DefaultPacketBuilder` | `DefaultPacketBuilder` (8 pieces, 4,300 tokens) |
+| `generator` | `(case, env, packet) -> ParsedAnswer` | `SingleCallGenerator` | `ControlledGenerator`: a structured assessment by `gpt-5.4-mini`; Python chooses the action; version notes and complete questions |
+| `validator` | `(case, packet, answer) -> ParsedAnswer` | `NoValidator` | `NoValidator` |
+| `summarizer` | `(case, env, packet, answer) -> dict` | `build_summary` | `build_summary` |
+
+Before these stages, `advanced` runs a scope check (`docs/scope_classifier.md`).
 
 A stage is any callable with that signature; the contracts are in `pipelines/stages/protocols.py`.
 
@@ -134,17 +136,35 @@ cases with the scope gate off. "Correct" counts decisions matching the label, ou
 | `candidate-7-…`, `candidate-8-…` | two ranking prompts; 6 chunks | controlled routing v2 | 10; 9 |
 | `candidate-9-dense-rerank-section-policy-v3b` | as candidate 1 | the model chooses the action (policy v3b) | 10 |
 | `advanced-version-notes` | as candidate 6 | controlled v2 + version notes | 11 with `gpt-5-mini` (a screening run) |
-| `advanced-gpt5mini` | as candidate 6 | controlled v2, `gpt-5-mini` | 10 |
-| **`advanced`** (= `advanced-notes-questions`) | as candidate 6 | controlled v2 + version notes + complete questions | **12** (escalation 2 of 3) |
-| `advanced-notes-questions-gpt5mini` | as candidate 6 | the same with `gpt-5-mini` | 11 (never escalates) |
-| `advanced-notes-questions-v4-gpt5mini` | as candidate 6 | the same with the v4 prompt rules | 11 (replies about 75% shorter) |
+| `previous-design-gpt5mini` | as candidate 6 | controlled v2, `gpt-5-mini` | 10 |
+| **`advanced`** | as candidate 6 | controlled v2 + version notes + complete questions | **12** (escalation 2 of 3) |
+| `advanced-gpt5mini` | as candidate 6 | the same with `gpt-5-mini` | 11 (never escalates) |
+| `advanced-v4-gpt5mini` | as candidate 6 | the same with the v4 prompt rules | 11 (replies about 75% shorter) |
+
+On the test split (run once, with the scope gate on): `baseline` 6 of 15, `advanced` 6 (and one error),
+`advanced-gpt5mini` 8. The decision gain did not carry over; grounding did: every `advanced` answer cites
+gold evidence, against none for the baseline (gold passages in the prompt: 0% for the baseline, 45.0% for
+`advanced`).
 
 The answer-step settings are described in `docs/generation/README.md`.
 
 ## Experiments
 
-An experiment is the baseline with exactly one change, in `pipelines/experiments.py` with its own
-profile in `configs/pipelines/`. Each shares the baseline's index, so measuring it costs only query
+Every experiment's profile is in `configs/pipelines/experiments/`, grouped by what it tested; the name is
+the same wherever the file sits (`--pipeline NAME`):
+
+| Folder | What its pipelines test |
+|---|---|
+| `search/` | the retrieval ladder: query cleaning, documentation slots, hybrid search, reranking prompts and budgets |
+| `query/` | query reformulation: rewriting, splitting, decomposing the report into concept queries |
+| `chunking/` | chunking: structure-aware and token-structure chunkers, fixed sizes, contextual headers, section summaries |
+| `loop/` | retrieve again after a model judges the evidence |
+| `candidates/` | the nine end-to-end designs compared before the final choice (table above) |
+| `answer/` | answer-step variants: version notes alone, version-aware retrieval, the v4 rules, the previous design with `gpt-5-mini` |
+| `scope/` | the scope gate on its own, with a model or with rules |
+| `hier_class/` | hierarchical-class retrieval (`docs/experiments/hier_class/`) |
+
+The early experiments below are each the baseline with exactly one change, in `pipelines/experiments.py`. Each shares the baseline's index, so measuring it costs only query
 embeddings:
 
 | Pipeline | The one change |
@@ -160,7 +180,7 @@ embeddings:
 | `retrieve_loop_best` | `retrieve_loop` that remembers. The judge (`prompts.judge_scored`) answers yes or no *and* scores every chunk it sees from 0 to 10, in the same call (no extra model call). Every chunk of every try goes into a pool with its best score. When the loop ends, the generator gets the 6 highest-scoring chunks of the whole pool, so good evidence from the first search survives a worse second search. A chunk the judge did not score gets its retrieval similarity × 10. Marked `found_by: "loop_best"`; the choice is saved in `trace.loop.selection` |
 | `retrieve_loop_mixed` | The same pool, but the 6 returned are a third of the best, a third from the middle and a third of the worst-scoring chunks (2, 2, 2; what does not divide by three goes to the best first, then the middle: 7 gives 3, 2, 2). The middle ones are those around the median of the pool. Marked `found_by: "loop_best"`, `"loop_middle"` or `"loop_worst"`. Weak chunks are included on purpose, to test whether contrast helps or hurts |
 | `hier_baseline` | Hierarchical retrieval on its own, on the baseline: the query is compared with the section summaries (`retrieval.hier_sections`, 3 best sections); the chunks inside them are ranked by their own similarity and 3 of the 6 results come from them (`retrieval.hier_places`), marked `found_by: "hierarchy"`; the other 3 come from the baseline's dense search, so issues and release notes can still be found. No model call besides the generator. Needs `data/summaries/sections.jsonl` |
-| `advanced_hier` | `advanced` with the same hierarchy inside every one of its searches: of the 15 candidates of each query, 4 come from inside the 3 best-matching sections (retriever `hierarchical_doc_slots`, `hier_places = 4`); everything after retrieval is as in `advanced`. Compare it with `advanced`, and with the additive `…_summaries` variant below. A separate class-routing 3×3 on top of `advanced` is in `docs/hier_class_rag.md` (`llmchunk` = LLM splitter, `llmfilter` = LLM topic filter; `advanced_llmchunk` is chunking only) |
+| `advanced_hier` | `advanced` with the same hierarchy inside every one of its searches: of the 15 candidates of each query, 4 come from inside the 3 best-matching sections (retriever `hierarchical_doc_slots`, `hier_places = 4`); everything after retrieval is as in `advanced`. Compare it with `advanced`, and with the additive `…_summaries` variant below. A separate class-routing 3×3 on top of `advanced` is in `docs/experiments/hier_class/README.md` (`llmchunk` = LLM splitter, `llmfilter` = LLM topic filter; `advanced_llmchunk` is chunking only) |
 
 Combinations put the strongest single change, the cleaned query, together with another:
 

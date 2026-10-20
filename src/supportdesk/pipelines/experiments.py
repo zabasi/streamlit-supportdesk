@@ -258,7 +258,7 @@ def build_clean_doc_slots_rerank_docs_prompt_decompose_top8_focused(retriever, c
                          QueryRewriter(clients, settings), retriever, clients, settings)
 
 
-# ---- the teammate's structure-aware chunkers, on the two best designs ----
+# ---- structure-aware chunkers, on the two best designs ----
 
 def build_clean_doc_slots_rerank_docs_prompt_structure(retriever, clients, settings):
     """clean_doc_slots_rerank_docs_prompt on structure chunks (headings, code fences), with its own index."""

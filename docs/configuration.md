@@ -32,13 +32,18 @@ supportdesk pipelines                     # the pipelines side by side
 Each pipeline loads its own profile, so pipelines can differ while sharing everything else:
 
 ```
-configs/pipelines/baseline.toml   pinned reference values (these equal the defaults the golden test pins)
-configs/pipelines/advanced.toml   6 chunks like the baseline; the report plus up to 3 concept queries,
-                                  15 candidates each (10 documentation), reranked by a model call that
-                                  sees focused snippets and the concepts; overlapping kept chunks merged
+configs/pipelines/baseline.toml            pinned reference values (these equal the defaults the golden test pins)
+configs/pipelines/advanced.toml            the final design: scope check; cleaned query; 15 candidates (10 documentation)
+                                           plus the chunks of 15 sections matched by doc2query questions; one reranking
+                                           call keeps 8 (at least 5 documentation), each grown to its whole sections;
+                                           structured assessment with gpt-5.4-mini, version notes, complete questions
+configs/pipelines/advanced-gpt5mini.toml   advanced with the cheaper gpt-5-mini answer model
+configs/pipelines/experiments/<group>/     every experiment, grouped by what it tested (see docs/pipelines.md)
 ```
 
-- **What a profile may set:** `chunking`, `retrieval`, `context`, `prompts`, `pipeline.retriever`, `paths.index_dir`. Anything else in a profile is an error.
+A pipeline name is looked up at the top level first, then under `experiments/`; names are unique.
+
+- **What a profile may set:** `chunking`, `retrieval`, `context`, `prompts`, `paths.index_dir`, and from `pipeline`: `retriever`, `scope_gate`, `generator`, `answer_model`, `version_notes`, `complete_questions`, `controlled_version`. Anything else in a profile is an error.
 - **Why the rest is shared:** models, budget and generation settings stay in `default.toml` for every pipeline. That keeps comparisons fair and lets one client and cost ledger serve all pipelines.
 - **Different chunking needs its own index.** If a pipeline uses different chunking or a different embedding model, give it its own `paths.index_dir` in its profile and build it with `supportdesk index --pipeline NAME`. Every command refuses an index built with other chunking or another embedding model, and says how to fix it.
 

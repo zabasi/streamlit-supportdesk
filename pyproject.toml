@@ -15,7 +15,7 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-# Real provider calls (any OpenAI-compatible gateway, e.g. Metis). Offline and replay modes do not need it.
+# Real provider calls (OpenAI or any OpenAI-compatible endpoint). Offline and replay modes do not need it.
 live = ["openai>=1.40"]
 dev = ["pytest>=8", "ruff>=0.5"]
 

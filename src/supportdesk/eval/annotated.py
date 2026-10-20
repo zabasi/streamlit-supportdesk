@@ -15,11 +15,8 @@ from pathlib import Path
 from ..types import CaseInput
 from .cases import EvalCase
 
-DEFAULT_ANNOTATED = Path(
-    r"D:\QBC 13\Project\Data - new Dev"
-    r"\supportdesk-development-annotated-sources-2026-10-15"
-    r"\data\eval\development_source_annotated_v1\development.jsonl"
-)
+#: Where the annotated development dump is expected (not shipped with the repository); scripts take --gold PATH.
+DEFAULT_ANNOTATED = Path("data/eval/development_source_annotated_v1/development.jsonl")
 
 
 def _issue_number(case_id: str) -> int | None:

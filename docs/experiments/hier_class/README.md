@@ -7,10 +7,10 @@ annotated development gold**. Then every chunker × classifier is also attached 
 
 Stay on `--split dev`. Do not commit `.env`.
 
-- What each method does: `docs/hier_class_methods.md`
-- Worked numbers: `docs/hier_class_examples.md`
-- Grounded generation (HW03 layer) + metrics: `docs/hier_class_generation.md`
-- Generation policy v3 (support record; best prompt v3b is 12/15 on gold passages): `docs/generation_policy_v3.md`
+- What each method does: `docs/experiments/hier_class/methods.md`
+- Worked numbers: `docs/experiments/hier_class/examples.md`
+- Grounded generation (HW03 layer) + metrics: `docs/experiments/hier_class/generation.md`
+- Generation policy v3 (support record; best prompt v3b is 12/15 on gold passages): `docs/experiments/policy_v3/README.md`
 - HTML reports (open in a browser):
   - one change vs `advanced`: `artifacts/hier_class_rag/report_one_change.html`
   - two changes vs `advanced`: `artifacts/hier_class_rag/report_two_changes.html`
@@ -103,9 +103,8 @@ LLM topic labels: `session_state`, `widgets_keys`, `callbacks_forms`, `data_edit
 
 ## Gold
 
-Path (outside the repo):
-
-`D:\QBC 13\Project\Data - new Dev\supportdesk-development-annotated-sources-2026-10-15\data\eval\development_source_annotated_v1\development.jsonl`
+The annotated development dump is not shipped with the repository. Put it at
+`data/eval/development_source_annotated_v1/development.jsonl`, or pass its path with `--gold PATH`.
 
 15 development cases. For each case, gold sources are the `sources[].source.source_id` values;
 passage metrics use `selected_spans` (`source_id`, `start_char`, `end_char`). Official
@@ -115,7 +114,7 @@ passage metrics use `selected_spans` (`source_id`, `start_char`, `end_char`). Of
 ## How to run
 
 From the project root, with the venv active and `SUPPORTDESK_CONFIG` **unset** (real corpus, not
-the sample). `.env` must have `OPENAI_API_KEY` and `OPENAI_BASE_URL` (Metis). Models stay
+the sample). `.env` must have `OPENAI_API_KEY` and `OPENAI_BASE_URL` (an OpenAI-compatible endpoint). Models stay
 `gpt-4o-mini` and `text-embedding-3-small`.
 
 ```powershell

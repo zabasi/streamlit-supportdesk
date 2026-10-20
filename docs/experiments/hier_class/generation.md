@@ -1,5 +1,7 @@
 # Grounded generation on hier-class retrieval
 
+> Archived results of the original runs are in `docs/experiments/hier_class/generation-results/`. Running the scripts again writes new results to `artifacts/hier_class_rag/generation/` (not committed).
+
 This is the layer **above** the hierarchical-class retrieval experiment. Retrieval finds
 passages. Generation must answer only from that packet, cite it, and **refuse** when the
 check fails.
@@ -11,7 +13,7 @@ call is new.
 Stay on `--split dev`. Do not commit `.env`.
 
 A second generator, **policy v3**, writes a support record with literal report quotes
-instead of HW03 claim-support refusal. See `docs/generation_policy_v3.md`. Do not mix
+instead of HW03 claim-support refusal. See `docs/experiments/policy_v3/README.md`. Do not mix
 its 9/15 gold-passage score with the packet numbers below.
 
 ```powershell
@@ -23,8 +25,8 @@ python scripts/hier_class_generate.py --mode live
 python scripts/hier_class_generate.py --mode live --methods advanced,llm_llm
 ```
 
-Tables: `artifacts/hier_class_rag/generation/comparison.md` and `results.json`.
-Per-method turns: `artifacts/hier_class_rag/generation/<method>/turns.jsonl`.
+Tables: `docs/experiments/hier_class/generation-results/comparison.md` and `results.json`.
+Per-method turns: `docs/experiments/hier_class/generation-results/<method>/turns.jsonl`.
 
 ## What one turn does
 
@@ -37,7 +39,7 @@ stored retrieval packet
   → deliver the answer, or refuse with a typed reason
 ```
 
-Course slogan (HW03): **a grounded assistant is not one that cites; it is one that can
+Guiding rule: **a grounded assistant is not one that cites; it is one that can
 be checked, and refuses when the check fails.**
 
 Two limits from the homework, kept here:
@@ -77,7 +79,7 @@ file's `acceptable_outcomes`. A `validation_failed` turn never counts as a match
 the checker blocked an ungrounded `answer`.
 
 The **confusion matrix** (gold × predicted) is in
-`artifacts/hier_class_rag/generation/comparison.md` under each method. Rows are
+`docs/experiments/hier_class/generation-results/comparison.md` under each method. Rows are
 what gold wanted; columns are what the turn delivered. The diagonal is correct.
 
 ## Metrics (how you can tell if it works)
@@ -151,5 +153,5 @@ What that means:
   escalation cases correct) and almost never answer the answerable ones.
 - **When it does `answer`, citations stay clean** (precision 1.0). Claim support is 1.00
   on `advanced` and 0.87 on `advanced_llmchunk_llmfilter`.
-- Open `artifacts/hier_class_rag/generation/comparison.md` for the table, and each
+- Open `docs/experiments/hier_class/generation-results/comparison.md` for the table, and each
   `turns.jsonl` for per-case `outcome` vs `expected_outcomes`.

@@ -1,6 +1,6 @@
 # Numerical examples for the hierarchical-class comparison
 
-Companion to `docs/hier_class_methods.md`. Formulas are the ones in
+Companion to `docs/experiments/hier_class/methods.md`. Formulas are the ones in
 `src/supportdesk/eval/metrics.py`. The live case `DEV-5604` is taken from
 `artifacts/hier_class_rag/runs/*/results.jsonl`. HTML: `report_one_change.html`,
 `report_two_changes.html`, `report_llmfilter.html` (full dump: `report.html`).

@@ -1,8 +1,8 @@
 # What each compared method does
 
 This is the method guide for the hierarchical-class RAG experiment. Scores and how to run
-the experiment are in `docs/hier_class_rag.md`. Worked numbers are in
-`docs/hier_class_examples.md`. HTML reports: `artifacts/hier_class_rag/report_one_change.html` (one factor),
+the experiment are in `docs/experiments/hier_class/README.md`. Worked numbers are in
+`docs/experiments/hier_class/examples.md`. HTML reports: `artifacts/hier_class_rag/report_one_change.html` (one factor),
 `report_two_changes.html` (chunker + filter), `report_llmfilter.html` (filter model),
 and `report.html` (everything).
 
