@@ -2,12 +2,12 @@
 
 | | |
 |---|---|
-| Taken | 2026-10-17T20:57:33+00:00 |
+| Taken | 2026-10-20T12:13:05+00:00 |
 | Profile | configs/pipelines/advanced.toml |
 | Mode | live |
 | Retriever | `question_doc_slots` |
 | Models | chat `gpt-4o-mini`, embedding `text-embedding-3-small`, answer `gpt-5.4-mini` (controlled package v2) |
-| Config fingerprint | `56bf02464d1e5f9e` |
+| Config fingerprint | `416bfa13f69eed12` |
 
 ## Stages
 
@@ -99,6 +99,8 @@ Values marked ★ come from this pipeline's own profile.
 | `retrieval.bm25_extra` | 0 | file:configs/default.toml |
 | `retrieval.rerank_fuse_weight` | 0.0 | file:configs/default.toml |
 | `retrieval.rerank_fuse_k` | 10 | file:configs/default.toml |
+| `retrieval.rerank_versions` | False | file:configs/default.toml |
+| `retrieval.release_slots` | 0 | file:configs/default.toml |
 | `retrieval.rerank_show_question` | False | file:configs/default.toml |
 | `retrieval.rerank_show_sections` | False | file:configs/default.toml |
 | `retrieval.pool_mode` | fuse | file:configs/default.toml |
@@ -348,34 +350,34 @@ Model calls during this run:
 | rerank | chat | cache | 3528 | 44 | 0.000000 | ok |
 | answer | chat | cache | 8432 | 4384 | 0.000000 | ok |
 
-Time: 0.107s
+Time: 0.137s
 
 ## Latest evaluation results
 
-**full** run `e2e-advanced-final` (2026-10-17T20:25:57+00:00, mode replay):
+**full** run `e2e-versionA-gpt5mini` (2026-10-18T11:39:30+00:00, mode live):
 
 ```
 cases: 15 (ambiguous 6, answerable 6, escalation 3)
-evidence   recall @1 0.32  @3 0.60  @6 0.71  @10 0.73   MRR 0.89
+evidence   recall @1 0.21  @3 0.60  @6 0.71  @10 0.73   MRR 0.74
            answers cite gold evidence 1.00
-decisions  outcome accuracy 0.80   (ambiguous 0.67  answerable 1.00  escalation 0.67)
+decisions  outcome accuracy 0.73   (ambiguous 1.00  answerable 0.83  escalation 0.00)
 grounding  citation violations 0.00   answers without citation 0.00   errors 0.00   budget stops 0
-cost       $0.0000 (+$0.3633 replayed, not spent)   0 live calls, 60 cache hits   tokens in/out 188972/57115
-time       mean 0.117s   p95 0.182s
+cost       $0.1238 (+$0.0088 replayed, not spent)   20 live calls, 45 cache hits   tokens in/out 195626/50952
+time       mean 50.797s   p95 103.398s
 ```
 
-**retrieval** run `q41-10` (2026-10-16T18:09:32+00:00, mode live):
+**retrieval** run `retr-dev-version-B` (2026-10-18T11:25:02+00:00, mode live):
 
 ```
 cases: 15 (ambiguous 6, answerable 6, escalation 3)
        15 have gold evidence; 0 do not (excluded from recall)
-evidence   recall @1 0.32  @3 0.57  @6 0.66  @10 0.68   MRR 0.89
-           hit    @1 0.80  @3 1.00  @6 1.00  @10 1.00   gold in the prompt packet 0.68
-passages   recall @1 0.35  @3 0.56  @6 0.65  @10 0.68   MRR 0.89
+evidence   recall @1 0.32  @3 0.60  @6 0.71  @10 0.73   MRR 0.89
+           hit    @1 0.80  @3 1.00  @6 1.00  @10 1.00   gold in the prompt packet 0.73
+passages   recall @1 0.31  @3 0.54  @6 0.67  @10 0.68   MRR 0.89
            hit    @1 0.80  @3 1.00  @6 1.00  @10 1.00   coverage@10 0.68   in the prompt packet 0.68
            ambiguous   recall@10 0.81  (n=6)
-           answerable  recall@10 0.58  (n=6)
-           escalation  recall@10 0.61  (n=3)
-cost       $0.0068   15 live calls, 30 cache hits   tokens in/out 45182/996
-time       mean 3.560s   p95 5.193s
+           answerable  recall@10 0.67  (n=6)
+           escalation  recall@10 0.72  (n=3)
+cost       $0.0070 (+$0.0016 replayed, not spent)   12 live calls, 45 cache hits   tokens in/out 54737/864
+time       mean 8.679s   p95 22.070s
 ```
