@@ -150,7 +150,7 @@ them all, and `docs/pipelines.md` describes them with their results.
 | Command | What it does |
 |---|---|
 | `supportdesk ask --title "..." --body "..."` | Answer one report; nothing is posted |
-| `supportdesk web` | Local web page: saved multi-turn conversations, the evidence the model saw, evaluation runs, downloads |
+| `supportdesk web` | Local web page for the main pipelines: saved multi-turn conversations, the evidence the model saw, evaluation runs, downloads |
 | `supportdesk case CASE-1 --title "..." --body "..."` | Open a case (a follow-up is `--body` only) and act on the answer |
 | `supportdesk review CASE-1` | Show what is waiting; decide with `--approve`, `--edit "TEXT"` or `--reject` |
 | `supportdesk tracker CASE-1` | The case's messages, notes and events (`--reset` clears the tracker) |

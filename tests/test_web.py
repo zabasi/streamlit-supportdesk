@@ -153,8 +153,8 @@ def test_status_exposes_the_configured_defaults_not_alphabetical_ones(server):
     port, _ = server
     info = json.loads(call(port, "GET", "/api/status")[2])
     assert info["defaults"] == {"pipeline": "baseline", "retriever": "dense"}
-    from supportdesk.registry import PIPELINES
-    assert info["pipelines"] == sorted(PIPELINES)
+    from supportdesk.registry import MAIN_PIPELINES
+    assert info["pipelines"] == list(MAIN_PIPELINES)  # experiments are not offered on the page
     assert {k: info["retriever_by_pipeline"][k] for k in ("advanced", "baseline")} == {"advanced": "dense", "baseline": "dense"}
     assert info["retrievers"][0] == "bm25"  # alphabetical first: the UI must not fall back to this
 
@@ -183,7 +183,7 @@ def test_each_pipeline_is_served_with_its_own_profile(index, clients, settings, 
     assert base["applied"]["top_k"] == 6 and len(base["evidence"]) == 6
     assert wide["applied"]["top_k"] == 3 and len(wide["evidence"]) == 3
     assert wide["retriever"] == "hybrid"  # that pipeline's own default retriever
-    assert app.status()["retriever_by_pipeline"]["wide"] == "hybrid"
+    assert "wide" not in app.status()["pipelines"]  # it runs when asked for, but the page lists main pipelines only
 
 
 def test_a_pipeline_that_needs_a_different_index_is_refused_with_instructions(
@@ -197,3 +197,21 @@ def test_a_pipeline_that_needs_a_different_index_is_refused_with_instructions(
     with pytest.raises(BadRequest, match=r"supportdesk index --pipeline small"):
         app.ask({"title": "t", "pipeline": "small"})
     assert app.ask({"title": "t", "pipeline": "baseline"})["result"]["outcome"] == "answer"
+
+
+def test_main_pipelines_are_exactly_the_profiles_at_the_top_of_configs_pipelines():
+    from pathlib import Path
+
+    from supportdesk.registry import MAIN_PIPELINES, PIPELINES
+    top = {p.stem for p in (Path(__file__).resolve().parents[1] / "configs" / "pipelines").glob("*.toml")}
+    assert set(MAIN_PIPELINES) == top and set(MAIN_PIPELINES) <= set(PIPELINES)
+
+
+def test_the_page_lists_an_experiment_only_when_it_is_the_servers_default(settings, index, clients):
+    from dataclasses import replace
+
+    from supportdesk.registry import MAIN_PIPELINES
+    app = App(settings, clients=clients, index=index)
+    assert app.listed_pipelines() == list(MAIN_PIPELINES)
+    experiment = replace(settings, pipeline=replace(settings.pipeline, name="clean_query"))
+    assert App(experiment, clients=clients, index=index).listed_pipelines() == [*MAIN_PIPELINES, "clean_query"]

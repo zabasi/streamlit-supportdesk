@@ -19,7 +19,7 @@ from urllib.parse import parse_qs, urlparse
 from ..config import ConfigError, Settings, redact
 from ..llm.factory import Clients, build_clients
 from ..pipelines.stages.conversation import QUESTIONS_USED
-from ..registry import PIPELINES, RETRIEVERS, make_pipeline
+from ..registry import MAIN_PIPELINES, PIPELINES, RETRIEVERS, make_pipeline
 from ..retrieval.filters import parse_ts
 from ..retrieval.index import VectorIndex
 from ..types import CaseInput
@@ -82,18 +82,26 @@ class App:
             self._resolved[pipeline] = self._settings_for(pipeline)
         return self._resolved[pipeline]
 
+    def listed_pipelines(self) -> list[str]:
+        """The pipelines the page offers: the main ones, plus this server's default if it is an experiment.
+        Any registered pipeline is still accepted, so a conversation imported from an experiment's run
+        can be continued."""
+        default = self.settings.pipeline.name
+        return list(MAIN_PIPELINES) + ([default] if default not in MAIN_PIPELINES else [])
+
     def status(self) -> dict:
         m = self.index.manifest
+        listed = self.listed_pipelines()
         return {
             "settings": self.settings.public(),
-            "pipelines": sorted(PIPELINES), "retrievers": sorted(RETRIEVERS),
+            "pipelines": listed, "retrievers": sorted(RETRIEVERS),
             "defaults": {"pipeline": self.settings.pipeline.name,
                          "retriever": self.settings.pipeline.retriever},
             "retriever_by_pipeline": {name: self.settings_for(name).pipeline.retriever
-                                      for name in sorted(PIPELINES)},
+                                      for name in listed},
             # the pipeline's own retriever, where this server's configuration overrides it
             "retriever_override_of": {name: self.settings_for(name).retriever_override()
-                                      for name in sorted(PIPELINES)},
+                                      for name in listed},
             "index": {k: m.get(k) for k in ("chunk_count", "chunks_by_type", "embedding_model",
                                             "built_at", "exclusions")},
             "budget": {"spent_usd": self.clients.ledger.total_cost_usd,

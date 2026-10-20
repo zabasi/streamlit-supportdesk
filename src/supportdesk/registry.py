@@ -104,6 +104,10 @@ from .retrieval.retriever import (
 )
 from .retrieval.section_questions import build_question_retriever
 
+#: The pipelines a user chooses from (the web page lists these), in display order. Their profiles are at the
+#: top of configs/pipelines/; every other registered pipeline is an experiment (configs/pipelines/experiments/).
+MAIN_PIPELINES = ("baseline", "advanced", "advanced-gpt5mini")
+
 #: Pipelines by name: each builds the pipeline from (retriever, clients, settings); its docstring is its one-line description.
 PIPELINES = {"baseline": build_baseline, "advanced": build_advanced_scoped,
              # the final design with the cheaper gpt-5-mini answer model (configs/pipelines/advanced-gpt5mini.toml)
