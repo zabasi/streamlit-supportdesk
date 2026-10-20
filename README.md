@@ -166,9 +166,10 @@ them all, and `docs/pipelines.md` describes them with their results.
   the Streamlit repository, 54 documentation pages and 35 linked references, and 111 release-note sections.
   Each record keeps its source URL, version or date, evidence role and a checksum; the text is never
   modified, because evidence spans point into it by character offset.
-- `data/eval/`: the 15 development cases (`development_inputs.jsonl`) and their evaluator-only rubrics
-  (`development_rubrics.jsonl`), with 81 gold evidence passages; a synthetic sample; and the scope-check
-  benchmark. The test split is not included.
+- `data/eval/`: the 15 development and 15 test cases (`development_inputs.jsonl`, `test_inputs.jsonl`) and
+  their evaluator-only rubrics (`development_rubrics.jsonl`, `test_rubrics.jsonl`), with 81 and 65 gold
+  evidence passages; a synthetic sample; and the scope-check benchmark. Building the index leaves every
+  one of these cases' issues out, so neither split can find its own answer.
 - `data/questions/`: the doc2query bank: 730 questions for 146 documentation sections, with their embeddings.
 - `data/sample/`: a small synthetic corpus for offline runs.
 

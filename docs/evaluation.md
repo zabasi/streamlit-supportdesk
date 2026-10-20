@@ -104,7 +104,7 @@ noise. Report counts next to percentages, and read the per-case table in the rep
 
 What code measures (recall, decisions per category, citations, cost and time) is computed by code. What
 needs judgement (whether the evidence supports each claim, whether a question is the right one) is
-judged against each case's rubric in `data/eval/development_rubrics.jsonl`, never against the
+judged against each case's rubric (`data/eval/development_rubrics.jsonl`, `data/eval/test_rubrics.jsonl`), never against the
 system's own output. The criteria are in `docs/evaluation/judge_prompt.md`, the exact prompt in
 `configs/prompts/judge_case_system.txt`.
 
