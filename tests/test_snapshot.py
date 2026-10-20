@@ -70,9 +70,13 @@ def test_cli_snapshot_writes_one_file_per_pipeline_with_latest_results(tmp_path,
     assert "pipeline: baseline" in both and "pipeline: advanced" in both
     # advanced uses the symptom questions, which the sample data has none of: skipped, with what to do
     assert "advanced: skipped: section questions" in both and "build_section_questions.py" in both
+    assert "advanced-gpt5mini: skipped: section questions" in both
     snapshots = tmp_path / "art" / "snapshots"
+    assert sorted(p.name for p in snapshots.glob("*.md")) == ["baseline.md"]  # --all: main pipelines only
     base_md = (snapshots / "baseline.md").read_text()
-    adv_md = (snapshots / "candidate-1-dense-rerank-section.md").read_text()  # the design without questions
+    # an experiment is snapshotted by name: the design without questions
+    assert main(["snapshot", *base, "--pipeline", "candidate-1-dense-rerank-section", *no_bank]) == 0
+    adv_md = (snapshots / "candidate-1-dense-rerank-section.md").read_text()
     assert "**full** run `b1`" in base_md and "outcome accuracy" in base_md
     assert "No runs yet" in adv_md and "`HybridRetriever`" not in base_md
     assert "Gold evidence for this case: `fixture-doc-session-state`" in base_md  # first dev case
@@ -107,8 +111,8 @@ def test_latest_runs_picks_the_newest_run_of_each_kind_by_date_not_name(tmp_path
     assert latest_runs(tmp_path, "nothing") == {}
 
 
-def test_snapshot_all_skips_pipelines_whose_own_index_is_not_built(tmp_path, capsys):
-    """A pipeline with other chunking needs its own index; --all reports it as skipped, not failed."""
+def test_snapshot_all_leaves_experiments_out_and_one_by_name_needs_its_index(tmp_path, capsys):
+    """--all covers the main pipelines only; an experiment with other chunking, asked for by name, needs its own index."""
     from supportdesk.cli import main
     from tests.helpers import ROOT, SAMPLE
     base = ["--data-dir", str(SAMPLE), "--index-dir", str(tmp_path / "idx"), "--artifacts-dir",
@@ -116,8 +120,8 @@ def test_snapshot_all_skips_pipelines_whose_own_index_is_not_built(tmp_path, cap
     assert main(["index", *base]) == 0
     capsys.readouterr()
     assert main(["snapshot", *base, "--all"]) == 0
-    err = capsys.readouterr().err
-    assert "clean_doc_slots_rerank_docs_prompt_structure: skipped:" in err and "pipeline(s) skipped" in err
+    captured = capsys.readouterr()
+    assert "clean_doc_slots_rerank_docs_prompt_structure" not in captured.out + captured.err
     one = ["snapshot", *base, "--pipeline", "clean_doc_slots_rerank_docs_prompt_structure"]
     assert main(one) == 1  # asked for by name: an unusable index is still an error
 

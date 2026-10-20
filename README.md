@@ -157,7 +157,7 @@ them all, and `docs/pipelines.md` describes them with their results.
 | `supportdesk eval-retrieval --pipeline advanced --split dev` | Retrieval quality only: gold passages in the prompt, Recall@k, MRR |
 | `supportdesk eval --pipeline advanced --split dev` | Full evaluation: decisions, citations, cost and time per case |
 | `supportdesk report RUN_ID RUN_ID` | Compare runs side by side (HTML) |
-| `supportdesk snapshot --pipeline advanced` | A pipeline's stages, settings and one traced run |
+| `supportdesk snapshot --pipeline advanced` | A pipeline's stages, settings and one traced run (`--all`: the three main pipelines) |
 | `supportdesk pipelines` | Every registered pipeline |
 | `supportdesk check-cases` | Check the evaluation files against the corpus and index |
 | `supportdesk config` | Every setting and where its value comes from |
@@ -207,6 +207,6 @@ tests/                    offline tests with fake models; golden tests pin the b
 | `docs/scope_classifier.md` | The scope check and its benchmark |
 | `docs/configuration.md` | Every setting, and how layers override each other |
 | `docs/schemas.md` | The output of every step, field by field |
-| `docs/snapshots/advanced.md` | The final design's stages, settings and one traced case |
+| `docs/snapshots/` | Each main pipeline's stages, settings and one traced case |
 | `docs/experiments/` | Write-ups of the experiments that were not adopted |
 | `CLAUDE.md` | For contributors: where code lives, adding a stage or pipeline, the rules every change follows |

@@ -76,12 +76,13 @@ write one for every stage you add. It then shows what each stage produced on one
 pipeline's latest evaluation results. In code, `pipeline.run(case, observe=callback)` reports each
 step's output as it happens; the snapshot is built on that.
 
-`docs/snapshots/advanced.md` is a committed snapshot of the final design, with real outputs for one
-development case. Regenerate it after any change to `advanced` (almost free: everything but the scope
-check replays from the cache of an earlier evaluation run):
+`docs/snapshots/` holds committed snapshots of the three main pipelines (`baseline.md`, `advanced.md`,
+`advanced-gpt5mini.md`), each with real outputs for the same development case. `--all` snapshots the
+main pipelines; an experiment is snapshotted by name. Regenerate them after a change (almost free: calls
+already made by an evaluation run replay from the cache):
 
 ```bash
-supportdesk snapshot --pipeline advanced --mode live --case-id DEV-16388 --output-dir docs/snapshots
+supportdesk snapshot --all --mode live --case-id DEV-16388 --output-dir docs/snapshots
 ```
 
 ## Rules for stages

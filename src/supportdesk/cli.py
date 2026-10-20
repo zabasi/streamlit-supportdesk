@@ -21,7 +21,7 @@ from .eval.runner import run_eval, run_retrieval_eval
 from .eval.splits import assign_splits, check_no_family_overlap
 from .indexing import run_indexing
 from .llm.factory import build_clients
-from .registry import PIPELINES, make_pipeline, pipeline_description, require
+from .registry import MAIN_PIPELINES, PIPELINES, make_pipeline, pipeline_description, require
 from .retrieval.index import IndexUnusable, VectorIndex
 from .snapshot import take_snapshot
 from .types import CaseInput
@@ -273,7 +273,7 @@ def _snapshot_one(args, s: Settings) -> str:
 def cmd_snapshot(args) -> int:
     """One Markdown file per pipeline: stages, settings, a stage-by-stage run, latest results."""
     base = _settings(args)
-    names = list(PIPELINES) if args.all else [base.pipeline.name]
+    names = list(MAIN_PIPELINES) if args.all else [base.pipeline.name]  # experiments: one at a time, by name
     failed = skipped = 0
     for name in names:
         try:
@@ -425,7 +425,7 @@ def build_parser() -> argparse.ArgumentParser:
     p = command("snapshot", cmd_snapshot, "Write a Markdown snapshot of a pipeline: its stages, settings, "
                 "a stage-by-stage run of one case, and its latest results",
                 pipeline=True, retriever=True, cases=True)
-    p.add_argument("--all", action="store_true", help="one snapshot per registered pipeline")
+    p.add_argument("--all", action="store_true", help="one snapshot per main pipeline (baseline, advanced, advanced-gpt5mini)")
     p.add_argument("--title", help="run this report instead of the first dev case")
     p.add_argument("--body")
     p.add_argument("--created-at")
