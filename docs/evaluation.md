@@ -146,7 +146,7 @@ passage it also gives the rank of the chunk that holds it in a search over all d
 shows whether a wider documentation pool could reach it.
 
 ```bash
-python scripts/diagnose_passages.py --mode live --output docs/reports/passage-funnel.md
+python scripts/diagnose_passages.py --mode live --output artifacts/reports/passage-funnel.md
 python scripts/diagnose_passages.py --pipeline clean_doc_slots --mode live
 ```
 

@@ -3,7 +3,7 @@ pipeline's retrieval: its candidates (before reranking), the chunks it keeps (wh
 and the rank of the chunk that holds the passage in a search over all documentation.
 
     python scripts/diagnose_passages.py                       # advanced, dev cases, settings as configured
-    python scripts/diagnose_passages.py --mode live --output docs/reports/passage-funnel.md
+    python scripts/diagnose_passages.py --mode live --output artifacts/reports/passage-funnel.md
     python scripts/diagnose_passages.py --pipeline clean_doc_slots --set retrieval.top_k=6
 
 Read-only: it changes nothing. Query embeddings and model calls come from the cache when they were

@@ -27,8 +27,9 @@ The design was chosen on the development cases; the test split was run once, at 
 
 The final design reliably brings the right evidence and grounds its answers; its decision gain on the
 development cases did not carry over to the test cases, where telling a question from an escalation
-remained the main weakness. The details, and everything that was tried, are in `docs/pipelines.md`
-and `docs/evaluation.md`.
+remained the main weakness. All results, with confusion matrices, retrieval funnels, the judge's
+verdicts, cost and time, and how to reproduce them, are in `docs/results/README.md`; everything that was
+tried is in `docs/pipelines.md`.
 
 The judge is an LLM from a different model family than the answer model (Claude Opus 5.5). It reads one
 case at a time: the report, the decision, the exact evidence the model saw, and the case's rubric, and
@@ -190,8 +191,8 @@ configs/                  default settings, pipeline profiles (main ones on top,
                           prompts, prices, the sample configuration, and overlays/: small example
                           files applied on top of any pipeline with --config
 data/                     corpus, evaluation files, doc2query bank, sample, experiment inputs
-docs/                     configuration, evaluation, pipelines, schemas, the answer step, snapshots,
-                          and write-ups of the experiments (docs/experiments/)
+docs/                     results, configuration, evaluation, pipelines, schemas, the answer step,
+                          snapshots, and write-ups of the experiments (docs/experiments/)
 scripts/                  one-off tools: question bank, diagnostics, case export, judge agreement
 tests/                    offline tests with fake models; golden tests pin the baseline
 ```
@@ -200,6 +201,7 @@ tests/                    offline tests with fake models; golden tests pin the b
 
 | File | For |
 |---|---|
+| `docs/results/README.md` | All results of the main pipelines, on both splits, and how to reproduce them |
 | `docs/pipelines.md` | Stages, the main and experimental pipelines, their results, comparing changes |
 | `docs/evaluation.md` | Evaluation files, metrics, the LLM judge, the test split |
 | `docs/evaluation/judge_prompt.md` | The LLM judge's criteria; its exact prompt is `configs/prompts/judge_case_system.txt` |

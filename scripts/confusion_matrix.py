@@ -5,7 +5,7 @@ decision the run made, with an error or a failed validation as a column of its o
 appear in the HTML of `supportdesk report`.
 
     python scripts/confusion_matrix.py e2e-baseline-6 e2e-candidate-5b
-    python scripts/confusion_matrix.py artifacts/runs/e2e-candidate-9 --output docs/reports/matrices.md
+    python scripts/confusion_matrix.py artifacts/runs/e2e-candidate-9 --output artifacts/reports/matrices.md
 """
 from __future__ import annotations
 

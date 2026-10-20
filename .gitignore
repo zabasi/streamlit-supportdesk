@@ -23,3 +23,5 @@ htmlcov/
 artifacts/manual_reports/
 artifacts/hier_class_rag/
 artifacts/snapshots/
+# generated reports kept locally; curated results are in docs/results/
+docs/reports/

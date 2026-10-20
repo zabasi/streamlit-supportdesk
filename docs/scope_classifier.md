@@ -113,5 +113,5 @@ T=$(date +%H%M)
 supportdesk eval-retrieval --pipeline advanced --split dev --mode live --run-id gate-llm-$T
 supportdesk eval-retrieval --pipeline advanced --split dev --mode live \
   --set pipeline.scope_gate=combined --run-id gate-combined-$T
-supportdesk report gate-llm-$T gate-combined-$T --output docs/reports/combined-gate.html
+supportdesk report gate-llm-$T gate-combined-$T --output artifacts/reports/combined-gate.html
 ```

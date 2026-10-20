@@ -49,12 +49,12 @@ else
   echo "-- $CLUSTERS not found: cluster runs skipped (build it with scripts/build_clusters.py)" >&2
 fi
 
-mkdir -p docs/reports
-supportdesk report "${RUNS[@]}" "${EXTRA[@]}" --output "docs/reports/suite-$PREFIX.html"
+mkdir -p artifacts/reports
+supportdesk report "${RUNS[@]}" "${EXTRA[@]}" --output "artifacts/reports/suite-$PREFIX.html"
 for name in advanced sectrim; do
   settings=()
   [ "$name" = sectrim ] && settings=(--set retrieval.complete=section_trim)
   python scripts/diagnose_passages.py --pipeline advanced --mode "$MODE" --set pipeline.scope_gate=off \
-    "${settings[@]}" "${EXTRA[@]}" --output "docs/reports/funnel-$PREFIX-$name.md"
+    "${settings[@]}" "${EXTRA[@]}" --output "artifacts/reports/funnel-$PREFIX-$name.md"
 done
-echo "report: docs/reports/suite-$PREFIX.html | funnels: docs/reports/funnel-$PREFIX-{advanced,sectrim}.md"
+echo "report: artifacts/reports/suite-$PREFIX.html | funnels: artifacts/reports/funnel-$PREFIX-{advanced,sectrim}.md"

@@ -85,9 +85,9 @@ supportdesk eval-retrieval --pipeline advanced --split dev --mode live --set pip
 supportdesk eval-retrieval --pipeline advanced --split dev --mode live --set pipeline.scope_gate=off \
   --set pipeline.retriever=cluster_doc_slots --set retrieval.cluster_route=embedding \
   --set retrieval.cluster_mode=boost --run-id clu-emb-boost-$T
-supportdesk report adv-$T clu-kw-filter-$T clu-emb-filter-$T clu-emb-boost-$T --output docs/reports/cluster-routing.html
+supportdesk report adv-$T clu-kw-filter-$T clu-emb-filter-$T clu-emb-boost-$T --output artifacts/reports/cluster-routing.html
 python scripts/diagnose_passages.py --pipeline advanced --mode live --set pipeline.scope_gate=off \
-  --set pipeline.retriever=cluster_doc_slots --output docs/reports/funnel-cluster-routing.md
+  --set pipeline.retriever=cluster_doc_slots --output artifacts/reports/funnel-cluster-routing.md
 ```
 
 Only the reranking calls are new for each variant (about $0.005 each); the query rewrites replay from the

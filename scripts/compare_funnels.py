@@ -5,8 +5,8 @@ right page but another chunk, or never among the candidates). Then one row per g
 ends up in each run; passages whose outcome differs come first and are highlighted (gained: now in the
 prompt; lost: no longer in the prompt; moved: lost in both, at another stage).
 
-    python scripts/compare_funnels.py docs/reports/funnel-advanced.md docs/reports/funnel-questions-15.md \
-      --names "advanced" "questions, 15 sections" --output docs/reports/funnels.html
+    python scripts/compare_funnels.py artifacts/reports/funnel-advanced.md artifacts/reports/funnel-questions-15.md \
+      --names "advanced" "questions, 15 sections" --output artifacts/reports/funnels.html
 """
 from __future__ import annotations
 
