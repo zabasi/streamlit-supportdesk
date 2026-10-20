@@ -187,7 +187,8 @@ the Streamlit documentation; their original authors and licences apply to that t
 src/supportdesk/          the package: indexing, pipelines and stages, retrieval, answer packages,
                           evaluation, case workflow, web page, model gateway (cache, budget, ledger)
 configs/                  default settings, pipeline profiles (main ones on top, experiments/ below),
-                          prompts, prices, the sample configuration
+                          prompts, prices, the sample configuration, and overlays/: small example
+                          files applied on top of any pipeline with --config
 data/                     corpus, evaluation files, doc2query bank, sample, experiment inputs
 docs/                     configuration, evaluation, pipelines, schemas, the answer step, snapshots,
                           and write-ups of the experiments (docs/experiments/)

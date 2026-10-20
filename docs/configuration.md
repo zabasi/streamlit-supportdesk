@@ -53,17 +53,21 @@ A pipeline name is looked up at the top level first, then under `experiments/`; 
 `context.max_chunks` unset unless you want the prompt to hold fewer; setting it above `top_k` is an
 error. `context.max_tokens` is a separate budget: raise it along with `top_k`, or it caps the prompt.
 
-## Experiments are config files
+## Overlays: a quick change without a new pipeline
+
+An overlay is a small settings file in `configs/overlays/`, applied on top of any pipeline with
+`--config`. Unlike an experiment pipeline (`configs/pipelines/experiments/`), it has no name of its own:
+the run is still the pipeline it was applied to, with the overlay's settings changed.
 
 ```toml
-# configs/experiments/top_k_10.toml
+# configs/overlays/top_k_10.toml
 [retrieval]
 top_k = 10
 [context]
 max_tokens = 3000
 ```
 ```bash
-supportdesk eval --pipeline baseline --config configs/experiments/top_k_10.toml --split dev --run-id baseline-k10
+supportdesk eval --pipeline baseline --config configs/overlays/top_k_10.toml --split dev --run-id baseline-k10
 ```
 
 Commit the file and the experiment can be reproduced from the repository. Each run's `summary.json`

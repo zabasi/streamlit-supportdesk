@@ -184,7 +184,7 @@ def test_config_files_are_checked_for_secrets_typos_and_syntax(tmp_path):
 
 
 @pytest.mark.parametrize(
-    "path", sorted((ROOT / "configs" / "experiments").glob("*.toml")) + [ROOT / "configs" / "sample.toml"],
+    "path", sorted((ROOT / "configs" / "overlays").glob("*.toml")) + [ROOT / "configs" / "sample.toml"],
     ids=lambda p: p.name)
 def test_shipped_experiment_files_are_valid_layers_over_the_defaults(path):
     s = Settings.load(config_files=[DEFAULT_TOML, path], env={})
