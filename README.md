@@ -30,6 +30,11 @@ development cases did not carry over to the test cases, where telling a question
 remained the main weakness. The details, and everything that was tried, are in `docs/pipelines.md`
 and `docs/evaluation.md`.
 
+The judge is an LLM from a different model family than the answer model (Claude Opus 5.5). It reads one
+case at a time: the report, the decision, the exact evidence the model saw, and the case's rubric, and
+returns a pass, partial or fail verdict with scores and a failure analysis. Its prompt is
+`configs/prompts/judge_case_system.txt`; the criteria are explained in `docs/evaluation/judge_prompt.md`.
+
 ## How it works
 
 Two LangGraph graphs. Indexing runs once:
@@ -196,6 +201,7 @@ tests/                    offline tests with fake models; golden tests pin the b
 |---|---|
 | `docs/pipelines.md` | Stages, the main and experimental pipelines, their results, comparing changes |
 | `docs/evaluation.md` | Evaluation files, metrics, the LLM judge, the test split |
+| `docs/evaluation/judge_prompt.md` | The LLM judge's criteria; its exact prompt is `configs/prompts/judge_case_system.txt` |
 | `docs/generation/README.md` | The answer step: structured assessment, routing, version notes, complete questions |
 | `docs/scope_classifier.md` | The scope check and its benchmark |
 | `docs/configuration.md` | Every setting, and how layers override each other |
