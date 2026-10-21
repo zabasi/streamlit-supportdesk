@@ -13,7 +13,6 @@
   },
   "new_handoff_files": [
     "README.md",
-    "README_FA.md",
     "acquisition/run_collection.py",
     "acquisition/.env.example",
     "requirements-acquisition.txt",

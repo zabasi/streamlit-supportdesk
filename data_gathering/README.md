@@ -1,46 +1,38 @@
-# Data gathering and preparation handoff
+# Data gathering
 
-Place the `data_gathering/` directory at the root of `streamlit-supportdesk`.
-This is an additive package: it does not replace the team's pipeline, current
-development/test revisions, credentials, indexes or generation code.
+How the corpus in `data/processed/corpus.jsonl` was collected and prepared, kept with its code, the
+frozen v06 dataset it came from, and its checks. Nothing else in the repository reads from this folder:
+the system uses `data/processed/corpus.jsonl` and `data/eval/`. Exporting this folder's retrieval corpus
+reproduces `data/processed/corpus.jsonl` byte for byte.
 
-## Contents and responsibilities
+## Contents
 
-- `acquisition/scripts/`: recovered original acquisition and early normalization
-  scripts, preserved byte for byte from the source package's
-  `audit/colleague_scripts/`. Includes issue/comment/document/release downloaders.
-- `acquisition/run_collection.py`: new handoff entrypoint that runs the four
-  downloaders and early corpus normalization in their expected directory layout.
-  The default is a plan only. Internet access requires `--run`.
-- `acquisition/.env.example`: a new example configuration, not recovered historical
-  settings. Contains no token. Put a real token only in an untracked `.env`.
-- `frozen_v06/`: the recovered immutable delivery with five retrieval source files,
-  source relationships, review configuration, versioned preparation scripts,
-  raw/evaluation provenance archives, exact-span checks and separate evaluators.
-- `export_corpus.py`: exports the five explicit retrieval files to one JSONL, checks
-  IDs/text hashes, and refuses to overwrite different existing corpus data.
-- `requirements-acquisition.txt`: dependencies used by the historical downloaders.
-- `provenance.json`, `file_manifest.json`, `verification.json`: recovery identity,
-  package checksums and checks actually performed for this handoff.
+| Path | What it is |
+|---|---|
+| `acquisition/scripts/` | The original collection code: downloaders for GitHub issues and comments, the documentation and the release notes, and the early normalization, unchanged |
+| `acquisition/run_collection.py` | Runs the four downloaders and the early normalization in the layout they expect. By default it only prints the plan; `--run` downloads |
+| `acquisition/.env.example` | Example settings for a new collection (search scope, target count). No token; put a real one only in `acquisition/.env`, which git ignores |
+| `frozen_v06/` | The reviewed v06 dataset: the five retrieval source files, source relationships, review settings, the versioned preparation scripts, archives of each stage, exact-span checks and the original evaluation files |
+| `export_corpus.py` | Writes the five retrieval files as one corpus JSONL, checking ids and text hashes |
+| `requirements-acquisition.txt` | Python packages the downloaders need |
+| `provenance.json`, `verification.json`, `file_manifest.json` | Where the package came from, the results of its checks, and the SHA-256 of every file |
 
-## Important distinction: new collection versus the frozen delivery
+## Collection and preparation are two stages
 
-The early collector emits `acquisition/data/raw/*.json` and
-`acquisition/data/corpus/corpus.json`, using the EARLY `id`/`text`-preparation schema.
-It does not automatically recreate the reviewed v06 corpus or its held-out split.
-Fresh API results can change and need source review, preparation and evaluation
-quarantine before indexing. The shipped v06 builder instead reproduces the reviewed
-delivery from its included immutable v05 baseline and review configuration.
+The collection code downloads public sources and writes them in an early schema
+(`acquisition/data/raw/*.json` and `acquisition/data/corpus/corpus.json`, both ignored by git). It does
+not reproduce the reviewed v06 dataset: GitHub results change over time, and a new download needs source
+review, preparation, and the evaluation cases' issues kept out before it can be indexed. The v06
+preparation scripts instead rebuild the reviewed dataset from the v05 baseline and the review settings
+included in `frozen_v06/`.
 
-The original `acquisition/scripts/run_pipeline.py` is preserved as historical code.
-It references an early `scripts/validate_dataset.py` not present beside the recovered
-collector scripts. Do not use that historical orchestration entrypoint unchanged.
-Use the new `run_collection.py` for acquisition and the v06 validator for v06 data.
-The v06 validator is not a validator for the early raw-collection schema.
+`acquisition/scripts/run_pipeline.py` is the original orchestration script, kept unchanged; it expects a
+`scripts/validate_dataset.py` that was never part of the collection code, so use `run_collection.py`
+instead. The v06 validator checks v06 data only, not the early collection schema.
 
-## Offline verification (no network, embedding or model calls)
+## Verify (offline)
 
-From the repository root, with Python 3.10 or newer:
+From the repository root, with Python 3.10 or newer; no network, embeddings or model calls:
 
 ```console
 python -X utf8 data_gathering/frozen_v06/scripts/validate_dataset.py
@@ -49,48 +41,20 @@ python -X utf8 data_gathering/frozen_v06/scripts/load_retrieval_sources.py
 python -X utf8 data_gathering/acquisition/run_collection.py
 ```
 
-The tests use explicit fixture responses; they are not agent-quality measurements.
-
-## Rebuild preparation from the retained baseline
-
-Run these only on a working copy because the builder regenerates delivery files:
+The validator checks the 540 records, the exact evidence spans and the evaluation split; the contract
+tests use fixed fixture responses, not model answers; the last command prints the collection plan
+without downloading anything. To check every file against its recorded hash:
 
 ```console
-python -X utf8 data_gathering/frozen_v06/scripts/build_dataset.py
-python -X utf8 data_gathering/frozen_v06/scripts/validate_dataset.py
-python -X utf8 data_gathering/frozen_v06/scripts/finalize_v06.py
+cd data_gathering && python3 -c "import json, hashlib, pathlib; m = json.load(open('file_manifest.json')); print([p for p, h in m.items() if hashlib.sha256(pathlib.Path(p).read_bytes()).hexdigest() != h] or 'all files match')"
 ```
 
-Active entrypoints have unsuffixed names, except `finalize_v06.py` and
-`test_v06_contracts.py`. Older suffixed builders/validators are retained history.
-The initial scratch paths visible in some archived code are not portable acquisition
-instructions. The active bundled v06 builder uses its local baseline when run from
-the existing `frozen_v06/scripts/` directory. Offline rebuild was checked in an
-isolated copy; see `verification.json` for the actual result.
+Every file is kept byte for byte (`.gitattributes` marks the folder as binary, so git never converts line
+endings). After a deliberate change to a file, update its hash in `file_manifest.json`.
 
-## Start a NEW collection (not run while preparing this handoff)
+## Export the corpus
 
-```console
-python -m pip install -r data_gathering/requirements-acquisition.txt
-```
-
-Copy `acquisition/.env.example` to `acquisition/.env`, configure the desired scope,
-then:
-
-```console
-python -X utf8 data_gathering/acquisition/run_collection.py --run
-```
-
-The original code follows GitHub pagination and skips pull requests in the issue
-selection. Documentation/release acquisition uses the pinned docs commit in the
-configuration. The example search terms and target issue count are a new example,
-not a claim to recover the exact historical `.env`. The script-preserved API
-configuration was not live-tested for this handoff. Public-source downloads do not
-use the team's paid LLM/embedding API.
-
-## Connect the existing frozen corpus
-
-Only these five files may supply retrieval sources:
+Only these five files are retrieval sources:
 
 ```text
 frozen_v06/retrieval_corpus/issues.jsonl
@@ -100,37 +64,55 @@ frozen_v06/retrieval_corpus/release_sections.jsonl
 frozen_v06/retrieval_corpus/linked_references.jsonl
 ```
 
-Optional merge into the repository's existing corpus path:
-
 ```console
 python -X utf8 data_gathering/export_corpus.py --output data/processed/corpus.jsonl
 ```
 
-If that path already contains the same records, the exporter leaves its bytes
-untouched. Different data is an error. Recovered v06 records were checked against
-the current local project: all 540 records are equal, including metadata and text.
-Counts: 126 issues, 214 comments, 54 documentation records, 111 release sections,
-35 linked references. These are prepared source records, not final retrieval chunks.
+When the output already holds the same records, the exporter leaves it untouched; different data is an
+error, never overwritten. The current `data/processed/corpus.jsonl` holds exactly these 540 records: 126
+issues, 214 comments, 54 documentation records, 111 release sections and 35 linked references. They are
+source records; the indexing step cuts them into chunks.
 
-Never recursively index this package. `evaluator_only`, `agent_inputs`, `audit`,
-`config`, rubrics, oracle comments and reports are not retrieval source text.
-Keep source identity/version/usage restrictions as metadata when chunking.
+## What may be indexed
 
-## Current evaluation files
+Only the five retrieval files. Never index this folder recursively: `frozen_v06/evaluator_only/`,
+`agent_inputs/`, `audit/`, `config/`, rubrics, held-out comments and reports are not source text, and
+indexing them would leak evaluation material. Keep each record's identity, version and usage restrictions
+as metadata when chunking.
 
-`frozen_v06/agent_inputs/` and `frozen_v06/evaluator_only/` document the original
-15 development + 15 test delivery. Later selected-passage data and revised evaluator
-contracts already exist in the project and remain authoritative for their named
-experiments. Do not overwrite those later revisions with this baseline snapshot.
-The purpose of this package is recovery of acquisition/preparation code and its
-data provenance, not replacing the final team's chosen evaluation version.
+## Rebuild the v06 preparation
 
-## GitHub checklist
+The builder rewrites files in `frozen_v06/`, so run it on a separate copy of the folder:
 
-Commit this directory additively, retaining the source LICENSE and provenance.
-Do not commit `.env`, tokens, local download outputs, virtual environments or cache
-directories. Suggested patterns are included in `.gitignore`.
-The historical `colleague_scripts` name is preserved in provenance; do not claim
-unverified sole authorship or remove upstream source attribution.
-No Git commit, push, network download, chunking, embedding, model call or historical
-Streamlit reproduction was performed by this packaging operation.
+```console
+python -X utf8 data_gathering/frozen_v06/scripts/build_dataset.py
+python -X utf8 data_gathering/frozen_v06/scripts/validate_dataset.py
+python -X utf8 data_gathering/frozen_v06/scripts/finalize_v06.py
+```
+
+The current scripts have plain names, apart from `finalize_v06.py` and `test_v06_contracts.py`; scripts
+with a version suffix are earlier stages, kept for the record. Paths that appear in some archived scripts
+are from the machines they first ran on, not instructions. `verification.json` records the result of an
+offline rebuild in a separate copy.
+
+## A new collection
+
+Downloading uses only public sources (the GitHub API, the documentation repository at the pinned commit,
+the release notes); it makes no model or embedding calls.
+
+```console
+python -m pip install -r data_gathering/requirements-acquisition.txt
+cp data_gathering/acquisition/.env.example data_gathering/acquisition/.env   # then set the token and the scope
+python -X utf8 data_gathering/acquisition/run_collection.py --run
+```
+
+The downloaders follow GitHub pagination and skip pull requests. The example scope in `.env.example` is
+illustrative; the original run's settings were not kept. A new collection produces raw data in the early
+schema, which still needs the review and preparation described above before it can replace the corpus.
+
+## Evaluation files in this folder
+
+`frozen_v06/agent_inputs/` and `frozen_v06/evaluator_only/` hold the 15 development and 15 test cases as
+first prepared, with their original rubrics. The evaluation files the system uses are in `data/eval/`,
+which includes later revisions of the rubrics and the annotated evidence; the files here are the record of
+the original version and do not replace them.
