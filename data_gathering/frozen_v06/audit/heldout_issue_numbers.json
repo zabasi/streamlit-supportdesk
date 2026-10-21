@@ -1,0 +1,562 @@
+{
+  "blocked_reference_numbers_including_external_PRs": [
+    302,
+    1169,
+    1386,
+    1628,
+    3477,
+    3512,
+    3534,
+    3585,
+    3596,
+    3598,
+    3600,
+    3601,
+    3615,
+    3754,
+    3803,
+    3827,
+    3842,
+    3873,
+    3875,
+    3890,
+    3903,
+    3921,
+    3925,
+    3963,
+    4082,
+    4297,
+    4325,
+    4338,
+    4458,
+    4831,
+    4854,
+    4873,
+    4884,
+    4989,
+    5099,
+    5305,
+    5442,
+    5498,
+    5591,
+    5604,
+    5620,
+    5689,
+    5813,
+    5856,
+    6074,
+    6079,
+    6146,
+    6166,
+    6350,
+    6442,
+    6508,
+    6687,
+    6966,
+    7003,
+    7037,
+    7044,
+    7264,
+    7305,
+    7338,
+    7354,
+    7373,
+    7649,
+    7749,
+    7855,
+    8323,
+    8410,
+    8488,
+    8490,
+    8496,
+    8604,
+    8700,
+    8901,
+    8902,
+    9031,
+    9049,
+    9082,
+    9128,
+    9196,
+    9325,
+    9342,
+    9380,
+    9603,
+    9657,
+    9841,
+    10093,
+    10169,
+    10805,
+    10957,
+    11012,
+    11115,
+    11299,
+    11415,
+    11949,
+    11971,
+    12108,
+    12566,
+    12880,
+    13435,
+    14247,
+    14793,
+    14917,
+    15148,
+    15645,
+    15660,
+    15816,
+    15892,
+    15893,
+    16030,
+    16111,
+    16247,
+    16281,
+    16341,
+    16358,
+    16386,
+    16388,
+    16538,
+    16570,
+    16611,
+    16727,
+    16732,
+    16909,
+    16914,
+    17082,
+    17093,
+    17106,
+    17119,
+    17249,
+    17265
+  ],
+  "issue_numbers": [
+    3512,
+    3534,
+    3585,
+    3596,
+    3598,
+    3600,
+    3601,
+    3803,
+    3842,
+    3873,
+    3890,
+    3903,
+    3921,
+    3963,
+    4082,
+    4297,
+    4325,
+    4338,
+    4458,
+    4831,
+    4873,
+    4884,
+    4989,
+    5305,
+    5442,
+    5498,
+    5591,
+    5604,
+    5620,
+    5689,
+    5813,
+    6074,
+    6079,
+    6146,
+    6166,
+    6350,
+    6508,
+    6687,
+    6966,
+    7037,
+    7044,
+    7305,
+    7338,
+    7649,
+    7749,
+    8323,
+    8410,
+    8488,
+    8490,
+    8604,
+    8700,
+    8901,
+    9031,
+    9082,
+    9128,
+    9196,
+    9325,
+    9342,
+    9380,
+    9603,
+    9657,
+    9841,
+    10805,
+    10957,
+    11012,
+    11115,
+    11299,
+    11415,
+    11971,
+    12566,
+    13435,
+    14247,
+    14793,
+    14917,
+    15148,
+    15816,
+    15892,
+    15893,
+    16030,
+    16111,
+    16247,
+    16281,
+    16341,
+    16358,
+    16386,
+    16388,
+    16538,
+    16570,
+    16727,
+    16732,
+    16909,
+    16914,
+    17082,
+    17093,
+    17119,
+    17249,
+    17265
+  ],
+  "reasons": {
+    "3585": [
+      "retained_fixed_evaluation_root",
+      "inherited_conservative_quarantine"
+    ],
+    "3842": [
+      "retained_fixed_evaluation_root",
+      "inherited_conservative_quarantine"
+    ],
+    "6146": [
+      "inherited_conservative_quarantine"
+    ],
+    "11012": [
+      "inherited_conservative_quarantine"
+    ],
+    "16388": [
+      "retained_fixed_evaluation_root",
+      "inherited_conservative_quarantine"
+    ],
+    "16386": [
+      "colleague_evaluation_root_not_adopted"
+    ],
+    "4873": [
+      "retained_fixed_evaluation_root",
+      "inherited_conservative_quarantine"
+    ],
+    "3596": [
+      "inherited_conservative_quarantine"
+    ],
+    "16909": [
+      "colleague_evaluation_root_not_adopted"
+    ],
+    "3598": [
+      "retained_fixed_evaluation_root",
+      "inherited_conservative_quarantine"
+    ],
+    "3600": [
+      "inherited_conservative_quarantine"
+    ],
+    "3601": [
+      "retained_fixed_evaluation_root",
+      "inherited_conservative_quarantine"
+    ],
+    "16914": [
+      "colleague_evaluation_root_not_adopted"
+    ],
+    "4884": [
+      "retained_fixed_evaluation_root",
+      "inherited_conservative_quarantine"
+    ],
+    "15892": [
+      "colleague_evaluation_root_not_adopted"
+    ],
+    "6166": [
+      "retained_fixed_evaluation_root",
+      "inherited_conservative_quarantine"
+    ],
+    "12566": [
+      "inherited_conservative_quarantine"
+    ],
+    "15893": [
+      "colleague_evaluation_root_not_adopted"
+    ],
+    "6687": [
+      "additional_conservative_related_family_block"
+    ],
+    "3873": [
+      "inherited_conservative_quarantine"
+    ],
+    "11299": [
+      "additional_conservative_related_family_block"
+    ],
+    "8488": [
+      "colleague_evaluation_root_not_adopted"
+    ],
+    "8490": [
+      "additional_conservative_related_family_block"
+    ],
+    "15148": [
+      "colleague_evaluation_root_not_adopted"
+    ],
+    "3890": [
+      "inherited_conservative_quarantine"
+    ],
+    "10805": [
+      "retained_fixed_evaluation_root",
+      "inherited_conservative_quarantine"
+    ],
+    "6966": [
+      "retained_fixed_evaluation_root",
+      "inherited_conservative_quarantine"
+    ],
+    "5689": [
+      "inherited_conservative_quarantine"
+    ],
+    "3903": [
+      "retained_fixed_evaluation_root",
+      "inherited_conservative_quarantine"
+    ],
+    "5442": [
+      "inherited_conservative_quarantine"
+    ],
+    "7749": [
+      "colleague_evaluation_root_not_adopted",
+      "inherited_conservative_quarantine"
+    ],
+    "14917": [
+      "colleague_evaluation_root_not_adopted"
+    ],
+    "9031": [
+      "inherited_conservative_quarantine"
+    ],
+    "3921": [
+      "retained_fixed_evaluation_root",
+      "inherited_conservative_quarantine"
+    ],
+    "16727": [
+      "additional_conservative_related_family_block"
+    ],
+    "16732": [
+      "colleague_evaluation_root_not_adopted"
+    ],
+    "17249": [
+      "colleague_evaluation_root_not_adopted",
+      "inherited_conservative_quarantine"
+    ],
+    "4458": [
+      "inherited_conservative_quarantine"
+    ],
+    "11115": [
+      "retained_fixed_evaluation_root",
+      "inherited_conservative_quarantine"
+    ],
+    "6508": [
+      "additional_conservative_related_family_block"
+    ],
+    "9325": [
+      "inherited_conservative_quarantine"
+    ],
+    "9841": [
+      "retained_fixed_evaluation_root",
+      "inherited_conservative_quarantine"
+    ],
+    "17265": [
+      "colleague_evaluation_root_not_adopted"
+    ],
+    "16247": [
+      "colleague_evaluation_root_not_adopted"
+    ],
+    "9082": [
+      "inherited_conservative_quarantine"
+    ],
+    "13435": [
+      "inherited_conservative_quarantine"
+    ],
+    "3963": [
+      "inherited_conservative_quarantine"
+    ],
+    "7037": [
+      "retained_fixed_evaluation_root",
+      "inherited_conservative_quarantine"
+    ],
+    "4989": [
+      "retained_fixed_evaluation_root",
+      "inherited_conservative_quarantine"
+    ],
+    "9342": [
+      "retained_fixed_evaluation_root",
+      "inherited_conservative_quarantine"
+    ],
+    "5498": [
+      "previously_inspected_pilot"
+    ],
+    "9603": [
+      "retained_fixed_evaluation_root",
+      "inherited_conservative_quarantine"
+    ],
+    "7044": [
+      "retained_fixed_evaluation_root",
+      "inherited_conservative_quarantine"
+    ],
+    "8323": [
+      "colleague_evaluation_root_not_adopted"
+    ],
+    "7305": [
+      "retained_fixed_evaluation_root",
+      "inherited_conservative_quarantine"
+    ],
+    "11415": [
+      "inherited_conservative_quarantine"
+    ],
+    "16281": [
+      "colleague_evaluation_root_not_adopted"
+    ],
+    "16538": [
+      "colleague_evaluation_root_not_adopted"
+    ],
+    "8604": [
+      "inherited_conservative_quarantine"
+    ],
+    "16030": [
+      "colleague_evaluation_root_not_adopted"
+    ],
+    "9380": [
+      "colleague_evaluation_root_not_adopted"
+    ],
+    "14247": [
+      "colleague_evaluation_root_not_adopted"
+    ],
+    "9128": [
+      "colleague_evaluation_root_not_adopted",
+      "inherited_conservative_quarantine"
+    ],
+    "7338": [
+      "inherited_conservative_quarantine"
+    ],
+    "5813": [
+      "inherited_conservative_quarantine",
+      "previously_inspected_pilot"
+    ],
+    "3512": [
+      "inherited_conservative_quarantine"
+    ],
+    "5305": [
+      "retained_fixed_evaluation_root",
+      "inherited_conservative_quarantine"
+    ],
+    "6074": [
+      "inherited_conservative_quarantine"
+    ],
+    "9657": [
+      "retained_fixed_evaluation_root",
+      "inherited_conservative_quarantine"
+    ],
+    "17082": [
+      "colleague_evaluation_root_not_adopted"
+    ],
+    "16570": [
+      "colleague_evaluation_root_not_adopted"
+    ],
+    "6079": [
+      "inherited_conservative_quarantine",
+      "previously_inspected_pilot"
+    ],
+    "11971": [
+      "colleague_evaluation_root_not_adopted"
+    ],
+    "8901": [
+      "colleague_evaluation_root_not_adopted",
+      "inherited_conservative_quarantine"
+    ],
+    "17093": [
+      "inherited_conservative_quarantine"
+    ],
+    "15816": [
+      "colleague_evaluation_root_not_adopted"
+    ],
+    "4297": [
+      "retained_fixed_evaluation_root",
+      "inherited_conservative_quarantine"
+    ],
+    "14793": [
+      "inherited_conservative_quarantine"
+    ],
+    "10957": [
+      "colleague_evaluation_root_not_adopted"
+    ],
+    "3534": [
+      "inherited_conservative_quarantine"
+    ],
+    "6350": [
+      "inherited_conservative_quarantine"
+    ],
+    "16341": [
+      "colleague_evaluation_root_not_adopted"
+    ],
+    "5591": [
+      "retained_fixed_evaluation_root",
+      "inherited_conservative_quarantine"
+    ],
+    "8410": [
+      "inherited_conservative_quarantine"
+    ],
+    "3803": [
+      "inherited_conservative_quarantine"
+    ],
+    "4831": [
+      "inherited_conservative_quarantine"
+    ],
+    "17119": [
+      "colleague_evaluation_root_not_adopted",
+      "inherited_conservative_quarantine"
+    ],
+    "7649": [
+      "retained_fixed_evaluation_root",
+      "inherited_conservative_quarantine"
+    ],
+    "5604": [
+      "retained_fixed_evaluation_root",
+      "inherited_conservative_quarantine"
+    ],
+    "4325": [
+      "retained_fixed_evaluation_root",
+      "inherited_conservative_quarantine"
+    ],
+    "16358": [
+      "colleague_evaluation_root_not_adopted"
+    ],
+    "9196": [
+      "inherited_conservative_quarantine"
+    ],
+    "16111": [
+      "colleague_evaluation_root_not_adopted"
+    ],
+    "4082": [
+      "retained_fixed_evaluation_root",
+      "inherited_conservative_quarantine"
+    ],
+    "4338": [
+      "retained_fixed_evaluation_root",
+      "inherited_conservative_quarantine"
+    ],
+    "5620": [
+      "inherited_conservative_quarantine"
+    ],
+    "8700": [
+      "retained_fixed_evaluation_root",
+      "inherited_conservative_quarantine"
+    ]
+  },
+  "family_resolution": "conservative_rules_not_final_human_verified_families"
+}

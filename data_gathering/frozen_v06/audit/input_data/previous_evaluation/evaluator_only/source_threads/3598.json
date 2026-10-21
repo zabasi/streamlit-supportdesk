@@ -1,0 +1,280 @@
+{
+  "issue": {
+    "id": 951757471,
+    "number": 3598,
+    "title": "Initializing default session_state value for a selectbox raises ValueError if options change",
+    "html_url": "https://github.com/streamlit/streamlit/issues/3598",
+    "created_at": "2021-07-23T17:11:36Z",
+    "updated_at": "2023-11-01T21:52:22Z",
+    "closed_at": "2021-08-26T00:48:40Z",
+    "state": "closed",
+    "state_reason": "completed",
+    "author_association": "CONTRIBUTOR",
+    "source_id": "issue:3598",
+    "repository": "streamlit/streamlit",
+    "body": "### Summary\r\n\r\nIf I create a [selectbox](https://docs.streamlit.io/en/stable/api.html#streamlit.selectbox) with a key that stores the selected option in session_state and the options for the selectbox changes, Streamlit raises a `ValueError` that the previous selection is not in the new options.\r\n\r\n### Steps to reproduce\r\n\r\nCode snippet:\r\n\r\n```python\r\nimport streamlit as st\r\n\r\n\r\nlist_one = (\"One\", (\"A\", \"B\", \"C\"))\r\nlist_two = (\"Two\", (\"D\", \"E\", \"F\"))\r\n\r\n\r\nif not \"list\" in st.session_state:\r\n    st.session_state.list = list_two\r\n    st.session_state.item = list_two[1][1]\r\n\r\n\r\nst.selectbox(\"List\", (list_one, list_two), key=\"list\", format_func=lambda x: x[0])\r\nst.selectbox(\"Item\", st.session_state.list[1], key=\"item\", format_func=lambda x: x)\r\n```\r\n\r\n#### Case One (Error)\r\n\r\n1. (Optional) Choose an option from the **Item** selectbox (the second selectbox).\r\n2. Select **One** from the **List** selectbox (the first selectbox).\r\n\r\nIf `st.session_state.item` is initialized, in this case to `E`, when the list changes (from the first selectbox), a ValueError is raised. The report is then non-operational.\r\n\r\n```\r\nException in thread ScriptRunner.scriptThread:\r\nTraceback (most recent call last):\r\n  File \"/usr/local/lib/python3.8/threading.py\", line 932, in _bootstrap_inner\r\n    self.run()\r\n  File \"/usr/local/lib/python3.8/threading.py\", line 870, in run\r\n    self._target(*self._args, **self._kwargs)\r\n  File \"/root/.local/lib/python3.8/site-packages/streamlit/script_runner.py\", line 182, in _process_request_queue\r\n    widget_states = self._session_state.as_widget_states()\r\n  File \"/root/.local/lib/python3.8/site-packages/streamlit/state/session_state.py\", line 447, in as_widget_states\r\n    return self._new_widget_state.as_widget_states()\r\n  File \"/root/.local/lib/python3.8/site-packages/streamlit/state/session_state.py\", line 198, in as_widget_states\r\n    states = [\r\n  File \"/root/.local/lib/python3.8/site-packages/streamlit/state/session_state.py\", line 201, in <listcomp>\r\n    if self.get_serialized(widget_id)\r\n  File \"/root/.local/lib/python3.8/site-packages/streamlit/state/session_state.py\", line 179, in get_serialized\r\n    serialized = metadata.serializer(item.value)\r\n  File \"/root/.local/lib/python3.8/site-packages/streamlit/elements/selectbox.py\", line 113, in serialize_select_box\r\n    return index_(opt, v)\r\n  File \"/root/.local/lib/python3.8/site-packages/streamlit/util.py\", line 129, in index_\r\n    raise ValueError(\"{} is not in iterable\".format(str(x)))\r\nValueError: E is not in iterable\r\n```\r\n\r\n#### Case Two\r\n\r\nIf `st.session_state.item` is not initialized (comment out `st.session_state.item = list_two[1][1]`), then things work normally.\r\n\r\n**Expected behavior:**\r\n\r\nThe second selectbox should work normally whether its session_state variable is initialized or not.\r\n\r\n**Actual behavior:**\r\n\r\nWhen the selectbox's session_state variable is intiialized, the selectbox raises a ValueError when the options change and the selection is not in the new options.\r\n\r\n### Is this a regression?\r\n\r\nNot that I'm aware of. Session state is new in Streamlit 0.84.\r\n\r\n### Debug info\r\n\r\n- Streamlit version: Streamlit, version 0.84.2\r\n- Python version: Python 3.8.11\r\n- Using Conda? PipEnv? PyEnv? Pex? Just pip\r\n- OS version: Debian buster (in a python:3.8 container)\r\n- Browser version: Safari 14.1 on macOS Mojave 10.14.6\r\n\r\n### Additional information\r\n\r\nNone.",
+    "labels": [
+      "type:bug",
+      "status:confirmed",
+      "priority:P1"
+    ],
+    "author": {
+      "login": "kinghuang",
+      "type": "User"
+    },
+    "comment_count": 10,
+    "comments_complete": true,
+    "metadata_retrieved_at": "2026-10-06T14:28:11.874253+00:00",
+    "comments_retrieved_at": "2026-10-06T14:46:58.607577+00:00",
+    "comments_retrieval_method": "github_rest_comments",
+    "body_sha256": "3c0e9a8dd5532d8f3418dbc4168526ef76bc380a87c19303b6bc5381759c0d10",
+    "original_body_sha256": "3c0e9a8dd5532d8f3418dbc4168526ef76bc380a87c19303b6bc5381759c0d10",
+    "streamlit_version": {
+      "value": "0.84.2",
+      "evidence_text": "- Streamlit version: Streamlit, version 0.84.2",
+      "start_char": 3118,
+      "end_char": 3165,
+      "method": "explicit_version_line_regex"
+    },
+    "python_version": {
+      "value": "3.8.11",
+      "evidence_text": "- Python version: Python 3.8.11",
+      "start_char": 3166,
+      "end_char": 3198,
+      "method": "explicit_version_line_regex"
+    },
+    "topic_tags_heuristic": [
+      "initialization_or_update",
+      "serialization"
+    ],
+    "sampling_sources": [
+      "repo:streamlit/streamlit is:issue session_state in:title,body created:<=2026-10-06",
+      "repo:streamlit/streamlit is:issue \"session state\" in:title,body created:<=2026-10-06",
+      "repo:streamlit/streamlit is:issue \"widget state\" in:title,body created:<=2026-10-06"
+    ],
+    "relevance_basis": "state_label_or_title",
+    "evaluation_split": null,
+    "pilot_previously_inspected": false,
+    "historical_as_of_reconstruction": false,
+    "operating_system": null,
+    "browser": {
+      "value": "Safari 14.1 on macOS Mojave 10.14.6",
+      "evidence_text": "- Browser version: Safari 14.1 on macOS Mojave 10.14.6",
+      "start_char": 3301,
+      "end_char": 3356,
+      "method": "explicit_environment_line_regex"
+    }
+  },
+  "comments": [
+    {
+      "id": 885963173,
+      "html_url": "https://github.com/streamlit/streamlit/issues/3598#issuecomment-885963173",
+      "created_at": "2021-07-23T23:40:15Z",
+      "updated_at": "2021-07-23T23:40:15Z",
+      "author_association": "CONTRIBUTOR",
+      "source_id": "comment:885963173",
+      "issue_number": 3598,
+      "parent_source_id": "issue:3598",
+      "body": "Thanks for reporting this @kinghuang!\r\n\r\nLooks like this may be a general issue with widgets that take a list of options (I'm not entirely sure, but #3596 seems related). We'll try to look into this relatively soon (ideally within the next few weeks).",
+      "author": {
+        "login": "vdonato",
+        "type": "User"
+      },
+      "is_bot": false,
+      "retrieval_method": "github_rest_comments",
+      "retrieved_at": "2026-10-06T14:46:58.607577+00:00",
+      "body_sha256": "fb2225877b57940998a25a837e15d72ba05dcb14928a5243f7c197b0b432290c",
+      "updated_at_basis": "rest_updated_at",
+      "is_hidden": false
+    },
+    {
+      "id": 886076295,
+      "html_url": "https://github.com/streamlit/streamlit/issues/3598#issuecomment-886076295",
+      "created_at": "2021-07-24T16:27:54Z",
+      "updated_at": "2021-07-24T16:27:54Z",
+      "author_association": "CONTRIBUTOR",
+      "source_id": "comment:886076295",
+      "issue_number": 3598,
+      "parent_source_id": "issue:3598",
+      "body": "Thanks. I suspect #3600 might be related, too.",
+      "author": {
+        "login": "kinghuang",
+        "type": "User"
+      },
+      "is_bot": false,
+      "retrieval_method": "github_rest_comments",
+      "retrieved_at": "2026-10-06T14:46:58.607577+00:00",
+      "body_sha256": "9967a0a8566d08f8b04fb8739ca8ca405ad59256041d5febd59895f418d0b0b1",
+      "updated_at_basis": "rest_updated_at",
+      "is_hidden": false
+    },
+    {
+      "id": 905973760,
+      "html_url": "https://github.com/streamlit/streamlit/issues/3598#issuecomment-905973760",
+      "created_at": "2021-08-26T00:48:40Z",
+      "updated_at": "2021-08-26T00:50:06Z",
+      "author_association": "CONTRIBUTOR",
+      "source_id": "comment:905973760",
+      "issue_number": 3598,
+      "parent_source_id": "issue:3598",
+      "body": "@kinghuang heads up that we're closing in on a solution to this class of issues introduced by session_state, but in the meantime our improved understanding of exactly what's going on here is enough to confirm that the root cause of this issue is the same as that of #3596, so I'm going to close this as a duplicate of the older issue. Once the fix for this class of problem is in, I'll go back through all the issues linked to that one to verify that they were indeed fixed.",
+      "author": {
+        "login": "vdonato",
+        "type": "User"
+      },
+      "is_bot": false,
+      "retrieval_method": "github_rest_comments",
+      "retrieved_at": "2026-10-06T14:46:58.607577+00:00",
+      "body_sha256": "6c9d3142f69cdf139db8dd5ed808301f293fe1b2e5715a2608e081aaf6ddb243",
+      "updated_at_basis": "rest_updated_at",
+      "is_hidden": false
+    },
+    {
+      "id": 1114732254,
+      "html_url": "https://github.com/streamlit/streamlit/issues/3598#issuecomment-1114732254",
+      "created_at": "2022-05-02T11:11:29Z",
+      "updated_at": "2022-05-02T11:17:52Z",
+      "author_association": "NONE",
+      "source_id": "comment:1114732254",
+      "issue_number": 3598,
+      "parent_source_id": "issue:3598",
+      "body": "Just a note that this isn't fixed. I get the same value error\r\n\r\n```\r\nstreamlit/util.py\", line 129, in index_\r\n    raise ValueError(\"{} is not in iterable\".format(str(x)))\r\n```\r\nAnyone found a workaround?",
+      "author": {
+        "login": "frankvgompel",
+        "type": "User"
+      },
+      "is_bot": false,
+      "retrieval_method": "github_rest_comments",
+      "retrieved_at": "2026-10-06T14:46:58.607577+00:00",
+      "body_sha256": "9a641db712835a6a5e9b3f3ba2e32217b31bc33c7a4ae61f2969b7b953d8053f",
+      "updated_at_basis": "rest_updated_at",
+      "is_hidden": false
+    },
+    {
+      "id": 1141723885,
+      "html_url": "https://github.com/streamlit/streamlit/issues/3598#issuecomment-1141723885",
+      "created_at": "2022-05-31T06:38:52Z",
+      "updated_at": "2022-05-31T06:38:52Z",
+      "author_association": "NONE",
+      "source_id": "comment:1141723885",
+      "issue_number": 3598,
+      "parent_source_id": "issue:3598",
+      "body": "Still having the same/similar issue as Frank noted above. If only one selectbox is in the code there is no issue, when another one is inserted I get the same error:  streamlit/util.py\", line 129, in index_\r\n    raise ValueError(\"{} is not in iterable\".format(str(x)))",
+      "author": {
+        "login": "andreasbaros",
+        "type": "User"
+      },
+      "is_bot": false,
+      "retrieval_method": "github_rest_comments",
+      "retrieved_at": "2026-10-06T14:46:58.607577+00:00",
+      "body_sha256": "b3f32edfd18e3dba394fd5c09630bc3b61de1352d43813b809945d6bbf4a8c26",
+      "updated_at_basis": "rest_updated_at",
+      "is_hidden": false
+    },
+    {
+      "id": 1539127758,
+      "html_url": "https://github.com/streamlit/streamlit/issues/3598#issuecomment-1539127758",
+      "created_at": "2023-05-08T22:08:28Z",
+      "updated_at": "2023-05-08T22:08:28Z",
+      "author_association": "NONE",
+      "source_id": "comment:1539127758",
+      "issue_number": 3598,
+      "parent_source_id": "issue:3598",
+      "body": "I struggled for an hour with this issue on Streamlit 1.22.0 and Python 3.11.3.\r\n\r\nMy workaround: instead of \"st.session_state.list\" I used \"st.session_state.selection\" and \"st.session_state.selection1\" and so on as a naming convention. No idea why that works, but it works.",
+      "author": {
+        "login": "kick-ban-ignore",
+        "type": "User"
+      },
+      "is_bot": false,
+      "retrieval_method": "github_rest_comments",
+      "retrieved_at": "2026-10-06T14:46:58.607577+00:00",
+      "body_sha256": "e0251acfcb283bb7adf185c6e7920ff7482b2dc6482c6288ddcbe6ce10c74263",
+      "updated_at_basis": "rest_updated_at",
+      "is_hidden": false
+    },
+    {
+      "id": 1559439365,
+      "html_url": "https://github.com/streamlit/streamlit/issues/3598#issuecomment-1559439365",
+      "created_at": "2023-05-23T13:57:39Z",
+      "updated_at": "2023-05-23T13:57:39Z",
+      "author_association": "NONE",
+      "source_id": "comment:1559439365",
+      "issue_number": 3598,
+      "parent_source_id": "issue:3598",
+      "body": "@vdonato this bug is clearly not fixed yet and needs to be reopened.",
+      "author": {
+        "login": "DarthVeigar",
+        "type": "User"
+      },
+      "is_bot": false,
+      "retrieval_method": "github_rest_comments",
+      "retrieved_at": "2026-10-06T14:46:58.607577+00:00",
+      "body_sha256": "b4b069122a270730ddf7894bf3a5ffa7f70ef0aa7949920a93a7a2d9d8d852e2",
+      "updated_at_basis": "rest_updated_at",
+      "is_hidden": false
+    },
+    {
+      "id": 1560306704,
+      "html_url": "https://github.com/streamlit/streamlit/issues/3598#issuecomment-1560306704",
+      "created_at": "2023-05-24T00:55:13Z",
+      "updated_at": "2023-05-24T00:55:24Z",
+      "author_association": "CONTRIBUTOR",
+      "source_id": "comment:1560306704",
+      "issue_number": 3598,
+      "parent_source_id": "issue:3598",
+      "body": "@frankvgompel @kick-ban-ignore @LuciferUchiha (+others that +1'd the comments above) I would recommend creating a new issue with a minimally reproducible example of the bug.\r\n\r\nThe original code snippet posted in this issue doesn't seem to run into an error for me, so I would guess that the root-causes of the issues still being seen are likely different from the one that this issue was originally filed for, even if the final error being thrown is coming from the same line.\r\n\r\nPlease tag me in the newly created issue so that I don't miss it",
+      "author": {
+        "login": "vdonato",
+        "type": "User"
+      },
+      "is_bot": false,
+      "retrieval_method": "github_rest_comments",
+      "retrieved_at": "2026-10-06T14:46:58.607577+00:00",
+      "body_sha256": "b78d4a828ab2be48a0881152895449e6eae39c7e8c5a988389bcaaf38c3d02d8",
+      "updated_at_basis": "rest_updated_at",
+      "is_hidden": false
+    },
+    {
+      "id": 1635285455,
+      "html_url": "https://github.com/streamlit/streamlit/issues/3598#issuecomment-1635285455",
+      "created_at": "2023-07-14T05:16:05Z",
+      "updated_at": "2023-07-14T05:17:06Z",
+      "author_association": "NONE",
+      "source_id": "comment:1635285455",
+      "issue_number": 3598,
+      "parent_source_id": "issue:3598",
+      "body": "Removing or avoiding the input_widget name (key value) same as the session_state name solved this for me. \r\n\r\n```python\r\nimport streamlit as st\r\n\r\n\r\nlist_one = (\"One\", (\"A\", \"B\", \"C\"))\r\nlist_two = (\"Two\", (\"D\", \"E\", \"F\"))\r\n\r\nif not \"list\" in st.session_state:\r\n    st.session_state.list = list_two\r\n    st.session_state.item = list_two[1][1]\r\n\r\n\r\nst.selectbox(\r\n  \"List\", \r\n  (list_one, list_two), \r\n  #key=\"list\", \r\n  format_func=lambda x: x[0])\r\nst.selectbox(\r\n  \"Item\", \r\n  st.session_state.list[1], \r\n  #key=\"item\", \r\n  format_func=lambda x: x)\r\n  ```",
+      "author": {
+        "login": "moarshy",
+        "type": "User"
+      },
+      "is_bot": false,
+      "retrieval_method": "github_rest_comments",
+      "retrieved_at": "2026-10-06T14:46:58.607577+00:00",
+      "body_sha256": "afe815ab8662d51e7d716809a4734cfe1db57d74bb34ab074ae19398b1736102",
+      "updated_at_basis": "rest_updated_at",
+      "is_hidden": false
+    },
+    {
+      "id": 1789743094,
+      "html_url": "https://github.com/streamlit/streamlit/issues/3598#issuecomment-1789743094",
+      "created_at": "2023-11-01T21:52:22Z",
+      "updated_at": "2023-11-01T21:52:22Z",
+      "author_association": "NONE",
+      "source_id": "comment:1789743094",
+      "issue_number": 3598,
+      "parent_source_id": "issue:3598",
+      "body": "When I remove a key I've got a DuplicateWidgetID error =(((",
+      "author": {
+        "login": "migh000",
+        "type": "User"
+      },
+      "is_bot": false,
+      "retrieval_method": "github_rest_comments",
+      "retrieved_at": "2026-10-06T14:46:58.607577+00:00",
+      "body_sha256": "e2af7acd9a78b5d290b480d3ad9db9c34aa80efda84058723096953a1518c423",
+      "updated_at_basis": "rest_updated_at",
+      "is_hidden": false
+    }
+  ]
+}

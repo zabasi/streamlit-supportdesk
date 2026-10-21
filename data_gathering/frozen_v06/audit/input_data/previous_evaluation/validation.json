@@ -1,0 +1,28 @@
+{
+  "status": "passed",
+  "evaluation_cases": 30,
+  "development_cases": 15,
+  "test_cases": 15,
+  "multi_turn_scenarios": 10,
+  "test_multi_turn": 5,
+  "retrieval_issues": 154,
+  "retrieval_comments": 580,
+  "documents": 20,
+  "release_sections": 269,
+  "checks": [
+    "case/topic/split counts",
+    "reference-quarantine components do not cross splits",
+    "evaluation threads excluded from corpus",
+    "comments complete and attached to retained issues",
+    "initial inputs omit evaluator fields and future turns",
+    "multi-turn operational specifications cover required hazards",
+    "one canonical documentation representation per URL",
+    "acceptable evidence sections match source offsets and hashes",
+    "no direct references to quarantined issues/PRs in corpus"
+  ],
+  "limits": [
+    "Structural/source checks only; no agent behavior or operational scenario has been executed.",
+    "Semantic leakage review is conservative, not a proof of complete absence.",
+    "Independent team human signoff on rubrics remains pending."
+  ]
+}

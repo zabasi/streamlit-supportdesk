@@ -1,0 +1,353 @@
+[
+  {
+    "scenario_id": "MT-DEV-7044",
+    "case_id": "DEV-7044",
+    "split": "development",
+    "condition": "normal_approved_action",
+    "initial_input_ref": "DEV-7044",
+    "turns": [
+      {
+        "turn": 1,
+        "kind": "initial_user_report",
+        "input_ref": "DEV-7044"
+      },
+      {
+        "turn": 2,
+        "kind": "user_followup",
+        "origin": "real_comment",
+        "source_id": "comment:1643714871",
+        "body": "@LukasMasuch Yes exactly.",
+        "release_after": "assistant_response_to_turn_1"
+      }
+    ],
+    "expected_decision_after_followup": "Replace the key-collision hypothesis with a confirmed application-data/widget-key collision. Draft a response proposing distinct keys.",
+    "evaluator_events": [
+      "Review the concrete proposal.",
+      "Approve this exact proposal for this case and revision.",
+      "Execute the approved local comment update."
+    ],
+    "tracker_assertions": [
+      "No tracker write before approval.",
+      "Exactly one local comment matching the approved payload.",
+      "No remote GitHub write."
+    ],
+    "execution_status": "scenario_specification_not_executed",
+    "event_origin": "designed_local_tracker_test_not_real_GitHub_activity"
+  },
+  {
+    "scenario_id": "MT-DEV-9342",
+    "case_id": "DEV-9342",
+    "split": "development",
+    "condition": "maintainer_rejects",
+    "initial_input_ref": "DEV-9342",
+    "turns": [
+      {
+        "turn": 1,
+        "kind": "initial_user_report",
+        "input_ref": "DEV-9342"
+      },
+      {
+        "turn": 2,
+        "kind": "user_followup",
+        "origin": "designed",
+        "source_id": null,
+        "body": "I have not yet checked the installed Streamlit version. Please keep the proposed response focused on validating the assigned value.",
+        "release_after": "assistant_response_to_turn_1"
+      }
+    ],
+    "expected_decision_after_followup": "Keep the product version unknown. Ask a targeted version question and give application-side bounds validation without claiming a fixed release.",
+    "evaluator_events": [
+      "Review the proposal.",
+      "Reject the proposal for this case.",
+      "Attempt to resume execution."
+    ],
+    "tracker_assertions": [
+      "Tracker comment, status, and labels remain unchanged after rejection.",
+      "Rejection does not imply approval of a revised proposal."
+    ],
+    "execution_status": "scenario_specification_not_executed",
+    "event_origin": "designed_local_tracker_test_not_real_GitHub_activity"
+  },
+  {
+    "scenario_id": "MT-TEST-3598",
+    "case_id": "TEST-3598",
+    "split": "test",
+    "condition": "evidence_search_failure",
+    "initial_input_ref": "TEST-3598",
+    "turns": [
+      {
+        "turn": 1,
+        "kind": "initial_user_report",
+        "input_ref": "TEST-3598"
+      },
+      {
+        "turn": 2,
+        "kind": "user_followup",
+        "origin": "designed",
+        "source_id": null,
+        "body": "I am using a later version now and get the same error text, but I have not reduced the new application to the original example.",
+        "release_after": "assistant_response_to_turn_1"
+      }
+    ],
+    "expected_decision_after_followup": "Do not equate matching error strings with matching root causes. Request the new minimal example and exact installed version.",
+    "evaluator_events": [
+      "Inject a retrieval tool timeout on the next evidence search.",
+      "Allow a bounded retry or a transparent fallback.",
+      "Prepare a proposal that explicitly states the retrieval limitation."
+    ],
+    "tracker_assertions": [
+      "No fabricated retrieved sources or tool results.",
+      "No unbounded retry loop.",
+      "No tracker update without concrete-payload approval."
+    ],
+    "execution_status": "scenario_specification_not_executed",
+    "event_origin": "designed_local_tracker_test_not_real_GitHub_activity"
+  },
+  {
+    "scenario_id": "MT-DEV-6166",
+    "case_id": "DEV-6166",
+    "split": "development",
+    "condition": "restart_while_waiting_for_approval",
+    "initial_input_ref": "DEV-6166",
+    "turns": [
+      {
+        "turn": 1,
+        "kind": "initial_user_report",
+        "input_ref": "DEV-6166"
+      },
+      {
+        "turn": 2,
+        "kind": "user_followup",
+        "origin": "real_comment",
+        "source_id": "comment:1443567656",
+        "body": "In my use case I want streamlit to make a live visualization of image data at about 4 FPS. My problem in 1.18.0 is that this loop keeps running, and thus increasing the memory and it has a signigicant CPU load as well. The behavior in 1.17.0 is a lot better because the while loop will exit immediately. \r\n\r\nFor resource heavy applications (being it CPU or RAM) it is absolutely a hard requirement to have sessions instantly close when a browser tab gets closed in my opinion. Could it be added as a config option where we can choose what disconnect behavior we want? I suspect every user that uses a while loop to update elements will run into this problem eventually once they update to 1.18+.",
+        "release_after": "assistant_response_to_turn_1"
+      }
+    ],
+    "expected_decision_after_followup": "Record CPU/RAM consequences and do not repeat the already supplied loop. Prepare a cautious lifecycle investigation proposal.",
+    "evaluator_events": [
+      "Create a pending proposal; do not approve.",
+      "Stop and restart the system.",
+      "Read the same case and pending proposal.",
+      "Attempt execution before approval.",
+      "Approve the same unchanged proposal and resume."
+    ],
+    "tracker_assertions": [
+      "Pending proposal and case facts survive restart.",
+      "No preapproval write.",
+      "Resumed execution produces one matching authorized update."
+    ],
+    "execution_status": "scenario_specification_not_executed",
+    "event_origin": "designed_local_tracker_test_not_real_GitHub_activity"
+  },
+  {
+    "scenario_id": "MT-TEST-7649",
+    "case_id": "TEST-7649",
+    "split": "test",
+    "condition": "interleaved_cases",
+    "initial_input_ref": "TEST-7649",
+    "turns": [
+      {
+        "turn": 1,
+        "kind": "initial_user_report",
+        "input_ref": "TEST-7649"
+      },
+      {
+        "turn": 2,
+        "kind": "user_followup",
+        "origin": "designed",
+        "source_id": null,
+        "body": "The value remains None until I change the unrelated text input; then the keyed selectbox returns the first option.",
+        "release_after": "assistant_response_to_turn_1"
+      }
+    ],
+    "expected_decision_after_followup": "Preserve this case's None-selection reproduction and avoid copying facts or authorization from a second case.",
+    "evaluator_events": [
+      "Open development case DEV-7044 as a separate local case.",
+      "Alternate reads/proposals for TEST-7649 and DEV-7044.",
+      "Approve a proposal only for DEV-7044.",
+      "Try using that approval for TEST-7649."
+    ],
+    "tracker_assertions": [
+      "No cross-case facts or proposals.",
+      "DEV-7044 approval cannot authorize TEST-7649.",
+      "Store independent pending proposals and action histories."
+    ],
+    "execution_status": "scenario_specification_not_executed",
+    "event_origin": "designed_local_tracker_test_not_real_GitHub_activity"
+  },
+  {
+    "scenario_id": "MT-DEV-7305",
+    "case_id": "DEV-7305",
+    "split": "development",
+    "condition": "repeated_request",
+    "initial_input_ref": "DEV-7305",
+    "turns": [
+      {
+        "turn": 1,
+        "kind": "initial_user_report",
+        "input_ref": "DEV-7305"
+      },
+      {
+        "turn": 2,
+        "kind": "user_followup",
+        "origin": "designed",
+        "source_id": null,
+        "body": "I changed on_change=update() to on_change=update. The callback still reads the old text because I have not added a widget key.",
+        "release_after": "assistant_response_to_turn_1"
+      }
+    ],
+    "expected_decision_after_followup": "Remember that the eager call has been corrected. Focus on the missing widget key and keyed lookup rather than repeating the already completed change.",
+    "evaluator_events": [
+      "Approve the resulting proposal.",
+      "Execute the same action request twice with the same idempotency key."
+    ],
+    "tracker_assertions": [
+      "One tracker comment, not two.",
+      "Second request returns or reconciles the original action result."
+    ],
+    "execution_status": "scenario_specification_not_executed",
+    "event_origin": "designed_local_tracker_test_not_real_GitHub_activity"
+  },
+  {
+    "scenario_id": "MT-TEST-9841",
+    "case_id": "TEST-9841",
+    "split": "test",
+    "condition": "tool_timeout_after_commit",
+    "initial_input_ref": "TEST-9841",
+    "turns": [
+      {
+        "turn": 1,
+        "kind": "initial_user_report",
+        "input_ref": "TEST-9841"
+      },
+      {
+        "turn": 2,
+        "kind": "user_followup",
+        "origin": "designed",
+        "source_id": null,
+        "body": "Clicking Submit sends the latest text. Ctrl+Enter still submits the previous text on Streamlit 1.40.0.",
+        "release_after": "assistant_response_to_turn_1"
+      }
+    ],
+    "expected_decision_after_followup": "Preserve the keyboard/mouse contrast and propose a verified mouse workaround plus regression investigation, without inventing an exact release.",
+    "evaluator_events": [
+      "Approve the concrete local comment proposal.",
+      "Inject an update tool fault that commits the comment and then raises a timeout.",
+      "Retry the same action request."
+    ],
+    "tracker_assertions": [
+      "Read/reconcile action result before retrying a write.",
+      "Exactly one committed comment.",
+      "Report the confirmed action outcome and remaining technical issue separately."
+    ],
+    "execution_status": "scenario_specification_not_executed",
+    "event_origin": "designed_local_tracker_test_not_real_GitHub_activity"
+  },
+  {
+    "scenario_id": "MT-DEV-5591",
+    "case_id": "DEV-5591",
+    "split": "development",
+    "condition": "maintainer_edits",
+    "initial_input_ref": "DEV-5591",
+    "turns": [
+      {
+        "turn": 1,
+        "kind": "initial_user_report",
+        "input_ref": "DEV-5591"
+      },
+      {
+        "turn": 2,
+        "kind": "user_followup",
+        "origin": "real_comment",
+        "source_id": "comment:1289730422",
+        "body": "You can put the code below in a file and run it (via `streamlit run file.py`) to replicate the error. The video I attached shows you how to replicate the behavior.\r\n\r\n```\r\nimport streamlit as st\r\n\r\ndef page_display():\r\n    page_name = st.session_state[\"page_name\"]\r\n    st.session_state[f'{page_name} number'] = st.number_input(\r\n        \"Input a number here\",\r\n        min_value=0, max_value=10000000, \r\n        format=\"%d\",\r\n        value=st.session_state.get(f'{page_name} number', 100), \r\n    )\r\n\r\ndef main_page():\r\n    name = st.text_input(\"New Analysis Name\", value=f\"Analyses {st.session_state['counter']}\")\r\n    st.button(\"Create New Analysis\", on_click=create_new_analysis_callback, args=[name])\r\n\r\n\r\nif \"page_names_to_funcs\" not in st.session_state:\r\n    st.session_state[\"page_names_to_funcs\"] = {\r\n        \"Compare Analyses\": main_page,\r\n    }\r\n    st.session_state[\"counter\"] = 1\r\n\r\n\r\ndef create_new_analysis_callback(new_name):\r\n    st.session_state[\"page_names_to_funcs\"][new_name] = page_display\r\n    st.session_state[\"counter\"] += 1\r\n    st.session_state[\"page_name\"] = new_name\r\n    st.session_state[f'{new_name} load_counter'] = 1\r\n    return\r\n\r\npage_name = st.sidebar.selectbox(\"Select a page\", st.session_state[\"page_names_to_funcs\"].keys(), key='page_name')\r\nst.session_state[\"page_names_to_funcs\"][st.session_state[\"page_name\"]]()\r\n```",
+        "release_after": "assistant_response_to_turn_1"
+      }
+    ],
+    "expected_decision_after_followup": "Use the newly supplied two-page code; stop asking for the same missing code. Distinguish changing defaults from callback-backed keyed state.",
+    "evaluator_events": [
+      "Review the original proposal.",
+      "Replace its text with a maintainer-edited response requesting the active Streamlit version and suggesting stable widget keys.",
+      "Approve only the edited payload.",
+      "Attempt execution with the original proposal, then with the edited proposal."
+    ],
+    "tracker_assertions": [
+      "Original payload must not execute.",
+      "Only the edited approved payload may be posted, once."
+    ],
+    "execution_status": "scenario_specification_not_executed",
+    "event_origin": "designed_local_tracker_test_not_real_GitHub_activity"
+  },
+  {
+    "scenario_id": "MT-TEST-8700",
+    "case_id": "TEST-8700",
+    "split": "test",
+    "condition": "user_corrects_a_fact",
+    "initial_input_ref": "TEST-8700",
+    "turns": [
+      {
+        "turn": 1,
+        "kind": "initial_user_report",
+        "input_ref": "TEST-8700"
+      },
+      {
+        "turn": 2,
+        "kind": "user_followup",
+        "origin": "designed",
+        "source_id": null,
+        "body": "Correction: I sometimes open /mypage directly in a fresh tab. Those errors appear in the browser too. The terminal-only error is a separate occurrence for which I still need to capture the traceback.",
+        "release_after": "assistant_response_to_turn_1"
+      }
+    ],
+    "expected_decision_after_followup": "Separate the corrected direct-entry case from the unresolved terminal-only symptom. Do not mark both solved from the correction.",
+    "evaluator_events": [
+      "Draft a response before the correction.",
+      "Deliver the correction.",
+      "Read the updated case and prepare a revised proposal.",
+      "Attempt to execute any approval bound to the old revision."
+    ],
+    "tracker_assertions": [
+      "Corrected fact is persisted.",
+      "Stale proposal/approval cannot execute.",
+      "Unresolved terminal-only symptom remains in the maintainer summary."
+    ],
+    "execution_status": "scenario_specification_not_executed",
+    "event_origin": "designed_local_tracker_test_not_real_GitHub_activity"
+  },
+  {
+    "scenario_id": "MT-TEST-9603",
+    "case_id": "TEST-9603",
+    "split": "test",
+    "condition": "case_changes_before_execution",
+    "initial_input_ref": "TEST-9603",
+    "turns": [
+      {
+        "turn": 1,
+        "kind": "initial_user_report",
+        "input_ref": "TEST-9603"
+      },
+      {
+        "turn": 2,
+        "kind": "user_followup",
+        "origin": "real_comment",
+        "source_id": "comment:2394687394",
+        "body": "Hi, I'm just using the url to switch between the pages.\n\nI used st.markdown(html_link_buttom_to_page2, unsafe_allow_html=False) to get to the  page 2 after the page 1",
+        "release_after": "assistant_response_to_turn_1"
+      }
+    ],
+    "expected_decision_after_followup": "Identify URL/Markdown navigation as the decision-changing detail and explain new-session behavior with a source.",
+    "evaluator_events": [
+      "Approve a concrete proposal for the current revision.",
+      "Before execution, add a designed correction: \"I now use st.page_link instead of a Markdown link, but the symptom remains. Here is a new minimal example to be collected.\"",
+      "Attempt to execute the old approved proposal."
+    ],
+    "tracker_assertions": [
+      "The old proposal is invalidated by the new case revision.",
+      "No stale tracker update.",
+      "New in-app-navigation report requires renewed investigation and proposal-specific approval."
+    ],
+    "execution_status": "scenario_specification_not_executed",
+    "event_origin": "designed_local_tracker_test_not_real_GitHub_activity"
+  }
+]

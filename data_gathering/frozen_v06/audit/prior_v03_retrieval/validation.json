@@ -1,0 +1,86 @@
+{
+  "structural_status": "passed",
+  "semantic_truth_certified": false,
+  "agent_behavior_evaluated": false,
+  "counts": {
+    "primary_issues": 220,
+    "colleague_issues": 500,
+    "overlapping_issues": 30,
+    "archived_unique_issues": 690,
+    "archived_unique_comments": 3181,
+    "scope_matching_issue_candidates": 249,
+    "retrieval_issues": 126,
+    "retrieval_comments_approved": 214,
+    "comments_pending_review": 13,
+    "documentation_representations_archived": 70,
+    "retrieval_documentation_pages": 21,
+    "release_versions_archived": 81,
+    "release_sections_before_leakage_filter": 269,
+    "retrieval_release_sections": 111,
+    "heldout_or_pilot_issue_numbers": 97,
+    "fixed_development_cases": 15,
+    "fixed_test_cases": 15,
+    "multi_turn_scenario_specifications": 10,
+    "comments_screened_for_review": 487,
+    "comments_excluded_after_screening": 260,
+    "comments_approved_by_use": {
+      "diagnostic_context": 72,
+      "reported_observation": 140,
+      "corroborated_claim": 2
+    }
+  },
+  "validated_rubric_evidence_spans": 60,
+  "category_counts": {
+    "development": {
+      "needs_clarification": 6,
+      "answerable": 6,
+      "needs_escalation": 3
+    },
+    "test": {
+      "needs_clarification": 6,
+      "needs_escalation": 3,
+      "answerable": 6
+    }
+  },
+  "topic_counts": {
+    "development": {
+      "initialization_and_updates": 3,
+      "widget_and_session_lifecycle": 3,
+      "callbacks_and_reruns": 3,
+      "forms": 3,
+      "multipage": 3
+    },
+    "test": {
+      "initialization_and_updates": 3,
+      "widget_and_session_lifecycle": 3,
+      "callbacks_and_reruns": 3,
+      "forms": 3,
+      "multipage": 3
+    }
+  },
+  "checks": [
+    "unique source and parent identifiers",
+    "count-reconciled archived threads for retained issues",
+    "text and source-body hashes",
+    "only explicit index allowlist loaded",
+    "evaluation and pilot roots absent from retrieval",
+    "blocked issue and PR references absent from retrieval text",
+    "inherited and additional conservative family groups do not cross evaluation splits",
+    "one canonical representation per retained documentation page",
+    "60 inherited rubric evidence spans remain exact in archive and their normalized content remains in selected input",
+    "initial agent inputs do not preload gold or future turns",
+    "10 scenario specifications include 5 test cases and all required operational conditions",
+    "unreviewed comments cannot enter the default index input",
+    "exact selected comment/context text and honest AI review provenance",
+    "complete comment decision partition",
+    "input snapshot and delivered file integrity"
+  ],
+  "limitations": [
+    "Team signoff on evaluator rubrics remains pending.",
+    "Rule-based duplicate blocks are conservative; unknown semantic relatives may remain.",
+    "No screenshot or video content has been interpreted.",
+    "Source selection does not certify every historic report or reproduce proposed solutions.",
+    "No agent, tracker, scenarios, or RAG metrics have been executed.",
+    "Dollar cost and tokenizer totals await model selection and actual Metis rates/balance."
+  ]
+}

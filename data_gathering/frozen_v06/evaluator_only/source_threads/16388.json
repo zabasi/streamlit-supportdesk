@@ -1,0 +1,124 @@
+{
+  "issue": {
+    "id": 5082919336,
+    "number": 16388,
+    "title": "Deleting a widget's session_state key leaves the frontend showing the stale value (backend/frontend divergence for one rerun)",
+    "html_url": "https://github.com/streamlit/streamlit/issues/16388",
+    "created_at": "2026-08-06T15:49:44Z",
+    "updated_at": "2026-08-10T17:58:18Z",
+    "closed_at": null,
+    "state": "open",
+    "state_reason": null,
+    "author_association": "CONTRIBUTOR",
+    "source_id": "issue:16388",
+    "repository": "streamlit/streamlit",
+    "body": "### Checklist\n\n\n### Summary\n\nDeleting a keyed widget's entry from `st.session_state` (e.g. `del st.session_state[\"foo\"]` inside a callback) does not reset the widget, but can lead to an inconsistency between frontend and backend.\n\nThe Python side returns the widget's *default* value for that run, but the frontend keeps displaying the old value, so backend and frontend disagree.\n\nOn the **next** rerun the backend silently re-adopts the stale frontend value, so the deletion is effectively undone.\n\n### Reproducible Code Example\n\n```Python\nimport streamlit as st\n\ntext = st.text_input(\"Foo\", value=\"default\", key=\"foo\")\n\nst.write(\"widget returned:\", repr(text))\n\ndef populate():\n    st.session_state[\"foo\"] = \"hello\"\n\ndef delete():\n    del st.session_state[\"foo\"]\n\nst.button(\"Populate\", on_click=populate)\nst.button(\"Delete\", on_click=delete)\nst.button(\"Noop\")\n\n```\n\n### Steps To Reproduce\n\n1. Run the app.\n2. Click **Populate** (callback sets `st.session_state[\"foo\"] = \"hello\"`). The text input now shows `hello` and `widget returned: 'hello'`.\n3. Click **Delete** (callback runs `del st.session_state[\"foo\"]`).\n4. Observe the text input on screen vs. the `widget returned:` line.\n5. Click **Noop** (any interaction that triggers a plain rerun) and observe again.\n\n### Expected Behavior\n\nThe widget value in the frontent and backend should be consistent. After deleting a widget's key in session state, it should presumably fall back to its default value.\n\n### Current Behavior\n\n- After clicking Delete, the backend returns `widget returned: \"default''` , but the frontend widget still displays `\"hello\"`.\n- After the next rerun (step 5), the backend re-adopts the stale frontend value, and both show `\"hello\"`.\n\n### Screenshot\n\n<img width=\"361\" height=\"307\" alt=\"Image\" src=\"https://github.com/user-attachments/assets/84555ad7-8b24-4ea1-aa42-f46a707562d3\" />\n\n### Is this a regression?\n\n- [ ] Yes, this used to work in a previous version.\n\n### Debug info\n\n- Streamlit version: 1.59.2\n- Python version: 3.14.6\n- Operating System: Ubuntu 22.04\n- Browser: Chromium\n\n\n### Additional Information\n\nLikely related: #5442",
+    "labels": [
+      "type:bug",
+      "area:widgets",
+      "status:confirmed",
+      "priority:P3",
+      "feature:st.text_input",
+      "feature:st.session_state"
+    ],
+    "author": {
+      "login": "connortann",
+      "type": "User"
+    },
+    "comment_count": 2,
+    "comments_complete": true,
+    "metadata_retrieved_at": "2026-10-06T14:28:04.043219+00:00",
+    "comments_retrieved_at": "2026-10-06T14:29:43.676236+00:00",
+    "comments_retrieval_method": "github_public_html_embedded_data",
+    "body_sha256": "babe00470a1abfbab8861013d87b92a817d22830f4e0b30aa7ec2335ba462070",
+    "original_body_sha256": "354a2a5a3ee245eeb403ceac53510e05b4b850f1d57afeeb1b146ab5da162afd",
+    "streamlit_version": {
+      "value": "1.59.2",
+      "evidence_text": "- Streamlit version: 1.59.2",
+      "start_char": 1961,
+      "end_char": 1988,
+      "method": "explicit_version_line_regex"
+    },
+    "python_version": {
+      "value": "3.14.6",
+      "evidence_text": "- Python version: 3.14.6",
+      "start_char": 1989,
+      "end_char": 2013,
+      "method": "explicit_version_line_regex"
+    },
+    "topic_tags_heuristic": [
+      "callbacks",
+      "reset_or_persistence",
+      "widget_identity",
+      "frontend_backend_consistency"
+    ],
+    "sampling_sources": [
+      "label:feature:st.session_state",
+      "repo:streamlit/streamlit is:issue session_state in:title,body created:<=2026-10-06",
+      "repo:streamlit/streamlit is:issue \"session state\" in:title,body created:<=2026-10-06",
+      "repo:streamlit/streamlit is:issue \"widget state\" in:title,body created:<=2026-10-06"
+    ],
+    "relevance_basis": "state_label_or_title",
+    "evaluation_split": null,
+    "pilot_previously_inspected": false,
+    "historical_as_of_reconstruction": false,
+    "operating_system": {
+      "value": "Ubuntu 22.04",
+      "evidence_text": "- Operating System: Ubuntu 22.04",
+      "start_char": 2014,
+      "end_char": 2046,
+      "method": "explicit_environment_line_regex"
+    },
+    "browser": {
+      "value": "Chromium",
+      "evidence_text": "- Browser: Chromium",
+      "start_char": 2047,
+      "end_char": 2066,
+      "method": "explicit_environment_line_regex"
+    }
+  },
+  "comments": [
+    {
+      "id": 5216549556,
+      "html_url": "https://github.com/streamlit/streamlit/issues/16388#issuecomment-5216549556",
+      "created_at": "2026-08-07T11:37:13Z",
+      "updated_at": "2026-08-07T11:37:13Z",
+      "author_association": "CONTRIBUTOR",
+      "source_id": "comment:5216549556",
+      "issue_number": 16388,
+      "parent_source_id": "issue:16388",
+      "body": "Deleting a keyed widget's entry from `st.session_state` correctly clears backend state and makes the widget return its default for that run, but the frontend is never told to adopt that default. In `SessionState.register_widget`, `widget_value_changed` is only set for programmatic *sets* (`is_new_state_value`), bound/persisted restores, page-scoped drops, and disabled-value discards — not for key deletion. As a result the UI keeps the stale value, and the next rerun's `set_widgets_from_proto` re-imports that frontend value into session state, undoing the delete.\n\n### Related Issues\n\n- https://github.com/streamlit/streamlit/issues/5442 — Near-duplicate (filed as enhancement): deleting a widget key resets the Python return value to the default but leaves the browser widget stuck on the previous selection; the next rerun re-syncs to the stale UI value.\n- https://github.com/streamlit/streamlit/issues/10169 — Related frontend/backend divergence: pending widget edits can remain visible on the client while not being submitted to the backend after programmatic `st.rerun()` / `st.switch_page()`.\n- https://github.com/streamlit/streamlit/issues/9082 — Related session-state/widget sync: widgets in conditional blocks fail to reflect values from `st.session_state` when remounted, another backend-vs-frontend state mismatch.\n\n---\n*This is an automated triage comment using `cursor-grok-4.5-high`. Please verify the suggested labels and related issues.*",
+      "author": {
+        "login": "github-actions",
+        "type": "Bot"
+      },
+      "is_bot": true,
+      "retrieval_method": "github_public_html_embedded_data",
+      "retrieved_at": "2026-10-06T14:29:43.676236+00:00",
+      "body_sha256": "47ac76237a1eba66cc949a46aefacdc9add9e6eb23d7056f4e540df654033695",
+      "updated_at_basis": "lastEditedAt_or_createdAt_from_public_HTML",
+      "is_hidden": false
+    },
+    {
+      "id": 5231173158,
+      "html_url": "https://github.com/streamlit/streamlit/issues/16388#issuecomment-5231173158",
+      "created_at": "2026-08-09T11:04:16Z",
+      "updated_at": "2026-08-09T11:04:16Z",
+      "author_association": "NONE",
+      "source_id": "comment:5231173158",
+      "issue_number": 16388,
+      "parent_source_id": "issue:16388",
+      "body": "I’d like to work on this. My proposed scope is to first add an `AppTest` regression covering deletion of a keyed widget from `st.session_state`, its immediate default value, and the following rerun. I would then update the widget-state synchronisation path so the reset value is sent back to the frontend without changing normal programmatic assignments or widget cleanup.\n\nBefore I start, should deleting a keyed widget always reset it to its declared default, or are there cases where removing the key should preserve the current frontend value?",
+      "author": {
+        "login": "sahilmathur254",
+        "type": "User"
+      },
+      "is_bot": false,
+      "retrieval_method": "github_public_html_embedded_data",
+      "retrieved_at": "2026-10-06T14:29:43.676236+00:00",
+      "body_sha256": "9d1a54688177e2a1752020857a2080e72a242934bed20bcfb67393d0d7b8b76d",
+      "updated_at_basis": "lastEditedAt_or_createdAt_from_public_HTML",
+      "is_hidden": false
+    }
+  ]
+}

@@ -1,0 +1,1266 @@
+[
+  {
+    "from_source_id": "issue:4195",
+    "to_source_id": "linked:8242bee435fd5f31062c",
+    "reference_url": "https://discuss.streamlit.io/t/how-to-overwrite-the-value-user-input/7771",
+    "relation": "references",
+    "status": "added_selected_content",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "issue:4195",
+    "to_source_id": "linked:efcf225600e4fbeb1fda",
+    "reference_url": "https://discuss.streamlit.io/t/unexpected-session-state-behaviour/15216",
+    "relation": "references",
+    "status": "added_selected_content",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "issue:4247",
+    "to_source_id": "doc:pinned:content/develop/concepts/architecture/session-state.md",
+    "reference_url": "https://docs.streamlit.io/library/advanced-features/session-state#session-state-and-widget-state-association",
+    "relation": "references",
+    "status": "mapped_existing_source",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "issue:4264",
+    "to_source_id": "linked:9d08e53051b262e8fe46",
+    "reference_url": "https://github.com/streamlit/streamlit/blob/f8d6827f4f478700bdd07cc75f3131c63ee71079/lib/streamlit/elements/selectbox.py#L107",
+    "relation": "references",
+    "status": "added_selected_content",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "issue:4695",
+    "to_source_id": "linked:e6e751b23290184a772b",
+    "reference_url": "https://github.com/streamlit/streamlit/issues/1259#issuecomment-606897345",
+    "relation": "references",
+    "status": "added_selected_content",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "issue:5571",
+    "to_source_id": "doc:pinned:content/develop/api-reference/caching-and-state/session_state.md",
+    "reference_url": "https://docs.streamlit.io/library/api-reference/session-state#forms-and-callbacks",
+    "relation": "references",
+    "status": "mapped_existing_source",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "issue:5826",
+    "to_source_id": "linked:5f6ed7ff3904847fe83a",
+    "reference_url": "https://github.com/streamlit/streamlit/blob/7ec02a14bddbf866e36b1fe24a25afe72a5975b1/lib/streamlit/runtime/app_session.py#L203",
+    "relation": "references",
+    "status": "added_selected_content",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "issue:6167",
+    "to_source_id": "linked:fcb205229adb54738c82",
+    "reference_url": "https://discuss.streamlit.io/t/why-do-default-values-cause-a-session-state-warning/15485/13",
+    "relation": "references",
+    "status": "added_selected_content",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "issue:6167",
+    "to_source_id": "linked:522aa60d4ef83e45d697",
+    "reference_url": "https://discuss.streamlit.io/t/why-do-default-values-cause-a-session-state-warning/15485/13",
+    "relation": "references",
+    "status": "added_selected_content",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "issue:6167",
+    "to_source_id": "linked:b3d1d4a78657dc86de54",
+    "reference_url": "https://discuss.streamlit.io/t/why-do-default-values-cause-a-session-state-warning/15485/13",
+    "relation": "references",
+    "status": "added_selected_content",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "issue:6167",
+    "to_source_id": "linked:0ca35591a0b2381f8707",
+    "reference_url": "https://discuss.streamlit.io/t/why-do-default-values-cause-a-session-state-warning/15485/13",
+    "relation": "references",
+    "status": "added_selected_content",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "issue:6898",
+    "to_source_id": "linked:3e8c10d33277220ac736",
+    "reference_url": "https://discuss.streamlit.io/t/using-st-data-editor-on-dataframes-that-have-styled-columns/44752",
+    "relation": "references",
+    "status": "added_selected_content",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "issue:6898",
+    "to_source_id": "linked:ceacd865f6cbaf34c0e7",
+    "reference_url": "https://discuss.streamlit.io/t/using-st-data-editor-on-dataframes-that-have-styled-columns/44752",
+    "relation": "references",
+    "status": "added_selected_content",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "issue:6995",
+    "to_source_id": "linked:3b23e6b3b252316c4afd",
+    "reference_url": "https://discuss.streamlit.io/t/adding-rows-in-st-data-editor-from-loaded-dataframe/46439",
+    "relation": "references",
+    "status": "added_selected_content",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "issue:6995",
+    "to_source_id": "linked:e010437c1f9c3f76b6f4",
+    "reference_url": "https://discuss.streamlit.io/t/adding-rows-in-st-data-editor-from-loaded-dataframe/46439",
+    "relation": "references",
+    "status": "added_selected_content",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "issue:6995",
+    "to_source_id": "linked:7b063466fe3415cc6e5b",
+    "reference_url": "https://discuss.streamlit.io/t/adding-rows-in-st-data-editor-from-loaded-dataframe/46439",
+    "relation": "references",
+    "status": "added_selected_content",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "issue:7206",
+    "to_source_id": "linked:c30765173e9bee9ab569",
+    "reference_url": "https://discuss.streamlit.io/t/keyerror-st-session-state-has-no-key-generated-widget-id-none-did-you-forget-to-initialize-it-more-info/39325/14",
+    "relation": "references",
+    "status": "added_selected_content",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "issue:7206",
+    "to_source_id": "linked:584dc6e7de2a1144991a",
+    "reference_url": "https://discuss.streamlit.io/t/keyerror-st-session-state-has-no-key-generated-widget-id-none-did-you-forget-to-initialize-it-more-info/39325/14",
+    "relation": "references",
+    "status": "added_selected_content",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "issue:7206",
+    "to_source_id": "linked:799dbe063fbe97d5071c",
+    "reference_url": "https://discuss.streamlit.io/t/keyerror-st-session-state-has-no-key-generated-widget-id-none-did-you-forget-to-initialize-it-more-info/39325/14",
+    "relation": "references",
+    "status": "added_selected_content",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "issue:7206",
+    "to_source_id": "linked:b2c5eba825fc898b8a47",
+    "reference_url": "https://discuss.streamlit.io/t/keyerror-st-session-state-has-no-key-generated-widget-id-none-did-you-forget-to-initialize-it-more-info/39325/14",
+    "relation": "references",
+    "status": "added_selected_content",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "issue:7206",
+    "to_source_id": "doc:pinned:content/develop/concepts/architecture/session-state.md",
+    "reference_url": "https://docs.streamlit.io/library/advanced-features/session-state#initialization",
+    "relation": "references",
+    "status": "mapped_existing_source",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "comment:1820063423",
+    "to_source_id": "doc:pinned:content/develop/concepts/architecture/session-state.md",
+    "reference_url": "https://docs.streamlit.io/library/advanced-features/session-state#initialization",
+    "relation": "references",
+    "status": "mapped_existing_source",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "issue:7530",
+    "to_source_id": "doc:rendered:4e76630f08712af2",
+    "reference_url": "https://docs.streamlit.io/library/api-reference/widgets/st.button",
+    "relation": "references",
+    "status": "mapped_existing_source",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "issue:7891",
+    "to_source_id": "linked:7f957d926cdaec28274f",
+    "reference_url": "https://github.com/streamlit/streamlit/blob/1.29.0/lib/streamlit/runtime/state/session_state.py#L671-L676",
+    "relation": "references",
+    "status": "added_selected_content",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "issue:8349",
+    "to_source_id": "linked:e3b8ec243e5911c50ffe",
+    "reference_url": "https://discuss.streamlit.io/t/session-state-changes-within-button-onclick-not-making-it-back-to-apptest-instance/65127",
+    "relation": "references",
+    "status": "added_selected_content",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "issue:8715",
+    "to_source_id": "linked:7ab96c64800604bd7ac7",
+    "reference_url": "https://github.com/streamlit/streamlit/blob/1b73b444fe118b65f20957166f216b0e83a23e00/lib/streamlit/elements/utils.py#L43-L46",
+    "relation": "references",
+    "status": "added_selected_content",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "issue:8961",
+    "to_source_id": "linked:5de1b3e2e2911ec8a2dd",
+    "reference_url": "https://discuss.streamlit.io/t/new-component-tree-select/36455/3",
+    "relation": "references",
+    "status": "added_selected_content",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "issue:11040",
+    "to_source_id": "doc:linked:fcac62998083dafde1f6",
+    "reference_url": "https://docs.streamlit.io/develop/concepts/app-testing/beyond-the-basics",
+    "relation": "references",
+    "status": "added_selected_content",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "issue:12013",
+    "to_source_id": "doc:pinned:content/develop/api-reference/caching-and-state/session_state.md",
+    "reference_url": "https://docs.streamlit.io/develop/api-reference/caching-and-state/st.session_state",
+    "relation": "references",
+    "status": "mapped_existing_source",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "doc:pinned:content/develop/concepts/architecture/session-state.md",
+    "to_source_id": "doc:pinned:content/develop/api-reference/caching-and-state/session_state.md",
+    "reference_url": "https://docs.streamlit.io/develop/api-reference/caching-and-state/st.session_state",
+    "relation": "references",
+    "status": "mapped_existing_source",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "doc:pinned:content/develop/concepts/architecture/widget-behavior.md",
+    "to_source_id": "doc:pinned:content/develop/api-reference/caching-and-state/session_state.md",
+    "reference_url": "https://docs.streamlit.io/develop/api-reference/caching-and-state/st.session_state",
+    "relation": "references",
+    "status": "mapped_existing_source",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "doc:pinned:content/kb/FAQ/widget-updating-session-state.md",
+    "to_source_id": "doc:pinned:content/develop/api-reference/caching-and-state/session_state.md",
+    "reference_url": "https://docs.streamlit.io/develop/api-reference/caching-and-state/st.session_state",
+    "relation": "references",
+    "status": "mapped_existing_source",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "release:1.64.0:section:39",
+    "to_source_id": "doc:pinned:content/develop/api-reference/caching-and-state/session_state.md",
+    "reference_url": "https://docs.streamlit.io/develop/api-reference/caching-and-state/st.session_state",
+    "relation": "references",
+    "status": "mapped_existing_source",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "issue:15544",
+    "to_source_id": "linked:4174c512ff3b2fc82578",
+    "reference_url": "https://github.com/streamlit/streamlit/issues/15529#issuecomment-4692528726",
+    "relation": "references",
+    "status": "added_selected_content",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "issue:17026",
+    "to_source_id": "linked:3ef74042d98e4f74ac8c",
+    "reference_url": "https://github.com/streamlit/streamlit/blob/2bd9d77e68e1ef6beaee2bcf98da2c0707bacc63/lib/streamlit/elements/arrow.py#L1280-L1284",
+    "relation": "references",
+    "status": "added_selected_content",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "issue:17026",
+    "to_source_id": "linked:6d77b5faeda7f9f58fe1",
+    "reference_url": "https://github.com/streamlit/streamlit/blob/2bd9d77e68e1ef6beaee2bcf98da2c0707bacc63/lib/streamlit/elements/widgets/data_editor.py#L560-L564",
+    "relation": "references",
+    "status": "added_selected_content",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "issue:17250",
+    "to_source_id": "linked:b1cedb780bd0facde417",
+    "reference_url": "https://github.com/streamlit/streamlit/pull/17191",
+    "relation": "references",
+    "status": "added_selected_content",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "issue:17250",
+    "to_source_id": "linked:5b530ac51d6bc0adc31c",
+    "reference_url": "https://github.com/streamlit/streamlit/pull/16998",
+    "relation": "references",
+    "status": "added_selected_content",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "issue:17250",
+    "to_source_id": "linked:564e9e31a64fecfb42a2",
+    "reference_url": "https://github.com/streamlit/streamlit/blob/ac7fffe6cf8474a258b2f64c96604137cfbbb37e/lib/streamlit/testing/v1/local_script_runner.py#L170",
+    "relation": "references",
+    "status": "added_selected_content",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "comment:884380879",
+    "to_source_id": "doc:pinned:content/develop/api-reference/caching-and-state/session_state.md",
+    "reference_url": "https://docs.streamlit.io/en/stable/session_state_api.html",
+    "relation": "references",
+    "status": "mapped_existing_source",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "comment:984456023",
+    "to_source_id": "doc:pinned:content/develop/api-reference/caching-and-state/session_state.md",
+    "reference_url": "https://docs.streamlit.io/library/api-reference/session-state#use-callbacks-to-update-session-state",
+    "relation": "references",
+    "status": "mapped_existing_source",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "comment:998909519",
+    "to_source_id": "doc:pinned:content/develop/api-reference/caching-and-state/session_state.md",
+    "reference_url": "https://docs.streamlit.io/library/api-reference/session-state",
+    "relation": "references",
+    "status": "mapped_existing_source",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "comment:1195821252",
+    "to_source_id": "doc:pinned:content/develop/api-reference/caching-and-state/session_state.md",
+    "reference_url": "https://docs.streamlit.io/library/api-reference/session-state",
+    "relation": "references",
+    "status": "mapped_existing_source",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "comment:1100491200",
+    "to_source_id": "linked:6160ad9cd8f8b69b400c",
+    "reference_url": "https://github.com/streamlit/streamlit/blob/d71a6ac8c239f2a9be92d7c2ce9d2d4d93165db9/lib/streamlit/elements/slider.py#L187",
+    "relation": "references",
+    "status": "added_selected_content",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "comment:1242559770",
+    "to_source_id": "linked:cece47be81fa239413e4",
+    "reference_url": "https://github.com/streamlit/streamlit/pull/4766",
+    "relation": "references",
+    "status": "added_selected_content",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "comment:1285912864",
+    "to_source_id": "issue:4538",
+    "reference_url": "https://github.com/streamlit/streamlit/issues/4538",
+    "relation": "references",
+    "status": "mapped_existing_source",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "comment:1350114377",
+    "to_source_id": "doc:pinned:content/develop/concepts/architecture/widget-behavior.md",
+    "reference_url": "https://docs.streamlit.io/library/advanced-features/widget-semantics",
+    "relation": "references",
+    "status": "mapped_existing_source",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "comment:1453570024",
+    "to_source_id": "doc:linked:ed65d8f03d4d9b9aeb73",
+    "reference_url": "https://docs.streamlit.io/library/advanced-features/dataframes#access-edited-data",
+    "relation": "references",
+    "status": "added_selected_content",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "comment:1538743723",
+    "to_source_id": "doc:linked:560ba59f10f9579c7bcf",
+    "reference_url": "https://docs.streamlit.io/library/advanced-features/configuration",
+    "relation": "references",
+    "status": "added_selected_content",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "comment:1611935325",
+    "to_source_id": "linked:b03019a9a30890a4d555",
+    "reference_url": "https://github.com/streamlit/streamlit/pull/6915",
+    "relation": "references",
+    "status": "added_selected_content",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "comment:1713176863",
+    "to_source_id": "doc:pinned:content/develop/concepts/architecture/caching.md",
+    "reference_url": "https://docs.streamlit.io/library/advanced-features/caching",
+    "relation": "references",
+    "status": "mapped_existing_source",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "comment:1781846630",
+    "to_source_id": "doc:linked:0db59ac3b2c45a25e0d1",
+    "reference_url": "https://docs.streamlit.io/library/api-reference/performance/st.cache_resource",
+    "relation": "references",
+    "status": "added_selected_content",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "comment:1861835406",
+    "to_source_id": "issue:7851",
+    "reference_url": "https://github.com/streamlit/streamlit/issues/7851",
+    "relation": "references",
+    "status": "mapped_existing_source",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "comment:1922423051",
+    "to_source_id": "linked:acabc8c3caa99f0d296c",
+    "reference_url": "https://github.com/streamlit/streamlit/pull/7951",
+    "relation": "references",
+    "status": "added_selected_content",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "comment:1951606512",
+    "to_source_id": "doc:linked:4bf3a73927a3d7d51d6f",
+    "reference_url": "https://docs.streamlit.io/library/advanced-features/custom-classes",
+    "relation": "references",
+    "status": "added_selected_content",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "comment:2016905081",
+    "to_source_id": "linked:168a8383cb3aac557f0c",
+    "reference_url": "https://github.com/streamlit/streamlit/blob/f94db9f6eb648a7b97c57fc0771f87e3ff3358d8/lib/streamlit/runtime/state/session_state.py#L515",
+    "relation": "references",
+    "status": "added_selected_content",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "comment:2151082626",
+    "to_source_id": "doc:pinned:content/kb/FAQ/widget-updating-session-state.md",
+    "reference_url": "https://docs.streamlit.io/knowledge-base/using-streamlit/widget-updating-session-state",
+    "relation": "references",
+    "status": "mapped_existing_source",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "comment:2257741157",
+    "to_source_id": "linked:78ae17a9a0c0c449444d",
+    "reference_url": "https://github.com/streamlit/streamlit/blob/aae0c64eea06e49fdb1cd1525ddc309b95796326/lib/streamlit/watcher/local_sources_watcher.py#L171",
+    "relation": "references",
+    "status": "added_selected_content",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "comment:2353641501",
+    "to_source_id": "doc:linked:c3cd7e50cac3584ea37e",
+    "reference_url": "https://docs.streamlit.io/develop/api-reference/connections/st.connection",
+    "relation": "references",
+    "status": "added_selected_content",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "comment:4225566093",
+    "to_source_id": "doc:linked:39e4ba37f3c93236c86e",
+    "reference_url": "https://docs.streamlit.io/develop/concepts/custom-components/components-v2/examples",
+    "relation": "references",
+    "status": "added_selected_content",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "doc:pinned:content/develop/api-reference/caching-and-state/session_state.md",
+    "to_source_id": "doc:linked:f2bc33b819323233611a",
+    "reference_url": "https://docs.python.org/3/develop/pickle.html",
+    "relation": "references",
+    "status": "equivalent_source_for_unavailable_legacy_url",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "doc:pinned:content/develop/api-reference/caching-and-state/session_state.md",
+    "to_source_id": "doc:pinned:content/develop/concepts/architecture/session-state.md",
+    "reference_url": "https://docs.streamlit.io/develop/concepts/architecture/session-state",
+    "relation": "references",
+    "status": "mapped_existing_source",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "doc:pinned:content/develop/concepts/multipage-apps/page_directory.md",
+    "to_source_id": "doc:pinned:content/develop/concepts/architecture/session-state.md",
+    "reference_url": "https://docs.streamlit.io/develop/concepts/architecture/session-state",
+    "relation": "references",
+    "status": "mapped_existing_source",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "doc:pinned:content/kb/FAQ/serializable-session-state.md",
+    "to_source_id": "doc:pinned:content/develop/concepts/architecture/session-state.md",
+    "reference_url": "https://docs.streamlit.io/develop/concepts/architecture/session-state",
+    "relation": "references",
+    "status": "mapped_existing_source",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "doc:pinned:content/develop/concepts/architecture/caching.md",
+    "to_source_id": "doc:pinned:content/develop/concepts/architecture/session-state.md",
+    "reference_url": "https://docs.streamlit.io/develop/concepts/architecture/session-state",
+    "relation": "references",
+    "status": "mapped_existing_source",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "doc:pinned:content/develop/api-reference/caching-and-state/session_state.md",
+    "to_source_id": "doc:linked:0db244f834ab7fe722ef",
+    "reference_url": "https://docs.python.org/3/reference/expressions.html#lambda",
+    "relation": "references",
+    "status": "added_selected_content",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "doc:pinned:content/develop/concepts/architecture/session-state.md",
+    "to_source_id": "doc:linked:0db244f834ab7fe722ef",
+    "reference_url": "https://docs.python.org/3/reference/expressions.html#lambda",
+    "relation": "references",
+    "status": "added_selected_content",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "doc:pinned:content/kb/FAQ/serializable-session-state.md",
+    "to_source_id": "doc:linked:0db244f834ab7fe722ef",
+    "reference_url": "https://docs.python.org/3/reference/expressions.html#lambda",
+    "relation": "references",
+    "status": "added_selected_content",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "doc:pinned:content/develop/api-reference/caching-and-state/session_state.md",
+    "to_source_id": "doc:linked:f2bc33b819323233611a",
+    "reference_url": "https://docs.python.org/3/develop/pickle.html#pickle.PicklingError",
+    "relation": "references",
+    "status": "equivalent_source_for_unavailable_legacy_url",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "doc:pinned:content/develop/concepts/architecture/session-state.md",
+    "to_source_id": "doc:pinned:content/develop/api-reference/caching-and-state/session_state.md",
+    "reference_url": "https://docs.streamlit.io/develop/api-reference/caching-and-state/st.session_state#use-callbacks-to-update-session-state",
+    "relation": "references",
+    "status": "mapped_existing_source",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "doc:pinned:content/kb/FAQ/widget-updating-session-state.md",
+    "to_source_id": "doc:pinned:content/develop/api-reference/caching-and-state/session_state.md",
+    "reference_url": "https://docs.streamlit.io/develop/api-reference/caching-and-state/st.session_state#use-callbacks-to-update-session-state",
+    "relation": "references",
+    "status": "mapped_existing_source",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "doc:pinned:content/develop/concepts/architecture/session-state.md",
+    "to_source_id": "doc:linked:f2bc33b819323233611a",
+    "reference_url": "https://docs.python.org/3/library/pickle.html",
+    "relation": "references",
+    "status": "added_selected_content",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "doc:pinned:content/kb/FAQ/serializable-session-state.md",
+    "to_source_id": "doc:linked:f2bc33b819323233611a",
+    "reference_url": "https://docs.python.org/3/library/pickle.html",
+    "relation": "references",
+    "status": "added_selected_content",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "doc:pinned:content/develop/concepts/architecture/session-state.md",
+    "to_source_id": "doc:linked:f2bc33b819323233611a",
+    "reference_url": "https://docs.python.org/3/library/pickle.html#pickle.PicklingError",
+    "relation": "references",
+    "status": "added_selected_content",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "doc:pinned:content/kb/FAQ/serializable-session-state.md",
+    "to_source_id": "doc:linked:f2bc33b819323233611a",
+    "reference_url": "https://docs.python.org/3/library/pickle.html#pickle.PicklingError",
+    "relation": "references",
+    "status": "added_selected_content",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "doc:pinned:content/develop/concepts/architecture/session-state.md",
+    "to_source_id": "doc:pinned:content/develop/api-reference/caching-and-state/session_state.md",
+    "reference_url": "https://docs.streamlit.io/develop/api-reference/caching-and-state/st.session_state#caveats-and-limitations",
+    "relation": "references",
+    "status": "mapped_existing_source",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "doc:pinned:content/develop/concepts/architecture/widget-behavior.md",
+    "to_source_id": "doc:linked:3e6763d7dc2225f5c467",
+    "reference_url": "https://docs.streamlit.io/develop/api-reference/navigation/st.navigation",
+    "relation": "references",
+    "status": "added_selected_content",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "release:1.36.0:section:2",
+    "to_source_id": "doc:linked:3e6763d7dc2225f5c467",
+    "reference_url": "https://docs.streamlit.io/develop/api-reference/navigation/st.navigation",
+    "relation": "references",
+    "status": "added_selected_content",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "doc:pinned:content/develop/concepts/architecture/forms.md",
+    "to_source_id": "doc:rendered:9f138256cdc71bb8",
+    "reference_url": "https://docs.streamlit.io/develop/api-reference/execution-flow/st.form",
+    "relation": "references",
+    "status": "mapped_existing_source",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "release:1.25.0:section:7",
+    "to_source_id": "doc:rendered:9f138256cdc71bb8",
+    "reference_url": "https://docs.streamlit.io/develop/api-reference/execution-flow/st.form",
+    "relation": "references",
+    "status": "mapped_existing_source",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "doc:pinned:content/develop/concepts/multipage-apps/overview.md",
+    "to_source_id": "doc:pinned:content/develop/concepts/multipage-apps/page_directory.md",
+    "reference_url": "https://docs.streamlit.io/develop/concepts/multipage-apps/pages-directory#how-pages-are-sorted-in-the-sidebar",
+    "relation": "references",
+    "status": "mapped_existing_source",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "doc:pinned:content/develop/concepts/multipage-apps/overview.md",
+    "to_source_id": "doc:linked:560ba59f10f9579c7bcf",
+    "reference_url": "https://docs.streamlit.io/develop/api-reference/configuration/config.toml",
+    "relation": "references",
+    "status": "added_selected_content",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "doc:pinned:content/develop/concepts/multipage-apps/overview.md",
+    "to_source_id": "doc:linked:125317a4b2d75737858b",
+    "reference_url": "https://docs.streamlit.io/develop/api-reference/widgets/st.page_link",
+    "relation": "references",
+    "status": "added_selected_content",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "release:1.31.0:section:4",
+    "to_source_id": "doc:linked:125317a4b2d75737858b",
+    "reference_url": "https://docs.streamlit.io/develop/api-reference/widgets/st.page_link",
+    "relation": "references",
+    "status": "added_selected_content",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "release:1.52.0:section:7",
+    "to_source_id": "doc:linked:125317a4b2d75737858b",
+    "reference_url": "https://docs.streamlit.io/develop/api-reference/widgets/st.page_link",
+    "relation": "references",
+    "status": "added_selected_content",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "doc:pinned:content/develop/concepts/multipage-apps/overview.md",
+    "to_source_id": "doc:pinned:content/develop/tutorials/multipage-apps/custom-navigation.md",
+    "reference_url": "https://docs.streamlit.io/develop/tutorials/multipage/st.page_link-nav",
+    "relation": "references",
+    "status": "mapped_existing_source",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "doc:pinned:content/develop/concepts/multipage-apps/overview.md",
+    "to_source_id": "doc:linked:1a672b3e6d3a413e14a2",
+    "reference_url": "https://docs.streamlit.io/develop/api-reference/navigation/st.switch_page",
+    "relation": "references",
+    "status": "added_selected_content",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "release:1.30.0:section:4",
+    "to_source_id": "doc:linked:1a672b3e6d3a413e14a2",
+    "reference_url": "https://docs.streamlit.io/develop/api-reference/navigation/st.switch_page",
+    "relation": "references",
+    "status": "added_selected_content",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "release:1.52.0:section:7",
+    "to_source_id": "doc:linked:1a672b3e6d3a413e14a2",
+    "reference_url": "https://docs.streamlit.io/develop/api-reference/navigation/st.switch_page",
+    "relation": "references",
+    "status": "added_selected_content",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "doc:pinned:content/develop/concepts/multipage-apps/page-and-navigation.md",
+    "to_source_id": "doc:pinned:content/develop/concepts/multipage-apps/overview.md",
+    "reference_url": "https://docs.streamlit.io/develop/concepts/multipage-apps/overview#automatic-page-labels-and-urls",
+    "relation": "references",
+    "status": "mapped_existing_source",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "doc:pinned:content/develop/concepts/multipage-apps/page_directory.md",
+    "to_source_id": "doc:pinned:content/develop/concepts/multipage-apps/overview.md",
+    "reference_url": "https://docs.streamlit.io/develop/concepts/multipage-apps/overview#automatic-page-labels-and-urls",
+    "relation": "references",
+    "status": "mapped_existing_source",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "doc:pinned:content/develop/concepts/multipage-apps/page-and-navigation.md",
+    "to_source_id": "doc:pinned:content/develop/tutorials/multipage-apps/dynamic-navigation.md",
+    "reference_url": "https://docs.streamlit.io/develop/tutorials/multipage/dynamic-navigation",
+    "relation": "references",
+    "status": "mapped_existing_source",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "doc:pinned:content/develop/concepts/multipage-apps/widgets.md",
+    "to_source_id": "doc:pinned:content/develop/concepts/architecture/widget-behavior.md",
+    "reference_url": "https://docs.streamlit.io/develop/concepts/architecture/widget-behavior",
+    "relation": "references",
+    "status": "mapped_existing_source",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "doc:pinned:content/kb/FAQ/widget-updating-session-state.md",
+    "to_source_id": "doc:rendered:4e76630f08712af2",
+    "reference_url": "https://docs.streamlit.io/develop/api-reference/widgets/st.button",
+    "relation": "references",
+    "status": "mapped_existing_source",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "doc:pinned:content/kb/FAQ/widget-updating-session-state.md",
+    "to_source_id": "linked:dc9503cd41b0a1f3eed2",
+    "reference_url": "https://discuss.streamlit.io/t/select-all-checkbox-that-is-linked-to-selectbox-of-options/18521",
+    "relation": "references",
+    "status": "added_selected_content",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "release:1.1.0:section:7",
+    "to_source_id": "issue:3586",
+    "reference_url": "https://github.com/streamlit/streamlit/issues/3586",
+    "relation": "references",
+    "status": "mapped_existing_source",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "release:0.89.0:section:7",
+    "to_source_id": "doc:pinned:content/develop/concepts/architecture/widget-behavior.md",
+    "reference_url": "https://docs.streamlit.io/develop/concepts/widget-semantics",
+    "relation": "references",
+    "status": "equivalent_source_for_unavailable_legacy_url",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "release:0.89.0:section:8",
+    "to_source_id": "doc:pinned:content/develop/concepts/architecture/widget-behavior.md",
+    "reference_url": "https://docs.streamlit.io/develop/concepts/widget-semantics",
+    "relation": "references",
+    "status": "equivalent_source_for_unavailable_legacy_url",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "release:1.27.0:section:4",
+    "to_source_id": "doc:rendered:aeb12a89c1bd5813",
+    "reference_url": "https://docs.streamlit.io/develop/api-reference/execution-flow/st.rerun",
+    "relation": "references",
+    "status": "mapped_existing_source",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "release:1.37.0:section:10",
+    "to_source_id": "doc:rendered:aeb12a89c1bd5813",
+    "reference_url": "https://docs.streamlit.io/develop/api-reference/execution-flow/st.rerun",
+    "relation": "references",
+    "status": "mapped_existing_source",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "release:1.64.0:section:15",
+    "to_source_id": "doc:rendered:aeb12a89c1bd5813",
+    "reference_url": "https://docs.streamlit.io/develop/api-reference/execution-flow/st.rerun",
+    "relation": "references",
+    "status": "mapped_existing_source",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "release:1.63.0:section:2",
+    "to_source_id": "doc:rendered:aeb12a89c1bd5813",
+    "reference_url": "https://docs.streamlit.io/develop/api-reference/execution-flow/st.rerun",
+    "relation": "references",
+    "status": "mapped_existing_source",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "release:1.27.0:section:6",
+    "to_source_id": "doc:rendered:c45a57055845df3b",
+    "reference_url": "https://docs.streamlit.io/develop/api-reference/widgets/st.number_input",
+    "relation": "references",
+    "status": "mapped_existing_source",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "release:1.25.0:section:7",
+    "to_source_id": "doc:rendered:c45a57055845df3b",
+    "reference_url": "https://docs.streamlit.io/develop/api-reference/widgets/st.number_input",
+    "relation": "references",
+    "status": "mapped_existing_source",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "release:1.64.0:section:7",
+    "to_source_id": "doc:rendered:c45a57055845df3b",
+    "reference_url": "https://docs.streamlit.io/develop/api-reference/widgets/st.number_input",
+    "relation": "references",
+    "status": "mapped_existing_source",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "release:1.27.0:section:6",
+    "to_source_id": "doc:linked:41220e86d1d43571a2f5",
+    "reference_url": "https://docs.streamlit.io/develop/api-reference/widgets/st.selectbox",
+    "relation": "references",
+    "status": "added_selected_content",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "release:1.64.0:section:7",
+    "to_source_id": "doc:linked:41220e86d1d43571a2f5",
+    "reference_url": "https://docs.streamlit.io/develop/api-reference/widgets/st.selectbox",
+    "relation": "references",
+    "status": "added_selected_content",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "release:1.59.0:section:42",
+    "to_source_id": "doc:linked:41220e86d1d43571a2f5",
+    "reference_url": "https://docs.streamlit.io/develop/api-reference/widgets/st.selectbox",
+    "relation": "references",
+    "status": "added_selected_content",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "release:1.27.0:section:6",
+    "to_source_id": "doc:linked:e3c6cd07859b580cf16c",
+    "reference_url": "https://docs.streamlit.io/develop/api-reference/widgets/st.date_input",
+    "relation": "references",
+    "status": "added_selected_content",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "release:1.27.0:section:6",
+    "to_source_id": "doc:linked:b965c9a9da74f5676ffe",
+    "reference_url": "https://docs.streamlit.io/develop/api-reference/widgets/st.time_input",
+    "relation": "references",
+    "status": "added_selected_content",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "release:1.27.0:section:6",
+    "to_source_id": "doc:linked:a80b997108d279d99857",
+    "reference_url": "https://docs.streamlit.io/develop/api-reference/widgets/st.radio",
+    "relation": "references",
+    "status": "added_selected_content",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "release:1.57.0:section:26",
+    "to_source_id": "doc:linked:a80b997108d279d99857",
+    "reference_url": "https://docs.streamlit.io/develop/api-reference/widgets/st.radio",
+    "relation": "references",
+    "status": "added_selected_content",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "release:1.27.0:section:6",
+    "to_source_id": "doc:rendered:32ce4ac55c241013",
+    "reference_url": "https://docs.streamlit.io/develop/api-reference/widgets/st.text_input",
+    "relation": "references",
+    "status": "mapped_existing_source",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "release:1.25.0:section:7",
+    "to_source_id": "doc:rendered:32ce4ac55c241013",
+    "reference_url": "https://docs.streamlit.io/develop/api-reference/widgets/st.text_input",
+    "relation": "references",
+    "status": "mapped_existing_source",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "release:1.64.0:section:5",
+    "to_source_id": "doc:rendered:32ce4ac55c241013",
+    "reference_url": "https://docs.streamlit.io/develop/api-reference/widgets/st.text_input",
+    "relation": "references",
+    "status": "mapped_existing_source",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "release:1.63.0:section:5",
+    "to_source_id": "doc:rendered:32ce4ac55c241013",
+    "reference_url": "https://docs.streamlit.io/develop/api-reference/widgets/st.text_input",
+    "relation": "references",
+    "status": "mapped_existing_source",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "release:1.27.0:section:6",
+    "to_source_id": "doc:linked:82a97872765e5c5d1862",
+    "reference_url": "https://docs.streamlit.io/develop/api-reference/widgets/st.text_area",
+    "relation": "references",
+    "status": "added_selected_content",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "release:1.25.0:section:7",
+    "to_source_id": "doc:linked:82a97872765e5c5d1862",
+    "reference_url": "https://docs.streamlit.io/develop/api-reference/widgets/st.text_area",
+    "relation": "references",
+    "status": "added_selected_content",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "release:1.27.0:section:18",
+    "to_source_id": "issue:7206",
+    "reference_url": "https://github.com/streamlit/streamlit/issues/7206",
+    "relation": "references",
+    "status": "mapped_existing_source",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "release:1.27.0:section:23",
+    "to_source_id": "issue:6643",
+    "reference_url": "https://github.com/streamlit/streamlit/issues/6643",
+    "relation": "references",
+    "status": "mapped_existing_source",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "release:1.23.0:section:2",
+    "to_source_id": "doc:linked:f62d2bc4926afc5516ff",
+    "reference_url": "https://docs.streamlit.io/develop/api-reference/data/st.data_editor",
+    "relation": "references",
+    "status": "added_selected_content",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "release:1.23.0:section:2",
+    "to_source_id": "doc:linked:ed65d8f03d4d9b9aeb73",
+    "reference_url": "https://docs.streamlit.io/develop/concepts/design/dataframes#access-edited-data",
+    "relation": "references",
+    "status": "added_selected_content",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "release:1.23.0:section:10",
+    "to_source_id": "issue:3605",
+    "reference_url": "https://github.com/streamlit/streamlit/issues/3605",
+    "relation": "references",
+    "status": "mapped_existing_source",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "release:1.41.0:section:29",
+    "to_source_id": "issue:9825",
+    "reference_url": "https://github.com/streamlit/streamlit/issues/9825",
+    "relation": "references",
+    "status": "mapped_existing_source",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "release:1.38.0:section:19",
+    "to_source_id": "issue:9163",
+    "reference_url": "https://github.com/streamlit/streamlit/issues/9163",
+    "relation": "references",
+    "status": "mapped_existing_source",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "release:1.38.0:section:28",
+    "to_source_id": "issue:9171",
+    "reference_url": "https://github.com/streamlit/streamlit/issues/9171",
+    "relation": "references",
+    "status": "mapped_existing_source",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "release:1.37.0:section:4",
+    "to_source_id": "doc:linked:b40cdea94393c153da48",
+    "reference_url": "https://docs.streamlit.io/develop/api-reference/execution-flow/st.fragment",
+    "relation": "references",
+    "status": "added_selected_content",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "release:1.33.0:section:2",
+    "to_source_id": "doc:linked:b40cdea94393c153da48",
+    "reference_url": "https://docs.streamlit.io/develop/api-reference/execution-flow/st.fragment",
+    "relation": "references",
+    "status": "added_selected_content",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "release:1.62.0:section:28",
+    "to_source_id": "doc:linked:b40cdea94393c153da48",
+    "reference_url": "https://docs.streamlit.io/develop/api-reference/execution-flow/st.fragment",
+    "relation": "references",
+    "status": "added_selected_content",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "release:1.59.0:section:11",
+    "to_source_id": "doc:linked:b40cdea94393c153da48",
+    "reference_url": "https://docs.streamlit.io/develop/api-reference/execution-flow/st.fragment",
+    "relation": "references",
+    "status": "added_selected_content",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "release:1.58.0:section:2",
+    "to_source_id": "doc:linked:b40cdea94393c153da48",
+    "reference_url": "https://docs.streamlit.io/develop/api-reference/execution-flow/st.fragment",
+    "relation": "references",
+    "status": "added_selected_content",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "release:1.36.0:section:2",
+    "to_source_id": "doc:linked:c4ef9eb35284c59634c2",
+    "reference_url": "https://docs.streamlit.io/develop/api-reference/navigation/st.page",
+    "relation": "references",
+    "status": "added_selected_content",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "release:1.36.0:section:2",
+    "to_source_id": "doc:pinned:content/develop/concepts/multipage-apps/overview.md",
+    "reference_url": "https://docs.streamlit.io/develop/concepts/multipage-apps/overview",
+    "relation": "references",
+    "status": "mapped_existing_source",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "release:1.36.0:section:27",
+    "to_source_id": "issue:8715",
+    "reference_url": "https://github.com/streamlit/streamlit/issues/8715",
+    "relation": "references",
+    "status": "mapped_existing_source",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "release:1.35.0:section:2",
+    "to_source_id": "doc:linked:614de844d83174c03c6b",
+    "reference_url": "https://docs.streamlit.io/develop/api-reference/charts/st.plotly_chart",
+    "relation": "references",
+    "status": "added_selected_content",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "release:1.35.0:section:2",
+    "to_source_id": "doc:linked:c056b2dffe9b2b9d0c5a",
+    "reference_url": "https://docs.streamlit.io/develop/api-reference/charts/st.altair_chart",
+    "relation": "references",
+    "status": "added_selected_content",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "release:1.35.0:section:2",
+    "to_source_id": "doc:linked:406e2f692cec5dcfad82",
+    "reference_url": "https://docs.streamlit.io/develop/api-reference/charts/st.vega_lite_chart",
+    "relation": "references",
+    "status": "added_selected_content",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "release:1.33.0:section:2",
+    "to_source_id": "doc:linked:6308a54f4f7bbfc2bbaa",
+    "reference_url": "https://docs.streamlit.io/develop/concepts/architecture/fragments",
+    "relation": "references",
+    "status": "added_selected_content",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "release:1.30.0:section:17",
+    "to_source_id": "issue:3714",
+    "reference_url": "https://github.com/streamlit/streamlit/issues/3714",
+    "relation": "references",
+    "status": "mapped_existing_source",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "release:1.52.0:section:3",
+    "to_source_id": "doc:linked:3398a7df36832851082e",
+    "reference_url": "https://docs.streamlit.io/develop/api-reference/widgets/st.download_button",
+    "relation": "references",
+    "status": "added_selected_content",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "release:1.43.0:section:5",
+    "to_source_id": "doc:linked:3398a7df36832851082e",
+    "reference_url": "https://docs.streamlit.io/develop/api-reference/widgets/st.download_button",
+    "relation": "references",
+    "status": "added_selected_content",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "release:1.49.0:section:10",
+    "to_source_id": "doc:rendered:2170251fb07340cc",
+    "reference_url": "https://docs.streamlit.io/develop/api-reference/execution-flow/st.form_submit_button",
+    "relation": "references",
+    "status": "mapped_existing_source",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "release:1.48.0:section:5",
+    "to_source_id": "doc:linked:dbd6a580c6bc574f11c2",
+    "reference_url": "https://docs.streamlit.io/develop/api-reference/execution-flow/st.dialog",
+    "relation": "references",
+    "status": "added_selected_content",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "release:1.64.0:section:13",
+    "to_source_id": "doc:linked:dbd6a580c6bc574f11c2",
+    "reference_url": "https://docs.streamlit.io/develop/api-reference/execution-flow/st.dialog",
+    "relation": "references",
+    "status": "added_selected_content",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "release:1.47.0:section:12",
+    "to_source_id": "doc:linked:78cb80651cf78a0964fe",
+    "reference_url": "https://docs.streamlit.io/develop/api-reference/chat/st.chat_input",
+    "relation": "references",
+    "status": "added_selected_content",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "release:1.42.0:section:43",
+    "to_source_id": "issue:10007",
+    "reference_url": "https://github.com/streamlit/streamlit/issues/10007",
+    "relation": "references",
+    "status": "mapped_existing_source",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "release:1.64.0:section:5",
+    "to_source_id": "issue:4553",
+    "reference_url": "https://github.com/streamlit/streamlit/issues/4553",
+    "relation": "references",
+    "status": "mapped_existing_source",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "release:1.64.0:section:7",
+    "to_source_id": "doc:linked:f02ef9513774a92e45cb",
+    "reference_url": "https://docs.streamlit.io/develop/api-reference/widgets/st.select_slider",
+    "relation": "references",
+    "status": "added_selected_content",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "release:1.63.0:section:5",
+    "to_source_id": "doc:linked:b4fe284d27403ee9d36e",
+    "reference_url": "https://docs.streamlit.io/develop/api-reference/widgets/st.slider",
+    "relation": "references",
+    "status": "added_selected_content",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "release:1.59.0:section:36",
+    "to_source_id": "doc:linked:4393664d69b0c81f2504",
+    "reference_url": "https://docs.streamlit.io/develop/api-reference/widgets/st.pills",
+    "relation": "references",
+    "status": "added_selected_content",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "release:1.57.0:section:9",
+    "to_source_id": "doc:linked:4393664d69b0c81f2504",
+    "reference_url": "https://docs.streamlit.io/develop/api-reference/widgets/st.pills",
+    "relation": "references",
+    "status": "added_selected_content",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "release:1.55.0:section:12",
+    "to_source_id": "doc:linked:4393664d69b0c81f2504",
+    "reference_url": "https://docs.streamlit.io/develop/api-reference/widgets/st.pills",
+    "relation": "references",
+    "status": "added_selected_content",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "release:1.59.0:section:36",
+    "to_source_id": "doc:linked:7cc964604f87c878b0fd",
+    "reference_url": "https://docs.streamlit.io/develop/api-reference/widgets/st.segmented_control",
+    "relation": "references",
+    "status": "added_selected_content",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "release:1.57.0:section:9",
+    "to_source_id": "doc:linked:7cc964604f87c878b0fd",
+    "reference_url": "https://docs.streamlit.io/develop/api-reference/widgets/st.segmented_control",
+    "relation": "references",
+    "status": "added_selected_content",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "release:1.55.0:section:12",
+    "to_source_id": "doc:linked:7cc964604f87c878b0fd",
+    "reference_url": "https://docs.streamlit.io/develop/api-reference/widgets/st.segmented_control",
+    "relation": "references",
+    "status": "added_selected_content",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "release:1.59.0:section:43",
+    "to_source_id": "doc:rendered:27fb1333978502c5",
+    "reference_url": "https://docs.streamlit.io/develop/api-reference/widgets/st.multiselect",
+    "relation": "references",
+    "status": "mapped_existing_source",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "release:1.57.0:section:9",
+    "to_source_id": "doc:linked:4d90122c5d83ea8a2e4d",
+    "reference_url": "https://docs.streamlit.io/develop/api-reference/app-testing/st.testing.v1.apptest",
+    "relation": "references",
+    "status": "added_selected_content",
+    "version_equivalence_implied": false
+  },
+  {
+    "from_source_id": "release:1.56.0:section:15",
+    "to_source_id": "doc:linked:bc99535048632be18e04",
+    "reference_url": "https://docs.streamlit.io/develop/api-reference/widgets/st.link_button",
+    "relation": "references",
+    "status": "added_selected_content",
+    "version_equivalence_implied": false
+  }
+]

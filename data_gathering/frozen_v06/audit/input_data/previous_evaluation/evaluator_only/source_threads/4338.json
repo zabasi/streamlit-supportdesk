@@ -1,0 +1,230 @@
+{
+  "issue": {
+    "id": 1119388842,
+    "number": 4338,
+    "title": "Inconsistent session state behavior when used with widgets",
+    "html_url": "https://github.com/streamlit/streamlit/issues/4338",
+    "created_at": "2022-01-31T12:51:30Z",
+    "updated_at": "2024-08-15T21:04:02Z",
+    "closed_at": "2022-02-02T01:12:51Z",
+    "state": "closed",
+    "state_reason": "completed",
+    "author_association": "NONE",
+    "source_id": "issue:4338",
+    "repository": "streamlit/streamlit",
+    "body": "### Summary\r\n\r\nSession state in Streamlit 0.89.0 to 1.5.0 has a strange behavior when bound to widgets (`key` parameter).\r\n\r\n### Steps to reproduce\r\n\r\n#### First case\r\n\r\n1. In the same script run, initialize a session state item, and display a widget bound to it.\r\n2. Make the widget disappear (by unchecking a checkbox for instance).\r\n3. Reload with `R`. **ISSUE: Session state item doesn't exist anymore.**\r\n4. Reload again multiple times. **ISSUE: Session state is cleared every other run.**\r\n\r\n#### Second case\r\n\r\n1. In a first script run, initialize a session state item.\r\n2. In a second run, display a widget bound to the previous session state item (by checking a checkbox for instance).  \r\n    **ISSUE: Widget does not take value from session state.**\r\n3. Change widget value, it updates the session state item correctly.\r\n4. Make the widget disappear.\r\n5. Reload with `R`. **ISSUE: Session state item resets to its initial value**.\r\n\r\n#### Code snippet\r\n\r\nFeel free to compare the following script behavior with Streamlit 0.88.0 (working session state) and Streamlit 1.5.0. Both cases are implemented.\r\n\r\n```python\r\nimport streamlit as st\r\n\r\nst.set_page_config(layout=\"wide\")\r\n\r\nc1, c2 = st.columns(2)\r\n\r\nwith c1:\r\n    st.subheader(\"Widget session state item 1\")\r\n    st.write(\"Session state and widget setup in the same run.\")\r\n    st.write(\"When widget disappear, session state item is cleared every other run.\")\r\n\r\n    with st.echo(code_location=\"below\"):\r\n        if \"widget_bound\" not in st.session_state:\r\n            st.session_state.widget_bound = \"hello\"\r\n            st.success(f\"Item added: {st.session_state.widget_bound}\")\r\n        else:\r\n            st.info(f\"Item exists already: {st.session_state.widget_bound}\")\r\n\r\n        # Displayed from the beginning by default\r\n        if st.checkbox(\"Display widget\", True):\r\n            st.text_input(\"Some widget\", key=\"widget_bound\")\r\n\r\nwith c2:\r\n    st.subheader(\"Widget session state item 2\")\r\n    st.write(\"Session state setup first, then widget in another run.\")\r\n    st.write(\"Widget does not get value initial value from session state.\")\r\n\r\n    with st.echo(code_location=\"below\"):\r\n        if \"widget_unbound\" not in st.session_state:\r\n            st.session_state.widget_unbound = \"hello\"\r\n            st.success(f\"Item added: {st.session_state.widget_unbound}\")\r\n        else:\r\n            st.info(f\"Item exists already: {st.session_state.widget_unbound}\")\r\n\r\n        # Displayed after session state initialization\r\n        if st.checkbox(\"Display widget\", False):\r\n            st.text_input(\"Some widget\", key=\"widget_unbound\")\r\n```\r\n\r\n### Is this a regression?\r\n\r\nYes, session state with widgets worked as expected from version 0.86.0 to 0.88.0.\r\n\r\n### Debug info\r\n\r\n- Streamlit version: 0.89.0 to 1.5.0\r\n- Python version: 3.8.6 (pyenv)",
+    "labels": [
+      "type:bug"
+    ],
+    "author": {
+      "login": "okld",
+      "type": "User"
+    },
+    "comment_count": 8,
+    "comments_complete": true,
+    "metadata_retrieved_at": "2026-10-06T14:28:11.874253+00:00",
+    "comments_retrieved_at": "2026-10-06T14:30:34.806885+00:00",
+    "comments_retrieval_method": "github_public_html_embedded_data",
+    "body_sha256": "b9dcb0a60d860d75036b82abb69172141f2d9bde6762303775acc5ebb915235c",
+    "original_body_sha256": "b9dcb0a60d860d75036b82abb69172141f2d9bde6762303775acc5ebb915235c",
+    "streamlit_version": {
+      "value": "0.89.0",
+      "evidence_text": "- Streamlit version: 0.89.0 to 1.5.0",
+      "start_char": 2746,
+      "end_char": 2783,
+      "method": "explicit_version_line_regex"
+    },
+    "python_version": {
+      "value": "3.8.6",
+      "evidence_text": "- Python version: 3.8.6 (pyenv)",
+      "start_char": 2784,
+      "end_char": 2815,
+      "method": "explicit_version_line_regex"
+    },
+    "topic_tags_heuristic": [
+      "reset_or_persistence",
+      "initialization_or_update",
+      "widget_identity"
+    ],
+    "sampling_sources": [
+      "repo:streamlit/streamlit is:issue \"session state\" in:title,body created:<=2026-10-06",
+      "repo:streamlit/streamlit is:issue \"widget state\" in:title,body created:<=2026-10-06"
+    ],
+    "relevance_basis": "state_label_or_title",
+    "evaluation_split": null,
+    "pilot_previously_inspected": false,
+    "historical_as_of_reconstruction": false,
+    "operating_system": null,
+    "browser": null
+  },
+  "comments": [
+    {
+      "id": 1025743988,
+      "html_url": "https://github.com/streamlit/streamlit/issues/4338#issuecomment-1025743988",
+      "created_at": "2022-01-31T13:33:03Z",
+      "updated_at": "2022-01-31T13:33:03Z",
+      "author_association": "CONTRIBUTOR",
+      "source_id": "comment:1025743988",
+      "issue_number": 4338,
+      "parent_source_id": "issue:4338",
+      "body": "Hmmmm 🤔  interesting\r\n\r\nJust passing by and did not read much into it yet, but do you think it's consistent with https://docs.streamlit.io/library/advanced-features/widget-semantics#advanced-notes-on-widget-behavior point 5? \r\n\r\n> If you don't call a widget function in a script run, we neither store the widget state nor render the widget. If you call a widget function with the same arguments later, Streamlit treats it as a new widget.\r\n\r\nSo the session state for a disappearing widget would be dropped?",
+      "author": {
+        "login": "andfanilo",
+        "type": "User"
+      },
+      "is_bot": false,
+      "retrieval_method": "github_public_html_embedded_data",
+      "retrieved_at": "2026-10-06T14:30:34.806885+00:00",
+      "body_sha256": "ac99a0c423482e4beef37becc43f9c0f842fa79bec74b30ba1f7c9bb2cad39ed",
+      "updated_at_basis": "lastEditedAt_or_createdAt_from_public_HTML",
+      "is_hidden": false
+    },
+    {
+      "id": 1025778265,
+      "html_url": "https://github.com/streamlit/streamlit/issues/4338#issuecomment-1025778265",
+      "created_at": "2022-01-31T14:11:33Z",
+      "updated_at": "2022-01-31T19:15:39Z",
+      "author_association": "NONE",
+      "source_id": "comment:1025778265",
+      "issue_number": 4338,
+      "parent_source_id": "issue:4338",
+      "body": "> So the session state for a disappearing widget would be dropped?\r\n\r\nAs I understand point 5, the widget state should be dropped if there is no related session state item. The following statement in the documentation seems to confirm this:\r\n\r\n> [...] When you want to persist widget state for recreating a widget, use Session State to work around [point] 5.\r\n\r\nI assume that's what I'm doing here:\r\n\r\n```python\r\nif \"widget_unbound\" not in st.session_state:\r\n    st.session_state.widget_unbound = \"hello\"\r\n```\r\n\r\nNonetheless, my session state is either dropped and recreated every other script run (first case), or reset to its initial value (second case).\r\n\r\nThis behavior is related to a new widget semantic adopted in version 0.89.0 https://github.com/streamlit/streamlit/pull/3827.\r\nThere were also some discussions regarding that semantic in https://github.com/streamlit/streamlit/issues/3534.",
+      "author": {
+        "login": "okld",
+        "type": "User"
+      },
+      "is_bot": false,
+      "retrieval_method": "github_public_html_embedded_data",
+      "retrieved_at": "2026-10-06T14:30:34.806885+00:00",
+      "body_sha256": "32b4414bbe96e0ef5a2f477e58d3e034df0ec4700cf2aff60ef8780f09f952af",
+      "updated_at_basis": "lastEditedAt_or_createdAt_from_public_HTML",
+      "is_hidden": false
+    },
+    {
+      "id": 1025788942,
+      "html_url": "https://github.com/streamlit/streamlit/issues/4338#issuecomment-1025788942",
+      "created_at": "2022-01-31T14:21:22Z",
+      "updated_at": "2022-01-31T14:21:22Z",
+      "author_association": "NONE",
+      "source_id": "comment:1025788942",
+      "issue_number": 4338,
+      "parent_source_id": "issue:4338",
+      "body": "I first encountered this behavior with my multi-page sample code [here](https://gist.github.com/okld/0aba4869ba6fdc8d49132e6974e2e662).\r\n\r\nTo preserve session state values once the widgets disappear (when going from Settings to Home page), I had to [re-apply session state values on themselves](https://gist.github.com/okld/0aba4869ba6fdc8d49132e6974e2e662/revisions?diff=unified#diff-67428d1de307a7a43537733e5a51474ec950dd8a66a59ea8b13909536bac89c8R13).",
+      "author": {
+        "login": "okld",
+        "type": "User"
+      },
+      "is_bot": false,
+      "retrieval_method": "github_public_html_embedded_data",
+      "retrieved_at": "2026-10-06T14:30:34.806885+00:00",
+      "body_sha256": "4c683d68d7fa250438d4788402e564b96c1760cdf9eadc7b587baf175c978589",
+      "updated_at_basis": "lastEditedAt_or_createdAt_from_public_HTML",
+      "is_hidden": false
+    },
+    {
+      "id": 1027378100,
+      "html_url": "https://github.com/streamlit/streamlit/issues/4338#issuecomment-1027378100",
+      "created_at": "2022-02-01T23:10:58Z",
+      "updated_at": "2022-02-01T23:10:58Z",
+      "author_association": "CONTRIBUTOR",
+      "source_id": "comment:1027378100",
+      "issue_number": 4338,
+      "parent_source_id": "issue:4338",
+      "body": "Leavin this here for others but as @AnOctopus says,\r\n\"These are unfortunate consequences of interactions between [session state as a persistent state mechanism] and [session state as an api for getting and setting widget values out of order], especially with the convenience feature of setting a widget's value in the run it is created (which I have come to regret some because it is inconsistent and confusing).\r\nThe solution is generally to not pre-set the widget's value through session state, but instead set the value through the widget's function call as normal, which ensures the value in state is exclusively associated with the widget.\"",
+      "author": {
+        "login": "willhuang1997",
+        "type": "User"
+      },
+      "is_bot": false,
+      "retrieval_method": "github_public_html_embedded_data",
+      "retrieved_at": "2026-10-06T14:30:34.806885+00:00",
+      "body_sha256": "0c74d242f9bbef8cbbf57ce8ba4fb309f60bd8a0c9a019dd19abfbcf776ce38e",
+      "updated_at_basis": "lastEditedAt_or_createdAt_from_public_HTML",
+      "is_hidden": false
+    },
+    {
+      "id": 1027480027,
+      "html_url": "https://github.com/streamlit/streamlit/issues/4338#issuecomment-1027480027",
+      "created_at": "2022-02-02T01:12:51Z",
+      "updated_at": "2022-02-02T18:02:15Z",
+      "author_association": "NONE",
+      "source_id": "comment:1027480027",
+      "issue_number": 4338,
+      "parent_source_id": "issue:4338",
+      "body": "Thanks for the answer, I'm closing the issue for now.",
+      "author": {
+        "login": "okld",
+        "type": "User"
+      },
+      "is_bot": false,
+      "retrieval_method": "github_public_html_embedded_data",
+      "retrieved_at": "2026-10-06T14:30:34.806885+00:00",
+      "body_sha256": "275ac592b5eeb5144051b5ac30a3f323cabe128cf161854698d4bbaf2104e078",
+      "updated_at_basis": "lastEditedAt_or_createdAt_from_public_HTML",
+      "is_hidden": false
+    },
+    {
+      "id": 1048283339,
+      "html_url": "https://github.com/streamlit/streamlit/issues/4338#issuecomment-1048283339",
+      "created_at": "2022-02-22T22:45:45Z",
+      "updated_at": "2022-02-22T22:46:06Z",
+      "author_association": "COLLABORATOR",
+      "source_id": "comment:1048283339",
+      "issue_number": 4338,
+      "parent_source_id": "issue:4338",
+      "body": "Just want to add that I added this discussion to our roadmap for future session state improvements. I think if it really currently works as you pointed out above, this is indeed pretty confusing and something we should change at some point...",
+      "author": {
+        "login": "jrieke",
+        "type": "User"
+      },
+      "is_bot": false,
+      "retrieval_method": "github_public_html_embedded_data",
+      "retrieved_at": "2026-10-06T14:30:34.806885+00:00",
+      "body_sha256": "4b032e7d7b9a31cfd5f620f01600b1e1530e44fc42f493d01d9ea65366b49ee8",
+      "updated_at_basis": "lastEditedAt_or_createdAt_from_public_HTML",
+      "is_hidden": false
+    },
+    {
+      "id": 1059463934,
+      "html_url": "https://github.com/streamlit/streamlit/issues/4338#issuecomment-1059463934",
+      "created_at": "2022-03-04T19:45:03Z",
+      "updated_at": "2022-03-04T19:45:03Z",
+      "author_association": "NONE",
+      "source_id": "comment:1059463934",
+      "issue_number": 4338,
+      "parent_source_id": "issue:4338",
+      "body": "Chiming in to say I'm having the same issue, it makes it pretty cumbersome to write multi-page apps where different processing and visualizations might appear on different pages based on widget values.",
+      "author": {
+        "login": "scott-trinkle",
+        "type": "User"
+      },
+      "is_bot": false,
+      "retrieval_method": "github_public_html_embedded_data",
+      "retrieved_at": "2026-10-06T14:30:34.806885+00:00",
+      "body_sha256": "94e27c5cc8f4b0b940b7fc3d1c89959e6c0ba40bfb878690077c078eebc7930e",
+      "updated_at_basis": "lastEditedAt_or_createdAt_from_public_HTML",
+      "is_hidden": false
+    },
+    {
+      "id": 1059519626,
+      "html_url": "https://github.com/streamlit/streamlit/issues/4338#issuecomment-1059519626",
+      "created_at": "2022-03-04T20:47:55Z",
+      "updated_at": "2022-03-04T20:47:55Z",
+      "author_association": "NONE",
+      "source_id": "comment:1059519626",
+      "issue_number": 4338,
+      "parent_source_id": "issue:4338",
+      "body": "Hey @scott-trinkle, maybe you could try the following solution: https://gist.github.com/okld/0aba4869ba6fdc8d49132e6974e2e662\r\n\r\n1. For every widget you want to make persistent, [set their key with `persist(\"widget_key\")`](https://gist.github.com/okld/0aba4869ba6fdc8d49132e6974e2e662#file-multipage_settings_app-py-L48-L53).\r\n2. At the beginning of your script, [call `load_widget_state()`](https://gist.github.com/okld/0aba4869ba6fdc8d49132e6974e2e662#file-multipage_settings_app-py-L63)",
+      "author": {
+        "login": "okld",
+        "type": "User"
+      },
+      "is_bot": false,
+      "retrieval_method": "github_public_html_embedded_data",
+      "retrieved_at": "2026-10-06T14:30:34.806885+00:00",
+      "body_sha256": "217dd78f4a3e2fc91b165b946824628fba59de86e31d74cd06aff06253d832aa",
+      "updated_at_basis": "lastEditedAt_or_createdAt_from_public_HTML",
+      "is_hidden": false
+    }
+  ]
+}

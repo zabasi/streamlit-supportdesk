@@ -1,0 +1,12 @@
+{
+  "source_id": "REPLACE_WITH_PENDING_COMMENT_SOURCE_ID",
+  "decision": "approve_or_exclude",
+  "reviewer": "REPLACE_WITH_REVIEWER_NAME",
+  "rationale": "REPLACE_WITH_CONTEXT_AND_EVIDENCE_BASED_REASON",
+  "approved_text": "REPLACE_WITH_EXACT_SOURCE_EXCERPT_IF_APPROVING",
+  "allowed_use": "reported_observation_or_diagnostic_context_or_corroborated_claim",
+  "evidence_source_ids": [],
+  "version_applicability": "RECORD_RELEVANT_VERSION_OR_EXPLAIN_UNKNOWN_APPLICABILITY",
+  "media_independence": null,
+  "note": "Template only. Never copy placeholders into live approvals. For a media-containing approval, media_independence must be selected_excerpt_is_self_contained_without_media."
+}

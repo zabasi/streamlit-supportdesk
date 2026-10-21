@@ -1,0 +1,8 @@
+{
+  "colleague_archive_sha256": "1808b16270c1911ee4be44a888fd9edc6022b5b29677abac4a4919448f3f033d",
+  "primary_archive_sha256": "45ec2b8f891da70f053ae0585e49b18ce965daae438256e5f1f1f17750379a7b",
+  "colleague_input_email_redactions": 5,
+  "colleague_corpus_copy": "ID, title, URL, and hash inventory; full duplicated corpus bodies omitted",
+  "environment_file": "excluded; supplied GITHUB_TOKEN was empty",
+  "compiled_bytecode": "excluded"
+}

@@ -1,0 +1,1310 @@
+[
+  {
+    "case_id": "test-001",
+    "family_id": "family-8901",
+    "split": "test",
+    "multi_turn": true,
+    "tags": [
+      "forms_callbacks",
+      "rerun_execution"
+    ],
+    "turns": [
+      {
+        "turn_id": 1,
+        "user": "I am investigating this Streamlit issue:\n\nTitle: Reconnect to existing sessions instead of creating new upon unclean websocket close.\n\nReported details:\n### Checklist\n\n- [X] I have searched the [existing issues](https://github.com/streamlit/streamlit/issues) for similar issues.\n- [X] I added a very descriptive title to this issue.\n- [X] I have provided sufficient information below to help reproduce this issue.\n\n### Summary\n\nSimilar to the issues linked, if the network connection is intermittent/flaky the existing session is lost and a new one created, causing unpleasant/unexpected user experience.\n\nSee:\n\nhttps://github.com/streamlit/streamlit/issues/1386\nhttps://github.com/streamlit/streamlit/issues/1628\nhttps://github.com/streamlit/streamlit/issues/6442\n\n### Reproducible Code Example\n\n```Python\nimport streamlit as st\nimport time\n\nif \"counter\" not in st.session_state:\n    st.session_state.counter = 0\n\nst.write(f\"Run count = {st.session_state.counter}\")\n\nst.session_state.counter += 1\n\ntime.sleep(3)\n\nst.rerun()\n```\n\n### Steps To Reproduce\n\n1. Run the reproducible code example provided in streamlit on one server host.\n2. Observe the \"Run count = X\" increase steadily in a client host different from the server host.\n3. Disable the client network connection and wait for some arbitrary time duration.\n4. Re-enable the client network connection.\n5. Observer the \"Run count = X\" start from zero again.\n\n### Expected Behavior\n\nThe user session should be restored so they may continue where they left off in the face of their network/internet connection being flaky (packet drops, high latency etc) causing unclean websocket close behind the scenes.\n\n### Current Behavior\n\nObserve streamlit warning log \"Session with id %s is already connected! Connecting to a new session.\" and user loses their streamlit session and starts afresh.\n\n### Is this a regression?\n\n- [ ] Yes, this used to work in a previous version.\n\n### Debug info\n\n- Streamlit version: 1.35\n- Python version: 3.10\n- Operating System: Windows 11\n- Browser: Chrome/Firefox\n\n### Additional Information\n\nI have been able to make a potentially naive code change (will link a PR as a proposal to this issue) which I am unable to run against full test suite because I have been unable to build the streamlit project. I have been able to test partially by modifying the python code in my installed streamlit venv.\n\nBased only on the available evidence, explain what is reported, what is supported by the evidence, and what information is still missing.",
+        "gold_evidence_ids": [
+          "issue-8901",
+          "comment-2189726368",
+          "comment-2495877861",
+          "document-doc-695e6ce2fb1b-3483017622359616890",
+          "release-note-d121bacf4c2f3fd5bbb252009bf562c0ebb62045"
+        ],
+        "expected_behavior": [
+          "Identify the reported problem without changing its meaning.",
+          "Use the selected evidence to support factual claims.",
+          "Distinguish reported facts from documented explanations and hypotheses.",
+          "Do not treat the issue's closed/open state as proof that the problem is solved.",
+          "Do not invent missing technical details.",
+          "Use the linked technical comment when it provides additional reproduction, explanation, workaround, or implementation evidence."
+        ],
+        "must_ask": [],
+        "must_not_claim": [
+          "Do not claim that a closed issue is automatically solved.",
+          "Do not claim a root cause unless the evidence supports it.",
+          "Do not invent Streamlit versions, operating systems, Python versions, or reproduction steps.",
+          "Do not claim that a workaround is guaranteed to solve the user's problem unless the evidence supports that claim."
+        ]
+      },
+      {
+        "turn_id": 2,
+        "user": "For the issue 'Reconnect to existing sessions instead of creating new upon unclean websocket close.', what additional technical information should I provide to distinguish between the possible explanations? Please separate information that is already known from information that is still unknown.",
+        "gold_evidence_ids": [
+          "issue-8901",
+          "comment-2189726368",
+          "comment-2495877861",
+          "document-doc-695e6ce2fb1b-3483017622359616890",
+          "release-note-d121bacf4c2f3fd5bbb252009bf562c0ebb62045"
+        ],
+        "expected_behavior": [
+          "Do not repeat checks or explanations already established in turn 1.",
+          "Maintain the same issue context.",
+          "Clearly distinguish known facts from missing information.",
+          "Ask only discriminating questions that could change the diagnosis or next action."
+        ],
+        "must_ask": [
+          "What exact websocket close/reconnect sequence causes the existing session to be lost, and can you provide logs showing the session identifier before and after the reconnect?",
+          "Does the behavior reproduce consistently under a minimal application with a controlled network interruption, and which Streamlit version and browser are involved?"
+        ],
+        "must_not_claim": [
+          "Do not claim that a closed issue is automatically solved.",
+          "Do not claim a root cause unless the evidence supports it.",
+          "Do not invent Streamlit versions, operating systems, Python versions, or reproduction steps.",
+          "Do not claim that a workaround is guaranteed to solve the user's problem unless the evidence supports that claim."
+        ]
+      }
+    ],
+    "final_expected": {
+      "answer_points": [
+        "Explain the reported behavior described in issue 8901.",
+        "Identify which claims are directly supported by the selected evidence.",
+        "Identify important information that remains unknown.",
+        "Incorporate the linked technical comment when it provides evidence relevant to the issue.",
+        "Use the official documentation as documentation evidence when it directly applies."
+      ],
+      "evidence_requirements": [
+        "Use at least one relevant issue record.",
+        "Do not use evidence that is not present in corpus.",
+        "Do not treat issue state as proof of resolution.",
+        "Do not guess missing technical details."
+      ],
+      "maintainer_summary_points": [
+        "Problem summary based on the original issue.",
+        "Evidence-backed findings.",
+        "Known versus unknown technical details.",
+        "Recommended next diagnostic information or action."
+      ]
+    }
+  },
+  {
+    "case_id": "test-002",
+    "family_id": "family-16030",
+    "split": "test",
+    "multi_turn": true,
+    "tags": [
+      "forms_callbacks"
+    ],
+    "turns": [
+      {
+        "turn_id": 1,
+        "user": "I am investigating this Streamlit issue:\n\nTitle: Streamlit websockets 16.1 issue\n\nReported details:\n### Checklist\n\n- [x] I have searched the [existing issues](https://github.com/streamlit/streamlit/issues) for similar issues.\n- [x] I added a very descriptive title to this issue.\n- [x] I have provided sufficient information below to help reproduce this issue.\n\n### Summary\n\nStreamlit's pyproject.toml pins \"websockets>=12.0.0\". Version 16.1 of websockets (released July 9, 2026) introduced a change that blocks non-ASCII values in HTTP headers (see [changelog](https://websockets.readthedocs.io/en/stable/project/changelog.html#id2), \"Blocked non-ASCII values in Headers\").\n\nThis breaks the WebSocket handshake for setups where a reverse proxy / auth layer injects headers containing UTF-8 characters before the request reaches Streamlit — for example [Authelia](https://www.authelia.com/) forward-auth, which can inject a Remote-Name header containing the user's display name (e.g. accented characters, non-Latin scripts).\n\nSince Streamlit's dependency constraint allows websockets to resolve to 16.1+, installing/upgrading Streamlit in a fresh environment can silently pull in a version that breaks WebSocket connections for any deployment relying on non-ASCII header values, with no warning at install time\n\n### Reproducible Code Example\n\n```Python\n\n```\n\n### Steps To Reproduce\n\n1. Deploy Streamlit behind a reverse proxy (nginx/Traefik) with Authelia forward-auth, configured to forward Remote-Name, Remote-Email, etc. headers to the backend.\n2. Ensure a user's Authelia display name contains a non-ASCII character (e.g. \"François\", \"Müller\", \"田中\").\n3. Install/upgrade Streamlit in an environment where pip resolves websockets to >=16.1.\n4. Log in as that user and attempt to load the app.\n\n### Expected Behavior\n\nThe WebSocket connection (/_stcore/stream) should be established successfully, as it was with websockets<16.1.\n\n### Current Behavior\n\nThe WebSocket handshake fails because websockets 16.1 rejects the non-ASCII header value. The app gets stuck on \"Please wait...\" / the frontend logs a WebSocket connection failure, similar in symptom to issues like #8799.\n\n### Is this a regression?\n\n- [x] Yes, this used to work in a previous version.\n\n### Debug info\n\n- Streamlit version: 1.58\n- Python version: 3.12\n- Operating System: Debian\n- Browser: Chrome / Mozilla\n\n### Additional Information\n\nWorkaround: pinning websockets<16.1 restores normal behavior.\n\nPossible fixes on Streamlit's side:\n\n- Tighten the websockets dependency constraint (e.g. >=12.0.0,<16.1) until this is addressed, or\n\n- Percent-encode / sanitize header values Streamlit forwards or reads internally before they reach the websockets layer.\n\nBased only on the available evidence, explain what is reported, what is supported by the evidence, and what information is still missing.",
+        "gold_evidence_ids": [
+          "issue-16030",
+          "comment-4990882173",
+          "comment-4994122921",
+          "document-doc-695e6ce2fb1b-3483017622359616890",
+          "release-note-d121bacf4c2f3fd5bbb252009bf562c0ebb62045"
+        ],
+        "expected_behavior": [
+          "Identify the reported problem without changing its meaning.",
+          "Use the selected evidence to support factual claims.",
+          "Distinguish reported facts from documented explanations and hypotheses.",
+          "Do not treat the issue's closed/open state as proof that the problem is solved.",
+          "Do not invent missing technical details.",
+          "Use the linked technical comment when it provides additional reproduction, explanation, workaround, or implementation evidence."
+        ],
+        "must_ask": [],
+        "must_not_claim": [
+          "Do not claim that a closed issue is automatically solved.",
+          "Do not claim a root cause unless the evidence supports it.",
+          "Do not invent Streamlit versions, operating systems, Python versions, or reproduction steps.",
+          "Do not claim that a workaround is guaranteed to solve the user's problem unless the evidence supports that claim."
+        ]
+      },
+      {
+        "turn_id": 2,
+        "user": "For the issue 'Streamlit websockets 16.1 issue', what additional technical information should I provide to distinguish between the possible explanations? Please separate information that is already known from information that is still unknown.",
+        "gold_evidence_ids": [
+          "issue-16030",
+          "comment-4990882173",
+          "comment-4994122921",
+          "document-doc-695e6ce2fb1b-3483017622359616890",
+          "release-note-d121bacf4c2f3fd5bbb252009bf562c0ebb62045"
+        ],
+        "expected_behavior": [
+          "Do not repeat checks or explanations already established in turn 1.",
+          "Maintain the same issue context.",
+          "Clearly distinguish known facts from missing information.",
+          "Ask only discriminating questions that could change the diagnosis or next action."
+        ],
+        "must_ask": [
+          "Can you provide the exact websockets and Uvicorn versions, the reverse-proxy/authentication setup, and the specific non-ASCII header value that triggers the failure?",
+          "Does the WebSocket handshake succeed when the same deployment uses an ASCII-only header value or websockets<16.1?"
+        ],
+        "must_not_claim": [
+          "Do not claim that a closed issue is automatically solved.",
+          "Do not claim a root cause unless the evidence supports it.",
+          "Do not invent Streamlit versions, operating systems, Python versions, or reproduction steps.",
+          "Do not claim that a workaround is guaranteed to solve the user's problem unless the evidence supports that claim."
+        ]
+      }
+    ],
+    "final_expected": {
+      "answer_points": [
+        "Explain the reported behavior described in issue 16030.",
+        "Identify which claims are directly supported by the selected evidence.",
+        "Identify important information that remains unknown.",
+        "Incorporate the linked technical comment when it provides evidence relevant to the issue.",
+        "Use the official documentation as documentation evidence when it directly applies."
+      ],
+      "evidence_requirements": [
+        "Use at least one relevant issue record.",
+        "Do not use evidence that is not present in corpus.",
+        "Do not treat issue state as proof of resolution.",
+        "Do not guess missing technical details."
+      ],
+      "maintainer_summary_points": [
+        "Problem summary based on the original issue.",
+        "Evidence-backed findings.",
+        "Known versus unknown technical details.",
+        "Recommended next diagnostic information or action."
+      ]
+    }
+  },
+  {
+    "case_id": "test-003",
+    "family_id": "family-16341",
+    "split": "test",
+    "multi_turn": true,
+    "tags": [
+      "forms_callbacks"
+    ],
+    "turns": [
+      {
+        "turn_id": 1,
+        "user": "I am investigating this Streamlit issue:\n\nTitle: Community Cloud installs incompatible Streamlit/Starlette versions causing GZipResponder TypeError on startup\n\nReported details:\n### Checklist\n\n- [x] I have searched the [existing issues](https://github.com/streamlit/streamlit/issues) for similar issues.\n- [x] I added a very descriptive title to this issue.\n- [x] I have provided sufficient information below to help reproduce this issue.\n\n### Summary\n\nI'm unable to deploy any Streamlit application on Streamlit Community Cloud.\n\nThe issue is reproducible with a minimal application.\n\nRepository contents:\n\napp.py\n\nimport streamlit as st\n\nst.title(\"Hello\")\n\nrequirements.txt\n\nstreamlit\n\nThe application never starts. The error occurs before my code is executed.\n\nDeployment log shows:\n\nUsing Python 3.14.6 environment\n\nInstalled packages include:\n\n- streamlit==1.61.0\n- starlette==1.4.0\n- uvicorn==0.52.1\n\nThe server then fails health checks with:\n\nTypeError: GZipResponder.__init__() missing 1 required keyword-only argument: 'thread_minimum_size'\n\nStack trace points to:\n\nstreamlit/web/server/starlette/starlette_gzip_middleware.py\n\nThe same error happens:\n\n- with a completely minimal app\n- with a requirements.txt containing only \"streamlit\"\n- after changing the configured Python version\n- with multiple different applications\n\nSince the application code is never executed, this appears to be an incompatibility in the deployment environment rather than in the app itself.\n\nCould you please investigate why Community Cloud is installing this package combination?\n\n### Reproducible Code Example\n\n```Python\nUsing Python 3.14.6 environment\n\nstreamlit==1.61.0\nstarlette==1.4.0\nuvicorn==0.52.1\n\nTypeError: GZipResponder.__init__() missing 1 required keyword-only argument: 'thread_minimum_size'\n```\n\n### Steps To Reproduce\n\n_No response_\n\n### Expected Behavior\n\n_No response_\n\n### Current Behavior\n\n_No response_\n\n### Is this a regression?\n\n- [ ] Yes, this used to work in a previous version.\n\n### Debug info\n\n- Streamlit version:\n- Python version:\n- Operating System:\n- Browser:\n\n### Additional Information\n\n_No response_\n\nBased only on the available evidence, explain what is reported, what is supported by the evidence, and what information is still missing.",
+        "gold_evidence_ids": [
+          "issue-16341",
+          "comment-5191703236",
+          "comment-5191743674",
+          "document-doc-695e6ce2fb1b-3483017622359616890",
+          "release-note-d121bacf4c2f3fd5bbb252009bf562c0ebb62045"
+        ],
+        "expected_behavior": [
+          "Identify the reported problem without changing its meaning.",
+          "Use the selected evidence to support factual claims.",
+          "Distinguish reported facts from documented explanations and hypotheses.",
+          "Do not treat the issue's closed/open state as proof that the problem is solved.",
+          "Do not invent missing technical details.",
+          "Use the linked technical comment when it provides additional reproduction, explanation, workaround, or implementation evidence."
+        ],
+        "must_ask": [],
+        "must_not_claim": [
+          "Do not claim that a closed issue is automatically solved.",
+          "Do not claim a root cause unless the evidence supports it.",
+          "Do not invent Streamlit versions, operating systems, Python versions, or reproduction steps.",
+          "Do not claim that a workaround is guaranteed to solve the user's problem unless the evidence supports that claim."
+        ]
+      },
+      {
+        "turn_id": 2,
+        "user": "For the issue 'Community Cloud installs incompatible Streamlit/Starlette versions causing GZipResponder TypeError on startup', what additional technical information should I provide to distinguish between the possible explanations? Please separate information that is already known from information that is still unknown.",
+        "gold_evidence_ids": [
+          "issue-16341",
+          "comment-5191703236",
+          "comment-5191743674",
+          "document-doc-695e6ce2fb1b-3483017622359616890",
+          "release-note-d121bacf4c2f3fd5bbb252009bf562c0ebb62045"
+        ],
+        "expected_behavior": [
+          "Do not repeat checks or explanations already established in turn 1.",
+          "Maintain the same issue context.",
+          "Clearly distinguish known facts from missing information.",
+          "Ask only discriminating questions that could change the diagnosis or next action."
+        ],
+        "must_ask": [
+          "Can you provide the exact resolved dependency versions from the failing environment and confirm whether the same GZipResponder error occurs in a clean non-Community-Cloud environment?",
+          "Does pinning a compatible Starlette version or upgrading Streamlit to the reported fixed version eliminate the startup error?"
+        ],
+        "must_not_claim": [
+          "Do not claim that a closed issue is automatically solved.",
+          "Do not claim a root cause unless the evidence supports it.",
+          "Do not invent Streamlit versions, operating systems, Python versions, or reproduction steps.",
+          "Do not claim that a workaround is guaranteed to solve the user's problem unless the evidence supports that claim."
+        ]
+      }
+    ],
+    "final_expected": {
+      "answer_points": [
+        "Explain the reported behavior described in issue 16341.",
+        "Identify which claims are directly supported by the selected evidence.",
+        "Identify important information that remains unknown.",
+        "Incorporate the linked technical comment when it provides evidence relevant to the issue.",
+        "Use the official documentation as documentation evidence when it directly applies."
+      ],
+      "evidence_requirements": [
+        "Use at least one relevant issue record.",
+        "Do not use evidence that is not present in corpus.",
+        "Do not treat issue state as proof of resolution.",
+        "Do not guess missing technical details."
+      ],
+      "maintainer_summary_points": [
+        "Problem summary based on the original issue.",
+        "Evidence-backed findings.",
+        "Known versus unknown technical details.",
+        "Recommended next diagnostic information or action."
+      ]
+    }
+  },
+  {
+    "case_id": "test-004",
+    "family_id": "family-15816",
+    "split": "test",
+    "multi_turn": true,
+    "tags": [
+      "caching",
+      "forms_callbacks"
+    ],
+    "turns": [
+      {
+        "turn_id": 1,
+        "user": "I am investigating this Streamlit issue:\n\nTitle: Cached ForwardMsg MISS\n\nReported details:\n### Checklist\n\n- [x] I have searched the [existing issues](https://github.com/streamlit/streamlit/issues) for similar issues.\n- [x] I added a very descriptive title to this issue.\n- [x] I have provided sufficient information below to help reproduce this issue.\n\n### Summary\n\nFailed to process a Websocket message. Error: Cached ForwardMsg MISS [hash=b97f5778bd5d2a2acb1c2f7b8b3ee1ae]. This is not expected to happen. Please [report this bug](https://github.com/streamlit/streamlit/issues).\n\n### Reproducible Code Example\n\n```Python\n\n```\n\n### Steps To Reproduce\n\n_No response_\n\n### Expected Behavior\n\n_No response_\n\n### Current Behavior\n\n_No response_\n\n### Is this a regression?\n\n- [ ] Yes, this used to work in a previous version.\n\n### Debug info\n\n- Streamlit version:\n- Python version:\n- Operating System:\n- Browser:\n\n### Additional Information\n\n_No response_\n\nBased only on the available evidence, explain what is reported, what is supported by the evidence, and what information is still missing.",
+        "gold_evidence_ids": [
+          "issue-15816",
+          "comment-4876686980",
+          "comment-4876863151",
+          "document-doc-695e6ce2fb1b-3483017622359616890",
+          "release-note-d121bacf4c2f3fd5bbb252009bf562c0ebb62045"
+        ],
+        "expected_behavior": [
+          "Identify the reported problem without changing its meaning.",
+          "Use the selected evidence to support factual claims.",
+          "Distinguish reported facts from documented explanations and hypotheses.",
+          "Do not treat the issue's closed/open state as proof that the problem is solved.",
+          "Do not invent missing technical details.",
+          "Use the linked technical comment when it provides additional reproduction, explanation, workaround, or implementation evidence."
+        ],
+        "must_ask": [],
+        "must_not_claim": [
+          "Do not claim that a closed issue is automatically solved.",
+          "Do not claim a root cause unless the evidence supports it.",
+          "Do not invent Streamlit versions, operating systems, Python versions, or reproduction steps.",
+          "Do not claim that a workaround is guaranteed to solve the user's problem unless the evidence supports that claim."
+        ]
+      },
+      {
+        "turn_id": 2,
+        "user": "For the issue 'Cached ForwardMsg MISS', what additional technical information should I provide to distinguish between the possible explanations? Please separate information that is already known from information that is still unknown.",
+        "gold_evidence_ids": [
+          "issue-15816",
+          "comment-4876686980",
+          "comment-4876863151",
+          "document-doc-695e6ce2fb1b-3483017622359616890",
+          "release-note-d121bacf4c2f3fd5bbb252009bf562c0ebb62045"
+        ],
+        "expected_behavior": [
+          "Do not repeat checks or explanations already established in turn 1.",
+          "Maintain the same issue context.",
+          "Clearly distinguish known facts from missing information.",
+          "Ask only discriminating questions that could change the diagnosis or next action."
+        ],
+        "must_ask": [
+          "Can you provide a minimal reproducible application, the exact Streamlit version, and the client/server logs around the Cached ForwardMsg MISS?",
+          "Does the error occur after a reconnect or rerun, and can you determine whether the cached message hash is missing from the client cache at the time of failure?"
+        ],
+        "must_not_claim": [
+          "Do not claim that a closed issue is automatically solved.",
+          "Do not claim a root cause unless the evidence supports it.",
+          "Do not invent Streamlit versions, operating systems, Python versions, or reproduction steps.",
+          "Do not claim that a workaround is guaranteed to solve the user's problem unless the evidence supports that claim."
+        ]
+      }
+    ],
+    "final_expected": {
+      "answer_points": [
+        "Explain the reported behavior described in issue 15816.",
+        "Identify which claims are directly supported by the selected evidence.",
+        "Identify important information that remains unknown.",
+        "Incorporate the linked technical comment when it provides evidence relevant to the issue.",
+        "Use the official documentation as documentation evidence when it directly applies."
+      ],
+      "evidence_requirements": [
+        "Use at least one relevant issue record.",
+        "Do not use evidence that is not present in corpus.",
+        "Do not treat issue state as proof of resolution.",
+        "Do not guess missing technical details."
+      ],
+      "maintainer_summary_points": [
+        "Problem summary based on the original issue.",
+        "Evidence-backed findings.",
+        "Known versus unknown technical details.",
+        "Recommended next diagnostic information or action."
+      ]
+    }
+  },
+  {
+    "case_id": "test-005",
+    "family_id": "family-16914",
+    "split": "test",
+    "multi_turn": true,
+    "tags": [
+      "multipage_navigation",
+      "widgets"
+    ],
+    "turns": [
+      {
+        "turn_id": 1,
+        "user": "I am investigating this Streamlit issue:\n\nTitle: [Bug] st.dataframe() / st.table() silently kill WebSocket when DataFrame has non-ASCII column names + emoji data (no traceback, session loss)\n\nReported details:\n## Summary\n\n`st.dataframe()` and `st.table()` silently close the WebSocket connection when the DataFrame contains **non-ASCII column names** (e.g. `ç`, `ê`, `/`) **combined with emoji in cell data**. No Python exception is raised, no error appears in the terminal — the browser simply reconnects with a brand-new session, wiping `st.session_state` entirely.\n\nThis is one of the hardest bugs to debug in Streamlit because it produces **zero tracebacks** and presents itself as an unrelated UX problem (\"users keep getting logged out\").\n\n---\n\n## Versions\n\n| Package | Version |\n|---|---|\n| streamlit | 1.41.0 |\n| pandas | 2.2.3 |\n| Python | 3.11 |\n| OS | Linux (Docker, python:3.11-slim) |\n\n---\n\n## Minimal Reproduction\n\n```python\n# app.py\nimport streamlit as st\nimport pandas as pd\n\n# This persists fine\nif \"logged_in\" not in st.session_state:\n    st.session_state[\"logged_in\"] = False\n\nif not st.session_state[\"logged_in\"]:\n    if st.button(\"Login\"):\n        st.session_state[\"logged_in\"] = True\n        st.rerun()\n    st.stop()\n\nst.write(\"✅ Logged in — session_state alive\")\n\ndf = pd.DataFrame({\n    \"Serviço\": [\"Manutenção Website\", \"Hospedagem\"],   # ← non-ASCII column name (cedilha)\n    \"Valor/mês\": [\"R$ 100,00\", \"R$ 200,00\"],           # ← non-ASCII + slash in column name\n    \"Status\": [\"🟢 Ativo\", \"🔴 Pausado\"],              # ← emoji in cell data\n})\n\nst.dataframe(df)   # 💥 WebSocket dies here — no exception raised\nst.write(\"This line never renders — session is already dead\")\n```\n\nRun with Docker:\n\n```dockerfile\nFROM python:3.11-slim\nWORKDIR /app\nRUN pip install streamlit==1.41.0 pandas==2.2.3\nCOPY app.py .\nENTRYPOINT [\"streamlit\", \"run\", \"app.py\", \"--server.headless=true\", \"--server.fileWatcherType=none\"]\n```\n\n**Steps to reproduce:**\n1. Build and run the container\n2. Open `http://localhost:8501`\n3. Click \"Login\" → session is alive (`session_state[\"logged_in\"] = True`)\n4. `st.dataframe(df)` renders (or tries to)\n5. Browser reconnects → `session_state` is empty → \"Login\" button appears again\n\n---\n\n## Observed Behavior\n\n- `st.dataframe(df)` call executes without raising any Python exception\n- The line after `st.dataframe()` **never executes** (confirmed via `print()` to stdout)\n- Browser-side: WebSocket closes and immediately reconnects with a fresh session\n- `st.session_state` is wiped clean — any auth/navigation state is lost\n- **Identical behavior with `st.table(df)`** — same root cause\n\n### Diagnostic method that revealed the bug\n\nSince no traceback is produced, the only way to isolate it was:\n\n1. Store a UUID in `session_state` on first load: `st.session_state[\"sid\"] = uuid4()`\n2. Display it on every render: `st.caption(f\"sid: {st.session_state['sid']}\")`\n3. Add `print()` statements throughout the render function (visible in Docker logs)\n4. The `print()` output stopped exactly at the `st.dataframe()` call\n5. The displayed `sid` changed to a new value on the next render → confirmed new WebSocket session\n\n---\n\n## Root Cause Hypothesis\n\nThe bug appears to occu\n[issue body truncated]\n\nBased only on the available evidence, explain what is reported, what is supported by the evidence, and what information is still missing.",
+        "gold_evidence_ids": [
+          "issue-16914",
+          "comment-5618215146",
+          "comment-5622116230",
+          "document-doc-695e6ce2fb1b-3483017622359616890",
+          "release-note-13c1925ba0243abcef95f9df12086fa2ff3020ae"
+        ],
+        "expected_behavior": [
+          "Identify the reported problem without changing its meaning.",
+          "Use the selected evidence to support factual claims.",
+          "Distinguish reported facts from documented explanations and hypotheses.",
+          "Do not treat the issue's closed/open state as proof that the problem is solved.",
+          "Do not invent missing technical details.",
+          "Use the linked technical comment when it provides additional reproduction, explanation, workaround, or implementation evidence."
+        ],
+        "must_ask": [
+          "What operating system are you using?",
+          "Can you provide the smallest reproducible example?"
+        ],
+        "must_not_claim": [
+          "Do not claim that a closed issue is automatically solved.",
+          "Do not claim a root cause unless the evidence supports it.",
+          "Do not invent Streamlit versions, operating systems, Python versions, or reproduction steps.",
+          "Do not claim that a workaround is guaranteed to solve the user's problem unless the evidence supports that claim."
+        ]
+      },
+      {
+        "turn_id": 2,
+        "user": "For the issue '[Bug] st.dataframe() / st.table() silently kill WebSocket when DataFrame has non-ASCII column names + emoji data (no traceback, session loss)', what additional technical information should I provide to distinguish between the possible explanations? Please separate information that is already known from information that is still unknown.",
+        "gold_evidence_ids": [
+          "issue-16914",
+          "comment-5618215146",
+          "comment-5622116230",
+          "document-doc-695e6ce2fb1b-3483017622359616890",
+          "release-note-13c1925ba0243abcef95f9df12086fa2ff3020ae"
+        ],
+        "expected_behavior": [
+          "Do not repeat checks or explanations already established in turn 1.",
+          "Maintain the same issue context.",
+          "Clearly distinguish known facts from missing information.",
+          "Ask only discriminating questions that could change the diagnosis or next action."
+        ],
+        "must_ask": [
+          "What operating system are you using?",
+          "Can you provide the smallest reproducible example?"
+        ],
+        "must_not_claim": [
+          "Do not claim that a closed issue is automatically solved.",
+          "Do not claim a root cause unless the evidence supports it.",
+          "Do not invent Streamlit versions, operating systems, Python versions, or reproduction steps.",
+          "Do not claim that a workaround is guaranteed to solve the user's problem unless the evidence supports that claim."
+        ]
+      }
+    ],
+    "final_expected": {
+      "answer_points": [
+        "Explain the reported behavior described in issue 16914.",
+        "Identify which claims are directly supported by the selected evidence.",
+        "Identify important information that remains unknown.",
+        "Incorporate the linked technical comment when it provides evidence relevant to the issue.",
+        "Use the official documentation as documentation evidence when it directly applies."
+      ],
+      "evidence_requirements": [
+        "Use at least one relevant issue record.",
+        "Do not use evidence that is not present in corpus.",
+        "Do not treat issue state as proof of resolution.",
+        "Do not guess missing technical details."
+      ],
+      "maintainer_summary_points": [
+        "Problem summary based on the original issue.",
+        "Evidence-backed findings.",
+        "Known versus unknown technical details.",
+        "Recommended next diagnostic information or action."
+      ]
+    }
+  },
+  {
+    "case_id": "test-006",
+    "family_id": "family-17119",
+    "split": "test",
+    "multi_turn": true,
+    "tags": [
+      "forms_callbacks",
+      "multipage_navigation",
+      "rerun_execution",
+      "session_state",
+      "widgets"
+    ],
+    "turns": [
+      {
+        "turn_id": 1,
+        "user": "I am investigating this Streamlit issue:\n\nTitle: Keyed persist_state=None remount can reset the UI while st.session_state[key] still holds the previous value\n\nReported details:\n### Checklist\n\n- [x] I have searched the [existing issues](https://github.com/streamlit/streamlit/issues) for similar issues.\n- [x] I added a very descriptive title to this issue.\n- [x] I have provided sufficient information below to help reproduce this issue.\n\n### Summary\n\nA keyed `persist_state=None` widget that has already registered, is then hidden, then shown again can render the widget default while `st.session_state[key]` still holds the previous value on that remount run. A follow-up rerun overwrites session state with the default. Unmount should reset **both** the UI and `st.session_state[key]` in the same run (#3512).\n\nThis is a follow-up to #17106 / #17093. That PR syncs delayed first mount to a leftover pre-registration user key. This issue is the already-registered remount path: unmount cleanup has dropped widget-id state, but a leftover user-key entry can leave the two sides out of sync for one run.\n\n### Reproducible Code Example\n\n```python\nimport streamlit as st\n\nst.session_state.setdefault(\"input2\", \"input 2\")\nst.session_state.setdefault(\"input3\", \"input 3\")\n\nselect = st.selectbox(\"select delayed input\", [\"A\", \"B\"])\nif select == \"A\":\n    value = st.text_input(\"input 2\", key=\"input2\")\nelse:\n    value = st.text_input(\"input 3\", key=\"input3\")\n\nst.write(\"widget return:\", repr(value))\nst.write(\"session_state input2:\", repr(st.session_state.get(\"input2\")))\n```\n\n### Steps To Reproduce\n\n1. Load the app. Input 2 is shown on first load with `\"input 2\"`.\n2. Switch the selectbox to B.\n3. Optionally edit input 3 and press Enter.\n4. Switch back to A.\n5. Compare the input 2 field with the printed `st.session_state.get(\"input2\")` value, then press `r`.\n\n### Expected Behavior\n\nAfter the registered widget remounts, both the rendered input and `st.session_state[\"input2\"]` are the widget default (empty) on that same run. A follow-up rerun is not required to sync them.\n\nA user key written while the widget had **never** registered remains ordinary session state: delayed first mount (and leftover-key remount after edit/hide) should still adopt that stored value on both sides. `persist_state=\"session\"` / `\"page\"` (same page) should still remount the last edit.\n\n### Current Behavior\n\nAfter switching back to A (especially after editing the sibling input 3), the input 2 **field is empty** while `st.session_state.get(\"input2\")` still prints `\"input 2\"` for that run. A follow-up rerun clears the printed backend as well.\n\nWithout the sibling edit, A→B→A can keep UI and backend aligned at `\"input 2\"`. Either interpretation of leftover keys should keep UI and printed state in sync; the #3512 unmount rule for an already-registered `persist_state=None` widget is that both sides reset in the same run.\n\n### Is this a regression?\n\n- [ ] Yes, this used to work in a previous version.\n\n### Debug info\n\n- Streamlit version: current develop / #17106\n- Python version: 3.13\n- Operating System: macOS\n- Browser: Chromium (Playwright)\n\n### Additional Information\n\nFound during Q\n[issue body truncated]\n\nBased only on the available evidence, explain what is reported, what is supported by the evidence, and what information is still missing.",
+        "gold_evidence_ids": [
+          "issue-17119",
+          "comment-5822011780",
+          "document-doc-695e6ce2fb1b-3483017622359616890",
+          "release-note-d121bacf4c2f3fd5bbb252009bf562c0ebb62045"
+        ],
+        "expected_behavior": [
+          "Identify the reported problem without changing its meaning.",
+          "Use the selected evidence to support factual claims.",
+          "Distinguish reported facts from documented explanations and hypotheses.",
+          "Do not treat the issue's closed/open state as proof that the problem is solved.",
+          "Do not invent missing technical details.",
+          "Use the linked technical comment when it provides additional reproduction, explanation, workaround, or implementation evidence."
+        ],
+        "must_ask": [],
+        "must_not_claim": [
+          "Do not claim that a closed issue is automatically solved.",
+          "Do not claim a root cause unless the evidence supports it.",
+          "Do not invent Streamlit versions, operating systems, Python versions, or reproduction steps.",
+          "Do not claim that a workaround is guaranteed to solve the user's problem unless the evidence supports that claim."
+        ]
+      },
+      {
+        "turn_id": 2,
+        "user": "For the issue 'Keyed persist_state=None remount can reset the UI while st.session_state[key] still holds the previous value', what additional technical information should I provide to distinguish between the possible explanations? Please separate information that is already known from information that is still unknown.",
+        "gold_evidence_ids": [
+          "issue-17119",
+          "comment-5822011780",
+          "document-doc-695e6ce2fb1b-3483017622359616890",
+          "release-note-d121bacf4c2f3fd5bbb252009bf562c0ebb62045"
+        ],
+        "expected_behavior": [
+          "Do not repeat checks or explanations already established in turn 1.",
+          "Maintain the same issue context.",
+          "Clearly distinguish known facts from missing information.",
+          "Ask only discriminating questions that could change the diagnosis or next action."
+        ],
+        "must_ask": [
+          "Can you provide the minimal widget code and exact sequence of hiding and showing the keyed widget that causes the UI value and st.session_state value to diverge?",
+          "Which Streamlit commit/version is being tested, and does the mismatch occur on the first remount run before a subsequent rerun overwrites the session state?"
+        ],
+        "must_not_claim": [
+          "Do not claim that a closed issue is automatically solved.",
+          "Do not claim a root cause unless the evidence supports it.",
+          "Do not invent Streamlit versions, operating systems, Python versions, or reproduction steps.",
+          "Do not claim that a workaround is guaranteed to solve the user's problem unless the evidence supports that claim."
+        ]
+      }
+    ],
+    "final_expected": {
+      "answer_points": [
+        "Explain the reported behavior described in issue 17119.",
+        "Identify which claims are directly supported by the selected evidence.",
+        "Identify important information that remains unknown.",
+        "Incorporate the linked technical comment when it provides evidence relevant to the issue.",
+        "Use the official documentation as documentation evidence when it directly applies."
+      ],
+      "evidence_requirements": [
+        "Use at least one relevant issue record.",
+        "Do not use evidence that is not present in corpus.",
+        "Do not treat issue state as proof of resolution.",
+        "Do not guess missing technical details."
+      ],
+      "maintainer_summary_points": [
+        "Problem summary based on the original issue.",
+        "Evidence-backed findings.",
+        "Known versus unknown technical details.",
+        "Recommended next diagnostic information or action."
+      ]
+    }
+  },
+  {
+    "case_id": "test-007",
+    "family_id": "family-17265",
+    "split": "test",
+    "multi_turn": true,
+    "tags": [
+      "caching",
+      "forms_callbacks",
+      "rerun_execution"
+    ],
+    "turns": [
+      {
+        "turn_id": 1,
+        "user": "I am investigating this Streamlit issue:\n\nTitle: connection error problem\n\nReported details:\n### Checklist\n\n- [x] I have searched the [existing issues](https://github.com/streamlit/streamlit/issues) for similar issues.\n- [x] I added a very descriptive title to this issue.\n- [x] I have provided sufficient information below to help reproduce this issue.\n\n### Summary\n\nhallo,\ni have a data platform which receive data every 1 second but after the platform runs for sometimes i get this error:\nFailed to process a Websocket message. Error: Cached ForwardMsg MISS [hash=0ba6fc0a869cdef14654cf6e6c3c0050]. This is not expected to happen. Please [report this bug](https://github.com/streamlit/streamlit/issues).\n\n### Reproducible Code Example\n\n```Python\n\n```\n\n### Steps To Reproduce\n\n_No response_\n\n### Expected Behavior\n\nthe app should run and receive the data continuously\n\n### Current Behavior\n\n_No response_\n\n### Is this a regression?\n\n- [ ] Yes, this used to work in a previous version.\n\n### Debug info\n\n- Streamlit version:1.64.0\n- Python version:3.13.14\n\n### Additional Information\n\n_No response_\n\nBased only on the available evidence, explain what is reported, what is supported by the evidence, and what information is still missing.",
+        "gold_evidence_ids": [
+          "issue-17265",
+          "comment-6000613061",
+          "document-doc-695e6ce2fb1b-3483017622359616890",
+          "release-note-d121bacf4c2f3fd5bbb252009bf562c0ebb62045"
+        ],
+        "expected_behavior": [
+          "Identify the reported problem without changing its meaning.",
+          "Use the selected evidence to support factual claims.",
+          "Distinguish reported facts from documented explanations and hypotheses.",
+          "Do not treat the issue's closed/open state as proof that the problem is solved.",
+          "Do not invent missing technical details.",
+          "Use the linked technical comment when it provides additional reproduction, explanation, workaround, or implementation evidence."
+        ],
+        "must_ask": [
+          "What operating system are you using?"
+        ],
+        "must_not_claim": [
+          "Do not claim that a closed issue is automatically solved.",
+          "Do not claim a root cause unless the evidence supports it.",
+          "Do not invent Streamlit versions, operating systems, Python versions, or reproduction steps.",
+          "Do not claim that a workaround is guaranteed to solve the user's problem unless the evidence supports that claim."
+        ]
+      },
+      {
+        "turn_id": 2,
+        "user": "For the issue 'connection error problem', what additional technical information should I provide to distinguish between the possible explanations? Please separate information that is already known from information that is still unknown.",
+        "gold_evidence_ids": [
+          "issue-17265",
+          "comment-6000613061",
+          "document-doc-695e6ce2fb1b-3483017622359616890",
+          "release-note-d121bacf4c2f3fd5bbb252009bf562c0ebb62045"
+        ],
+        "expected_behavior": [
+          "Do not repeat checks or explanations already established in turn 1.",
+          "Maintain the same issue context.",
+          "Clearly distinguish known facts from missing information.",
+          "Ask only discriminating questions that could change the diagnosis or next action."
+        ],
+        "must_ask": [
+          "What operating system are you using?"
+        ],
+        "must_not_claim": [
+          "Do not claim that a closed issue is automatically solved.",
+          "Do not claim a root cause unless the evidence supports it.",
+          "Do not invent Streamlit versions, operating systems, Python versions, or reproduction steps.",
+          "Do not claim that a workaround is guaranteed to solve the user's problem unless the evidence supports that claim."
+        ]
+      }
+    ],
+    "final_expected": {
+      "answer_points": [
+        "Explain the reported behavior described in issue 17265.",
+        "Identify which claims are directly supported by the selected evidence.",
+        "Identify important information that remains unknown.",
+        "Incorporate the linked technical comment when it provides evidence relevant to the issue.",
+        "Use the official documentation as documentation evidence when it directly applies."
+      ],
+      "evidence_requirements": [
+        "Use at least one relevant issue record.",
+        "Do not use evidence that is not present in corpus.",
+        "Do not treat issue state as proof of resolution.",
+        "Do not guess missing technical details."
+      ],
+      "maintainer_summary_points": [
+        "Problem summary based on the original issue.",
+        "Evidence-backed findings.",
+        "Known versus unknown technical details.",
+        "Recommended next diagnostic information or action."
+      ]
+    }
+  },
+  {
+    "case_id": "test-008",
+    "family_id": "family-16111",
+    "split": "test",
+    "multi_turn": true,
+    "tags": [
+      "forms_callbacks",
+      "rerun_execution",
+      "widgets"
+    ],
+    "turns": [
+      {
+        "turn_id": 1,
+        "user": "I am investigating this Streamlit issue:\n\nTitle: st.table() / st.dataframe() / st.data_editor() causes fatal SIGSEGV (exit code 139) in PyArrow convert_column - process killed silently, no Python exception raised\n\nReported details:\n### Summary\n\nCalling st.table(), st.dataframe(), or st.data_editor() with a pandas DataFrame causes a fatal segmentation fault (SIGSEGV, exit code 139) that kills the entire Streamlit process. The crash originates inside PyArrow's convert_column C extension, called during Streamlit's internal DataFrame-to-Arrow serialization. No Python exception is raised. The process dies silently with no user-visible error. In containerized environments (Kubernetes/OpenShift) this triggers a pod restart.\n\n### Steps To Reproduce\n\nWe were unable to produce a minimal example that reliably crashes in all environments. The crash is non-deterministic and appears to depend on the process memory state at the time of rendering. It reproduces consistently in our containerized Linux environment (OpenShift, Python 3.11) but not on a local Windows developer machine.\n\nThe code that triggers it in the enviroments:\n\n```\nimport streamlit as st\nimport pandas as pd\n\n# This DataFrame is rendered on every page rerun\ndf = pd.DataFrame({\"Group\": st.session_state.get(\"usergroup\", [])})\nst.table(df)\n```\n\nor\n\n```\nimport streamlit as st\nimport pandas as pd\n\n# DataFrame built from backend JSON response\nrows = [{\"col_a\": \"value\", \"col_b\": None}, {\"col_a\": \"other\", \"col_b\": 3}]\ndf = pd.DataFrame(rows)  # object-dtype columns with None values\nst.dataframe(df)  #\n```\n\nSteps To Reproduce\n\n1. Deploy a Streamlit 1.55.0 app to a Linux container (e.g. OpenShift/Kubernetes)\n2. Navigate to a page that renders st.table() or st.dataframe() with a DataFrame that has object-dtype columns (e.g. built from pd.DataFrame(list_of_dicts) where some cells are None)\n3. Trigger a Streamlit script rerun via a button click that loads new data into session state before the render\n4. Observed: process dies with exit code 139, container restarts\n5. Repeat the exact same steps - it works on the second attempt\n\n### Expected Behavior\n\nThe DataFrame renders normally. If an internal serialization error occurs, Streamlit catches it and displays an error in the UI without killing the process.\n\n### Current Behavior\n\nThe Python process is killed with SIGSEGV (exit code 139). Nothing appears in logs unless faulthandler is explicitly enabled at startup. With import faulthandler; faulthandler.enable() added, the crash trace is:\n\n```\nFatal Python error: Segmentation fault\n\nCurrent thread (most recent call first):\n  File \".../pyarrow/pandas_compat.py\", line 638 in convert_column\n  File \".../pyarrow/pandas_compat.py\", line 656 in dataframe_to_arrays\n  File \".../streamlit/dataframe_util.py\", line 839 in convert_pandas_df_to_arrow_bytes\n  File \".../streamlit/dataframe_util.py\", line 919 in convert_anything_to_arrow_bytes\n  File \".../streamlit/elements/table.py\", line 78 in marshall_table\n  File \".../streamlit/elements/table.py\", line 234 in table\n```\n\nThe crash is non-deterministic: it only occurs on some reruns, always the first one after the pod/process starts, and does not occur on subsequent reruns with identical data and code. W\n[issue body truncated]\n\nBased only on the available evidence, explain what is reported, what is supported by the evidence, and what information is still missing.",
+        "gold_evidence_ids": [
+          "issue-16111",
+          "comment-5043890091",
+          "comment-5043964041",
+          "document-doc-695e6ce2fb1b-3483017622359616890",
+          "release-note-d121bacf4c2f3fd5bbb252009bf562c0ebb62045"
+        ],
+        "expected_behavior": [
+          "Identify the reported problem without changing its meaning.",
+          "Use the selected evidence to support factual claims.",
+          "Distinguish reported facts from documented explanations and hypotheses.",
+          "Do not treat the issue's closed/open state as proof that the problem is solved.",
+          "Do not invent missing technical details.",
+          "Use the linked technical comment when it provides additional reproduction, explanation, workaround, or implementation evidence."
+        ],
+        "must_ask": [
+          "What operating system are you using?"
+        ],
+        "must_not_claim": [
+          "Do not claim that a closed issue is automatically solved.",
+          "Do not claim a root cause unless the evidence supports it.",
+          "Do not invent Streamlit versions, operating systems, Python versions, or reproduction steps.",
+          "Do not claim that a workaround is guaranteed to solve the user's problem unless the evidence supports that claim."
+        ]
+      },
+      {
+        "turn_id": 2,
+        "user": "For the issue 'st.table() / st.dataframe() / st.data_editor() causes fatal SIGSEGV (exit code 139) in PyArrow convert_column - process killed silently, no Python exception raised', what additional technical information should I provide to distinguish between the possible explanations? Please separate information that is already known from information that is still unknown.",
+        "gold_evidence_ids": [
+          "issue-16111",
+          "comment-5043890091",
+          "comment-5043964041",
+          "document-doc-695e6ce2fb1b-3483017622359616890",
+          "release-note-d121bacf4c2f3fd5bbb252009bf562c0ebb62045"
+        ],
+        "expected_behavior": [
+          "Do not repeat checks or explanations already established in turn 1.",
+          "Maintain the same issue context.",
+          "Clearly distinguish known facts from missing information.",
+          "Ask only discriminating questions that could change the diagnosis or next action."
+        ],
+        "must_ask": [
+          "What operating system are you using?"
+        ],
+        "must_not_claim": [
+          "Do not claim that a closed issue is automatically solved.",
+          "Do not claim a root cause unless the evidence supports it.",
+          "Do not invent Streamlit versions, operating systems, Python versions, or reproduction steps.",
+          "Do not claim that a workaround is guaranteed to solve the user's problem unless the evidence supports that claim."
+        ]
+      }
+    ],
+    "final_expected": {
+      "answer_points": [
+        "Explain the reported behavior described in issue 16111.",
+        "Identify which claims are directly supported by the selected evidence.",
+        "Identify important information that remains unknown.",
+        "Incorporate the linked technical comment when it provides evidence relevant to the issue.",
+        "Use the official documentation as documentation evidence when it directly applies."
+      ],
+      "evidence_requirements": [
+        "Use at least one relevant issue record.",
+        "Do not use evidence that is not present in corpus.",
+        "Do not treat issue state as proof of resolution.",
+        "Do not guess missing technical details."
+      ],
+      "maintainer_summary_points": [
+        "Problem summary based on the original issue.",
+        "Evidence-backed findings.",
+        "Known versus unknown technical details.",
+        "Recommended next diagnostic information or action."
+      ]
+    }
+  },
+  {
+    "case_id": "test-009",
+    "family_id": "family-15892",
+    "split": "test",
+    "multi_turn": true,
+    "tags": [
+      "forms_callbacks",
+      "multipage_navigation",
+      "rerun_execution",
+      "widgets"
+    ],
+    "turns": [
+      {
+        "turn_id": 1,
+        "user": "I am investigating this Streamlit issue:\n\nTitle: st.tabs: widget rerun inside a tab renders all tabs' content stacked below the page (regression in 1.59.0)\n\nReported details:\n### Checklist\n\n- [x] I have searched the [existing issues](https://github.com/streamlit/streamlit/issues) for similar issues.\n- [x] I added a very descriptive title to this issue.\n- [x] I have provided sufficient information below to help reproduce this issue.\n\n### Summary\n\n**Regression in 1.59.0** (1.58.0 is fine): when a widget inside an `st.tabs` tab triggers a rerun, the tab bar disappears and the content of **all** tabs renders stacked vertically down the page, as if the tabs container no longer exists. A browser reload restores the tabs until the next widget interaction.\n\nPossibly related to the tabs DOM rework in 1.59.0: in 1.58.0 each tab renders a `[data-baseweb=\"tab-panel\"]` element (4 tabs → 4 panels, 1 visible); in 1.59.0 those elements are gone entirely.\n\n### Reproducible Code Example\n\n```python\nimport altair as alt\nimport numpy as np\nimport pandas as pd\nimport streamlit as st\n\nst.title(\"Tabs regression repro\")\n\nrng = np.random.RandomState(42)\ndf = pd.DataFrame({\"x\": range(20), \"y\": rng.rand(20)})\n\ndef tab_content(name: str) -> None:\n    st.metric(\"Metric\", name)\n    st.dataframe(df.head(3))\n    st.altair_chart(alt.Chart(df).mark_bar().encode(x=\"x:O\", y=\"y:Q\"), use_container_width=True)\n    st.altair_chart(alt.Chart(df).mark_line().encode(x=\"x:O\", y=\"y:Q\"), use_container_width=True)\n    st.subheader(\"Leaderboard\")\n    choice = st.selectbox(\"Date range\", [\"A\", \"B\", \"C\"], key=f\"{name}_sel\")\n    n = {\"A\": 5, \"B\": 10, \"C\": 15}[choice]\n    st.altair_chart(alt.Chart(df.head(n)).mark_bar().encode(x=\"y:Q\", y=\"x:O\"), use_container_width=True)\n\nnames = [\"All\", \"Indy\", \"Clarksville\", \"Fort Wayne\"]\nfor tab, name in zip(st.tabs(names), names):\n    with tab:\n        tab_content(name)\n```\n\n### Steps To Reproduce\n\n1. `pip install streamlit==1.59.0 altair` and run the app above.\n2. Stay on the first tab (\"All\").\n3. Change the \"Date range\" selectbox from \"A\" to \"B\".\n\n### Expected Behavior\n\nThe rerun re-renders the first tab's content in place; the other three tabs stay hidden behind the tab bar (this is the 1.58.0 behavior).\n\n### Current Behavior\n\nAfter the rerun the tab bar vanishes and the content of all four tabs is appended down the page in sequence. Measured headlessly (Playwright, counting `[data-testid=\"stVegaLiteChart\"]` elements with a non-null `offsetParent`): 3 charts visible before the selectbox change, all 12 visible after. The same script against 1.58.0 shows 3 before / 3 after.\n\n### Is this a regression?\n\n- [x] Yes, this used to work in a previous version (1.58.0).\n\n### Debug info\n\n- Streamlit version: 1.59.0 (broken), 1.58.0 (works)\n- Python version: 3.11\n- Operating System: reproduced on both macOS 15 and Raspberry Pi OS (Linux/arm64)\n- Browser: Chrome, and headless Chromium via Playwright\n\nBased only on the available evidence, explain what is reported, what is supported by the evidence, and what information is still missing.",
+        "gold_evidence_ids": [
+          "issue-15892",
+          "comment-4912597254",
+          "comment-4912784390",
+          "document-doc-695e6ce2fb1b-3483017622359616890",
+          "release-note-d121bacf4c2f3fd5bbb252009bf562c0ebb62045"
+        ],
+        "expected_behavior": [
+          "Identify the reported problem without changing its meaning.",
+          "Use the selected evidence to support factual claims.",
+          "Distinguish reported facts from documented explanations and hypotheses.",
+          "Do not treat the issue's closed/open state as proof that the problem is solved.",
+          "Do not invent missing technical details.",
+          "Use the linked technical comment when it provides additional reproduction, explanation, workaround, or implementation evidence."
+        ],
+        "must_ask": [],
+        "must_not_claim": [
+          "Do not claim that a closed issue is automatically solved.",
+          "Do not claim a root cause unless the evidence supports it.",
+          "Do not invent Streamlit versions, operating systems, Python versions, or reproduction steps.",
+          "Do not claim that a workaround is guaranteed to solve the user's problem unless the evidence supports that claim."
+        ]
+      },
+      {
+        "turn_id": 2,
+        "user": "For the issue 'st.tabs: widget rerun inside a tab renders all tabs' content stacked below the page (regression in 1.59.0)', what additional technical information should I provide to distinguish between the possible explanations? Please separate information that is already known from information that is still unknown.",
+        "gold_evidence_ids": [
+          "issue-15892",
+          "comment-4912597254",
+          "comment-4912784390",
+          "document-doc-695e6ce2fb1b-3483017622359616890",
+          "release-note-d121bacf4c2f3fd5bbb252009bf562c0ebb62045"
+        ],
+        "expected_behavior": [
+          "Do not repeat checks or explanations already established in turn 1.",
+          "Maintain the same issue context.",
+          "Clearly distinguish known facts from missing information.",
+          "Ask only discriminating questions that could change the diagnosis or next action."
+        ],
+        "must_ask": [
+          "Can you provide the smallest reproduction with an st.tabs widget and one interactive widget inside a tab that triggers the failure?",
+          "Does the regression reproduce consistently on 1.59.0 and disappear on 1.58.0 with the same browser and Python environment?"
+        ],
+        "must_not_claim": [
+          "Do not claim that a closed issue is automatically solved.",
+          "Do not claim a root cause unless the evidence supports it.",
+          "Do not invent Streamlit versions, operating systems, Python versions, or reproduction steps.",
+          "Do not claim that a workaround is guaranteed to solve the user's problem unless the evidence supports that claim."
+        ]
+      }
+    ],
+    "final_expected": {
+      "answer_points": [
+        "Explain the reported behavior described in issue 15892.",
+        "Identify which claims are directly supported by the selected evidence.",
+        "Identify important information that remains unknown.",
+        "Incorporate the linked technical comment when it provides evidence relevant to the issue.",
+        "Use the official documentation as documentation evidence when it directly applies."
+      ],
+      "evidence_requirements": [
+        "Use at least one relevant issue record.",
+        "Do not use evidence that is not present in corpus.",
+        "Do not treat issue state as proof of resolution.",
+        "Do not guess missing technical details."
+      ],
+      "maintainer_summary_points": [
+        "Problem summary based on the original issue.",
+        "Evidence-backed findings.",
+        "Known versus unknown technical details.",
+        "Recommended next diagnostic information or action."
+      ]
+    }
+  },
+  {
+    "case_id": "test-010",
+    "family_id": "family-10957",
+    "split": "test",
+    "multi_turn": true,
+    "tags": [
+      "caching",
+      "forms_callbacks"
+    ],
+    "turns": [
+      {
+        "turn_id": 1,
+        "user": "I am investigating this Streamlit issue:\n\nTitle: TypeError: unhashable type: 'list' when a Pandas DataFrame contains a list using st.cache\n\nReported details:\n### Checklist\n\n- [x] I have searched the [existing issues](https://github.com/streamlit/streamlit/issues) for similar issues.\n- [x] I added a very descriptive title to this issue.\n- [x] I have provided sufficient information below to help reproduce this issue.\n\n### Summary\n\nLooking at https://github.com/streamlit/streamlit/issues/111 it looks like hashing a DataFrame where any value was a list used to cause problems. However, it was fixed and it's working now.\n\nHowever, if you have two cached functions and one is using the result of the other, the problem comes back.\n\nIn 1.42 this doesn't raise an exception, but since 1.43 it does.\n\n### Reproducible Code Example\n\n```Python\nimport pandas as pd\nimport streamlit as st\n\n@st.cache_data\ndef get_df1():\n    df1 = pd.DataFrame({\"col\": [[1, 2]]}, index=[1])\n    print(df1)\n    return df1\n\n@st.cache_data\ndef get_df2(df1):\n    df2 = pd.DataFrame({\"col2\": [42]}, index=[1])\n    print(df2)\n\n    return pd.merge_asof(df1, df2, left_index=True, right_index=True)\n\ndf1 = get_df1()\ndf2 = get_df2(df1)\nprint(df2)\n```\n\n### Steps To Reproduce\n\n_No response_\n\n### Expected Behavior\n\n_No response_\n\n### Current Behavior\n\nTraceback:\n```\n2025-03-29 14:23:20.849 Pandas DataFrame hash failed. Falling back to pickling the object.\nTraceback (most recent call last):\n  File \"/home/user/projects/test/.venv/lib64/python3.13/site-packages/streamlit/runtime/caching/hashing.py\", line 453, in _to_bytes\n    values_hash_bytes = self.to_bytes(pd.util.hash_pandas_object(obj))\n                                      ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^\n  File \"/home/user/projects/test/.venv/lib64/python3.13/site-packages/pandas/core/util/hashing.py\", line 174, in hash_pandas_object\n    h = combine_hash_arrays(hashes, num_items)\n  File \"/home/user/projects/test/.venv/lib64/python3.13/site-packages/pandas/core/util/hashing.py\", line 63, in combine_hash_arrays\n    first = next(arrays)\n  File \"/home/user/projects/test/.venv/lib64/python3.13/site-packages/pandas/core/util/hashing.py\", line 173, in <genexpr>\n    hashes = (x for x in _hashes)\n                         ^^^^^^^\n  File \"/home/user/projects/test/.venv/lib64/python3.13/site-packages/pandas/core/util/hashing.py\", line 154, in <genexpr>\n    hash_array(series._values, encoding, hash_key, categorize)\n    ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/user/projects/test/.venv/lib64/python3.13/site-packages/pandas/core/util/hashing.py\", line 279, in hash_array\n    return _hash_ndarray(vals, encoding, hash_key, categorize)\n  File \"/home/user/projects/test/.venv/lib64/python3.13/site-packages/pandas/core/util/hashing.py\", line 318, in _hash_ndarray\n    codes, categories = factorize(vals, sort=False)\n                        ~~~~~~~~~^^^^^^^^^^^^^^^^^^\n  File \"/home/user/projects/test/.venv/lib64/python3.13/site-packages/pandas/core/algorithms.py\", line 795, in factorize\n    codes, uniques = factorize_array(\n                     ~~~~~~~~~~~~~~~^\n        values,\n        ^^^^^^^\n    \n[issue body truncated]\n\nBased only on the available evidence, explain what is reported, what is supported by the evidence, and what information is still missing.",
+        "gold_evidence_ids": [
+          "issue-10957",
+          "comment-2763366165",
+          "comment-2766734293",
+          "document-doc-695e6ce2fb1b-3483017622359616890",
+          "release-note-d121bacf4c2f3fd5bbb252009bf562c0ebb62045"
+        ],
+        "expected_behavior": [
+          "Identify the reported problem without changing its meaning.",
+          "Use the selected evidence to support factual claims.",
+          "Distinguish reported facts from documented explanations and hypotheses.",
+          "Do not treat the issue's closed/open state as proof that the problem is solved.",
+          "Do not invent missing technical details.",
+          "Use the linked technical comment when it provides additional reproduction, explanation, workaround, or implementation evidence."
+        ],
+        "must_ask": [],
+        "must_not_claim": [
+          "Do not claim that a closed issue is automatically solved.",
+          "Do not claim a root cause unless the evidence supports it.",
+          "Do not invent Streamlit versions, operating systems, Python versions, or reproduction steps.",
+          "Do not claim that a workaround is guaranteed to solve the user's problem unless the evidence supports that claim."
+        ]
+      },
+      {
+        "turn_id": 2,
+        "user": "For the issue 'TypeError: unhashable type: 'list' when a Pandas DataFrame contains a list using st.cache', what additional technical information should I provide to distinguish between the possible explanations? Please separate information that is already known from information that is still unknown.",
+        "gold_evidence_ids": [
+          "issue-10957",
+          "comment-2763366165",
+          "comment-2766734293",
+          "document-doc-695e6ce2fb1b-3483017622359616890",
+          "release-note-d121bacf4c2f3fd5bbb252009bf562c0ebb62045"
+        ],
+        "expected_behavior": [
+          "Do not repeat checks or explanations already established in turn 1.",
+          "Maintain the same issue context.",
+          "Clearly distinguish known facts from missing information.",
+          "Ask only discriminating questions that could change the diagnosis or next action."
+        ],
+        "must_ask": [
+          "Can you provide the exact Streamlit, Python, Pandas, and relevant dependency versions and confirm whether the failure requires the output of one cached function to be passed into another cached function?",
+          "Does the same DataFrame hash successfully when the nested list is removed or when the intermediate cached result is not passed to the second cached function?"
+        ],
+        "must_not_claim": [
+          "Do not claim that a closed issue is automatically solved.",
+          "Do not claim a root cause unless the evidence supports it.",
+          "Do not invent Streamlit versions, operating systems, Python versions, or reproduction steps.",
+          "Do not claim that a workaround is guaranteed to solve the user's problem unless the evidence supports that claim."
+        ]
+      }
+    ],
+    "final_expected": {
+      "answer_points": [
+        "Explain the reported behavior described in issue 10957.",
+        "Identify which claims are directly supported by the selected evidence.",
+        "Identify important information that remains unknown.",
+        "Incorporate the linked technical comment when it provides evidence relevant to the issue.",
+        "Use the official documentation as documentation evidence when it directly applies."
+      ],
+      "evidence_requirements": [
+        "Use at least one relevant issue record.",
+        "Do not use evidence that is not present in corpus.",
+        "Do not treat issue state as proof of resolution.",
+        "Do not guess missing technical details."
+      ],
+      "maintainer_summary_points": [
+        "Problem summary based on the original issue.",
+        "Evidence-backed findings.",
+        "Known versus unknown technical details.",
+        "Recommended next diagnostic information or action."
+      ]
+    }
+  },
+  {
+    "case_id": "test-011",
+    "family_id": "family-8323",
+    "split": "test",
+    "multi_turn": true,
+    "tags": [
+      "forms_callbacks",
+      "rerun_execution",
+      "session_state"
+    ],
+    "turns": [
+      {
+        "turn_id": 1,
+        "user": "I am investigating this Streamlit issue:\n\nTitle: Impossible to disable st.chat_input while writing the model's response\n\nReported details:\n### Checklist\n\n- [X] I have searched the [existing issues](https://github.com/streamlit/streamlit/issues) for similar issues.\n- [X] I added a very descriptive title to this issue.\n- [X] I have provided sufficient information below to help reproduce this issue.\n\n### Summary\n\nWhen a user enters a prompt in st.chat_input, it is not possible to disable the input while an LLM is generating the response to that input.\n\nThis leads to the possibility of the user 'interrupting' the model output and messing up the conversation structure.\n\nI've tried binding the `disable` argument to a variable inside the `st.session_state`, but it does not work.\n\nThis happens in the official ['chat-GPT like' implementation on streamlit forums](https://docs.streamlit.io/knowledge-base/tutorials/build-conversational-apps#write-the-app).\n\n### Reproducible Code Example\n\n```Python\nimport streamlit as st\nimport time\n\nst.title(\"ChatGPT-like clone\")\n\ndef stream_example_response():\n    response = \"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\"\n\n    # yield 5 characters every 0.1 seconds\n    for i in range(0, len(response), 5):\n        time.sleep(0.1)\n        yield response[i:i+5]\n\nif \"messages\" not in st.session_state:\n    st.session_state.messages = []\n\nif \"disable_chat_input\" not in st.session_state:\n    st.session_state.disable_chat_input = False\n\nfor message in st.session_state.messages:\n    with st.chat_message(message[\"role\"]):\n        st.markdown(message[\"content\"])\n\nif prompt := st.chat_input(\"What is up?\", disabled=st.session_state.disable_chat_input):\n\n    st.session_state['disable_chat_input'] = True\n\n    st.session_state.messages.append({\"role\": \"user\", \"content\": prompt})\n    with st.chat_message(\"user\"):\n        st.markdown(prompt)\n\n    with st.chat_message(\"assistant\"):\n        response = st.write_stream(stream_example_response())\n    st.session_state.messages.append({\"role\": \"assistant\", \"content\": response})\n\n    st.session_state['disable_chat_input'] = False\n```\n\n### Steps To Reproduce\n\n1. Run the minimal example provided (`streamlit run minimal.py`)\n2. Send a prompt\n3. While the response is streaming, send another prompt\n4. The response gets interrupted, doesn't get registered on the history and the messages become messed up.\n\n### Expected Behavior\n\nWith the `disabled=st.session_state.disable_chat_input` I was expecting that the user input would be disabled until the response stops streaming.\nPerhaps would be useful to have an argument in `st.chat_input` or something so that it automatically disables until all the code inside the `if prompt:= ...` statement ends, whatever works best.\n\n### Current Behavior\n\n_No response_\n\n### Is this a regression?\n\n- [ ] Yes, this used to work in a previous version.\n\n### Debug info\n\n- Streamlit version: 1.31.1\n- Python version: 3.10.13\n- Operating System: Windows\n- Browser: Firefox\n\n### Additional Information\n\nVideo of the current (wrong) behavior:\n\n![st\n[issue body truncated]\n\nBased only on the available evidence, explain what is reported, what is supported by the evidence, and what information is still missing.",
+        "gold_evidence_ids": [
+          "issue-8323",
+          "comment-2228148560",
+          "comment-2247701857",
+          "document-doc-695e6ce2fb1b-3483017622359616890",
+          "release-note-d121bacf4c2f3fd5bbb252009bf562c0ebb62045"
+        ],
+        "expected_behavior": [
+          "Identify the reported problem without changing its meaning.",
+          "Use the selected evidence to support factual claims.",
+          "Distinguish reported facts from documented explanations and hypotheses.",
+          "Do not treat the issue's closed/open state as proof that the problem is solved.",
+          "Do not invent missing technical details.",
+          "Use the linked technical comment when it provides additional reproduction, explanation, workaround, or implementation evidence."
+        ],
+        "must_ask": [],
+        "must_not_claim": [
+          "Do not claim that a closed issue is automatically solved.",
+          "Do not claim a root cause unless the evidence supports it.",
+          "Do not invent Streamlit versions, operating systems, Python versions, or reproduction steps.",
+          "Do not claim that a workaround is guaranteed to solve the user's problem unless the evidence supports that claim."
+        ]
+      },
+      {
+        "turn_id": 2,
+        "user": "For the issue 'Impossible to disable st.chat_input while writing the model's response', what additional technical information should I provide to distinguish between the possible explanations? Please separate information that is already known from information that is still unknown.",
+        "gold_evidence_ids": [
+          "issue-8323",
+          "comment-2228148560",
+          "comment-2247701857",
+          "document-doc-695e6ce2fb1b-3483017622359616890",
+          "release-note-d121bacf4c2f3fd5bbb252009bf562c0ebb62045"
+        ],
+        "expected_behavior": [
+          "Do not repeat checks or explanations already established in turn 1.",
+          "Maintain the same issue context.",
+          "Clearly distinguish known facts from missing information.",
+          "Ask only discriminating questions that could change the diagnosis or next action."
+        ],
+        "must_ask": [
+          "Can you provide the minimal chat_input code and the exact sequence of state updates/callbacks used while the model response is generated?",
+          "Does moving the update into an on_submit callback or using st.rerun change the behavior, and which Streamlit version is being tested?"
+        ],
+        "must_not_claim": [
+          "Do not claim that a closed issue is automatically solved.",
+          "Do not claim a root cause unless the evidence supports it.",
+          "Do not invent Streamlit versions, operating systems, Python versions, or reproduction steps.",
+          "Do not claim that a workaround is guaranteed to solve the user's problem unless the evidence supports that claim."
+        ]
+      }
+    ],
+    "final_expected": {
+      "answer_points": [
+        "Explain the reported behavior described in issue 8323.",
+        "Identify which claims are directly supported by the selected evidence.",
+        "Identify important information that remains unknown.",
+        "Incorporate the linked technical comment when it provides evidence relevant to the issue.",
+        "Use the official documentation as documentation evidence when it directly applies."
+      ],
+      "evidence_requirements": [
+        "Use at least one relevant issue record.",
+        "Do not use evidence that is not present in corpus.",
+        "Do not treat issue state as proof of resolution.",
+        "Do not guess missing technical details."
+      ],
+      "maintainer_summary_points": [
+        "Problem summary based on the original issue.",
+        "Evidence-backed findings.",
+        "Known versus unknown technical details.",
+        "Recommended next diagnostic information or action."
+      ]
+    }
+  },
+  {
+    "case_id": "test-012",
+    "family_id": "family-11971",
+    "split": "test",
+    "multi_turn": true,
+    "tags": [
+      "forms_callbacks",
+      "rerun_execution",
+      "widgets"
+    ],
+    "turns": [
+      {
+        "turn_id": 1,
+        "user": "I am investigating this Streamlit issue:\n\nTitle: SelectboxColumn in data editor not working when fragment with run_every is active\n\nReported details:\n### Checklist\n\n- [x] I have searched the [existing issues](https://github.com/streamlit/streamlit/issues) for similar issues.\n- [x] I added a very descriptive title to this issue.\n- [x] I have provided sufficient information below to help reproduce this issue.\n\n### Summary\n\nWhen a data editor with a selectbox column is used in conjunction with a fragment with active run_every (not inside the fragment), the options further down in the select box cannot be selected. While scrolling, the scroll position automatically jumps to the top with every fragment rerun, making options further down unreachable.\n\n### Reproducible Code Example\n\n```Python\nimport string\nimport pandas as pd\nimport streamlit as st\n\nst.session_state.counter = 0\nst.title(\"Minimal Working Example\")\n\n@st.fragment(run_every=0.5)\ndef fragment():\n    st.session_state.counter += 1\n    st.write(f\"Counter: {st.session_state.counter}\")\n\nif st.toggle(\"Run Fragment\", value=True):\n    fragment()\n\ndata = pd.DataFrame({'column_1': ['b']})\nst.data_editor(\n    data,\n    hide_index=True,\n    column_config={\n        'column_1': st.column_config.SelectboxColumn(\"Select\", options=list(string.ascii_lowercase))\n    }\n)\n```\n\n### Steps To Reproduce\n\n1. Double click on the cell containing *b* in *column_1*\n2. Try to scroll down in the opened select window\n3. Notice that the scroll position resets every 0.5 seconds (each fragment rerun)\n4. Disable the toggle *Run Fragment*\n5. Open the selection window once more and notice that scrolling works\n\n### Expected Behavior\n\nThe scroll position remains at the current position unless I scroll further up or down.\n\n### Current Behavior\n\nThe scroll position automatically scrolls back to the top with every fragment run.\n\n### Is this a regression?\n\n- [ ] Yes, this used to work in a previous version.\n\n### Debug info\n\n- Streamlit version: 1.47.0\n- Python version: 3.13.4\n- Operating System: MacOS Sequoia 15.5\n- Browser: Safari, Firefox, Chrome\n\n### Additional Information\n\n_No response_\n\nBased only on the available evidence, explain what is reported, what is supported by the evidence, and what information is still missing.",
+        "gold_evidence_ids": [
+          "issue-11971",
+          "comment-3096558548",
+          "comment-3101665241",
+          "document-doc-695e6ce2fb1b-3483017622359616890",
+          "release-note-d121bacf4c2f3fd5bbb252009bf562c0ebb62045"
+        ],
+        "expected_behavior": [
+          "Identify the reported problem without changing its meaning.",
+          "Use the selected evidence to support factual claims.",
+          "Distinguish reported facts from documented explanations and hypotheses.",
+          "Do not treat the issue's closed/open state as proof that the problem is solved.",
+          "Do not invent missing technical details.",
+          "Use the linked technical comment when it provides additional reproduction, explanation, workaround, or implementation evidence."
+        ],
+        "must_ask": [],
+        "must_not_claim": [
+          "Do not claim that a closed issue is automatically solved.",
+          "Do not claim a root cause unless the evidence supports it.",
+          "Do not invent Streamlit versions, operating systems, Python versions, or reproduction steps.",
+          "Do not claim that a workaround is guaranteed to solve the user's problem unless the evidence supports that claim."
+        ]
+      },
+      {
+        "turn_id": 2,
+        "user": "For the issue 'SelectboxColumn in data editor not working when fragment with run_every is active', what additional technical information should I provide to distinguish between the possible explanations? Please separate information that is already known from information that is still unknown.",
+        "gold_evidence_ids": [
+          "issue-11971",
+          "comment-3096558548",
+          "comment-3101665241",
+          "document-doc-695e6ce2fb1b-3483017622359616890",
+          "release-note-d121bacf4c2f3fd5bbb252009bf562c0ebb62045"
+        ],
+        "expected_behavior": [
+          "Do not repeat checks or explanations already established in turn 1.",
+          "Maintain the same issue context.",
+          "Clearly distinguish known facts from missing information.",
+          "Ask only discriminating questions that could change the diagnosis or next action."
+        ],
+        "must_ask": [
+          "Can you provide the minimal data editor configuration and fragment code, including the run_every interval and the SelectboxColumn options that cannot be selected?",
+          "Does the problem disappear when the fragment's run_every is disabled, and does it reproduce without st.session_state as reported?"
+        ],
+        "must_not_claim": [
+          "Do not claim that a closed issue is automatically solved.",
+          "Do not claim a root cause unless the evidence supports it.",
+          "Do not invent Streamlit versions, operating systems, Python versions, or reproduction steps.",
+          "Do not claim that a workaround is guaranteed to solve the user's problem unless the evidence supports that claim."
+        ]
+      }
+    ],
+    "final_expected": {
+      "answer_points": [
+        "Explain the reported behavior described in issue 11971.",
+        "Identify which claims are directly supported by the selected evidence.",
+        "Identify important information that remains unknown.",
+        "Incorporate the linked technical comment when it provides evidence relevant to the issue.",
+        "Use the official documentation as documentation evidence when it directly applies."
+      ],
+      "evidence_requirements": [
+        "Use at least one relevant issue record.",
+        "Do not use evidence that is not present in corpus.",
+        "Do not treat issue state as proof of resolution.",
+        "Do not guess missing technical details."
+      ],
+      "maintainer_summary_points": [
+        "Problem summary based on the original issue.",
+        "Evidence-backed findings.",
+        "Known versus unknown technical details.",
+        "Recommended next diagnostic information or action."
+      ]
+    }
+  },
+  {
+    "case_id": "test-013",
+    "family_id": "family-9128",
+    "split": "test",
+    "multi_turn": true,
+    "tags": [
+      "forms_callbacks",
+      "rerun_execution",
+      "session_state",
+      "widgets"
+    ],
+    "turns": [
+      {
+        "turn_id": 1,
+        "user": "I am investigating this Streamlit issue:\n\nTitle: AppTest: removing input fields on rerun may lead to \"We'll never get here\" condition in session_state\n\nReported details:\n### Checklist\n\n- [X] I have searched the [existing issues](https://github.com/streamlit/streamlit/issues) for similar issues.\n- [X] I added a very descriptive title to this issue.\n- [X] I have provided sufficient information below to help reproduce this issue.\n\n### Summary\n\nIn writing tests with AppTest on an existing application (which appears to work correctly in the browser), an unexpected error occurred that appears to be internal to streamlit/AppTest and seems to be labelled as an \"impossible\" condition in comments.\nThe example code demonstrates this with a single file. One would need to extract the string into a separate file to try the application through a browser.\n\n### Reproducible Code Example\n\n```Python\nfrom streamlit.testing.v1 import AppTest\n\ndef test_simple():\n\n    at = AppTest.from_string ( \"\"\"\n\nimport streamlit as st\n\nfor k, v in [ ('started', False) ]:\n    if k not in st.session_state:\n        st.session_state[k] = v\n\nif not st.session_state.started:\n\n    with st.status('Starting', expanded = True) as s1:\n\n        q1 = s1.text_input('Start', key = 'question_1')\n\n        if len(q1) > 5:\n\n            st.write('ok: started')\n\n            st.session_state.started = True\n            st.rerun()\n\nelse:\n\n    st.status('Started', state = 'complete', expanded = False )\n\n    with st.status('Question 2', expanded = True) as s2:\n\n        q2 = s2.text_input('Question 2', key = 'question_2')\n\n        if len(q2) > 5:\n            st.write('ok: stopping')\n            st.stop()\n\n        \"\"\" )\n\n    at.run()\n\n    assert at.session_state.started == False\n\n    s1 = at.get('status')[0]\n\n    t1 = s1.get('text_input')[0]\n\n    assert t1.key == 'question_1'\n\n    t1.set_value('aaaaaa')\n    t1.run()\n\n    assert at.session_state.started == True\n\n    s2 = at.get('status')[1]\n\n    t2 = s2.get('text_input')[0]\n\n    assert t2.key == 'question_2'\n\n    t2.set_value('bbbbbb')\n    t2.run()\n```\n\n### Steps To Reproduce\n\nThe attached file was run with pytest:\n\npytest test_simple.py\n\n### Expected Behavior\n\nThe test runs without the error.\n\n### Current Behavior\n\nThis is the pytest output (minimally edited to remove private information):\n\n============================= test session starts ==============================\nplatform linux -- Python 3.10.12, pytest-8.3.1, pluggy-1.5.0\nrootdir: development/streamlit/v1\ncollected 1 item\n\ntest_simple.py F                                                         [100%]\n\n=================================== FAILURES ===================================\n_________________________________ test_simple __________________________________\n\nself = SessionState(_old_state={'$$STREAMLIT_INTERNAL_KEY_TESTING': {}, '$$STREAMLIT_INTERNAL_KEY_SCRIPT_RUN_WITHOUT_ERRORS':..., 'question_2': '$$WIDGET_ID-e1468387386a11605918df2a2b073e6d-question_2'}, query_params=QueryParams(_query_params={}))\nkey = 'question_1'\n\n    def __getitem__(self, key: str) -> Any:\n        wid_key_map = self._reverse_key_wid_map\n        widget_id = self._get_widget_id(key)\n\n       \n[issue body truncated]\n\nBased only on the available evidence, explain what is reported, what is supported by the evidence, and what information is still missing.",
+        "gold_evidence_ids": [
+          "issue-9128",
+          "comment-2256721369",
+          "comment-3554430698",
+          "document-doc-695e6ce2fb1b-2434462184711617964",
+          "release-note-d121bacf4c2f3fd5bbb252009bf562c0ebb62045"
+        ],
+        "expected_behavior": [
+          "Identify the reported problem without changing its meaning.",
+          "Use the selected evidence to support factual claims.",
+          "Distinguish reported facts from documented explanations and hypotheses.",
+          "Do not treat the issue's closed/open state as proof that the problem is solved.",
+          "Do not invent missing technical details.",
+          "Use the linked technical comment when it provides additional reproduction, explanation, workaround, or implementation evidence."
+        ],
+        "must_ask": [],
+        "must_not_claim": [
+          "Do not claim that a closed issue is automatically solved.",
+          "Do not claim a root cause unless the evidence supports it.",
+          "Do not invent Streamlit versions, operating systems, Python versions, or reproduction steps.",
+          "Do not claim that a workaround is guaranteed to solve the user's problem unless the evidence supports that claim."
+        ]
+      },
+      {
+        "turn_id": 2,
+        "user": "For the issue 'AppTest: removing input fields on rerun may lead to \"We'll never get here\" condition in session_state', what additional technical information should I provide to distinguish between the possible explanations? Please separate information that is already known from information that is still unknown.",
+        "gold_evidence_ids": [
+          "issue-9128",
+          "comment-2256721369",
+          "comment-3554430698",
+          "document-doc-695e6ce2fb1b-2434462184711617964",
+          "release-note-d121bacf4c2f3fd5bbb252009bf562c0ebb62045"
+        ],
+        "expected_behavior": [
+          "Do not repeat checks or explanations already established in turn 1.",
+          "Maintain the same issue context.",
+          "Clearly distinguish known facts from missing information.",
+          "Ask only discriminating questions that could change the diagnosis or next action."
+        ],
+        "must_ask": [
+          "Can you provide the minimal AppTest reproduction and the exact widget-removal sequence that causes the 'We'll never get here' condition?",
+          "Does the error occur only when input widgets are removed between reruns, and which Streamlit/AppTest version or commit is being tested?"
+        ],
+        "must_not_claim": [
+          "Do not claim that a closed issue is automatically solved.",
+          "Do not claim a root cause unless the evidence supports it.",
+          "Do not invent Streamlit versions, operating systems, Python versions, or reproduction steps.",
+          "Do not claim that a workaround is guaranteed to solve the user's problem unless the evidence supports that claim."
+        ]
+      }
+    ],
+    "final_expected": {
+      "answer_points": [
+        "Explain the reported behavior described in issue 9128.",
+        "Identify which claims are directly supported by the selected evidence.",
+        "Identify important information that remains unknown.",
+        "Incorporate the linked technical comment when it provides evidence relevant to the issue.",
+        "Use the official documentation as documentation evidence when it directly applies."
+      ],
+      "evidence_requirements": [
+        "Use at least one relevant issue record.",
+        "Do not use evidence that is not present in corpus.",
+        "Do not treat issue state as proof of resolution.",
+        "Do not guess missing technical details."
+      ],
+      "maintainer_summary_points": [
+        "Problem summary based on the original issue.",
+        "Evidence-backed findings.",
+        "Known versus unknown technical details.",
+        "Recommended next diagnostic information or action."
+      ]
+    }
+  },
+  {
+    "case_id": "test-014",
+    "family_id": "family-17249",
+    "split": "test",
+    "multi_turn": true,
+    "tags": [
+      "forms_callbacks",
+      "multipage_navigation",
+      "rerun_execution",
+      "session_state",
+      "widgets"
+    ],
+    "turns": [
+      {
+        "turn_id": 1,
+        "user": "I am investigating this Streamlit issue:\n\nTitle: AppTest drops page-persistent widget state on a same-page rerun\n\nReported details:\n### Checklist\n\n- [x] I have searched the [existing issues](https://github.com/streamlit/streamlit/issues) for similar issues.\n- [x] I added a very descriptive title to this issue.\n- [x] I have provided sufficient information below to help reproduce this issue.\n\n### Summary\n\nAppTest loses a conditional text input's value when it is hidden and shown again with `persist_state=\"page\"`, although the test never switches pages. The same sequence retains the value in a browser, and `persist_state=\"session\"` works in AppTest.\n\n### Reproducible Code Example\n\n```python\nfrom streamlit.testing.v1 import AppTest\n\nat = AppTest.from_string(\"\"\"\nimport streamlit as st\n\nif st.toggle(\"Show\", key=\"show\"):\n    st.text_input(\"SKU\", key=\"sku\", persist_state=\"page\")\n\"\"\").run()\n\nat.toggle[0].set_value(True).run()\nat.text_input[0].set_value(\"SKU-42\").run()\nat.toggle[0].set_value(False).run()\nprint(\"While hidden:\", repr(at.session_state[\"sku\"]))\nassert at.session_state[\"sku\"] == \"SKU-42\"\n\nat.toggle[0].set_value(True).run()\nprint(\"After showing again:\", repr(at.text_input[0].value))\nassert not at.exception\nassert at.text_input[0].value == \"SKU-42\"  # Fails: actual value is \"\".\n```\n\n### Steps To Reproduce\n\n1. Install Streamlit 1.65.0 in a normal Python environment: `pip install streamlit==1.65.0`.\n2. Save the example as `repro_page_persistence.py` and run `python repro_page_persistence.py`. Pytest is not required.\n3. Observe that the hidden value is still `SKU-42`, but the final input value is empty and the final assertion fails.\n4. Change `persist_state=\"page\"` to `persist_state=\"session\"` and run again. The value remains `SKU-42` and the assertion passes.\n5. For a browser comparison, save only the app string as `app.py`, run `streamlit run app.py`, enable Show, enter `SKU-42` and press Enter, then disable and re-enable Show. The browser retains the input value.\n\n### Expected Behavior\n\nPage-scoped persistence should keep the value through the hide/show sequence in AppTest because the test remains on the same page. It should return `SKU-42` after the input is shown again, matching the browser.\n\n### Current Behavior\n\nReproduced on both Streamlit 1.64.0 and 1.65.0:\n\n```text\nWhile hidden: 'SKU-42'\nAfter showing again: ''\nAssertionError\n```\n\nThere are no application exceptions in `at.exception`; the failure is the final test assertion. A browser comparison on both versions retains `SKU-42`. AppTest's `persist_state=\"session\"` control also retains it; the default `persist_state=None` control resets it as expected.\n\n### Is this a regression?\n\n- [ ] Yes, this used to work in a previous version.\n\nA previously working version has not been established. The versions tested are 1.64.0 and 1.65.0.\n\n### Debug info\n\n- Streamlit version: 1.65.0; also reproduced on 1.64.0.\n- Python version: 3.14.8.\n- Operating System: macOS 27.0.1, arm64.\n- Browser: Not required for the AppTest reproduction. Browser comparisons used the Codex in-app browser on macOS.\n- Package integrity: The tested Streamlit \n[issue body truncated]\n\nBased only on the available evidence, explain what is reported, what is supported by the evidence, and what information is still missing.",
+        "gold_evidence_ids": [
+          "issue-17249",
+          "comment-5970220896",
+          "document-doc-695e6ce2fb1b-3483017622359616890",
+          "release-note-d121bacf4c2f3fd5bbb252009bf562c0ebb62045"
+        ],
+        "expected_behavior": [
+          "Identify the reported problem without changing its meaning.",
+          "Use the selected evidence to support factual claims.",
+          "Distinguish reported facts from documented explanations and hypotheses.",
+          "Do not treat the issue's closed/open state as proof that the problem is solved.",
+          "Do not invent missing technical details.",
+          "Use the linked technical comment when it provides additional reproduction, explanation, workaround, or implementation evidence."
+        ],
+        "must_ask": [
+          "What operating system are you using?"
+        ],
+        "must_not_claim": [
+          "Do not claim that a closed issue is automatically solved.",
+          "Do not claim a root cause unless the evidence supports it.",
+          "Do not invent Streamlit versions, operating systems, Python versions, or reproduction steps.",
+          "Do not claim that a workaround is guaranteed to solve the user's problem unless the evidence supports that claim."
+        ]
+      },
+      {
+        "turn_id": 2,
+        "user": "For the issue 'AppTest drops page-persistent widget state on a same-page rerun', what additional technical information should I provide to distinguish between the possible explanations? Please separate information that is already known from information that is still unknown.",
+        "gold_evidence_ids": [
+          "issue-17249",
+          "comment-5970220896",
+          "document-doc-695e6ce2fb1b-3483017622359616890",
+          "release-note-d121bacf4c2f3fd5bbb252009bf562c0ebb62045"
+        ],
+        "expected_behavior": [
+          "Do not repeat checks or explanations already established in turn 1.",
+          "Maintain the same issue context.",
+          "Clearly distinguish known facts from missing information.",
+          "Ask only discriminating questions that could change the diagnosis or next action."
+        ],
+        "must_ask": [
+          "What operating system are you using?"
+        ],
+        "must_not_claim": [
+          "Do not claim that a closed issue is automatically solved.",
+          "Do not claim a root cause unless the evidence supports it.",
+          "Do not invent Streamlit versions, operating systems, Python versions, or reproduction steps.",
+          "Do not claim that a workaround is guaranteed to solve the user's problem unless the evidence supports that claim."
+        ]
+      }
+    ],
+    "final_expected": {
+      "answer_points": [
+        "Explain the reported behavior described in issue 17249.",
+        "Identify which claims are directly supported by the selected evidence.",
+        "Identify important information that remains unknown.",
+        "Incorporate the linked technical comment when it provides evidence relevant to the issue.",
+        "Use the official documentation as documentation evidence when it directly applies."
+      ],
+      "evidence_requirements": [
+        "Use at least one relevant issue record.",
+        "Do not use evidence that is not present in corpus.",
+        "Do not treat issue state as proof of resolution.",
+        "Do not guess missing technical details."
+      ],
+      "maintainer_summary_points": [
+        "Problem summary based on the original issue.",
+        "Evidence-backed findings.",
+        "Known versus unknown technical details.",
+        "Recommended next diagnostic information or action."
+      ]
+    }
+  },
+  {
+    "case_id": "test-015",
+    "family_id": "family-16732",
+    "split": "test",
+    "multi_turn": true,
+    "tags": [
+      "forms_callbacks",
+      "multipage_navigation",
+      "rerun_execution",
+      "session_state",
+      "widgets"
+    ],
+    "turns": [
+      {
+        "turn_id": 1,
+        "user": "I am investigating this Streamlit issue:\n\nTitle: `setTriggerValue` called during mount is dropped ~1 in 4 times when the component remounts, despite an explicit `key`\n\nReported details:\n### Summary\n\nWhen a Components V2 component calls `setTriggerValue` during mount (inside the default function, rather than from a user event handler), values are silently lost if the component remounts because its `data` changed — even when an explicit `key` is passed, which keeps the element id stable.\n\nMeasured roughly a quarter loss: **5 of 21 values sent were never received by Python at all.** They are not late — a scan of the entire session log shows they never arrive in any subsequent run.\n\nThis is split out of #14710, where it surfaced during investigation. It is distinct from the two by-design mechanisms discussed there (`data` participating in element identity for unkeyed components, and trigger values resetting after each run).\n\n**Update — measured root cause.** A frontend race in `WidgetStateManager.removeInactive`: it destroys the synthetic trigger-aggregator widget state while that state is still awaiting its batched flush, so the app reruns with no trigger at all. Not a backend discard. Measured on a production build with the repro below: 10/85 values lost unpatched vs 0/85 patched, and with instrumentation, 14/14 losses correlated exactly with the destroying call. Mechanism and open question under Additional Information.\n\n### Reproducible Code Example\n\n```python\nimport streamlit as st\n\ncomp = st.components.v2.component(\n    \"repro.mount_trigger\",\n    js=\"\"\"\n    export default function (component) {\n        const v = \"val\" + component.data.nonce;\n        console.log(\"SEND \" + v);\n        component.setTriggerValue(\"v\", v);\n    }\n    \"\"\",\n)\n\nif \"clicks\" not in st.session_state:\n    st.session_state.clicks = 0\nif st.button(\"bump\"):\n    st.session_state.clicks += 1\n\nnonce = f\"c{st.session_state.clicks}\"\nresult = comp(data={\"nonce\": nonce}, key=\"stable_key\")\n\nreceived = result.get(\"v\")\nst.write(f\"data nonce {nonce} -> received {received!r}\")\nprint(f\"nonce={nonce} received={received!r}\", flush=True)\n```\n\n### Steps To Reproduce\n\n1. Run the app and open the browser console.\n2. Click **bump** ~20 times, letting the app settle between clicks. Each click changes `data`, so the component remounts and sends one value.\n3. Compare the `SEND val…` lines in the console against the `received=…` lines in the terminal.\n4. Roughly one in four sent values never appears on the Python side.\n\n### Expected Behavior\n\nEvery value the mounted component sends is readable on the following script run. The explicit `key` makes the element id stable, so a changing `data` payload should not affect delivery.\n\n### Current Behavior\n\nAbout 25% of values are never delivered. Verified as lost rather than late by scanning the full backend log after all clicks — 0 arrived in a later run.\n\nThe element id was logged each run and confirmed identical throughout (`$$ID-b4c118c7288cf7d656c205e58a384db6-stable_key`), so this is not the identity churn that affects unkeyed components.\n\nThree controls on the same harness came out clean. They do not isolate the bug to trigger-on-mount \n[issue body truncated]\n\nBased only on the available evidence, explain what is reported, what is supported by the evidence, and what information is still missing.",
+        "gold_evidence_ids": [
+          "issue-16732",
+          "comment-5474213643",
+          "comment-5475655173",
+          "document-doc-695e6ce2fb1b-3483017622359616890",
+          "release-note-d121bacf4c2f3fd5bbb252009bf562c0ebb62045"
+        ],
+        "expected_behavior": [
+          "Identify the reported problem without changing its meaning.",
+          "Use the selected evidence to support factual claims.",
+          "Distinguish reported facts from documented explanations and hypotheses.",
+          "Do not treat the issue's closed/open state as proof that the problem is solved.",
+          "Do not invent missing technical details.",
+          "Use the linked technical comment when it provides additional reproduction, explanation, workaround, or implementation evidence."
+        ],
+        "must_ask": [
+          "What operating system are you using?",
+          "Can you provide the smallest reproducible example?"
+        ],
+        "must_not_claim": [
+          "Do not claim that a closed issue is automatically solved.",
+          "Do not claim a root cause unless the evidence supports it.",
+          "Do not invent Streamlit versions, operating systems, Python versions, or reproduction steps.",
+          "Do not claim that a workaround is guaranteed to solve the user's problem unless the evidence supports that claim."
+        ]
+      },
+      {
+        "turn_id": 2,
+        "user": "For the issue '`setTriggerValue` called during mount is dropped ~1 in 4 times when the component remounts, despite an explicit `key`', what additional technical information should I provide to distinguish between the possible explanations? Please separate information that is already known from information that is still unknown.",
+        "gold_evidence_ids": [
+          "issue-16732",
+          "comment-5474213643",
+          "comment-5475655173",
+          "document-doc-695e6ce2fb1b-3483017622359616890",
+          "release-note-d121bacf4c2f3fd5bbb252009bf562c0ebb62045"
+        ],
+        "expected_behavior": [
+          "Do not repeat checks or explanations already established in turn 1.",
+          "Maintain the same issue context.",
+          "Clearly distinguish known facts from missing information.",
+          "Ask only discriminating questions that could change the diagnosis or next action."
+        ],
+        "must_ask": [
+          "What operating system are you using?",
+          "Can you provide the smallest reproducible example?"
+        ],
+        "must_not_claim": [
+          "Do not claim that a closed issue is automatically solved.",
+          "Do not claim a root cause unless the evidence supports it.",
+          "Do not invent Streamlit versions, operating systems, Python versions, or reproduction steps.",
+          "Do not claim that a workaround is guaranteed to solve the user's problem unless the evidence supports that claim."
+        ]
+      }
+    ],
+    "final_expected": {
+      "answer_points": [
+        "Explain the reported behavior described in issue 16732.",
+        "Identify which claims are directly supported by the selected evidence.",
+        "Identify important information that remains unknown.",
+        "Incorporate the linked technical comment when it provides evidence relevant to the issue.",
+        "Use the official documentation as documentation evidence when it directly applies."
+      ],
+      "evidence_requirements": [
+        "Use at least one relevant issue record.",
+        "Do not use evidence that is not present in corpus.",
+        "Do not treat issue state as proof of resolution.",
+        "Do not guess missing technical details."
+      ],
+      "maintainer_summary_points": [
+        "Problem summary based on the original issue.",
+        "Evidence-backed findings.",
+        "Known versus unknown technical details.",
+        "Recommended next diagnostic information or action."
+      ]
+    }
+  }
+]

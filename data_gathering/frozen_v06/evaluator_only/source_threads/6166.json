@@ -1,0 +1,349 @@
+{
+  "issue": {
+    "id": 1594270207,
+    "number": 6166,
+    "title": "Session State remains after the tab is closed",
+    "html_url": "https://github.com/streamlit/streamlit/issues/6166",
+    "created_at": "2023-02-22T00:29:31Z",
+    "updated_at": "2024-12-30T20:21:44Z",
+    "closed_at": "2023-03-06T22:55:41Z",
+    "state": "closed",
+    "state_reason": "completed",
+    "author_association": "NONE",
+    "source_id": "issue:6166",
+    "repository": "streamlit/streamlit",
+    "body": "### Checklist\r\n\n\n### Summary\r\n\r\nWhen closing a browser tab the session state does not get wiped immediately. Expected behaviour should be that the browser close gets detected instantaneous. This makes pages with a while loop not break out of them quick enough.\r\n\r\n### Reproducible Code Example\r\n\r\n```Python\r\nimport streamlit as st\r\nimport time\r\nfrom datetime import datetime\r\n\r\ndef get_datetime():\r\n    return datetime.now().strftime(\"%Y-%m-%d %H:%M:%S\")\r\n\r\nif 'last_update' not in st.session_state:\r\n    st.session_state.last_update = get_datetime()\r\n\r\ntext = st.empty()\r\n\r\nwhile \"last_update\" in st.session_state:\r\n    st.session_state.last_update = get_datetime()\r\n    text.write(f\"last_update: {st.session_state.last_update}\")\r\n    time.sleep(1)\r\n\r\nprint(\"Exit because browser closed...\")\r\n```\r\n\r\n\r\n### Steps To Reproduce\r\n\r\n1. Run the code\r\n2. Open browser\r\n3. Check for output, close the browser\r\n4. Streamlit app will now take a very long time before actually printing the exit message...\r\n\r\n### Expected Behavior\r\n\r\nExpected behaviour would be to detect the closing of the browser quicker. Doesn't need to be instant, but it should be quicker in my opinion. Or maybe even configurable.\r\n\r\n\r\nIn the [docs ](https://docs.streamlit.io/library/advanced-features/session-state#caveats-and-limitations)it states the following:\r\n\r\n> Caveats and limitations\r\n> Here are some limitations to keep in mind when using Session State:\r\n> \r\n> - Session State exists for as long as the tab is open and connected to the Streamlit server. As soon as you close the tab, everything stored in Session State is lost.\r\n\r\nThis information suggests that closign the tab / browser the session state is lost, but that is not the case.\r\n\r\n### Current Behavior\r\n\r\nAfter closing the browser tab, it will take a long time before it gets detected by Streamlit. \r\n\r\n### Is this a regression?\r\n\r\n- [ ] Yes, this used to work in a previous version.\r\n\r\n### Debug info\r\n\r\n- Streamlit version: 1.18.1\r\n- Python version: 3.10.9\r\n- Operating System: Windows 11 (WSL2)\r\n- Browser: Chrome\r\n- Virtual environment: conda\r\n\r\n\r\n### Additional Information\r\n\r\nI spent some time on this, but I have no idea how to fix this. It can sometimes take up to 25 new browser tabs before a lot of sessons get closed at once.\r\n\r\n### Are you willing to submit a PR?\r\n\r\n- [ ] Yes, I am willing to submit a PR!",
+    "labels": [
+      "type:bug",
+      "status:confirmed",
+      "priority:P2",
+      "feature:st.session_state"
+    ],
+    "author": {
+      "login": "MathijsNL",
+      "type": "User"
+    },
+    "comment_count": 13,
+    "comments_complete": true,
+    "metadata_retrieved_at": "2026-10-06T14:27:46.022568+00:00",
+    "comments_retrieved_at": "2026-10-06T14:46:26.492479+00:00",
+    "comments_retrieval_method": "github_rest_comments",
+    "body_sha256": "0752da64cd5d937295302ff4b82be67cf2e913b8595d9e791ce225304d6769d5",
+    "original_body_sha256": "4c12bbca431b8b3ae4c9f152a39d5508ef1db507b19aa35950eee239683b60a9",
+    "streamlit_version": {
+      "value": "1.18.1",
+      "evidence_text": "- Streamlit version: 1.18.1",
+      "start_char": 1943,
+      "end_char": 1971,
+      "method": "explicit_version_line_regex"
+    },
+    "python_version": {
+      "value": "3.10.9",
+      "evidence_text": "- Python version: 3.10.9",
+      "start_char": 1972,
+      "end_char": 1997,
+      "method": "explicit_version_line_regex"
+    },
+    "topic_tags_heuristic": [
+      "reset_or_persistence",
+      "initialization_or_update"
+    ],
+    "sampling_sources": [
+      "label:feature:st.session_state",
+      "repo:streamlit/streamlit is:issue \"session state\" in:title,body created:<=2026-10-06"
+    ],
+    "relevance_basis": "state_label_or_title",
+    "evaluation_split": null,
+    "pilot_previously_inspected": false,
+    "historical_as_of_reconstruction": false,
+    "operating_system": {
+      "value": "Windows 11 (WSL2)",
+      "evidence_text": "- Operating System: Windows 11 (WSL2)",
+      "start_char": 1998,
+      "end_char": 2036,
+      "method": "explicit_environment_line_regex"
+    },
+    "browser": {
+      "value": "Chrome",
+      "evidence_text": "- Browser: Chrome",
+      "start_char": 2037,
+      "end_char": 2055,
+      "method": "explicit_environment_line_regex"
+    }
+  },
+  "comments": [
+    {
+      "id": 1441015219,
+      "html_url": "https://github.com/streamlit/streamlit/issues/6166#issuecomment-1441015219",
+      "created_at": "2023-02-22T23:50:50Z",
+      "updated_at": "2023-02-24T18:05:41Z",
+      "author_association": "CONTRIBUTOR",
+      "source_id": "comment:1441015219",
+      "issue_number": 6166,
+      "parent_source_id": "issue:6166",
+      "body": "Hi @MathijsNL, thanks for reporting this! This is a bit of a weird one because, in some ways, I'd argue the bug exactly as described here is expected behavior, but there's a different/related bug that we'll certainly want to fix.\r\n\r\nThis behavior started in version 1.18.0 and is due to one of my recent changes (https://github.com/streamlit/streamlit/pull/5856) that keeps a session around for ~2 minutes after a browser tab is closed. The reason this was done was to make session state resilient to transient websocket disconnects (most often caused by a short network blip) that would previously cause session state to randomly be reset for no apparent reason.\r\n\r\nWhen the browser tab is closed, session state from that point on is inaccessible to the user since there's no way to reconnect to that session from that point. Ideally, that's the mental model we would like to allow people to have even if the actual session cleanup is deferred, so I'm not inclined to change the docs to include the nitty-gritty details of delayed cleanup.\r\n\r\nThe bug from my point of view is that I didn't take into account scripts that may keep running when the browser tab is closed (script execution is at latest stopped when we delete the session, so this would always happen close to immediately before #5856 was released). Ideally, script execution should stop once we've detected that the corresponding browser tab has been closed (technically, it'd stop at the next `st.*` command as we're not able to preempt it earlier). I wouldn't expect a developer to have to think about this and manually handle script lifecycle via session state. Would implementing a fix to have the script stop running on websocket connection close work for your use case?\r\n\r\nI'll try to get a fix out for this (that stops script execution on websocket disconnect) sometime in the next few weeks, but in the meantime, any Streamlit version below 1.18.0 shouldn't have this issue if downgrading is possible.",
+      "author": {
+        "login": "vdonato",
+        "type": "User"
+      },
+      "is_bot": false,
+      "retrieval_method": "github_rest_comments",
+      "retrieved_at": "2026-10-06T14:46:26.492479+00:00",
+      "body_sha256": "d3adced1b74a5b7ad7b60e1db096b56b0cfbdc06abc7bed1740b11a4d530a80e",
+      "updated_at_basis": "rest_updated_at",
+      "is_hidden": false
+    },
+    {
+      "id": 1442267156,
+      "html_url": "https://github.com/streamlit/streamlit/issues/6166#issuecomment-1442267156",
+      "created_at": "2023-02-23T18:50:03Z",
+      "updated_at": "2023-02-23T18:50:03Z",
+      "author_association": "NONE",
+      "source_id": "comment:1442267156",
+      "issue_number": 6166,
+      "parent_source_id": "issue:6166",
+      "body": "I do want to add that this behavior is not necessarily minutes. I left streamlit open while I was sleeping and it still had a few open connections when I woke up. Then once I open a new tab you see the sessions get closed suddenly (I made sure to have a print statement at the end of the code after the while loop gets broken). Will try to make a more accurate reproduction of that and update accordingly.",
+      "author": {
+        "login": "MathijsNL",
+        "type": "User"
+      },
+      "is_bot": false,
+      "retrieval_method": "github_rest_comments",
+      "retrieved_at": "2026-10-06T14:46:26.492479+00:00",
+      "body_sha256": "1dc4020e4238b8d33029ce06bb8cbae975beb9a5849aabebc3e85b2fe759648c",
+      "updated_at_basis": "rest_updated_at",
+      "is_hidden": false
+    },
+    {
+      "id": 1442576663,
+      "html_url": "https://github.com/streamlit/streamlit/issues/6166#issuecomment-1442576663",
+      "created_at": "2023-02-23T23:40:00Z",
+      "updated_at": "2023-02-23T23:40:00Z",
+      "author_association": "CONTRIBUTOR",
+      "source_id": "comment:1442576663",
+      "issue_number": 6166,
+      "parent_source_id": "issue:6166",
+      "body": "Thanks for the additional info @MathijsNL.\r\n\r\nThis is also expected behavior as the cache that we're using to temporarily store sessions for browser tabs with disconnected websockets ([cachetools.TTLCache](https://cachetools.readthedocs.io/en/latest/#cachetools.TTLCache)) doesn't guarantee that expired entries are cleaned up immediately upon expiry. Instead, it makes them inaccessible for retrieval with eventual garbage collection when the cache is next mutated in some way.",
+      "author": {
+        "login": "vdonato",
+        "type": "User"
+      },
+      "is_bot": false,
+      "retrieval_method": "github_rest_comments",
+      "retrieved_at": "2026-10-06T14:46:26.492479+00:00",
+      "body_sha256": "6595387053e1f5085072a582769eb1399e7deeb89857ff1060e71d7fd3d19fd2",
+      "updated_at_basis": "rest_updated_at",
+      "is_hidden": false
+    },
+    {
+      "id": 1443567656,
+      "html_url": "https://github.com/streamlit/streamlit/issues/6166#issuecomment-1443567656",
+      "created_at": "2023-02-24T11:42:23Z",
+      "updated_at": "2023-02-24T11:42:23Z",
+      "author_association": "NONE",
+      "source_id": "comment:1443567656",
+      "issue_number": 6166,
+      "parent_source_id": "issue:6166",
+      "body": "In my use case I want streamlit to make a live visualization of image data at about 4 FPS. My problem in 1.18.0 is that this loop keeps running, and thus increasing the memory and it has a signigicant CPU load as well. The behavior in 1.17.0 is a lot better because the while loop will exit immediately. \r\n\r\nFor resource heavy applications (being it CPU or RAM) it is absolutely a hard requirement to have sessions instantly close when a browser tab gets closed in my opinion. Could it be added as a config option where we can choose what disconnect behavior we want? I suspect every user that uses a while loop to update elements will run into this problem eventually once they update to 1.18+.",
+      "author": {
+        "login": "MathijsNL",
+        "type": "User"
+      },
+      "is_bot": false,
+      "retrieval_method": "github_rest_comments",
+      "retrieved_at": "2026-10-06T14:46:26.492479+00:00",
+      "body_sha256": "526f9cac0aeb9bdcd2f48732c704d4c2c8c213d38d4c1cc37adeba4fd896f1fb",
+      "updated_at_basis": "rest_updated_at",
+      "is_hidden": false
+    },
+    {
+      "id": 1444159049,
+      "html_url": "https://github.com/streamlit/streamlit/issues/6166#issuecomment-1444159049",
+      "created_at": "2023-02-24T18:03:53Z",
+      "updated_at": "2023-02-24T18:05:52Z",
+      "author_association": "CONTRIBUTOR",
+      "source_id": "comment:1444159049",
+      "issue_number": 6166,
+      "parent_source_id": "issue:6166",
+      "body": "Hi @MathijsNL, please see the portion of my comment above (reproduced here for convenience):\r\n\r\n> The bug from my point of view is that I didn't take into account scripts that may keep running when the browser tab is closed (script execution is at latest stopped when we delete the session, so this would always happen close to immediately before #5856 was released). Ideally, script execution should stop once we've detected that the corresponding browser tab has been closed (technically, it'd stop at the next `st.*` command as we're not able to preempt it earlier). I wouldn't expect a developer to have to think about this and manually handle script lifecycle via session state. Would implementing a fix to have the script stop running on websocket connection close work for your use case?",
+      "author": {
+        "login": "vdonato",
+        "type": "User"
+      },
+      "is_bot": false,
+      "retrieval_method": "github_rest_comments",
+      "retrieved_at": "2026-10-06T14:46:26.492479+00:00",
+      "body_sha256": "d6389b7854378a411aa7dd49510d860d801dfd8036703af5ca94e5dbd713929a",
+      "updated_at_basis": "rest_updated_at",
+      "is_hidden": false
+    },
+    {
+      "id": 1444736929,
+      "html_url": "https://github.com/streamlit/streamlit/issues/6166#issuecomment-1444736929",
+      "created_at": "2023-02-24T23:48:35Z",
+      "updated_at": "2023-02-24T23:48:35Z",
+      "author_association": "NONE",
+      "source_id": "comment:1444736929",
+      "issue_number": 6166,
+      "parent_source_id": "issue:6166",
+      "body": "Hi @vdonato. I didn't read your comment with enough attention, busy week and tired I guess. My apologies!\r\n\r\nTo answer your question, yes if the script would stop running on Websocket connection close sounds good. It would actually simplify things because as you said you don't bother developers with having to track session state availability. If I understand you correctly, the situation you describe would never reach the disconnect_and_cleanup() function if that would be called after the while loop, regardless of using while True or while \"somevar\" in st.session_state?\r\n\r\n```\r\nwhile \"last_update\" in st.session_state:\r\n    st.session_state.last_update = get_datetime()\r\n    text.write(f\"last_update: {st.session_state.last_update}\")\r\n    time.sleep(1)\r\n\r\ndisconnect_and_cleanup()\r\nprint(\"Exit because browser closed...\")\r\n```",
+      "author": {
+        "login": "MathijsNL",
+        "type": "User"
+      },
+      "is_bot": false,
+      "retrieval_method": "github_rest_comments",
+      "retrieved_at": "2026-10-06T14:46:26.492479+00:00",
+      "body_sha256": "d420b010d14d26dd398b9169fd674129e6b0e3583dc284c70c5a255aa9dc5d94",
+      "updated_at_basis": "rest_updated_at",
+      "is_hidden": false
+    },
+    {
+      "id": 1444972928,
+      "html_url": "https://github.com/streamlit/streamlit/issues/6166#issuecomment-1444972928",
+      "created_at": "2023-02-25T03:23:04Z",
+      "updated_at": "2023-02-25T03:31:27Z",
+      "author_association": "CONTRIBUTOR",
+      "source_id": "comment:1444972928",
+      "issue_number": 6166,
+      "parent_source_id": "issue:6166",
+      "body": "No worries! My first comment was quite the wall of text, so it definitely wouldn't be difficult to miss something 😆 \r\n\r\n> the situation you describe would never reach the disconnect_and_cleanup() function if that would be called after the while loop\r\n\r\nYep, that's correct. It wouldn't be possible to (reliably) run any sort of cleanup function because script termination would generally happen before execution reaches that point. We could consider adding the ability to register a post-script cleanup function if there were enough demand for it, but my hunch is that it wouldn't be work that we prioritize since I think apps that loop forever until the tab is closed aren't very common.\r\n\r\nI'm actually a bit surprised at how consistently the print statement appears when the tab is closed in the pre-1.18.0 world (I'm assuming it seems more or less guaranteed from your testing). Without doing a deep dive into the code, my guess would be that there's a race between session state being cleared and the WS close handler stopping script execution, but I may be forgetting something that causes the ordering of the two to be deterministic. If that is the case, then it's essentially coincidental that session state being cleared when the tab closes can be used this way (although I can see how it would seem intentional with the noted limitation in the docs and if you discovered this behavior).",
+      "author": {
+        "login": "vdonato",
+        "type": "User"
+      },
+      "is_bot": false,
+      "retrieval_method": "github_rest_comments",
+      "retrieved_at": "2026-10-06T14:46:26.492479+00:00",
+      "body_sha256": "6ab0e13625ffb0b26b6033fa1ef0287339fdd521240eaaa0ed4181f57f4c6d0d",
+      "updated_at_basis": "rest_updated_at",
+      "is_hidden": false
+    },
+    {
+      "id": 1772090869,
+      "html_url": "https://github.com/streamlit/streamlit/issues/6166#issuecomment-1772090869",
+      "created_at": "2023-10-20T05:09:47Z",
+      "updated_at": "2023-10-20T05:09:47Z",
+      "author_association": "NONE",
+      "source_id": "comment:1772090869",
+      "issue_number": 6166,
+      "parent_source_id": "issue:6166",
+      "body": "I am facing a similar issue as well. For instance i have connected openai agent and some news api with the deployed streamlit chat session and every now and then when you when you close the tab and return back it still has the previous session state still active.. It can be a bit random that at times it can be destroyed but other times stays active maybe for a while so is not consistent. Is it that some request is still being completed by external apis in background?\r\n\r\nis there a way to make sure/force it that when you close/reload the tab the session state will be deleted to navigate the issue?",
+      "author": {
+        "login": "sb1992",
+        "type": "User"
+      },
+      "is_bot": false,
+      "retrieval_method": "github_rest_comments",
+      "retrieved_at": "2026-10-06T14:46:26.492479+00:00",
+      "body_sha256": "222dc8e8f359fe3a860bf07d8f7b6b77e3621091815c2433126ee06d125ed2e2",
+      "updated_at_basis": "rest_updated_at",
+      "is_hidden": false
+    },
+    {
+      "id": 2257040944,
+      "html_url": "https://github.com/streamlit/streamlit/issues/6166#issuecomment-2257040944",
+      "created_at": "2024-07-29T21:28:26Z",
+      "updated_at": "2024-07-29T21:28:26Z",
+      "author_association": "NONE",
+      "source_id": "comment:2257040944",
+      "issue_number": 6166,
+      "parent_source_id": "issue:6166",
+      "body": "Bumping this issue. I use the Python `logging` module to log various messages throughout my app execution. If I close and reopen a Streamlit tab (or even just do a Command-R refresh on the page), all my log messages start getting duplicated because the old session is still active but detached, and a new session was created when the page refreshed. Each time I refresh (or close/reopen the tab), another log handler gets added. This is obviously annoying and messy.\r\n\r\nCould there be some option to manually set the \"hang time\" for disconnected sessions to persist? I see above that you have set this to 2 minutes. An option in streamlit's `config.toml` such as `session_state_TTL` would allow developers to customize this hang time to their needs. In my case, I would reduce it to about 5-10 seconds or so - long enough to persist through transient network mishaps, but short enough to address this logging issue.",
+      "author": {
+        "login": "dylanm312",
+        "type": "User"
+      },
+      "is_bot": false,
+      "retrieval_method": "github_rest_comments",
+      "retrieved_at": "2026-10-06T14:46:26.492479+00:00",
+      "body_sha256": "1743a7a0b1062983f6ee677ebd9b1a460d36b06cbb263c6982341a324279a7a0",
+      "updated_at_basis": "rest_updated_at",
+      "is_hidden": false
+    },
+    {
+      "id": 2259375323,
+      "html_url": "https://github.com/streamlit/streamlit/issues/6166#issuecomment-2259375323",
+      "created_at": "2024-07-30T23:41:34Z",
+      "updated_at": "2024-07-30T23:41:34Z",
+      "author_association": "CONTRIBUTOR",
+      "source_id": "comment:2259375323",
+      "issue_number": 6166,
+      "parent_source_id": "issue:6166",
+      "body": "Thanks for the suggestion @dylanm312. Adding a config option for this will require some input from our product team (although I think it's likely that the change won't be controversial and we'll just be able to add it), but it's a pretty trivial change, so I went ahead and made a PR for it + hopefully will be able to get it merged before next month's release.",
+      "author": {
+        "login": "vdonato",
+        "type": "User"
+      },
+      "is_bot": false,
+      "retrieval_method": "github_rest_comments",
+      "retrieved_at": "2026-10-06T14:46:26.492479+00:00",
+      "body_sha256": "05d672bb9c5947a2db81fdc5cd78940da75fecbd09d1a85b33271915c636c45f",
+      "updated_at_basis": "rest_updated_at",
+      "is_hidden": false
+    },
+    {
+      "id": 2259390324,
+      "html_url": "https://github.com/streamlit/streamlit/issues/6166#issuecomment-2259390324",
+      "created_at": "2024-07-31T00:01:35Z",
+      "updated_at": "2024-07-31T00:01:35Z",
+      "author_association": "NONE",
+      "source_id": "comment:2259390324",
+      "issue_number": 6166,
+      "parent_source_id": "issue:6166",
+      "body": "Wow, thanks @vdonato! I wasn't expecting such a quick turnaround! You guys are officially my new favorite dev team 😁",
+      "author": {
+        "login": "dylanm312",
+        "type": "User"
+      },
+      "is_bot": false,
+      "retrieval_method": "github_rest_comments",
+      "retrieved_at": "2026-10-06T14:46:26.492479+00:00",
+      "body_sha256": "6fe6ad4ecdd427599f94d0938fd644a709e8f70735a0a21d117b30af765080c7",
+      "updated_at_basis": "rest_updated_at",
+      "is_hidden": false
+    },
+    {
+      "id": 2453409001,
+      "html_url": "https://github.com/streamlit/streamlit/issues/6166#issuecomment-2453409001",
+      "created_at": "2024-11-03T12:23:03Z",
+      "updated_at": "2024-11-03T12:23:03Z",
+      "author_association": "NONE",
+      "source_id": "comment:2453409001",
+      "issue_number": 6166,
+      "parent_source_id": "issue:6166",
+      "body": "Hi, @vdonato \r\nI have a backgroud thread controlled by a session_state. The code is like the following,\r\n`While 'flag' is st.session_state: \r\n        //do something`\r\nwill the thread be closed once the tab is closed?",
+      "author": {
+        "login": "day-xy",
+        "type": "User"
+      },
+      "is_bot": false,
+      "retrieval_method": "github_rest_comments",
+      "retrieved_at": "2026-10-06T14:46:26.492479+00:00",
+      "body_sha256": "249c0a329aca16b67f1d2ee2948709f7a6959a5fdeba9c53568da142573a9ef1",
+      "updated_at_basis": "rest_updated_at",
+      "is_hidden": false
+    },
+    {
+      "id": 2565883784,
+      "html_url": "https://github.com/streamlit/streamlit/issues/6166#issuecomment-2565883784",
+      "created_at": "2024-12-30T20:21:43Z",
+      "updated_at": "2024-12-30T20:21:43Z",
+      "author_association": "NONE",
+      "source_id": "comment:2565883784",
+      "issue_number": 6166,
+      "parent_source_id": "issue:6166",
+      "body": "Definitely could use this feature for closing database connections! I've tried using:\r\n\r\n```python\r\ndef cleanup():\r\n    print(st.session_state)\r\n    if \"weaviate_conn\" in st.session_state:\r\n        st.session_state.weaviate_conn.close()\r\n        del st.session_state.weaviate_conn\r\n\r\n# Register cleanup function with atexit\r\natexit.register(cleanup)\r\n```\r\n\r\n...but it appears that `atexit` doesn't work in this context.",
+      "author": {
+        "login": "nick-youngblut",
+        "type": "User"
+      },
+      "is_bot": false,
+      "retrieval_method": "github_rest_comments",
+      "retrieved_at": "2026-10-06T14:46:26.492479+00:00",
+      "body_sha256": "d5a26cefb93cb9fbe6958c1269f33e7391cd544808ec631d07f2adf3b304a08c",
+      "updated_at_basis": "rest_updated_at",
+      "is_hidden": false
+    }
+  ]
+}

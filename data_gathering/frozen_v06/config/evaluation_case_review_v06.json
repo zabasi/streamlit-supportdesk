@@ -1,0 +1,410 @@
+{
+  "DEV-5604": {
+    "scope": "Initialization advice and a version-specific reproduction comparison; no certified expander fix.",
+    "known": [
+      "The report supplies 1.13.0 and the complete button-before-expansion sequence."
+    ],
+    "missing": [
+      [
+        "current_reproduction",
+        "Does the same minimal example still fail on the currently installed version, and what version is that?",
+        "Decides whether to investigate a current mismatch or describe a historical report.",
+        "new_observation"
+      ],
+      [
+        "expansion_order_comparison",
+        "Does opening the expander before pressing the button produce the same mismatch?",
+        "Separates the two already-described execution orders.",
+        "new_observation"
+      ]
+    ]
+  },
+  "DEV-7044": {
+    "scope": "Conditional explanation of application-data and data-editor-state key collision.",
+    "known": [
+      "The report supplies 1.23.1 and compares keyed and unkeyed data_editor."
+    ],
+    "missing": [
+      [
+        "prior_state_assignment",
+        "Is st.session_state['companies_df'] assigned before st.data_editor is declared?",
+        "Confirms or rejects the key-collision hypothesis.",
+        "unknown"
+      ]
+    ]
+  },
+  "DEV-9342": {
+    "scope": "Application-side bounds validation; exact framework exception behavior remains version dependent.",
+    "known": [
+      "The number input is bounded at 5 and the callback assigns 10."
+    ],
+    "missing": [
+      [
+        "installed_streamlit_version",
+        "Which Streamlit version is installed?",
+        "Scopes the validation behavior and any proposed reproduction.",
+        "unknown"
+      ],
+      [
+        "display_return_comparison",
+        "What are the displayed value, returned value and state immediately after assignment?",
+        "Distinguishes backend acceptance from frontend editing behavior.",
+        "new_observation"
+      ]
+    ]
+  },
+  "DEV-4338": {
+    "scope": "Documented widget cleanup and independent application keys; remount symptoms need separate verification.",
+    "known": [
+      "The report distinguishes disappearing widgets from remount initialization and supplies historical versions."
+    ],
+    "missing": []
+  },
+  "DEV-6166": {
+    "scope": "Lifecycle investigation and resource summary; no guarantee of immediate cleanup.",
+    "known": [
+      "The report supplies a 1.18.1 while loop and tab-close observations."
+    ],
+    "missing": [
+      [
+        "disconnect_timing",
+        "How long does the loop continue after tab closure under a bounded timed test?",
+        "Quantifies the lifecycle problem without asserting immediate shutdown.",
+        "new_observation"
+      ],
+      [
+        "connection_topology",
+        "Is the app behind a proxy or load balancer, and what happens to the websocket?",
+        "Separates transport behavior from script termination.",
+        "unknown"
+      ]
+    ]
+  },
+  "DEV-16388": {
+    "scope": "Explicit callback reset as a candidate; investigate the separately reported frontend/backend divergence.",
+    "known": [
+      "The report supplies 1.59.2 and the Populate, Delete, Noop sequence."
+    ],
+    "missing": [
+      [
+        "current_divergence",
+        "On the currently installed version, what are the frontend, returned value and state after Delete and after Noop?",
+        "Determines whether the divergence is reproducible for escalation.",
+        "new_observation"
+      ]
+    ]
+  },
+  "DEV-3903": {
+    "scope": "One initialization path and callback ordering advice; no certified historical regression fix.",
+    "known": [
+      "The report supplies 1.0.0 and unconditional state assignments plus explicit defaults."
+    ],
+    "missing": [
+      [
+        "single_initialization_result",
+        "Does the mismatch persist after using one initialization path, with displayed and returned values recorded?",
+        "Separates duplicate initialization from the mismatch.",
+        "new_observation"
+      ],
+      [
+        "current_version_comparison",
+        "Does the original minimal example reproduce on the version currently being used, and which version is it?",
+        "Prevents projecting the 1.0.0 report onto a later installation.",
+        "new_observation"
+      ]
+    ]
+  },
+  "DEV-4325": {
+    "scope": "Batch selections in a form and preserve annotation mode across reruns.",
+    "known": [
+      "The code nests the interface under a transient button result and selection triggers annotation early."
+    ],
+    "missing": []
+  },
+  "DEV-7305": {
+    "scope": "Pass a callable reference and read the new keyed widget value inside the callback.",
+    "known": [
+      "The supplied code uses on_change=update() and assigns a widget return after callback timing."
+    ],
+    "missing": []
+  },
+  "DEV-3585": {
+    "scope": "Investigate unexpected callback timing while respecting the function reference already in the original code.",
+    "known": [
+      "The report supplies 0.84.1; the original example already passes a callable reference."
+    ],
+    "missing": [
+      [
+        "standalone_reproduction",
+        "Does the provided example reproduce when run as a standalone minimal app with the exact launch command?",
+        "Confirms timing without substituting a later commenter's eager-call error.",
+        "new_observation"
+      ],
+      [
+        "version_comparison",
+        "Does the same example behave differently on the version now installed?",
+        "Separates a historical report from current behavior.",
+        "new_observation"
+      ]
+    ]
+  },
+  "DEV-3842": {
+    "scope": "Guard count initialization and explain the form-submit rerun.",
+    "known": [
+      "The snippet resets count at the top of each run and the form disappears after submit."
+    ],
+    "missing": []
+  },
+  "DEV-4082": {
+    "scope": "Stable widget key and submit callback or processing after submit; callback lexical placement is incidental.",
+    "known": [
+      "The report supplies 1.2.0 and an alternating-submission reproduction."
+    ],
+    "missing": []
+  },
+  "DEV-5591": {
+    "scope": "Ask for runnable code and navigation sequence before choosing a diagnosis.",
+    "known": [
+      "The initial report describes edits reverting after leaving and returning to page A; it contains no runnable example."
+    ],
+    "missing": [
+      [
+        "minimal_two_page_code",
+        "Can you supply a minimal runnable example covering both pages and state assignments?",
+        "Distinguishes synchronization order from widget identity or navigation bugs.",
+        "unknown"
+      ],
+      [
+        "edit_navigation_sequence",
+        "What exact edit and navigation sequence triggers the second-edit reversion?",
+        "Defines the reproduction; stop asking once the follow-up supplies it.",
+        "unknown"
+      ],
+      [
+        "installed_streamlit_version",
+        "Which Streamlit version is installed?",
+        "Scopes available navigation APIs and widget behavior.",
+        "unknown"
+      ]
+    ]
+  },
+  "DEV-4989": {
+    "scope": "Separate page-specific widget identities from shared application state; respect the 1.11.0 version.",
+    "known": [
+      "The report supplies 1.11.0 and a three-file example with same-key inputs on different pages."
+    ],
+    "missing": []
+  },
+  "DEV-10805": {
+    "scope": "Escalate the scheduled-fragment persistence contrast; do not repeat completed successful variants.",
+    "known": [
+      "The report supplies 1.43.1, run_every=2, and successful variants without scheduling or without the fragment call."
+    ],
+    "missing": [
+      [
+        "fragment_placement",
+        "Does the app require a scheduled fragment on both pages, or only on one?",
+        "Provides a new discriminating detail without repeating the two completed tests.",
+        "unknown"
+      ],
+      [
+        "current_minimal_result",
+        "Does the provided timed navigation sequence still reproduce on the version currently installed?",
+        "Scopes the regression summary.",
+        "new_observation"
+      ]
+    ]
+  },
+  "TEST-4884": {
+    "scope": "Compare explicit in-range initialization against the reported default-date validation; no exact fixed release.",
+    "known": [
+      "The report explicitly names Streamlit 1.10.0 and Python 3.10.4 and provides date bounds."
+    ],
+    "missing": [
+      [
+        "current_version_result",
+        "Which version currently reproduces the error with the supplied example?",
+        "Separates the recorded 1.10.0 report from current validation behavior.",
+        "new_observation"
+      ],
+      [
+        "explicit_default_result",
+        "Does an explicit in-range value change the error, and does it produce a duplicate-default warning?",
+        "Evaluates a candidate workaround without blaming the supplied min_date.",
+        "new_observation"
+      ]
+    ]
+  },
+  "TEST-3921": {
+    "scope": "Guard initialization separately from investigating the historical duplicate-default warning.",
+    "known": [
+      "The report writes its Streamlit version as 1.00. and supplies code with no explicit value argument."
+    ],
+    "missing": [
+      [
+        "guarded_no_value_result",
+        "Does the warning remain with a missing-key guard and no explicit value argument?",
+        "Tests the warning independently from persistence.",
+        "new_observation"
+      ]
+    ]
+  },
+  "TEST-3598": {
+    "scope": "Keep dependent selection in the active option list and separate later reproductions from the original report.",
+    "known": [
+      "The report supplies 0.84.2, initializes item to E and changes the option list."
+    ],
+    "missing": [
+      [
+        "current_example_version",
+        "If the problem is on a later version, what is its exact version and minimal code?",
+        "Matching ValueError text alone does not identify the same cause.",
+        "new_observation"
+      ]
+    ]
+  },
+  "TEST-7649": {
+    "scope": "Preserve index=None versus keyed None and the unrelated-interaction contrast for escalation.",
+    "known": [
+      "The report supplies 1.28.0 and both selectbox branches."
+    ],
+    "missing": [
+      [
+        "current_branch_comparison",
+        "On the version currently installed, what do both branches return before and after the unrelated interaction?",
+        "Determines whether the reported mismatch remains reproducible.",
+        "new_observation"
+      ]
+    ]
+  },
+  "TEST-9657": {
+    "scope": "Dedicated widget key and callback-backed object field; no blanket restriction on storing objects.",
+    "known": [
+      "The report feeds a changing object attribute into an unkeyed default and supplies the callback-relevant code."
+    ],
+    "missing": []
+  },
+  "TEST-4297": {
+    "scope": "Distinguish websocket session lifetime from durable storage and backend routing.",
+    "known": [
+      "The report supplies 1.3.1 and a GCP Cloud Run load-balancer timeout."
+    ],
+    "missing": [
+      [
+        "backend_affinity",
+        "Does reconnecting reach the same server process or another backend?",
+        "Determines whether state loss includes process or routing changes.",
+        "unknown"
+      ],
+      [
+        "current_version_reproduction",
+        "Which currently installed version reproduces the loss under that timeout?",
+        "Avoids assuming modern reconnect behavior matches 1.3.1.",
+        "new_observation"
+      ]
+    ]
+  },
+  "TEST-3601": {
+    "scope": "Initialize initial work explicitly and reserve on_change for subsequent changes.",
+    "known": [
+      "The report supplies 0.84.2 and distinguishes initial blue from subsequent selection changes."
+    ],
+    "missing": []
+  },
+  "TEST-6966": {
+    "scope": "Read keyed submitted input in an argument-free callback; use consistent imports.",
+    "known": [
+      "The report supplies 1.24.0 and a callback with an unsupplied required positional parameter."
+    ],
+    "missing": []
+  },
+  "TEST-5305": {
+    "scope": "Pass a key explicitly through args/kwargs and read Session State; automatic selected-value injection is a request.",
+    "known": [
+      "The issue proposes automatic selected_value kwargs; it does not establish an implemented API."
+    ],
+    "missing": []
+  },
+  "TEST-4873": {
+    "scope": "Stable time bounds, unique widget keys and independently tested clear_on_submit behavior.",
+    "known": [
+      "The report supplies 1.10.0, datetime.now defaults and repeated keys in multiple forms."
+    ],
+    "missing": []
+  },
+  "TEST-9841": {
+    "scope": "Compare keyboard and mouse submission and escalate a reproducible stale-value regression.",
+    "known": [
+      "The report supplies 1.40.0 and the Ctrl+Enter one-submission lag."
+    ],
+    "missing": [
+      [
+        "mouse_submit_comparison",
+        "Does clicking Submit send the latest value while Ctrl+Enter sends the previous value?",
+        "Confirms the navigation-independent workaround and regression contrast.",
+        "new_observation"
+      ],
+      [
+        "current_version_comparison",
+        "Does the same minimal form reproduce on the version currently installed?",
+        "Scopes escalation without inventing a fixed release.",
+        "new_observation"
+      ]
+    ]
+  },
+  "TEST-7037": {
+    "scope": "Separate a list-valued application key from text widget state; no claim that input is a reserved key.",
+    "known": [
+      "The reported failing branch preinitializes input with [] and binds the same key to text_area on 1.24.1."
+    ],
+    "missing": []
+  },
+  "TEST-8700": {
+    "scope": "Distinguish direct-entry missing initialization from the unresolved terminal-only occurrence.",
+    "known": [
+      "The report supplies 1.34.0 and initialization only in app.py."
+    ],
+    "missing": [
+      [
+        "navigation_entry_path",
+        "Does the failing session start directly at /mypage or through in-app navigation?",
+        "Decides whether initialization was skipped.",
+        "unknown"
+      ],
+      [
+        "terminal_traceback",
+        "Can you provide the complete traceback for the terminal-only occurrence?",
+        "Prevents conflating it with a separate browser-side error.",
+        "unknown"
+      ]
+    ]
+  },
+  "TEST-9603": {
+    "scope": "Determine navigation method before explaining session loss; hiding the sidebar alone is not a diagnosis.",
+    "known": [
+      "The report supplies 1.39 and showSidebarNavigation=false but does not identify the navigation mechanism."
+    ],
+    "missing": [
+      [
+        "navigation_method",
+        "How exactly do you navigate between pages: URL or Markdown link, page_link, or another mechanism?",
+        "A URL/Markdown reply supports a new-session explanation; supported in-app navigation requires another investigation.",
+        "unknown"
+      ]
+    ]
+  },
+  "TEST-11115": {
+    "scope": "Escalate the entrypoint-widget switch_page contrast; no ordinary page-cleanup diagnosis.",
+    "known": [
+      "The report supplies 1.44.1 and compares sidebar/page_link with switch_page for an entrypoint checkbox."
+    ],
+    "missing": [
+      [
+        "current_navigation_comparison",
+        "Does the same minimal app still differ between switch_page and page_link on the current version?",
+        "Verifies the specific regression contrast before escalation.",
+        "new_observation"
+      ]
+    ]
+  }
+}

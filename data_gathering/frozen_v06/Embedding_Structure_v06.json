@@ -1,0 +1,48 @@
+{
+  "schema_version": "6.0",
+  "source_envelope": {
+    "required": [
+      "source_id",
+      "source_type",
+      "text",
+      "metadata",
+      "text_sha256"
+    ],
+    "source_id_location": "top level only",
+    "embedding_text": "text only; metadata and audit are not embedded"
+  },
+  "index_allowlist": [
+    "retrieval_corpus/issues.jsonl",
+    "retrieval_corpus/comments.jsonl",
+    "retrieval_corpus/documents.jsonl",
+    "retrieval_corpus/release_sections.jsonl",
+    "retrieval_corpus/linked_references.jsonl"
+  ],
+  "evidence_contract": {
+    "source_id": "Must resolve to one delivered corpus record. URLs and snapshot provenance come from that record metadata.",
+    "start_char": "Inclusive Python Unicode code-point offset into delivered source text.",
+    "end_char": "Exclusive Python Unicode code-point offset into delivered source text.",
+    "invariant": "corpus[source_id].text[start_char:end_char] == evidence.text",
+    "source_text_sha256": "Detects changes to the source before mapping or scoring.",
+    "evidence_sha256": "Detects changes to the exact selected span.",
+    "archived_offsets": "Retained only in audit/alignment_v06/evidence_span_mapping.json, with the original source representation."
+  },
+  "related_reference_contract": {
+    "relation_type": "Explicit mention only; never infer same cause, fix, or version applicability.",
+    "unresolved_target": "Keep number and status; do not invent an index source ID for held-out or absent records."
+  },
+  "evaluation_contract": {
+    "base_cases": "15 development + 15 test; original user reports unchanged",
+    "missing_information": "Evaluator-only structured discriminating questions; empty list is valid for bounded answerable cases.",
+    "history_variants": "Six explicit fixtures, same split and family as their base case; do not double-count as independent cases.",
+    "multi_turn": "Ten staged scenarios; follow-up is released only after response 1 is recorded.",
+    "source_usage": "Eight separate evidence-role and retrieval tasks; not held-out issue-resolution tests.",
+    "workflow_events": "Local tracker integration specifications still require an adapter and actual system execution."
+  },
+  "chunk_contract": {
+    "start_char": "Source text offset, inclusive",
+    "end_char": "Source text offset, exclusive",
+    "source_text_sha256": "Must equal parent source hash",
+    "mapping_helper": "scripts/map_evidence_to_chunks.py maps supplied chunks and reports interval coverage; no real chunks have been built."
+  }
+}

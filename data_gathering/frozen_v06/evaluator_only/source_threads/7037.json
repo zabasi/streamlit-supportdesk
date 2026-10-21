@@ -1,0 +1,115 @@
+{
+  "issue": {
+    "id": 1811580336,
+    "number": 7037,
+    "title": "st.session_state changes behavior depending on its value",
+    "html_url": "https://github.com/streamlit/streamlit/issues/7037",
+    "created_at": "2023-07-19T09:43:58Z",
+    "updated_at": "2024-08-15T20:53:01Z",
+    "closed_at": "2023-07-24T21:04:29Z",
+    "state": "closed",
+    "state_reason": "completed",
+    "author_association": "NONE",
+    "source_id": "issue:7037",
+    "repository": "streamlit/streamlit",
+    "body": "### Checklist\n\n\n### Summary\n\nst.session_state causes an error when it has a value named \"input\".\r\n```\r\nTypeError: bad argument type for built-in operation\r\n```\r\nProbably it is a special value used in advance.\n\n### Reproducible Code Example\n\n```Python\nimport streamlit as st\r\n\r\ndef good():\r\n    if \"data\" not in st.session_state: \r\n        st.session_state.data = []\r\n\r\n    with st.form(key='my_form', clear_on_submit=True):\r\n            user_input = st.text_area(label='Message: ', key='input', height=100)\r\n            submit_button = st.form_submit_button(label='Send')\r\n\r\ndef bad():\r\n    if \"input\" not in st.session_state: \r\n        st.session_state.input = []\r\n\r\n    with st.form(key='my_form', clear_on_submit=True):\r\n            user_input = st.text_area(label='Message: ', key='input', height=100)\r\n            submit_button = st.form_submit_button(label='Send')\r\n\r\nif __name__ == \"__main__\":\r\n    # good()\r\n    bad()\n```\n\n\n### Steps To Reproduce\n\n1. Execute the bad() function I get the error I want to report.\r\n2. Execute the good() function, there is no problem.\n\n### Expected Behavior\n\nWhen st.session_state has a value named \"input\", it should behave the same as when it has other values (e.g., \"data\").\n\n### Current Behavior\n\nError message:\r\n```\r\nTypeError: bad argument type for built-in operation\r\n```\n\n### Is this a regression?\n\n- [ ] Yes, this used to work in a previous version.\n\n### Debug info\n\n- Streamlit version: 1.24.1\r\n- Python version: 3.11\r\n- Operating System: MacOS M2\r\n- Browser: Google Chrome\r\n\n\n### Additional Information\n\nIf this is the expected behavior, please withdraw this issue.",
+    "labels": [
+      "type:bug",
+      "feature:st.session_state"
+    ],
+    "author": {
+      "login": "Mow17",
+      "type": "User"
+    },
+    "comment_count": 2,
+    "comments_complete": true,
+    "metadata_retrieved_at": "2026-10-06T14:27:46.022568+00:00",
+    "comments_retrieved_at": "2026-10-06T14:28:57.327962+00:00",
+    "comments_retrieval_method": "github_public_html_embedded_data",
+    "body_sha256": "8db350a0ecd9637a66897e42c0b22e92012df6f12691ed89b8c4edadbf59a222",
+    "original_body_sha256": "57bf2bac23f5073821662fdf86f5bb6278315258e2c303889ef1ffcfbae560df",
+    "streamlit_version": {
+      "value": "1.24.1",
+      "evidence_text": "- Streamlit version: 1.24.1",
+      "start_char": 1415,
+      "end_char": 1443,
+      "method": "explicit_version_line_regex"
+    },
+    "python_version": {
+      "value": "3.11",
+      "evidence_text": "- Python version: 3.11",
+      "start_char": 1444,
+      "end_char": 1467,
+      "method": "explicit_version_line_regex"
+    },
+    "topic_tags_heuristic": [
+      "forms"
+    ],
+    "sampling_sources": [
+      "label:feature:st.session_state",
+      "repo:streamlit/streamlit is:issue \"session state\" in:title,body created:<=2026-10-06"
+    ],
+    "relevance_basis": "state_label_or_title",
+    "evaluation_split": null,
+    "pilot_previously_inspected": false,
+    "historical_as_of_reconstruction": false,
+    "operating_system": {
+      "value": "MacOS M2",
+      "evidence_text": "- Operating System: MacOS M2",
+      "start_char": 1468,
+      "end_char": 1497,
+      "method": "explicit_environment_line_regex"
+    },
+    "browser": {
+      "value": "Google Chrome",
+      "evidence_text": "- Browser: Google Chrome",
+      "start_char": 1498,
+      "end_char": 1523,
+      "method": "explicit_environment_line_regex"
+    }
+  },
+  "comments": [
+    {
+      "id": 1642883607,
+      "html_url": "https://github.com/streamlit/streamlit/issues/7037#issuecomment-1642883607",
+      "created_at": "2023-07-19T23:15:35Z",
+      "updated_at": "2023-07-19T23:15:35Z",
+      "author_association": "CONTRIBUTOR",
+      "source_id": "comment:1642883607",
+      "issue_number": 7037,
+      "parent_source_id": "issue:7037",
+      "body": "Hi @Mow17,\r\n\r\nWhen you assign a key ('input') to a widget, Streamlit will check session state when that widget function is executed. If it sees that key already exists, Streamlit will try to assign the value `st.session_state.input` to the widget having `key='input'`. That causes an error if the data type or format saved in session state cannot be parsed for that widget. In this case, trying to assign a value of `[]` to `st.text_area` is not understood by Streamlit.\r\n\r\nIf you set `key='data'` for `st.text_area` in both examples, then `good()` would cause the error and `bad()` would work.\r\n\r\nI think the error message is a little less clear for `st.text_area`, so here's a clearer example:\r\n\r\n```python\r\nimport streamlit as st\r\n\r\nif 'my_key' not in st.session_state:\r\n    st.session_state.my_key='a'\r\n\r\nst.number_input('A', key='my_key')\r\n```\r\n\r\n<img width=\"731\" alt=\"image\" src=\"https://github.com/streamlit/streamlit/assets/135349133/607d28a6-69e1-4203-8e0c-96a687ed4b15\">\r\n\r\nI agree that the error message for `st.text_area` is a little less than obvious, so it would be nice if that could made clearer. 😄 \r\n\r\nP.S. There are indeed several words that exist as methods you would not want to overwrite, but I don't think 'input' is one of them. If you're interested, here's a very short Streamlit script that can show you what's built it:\r\n\r\n```python\r\nimport streamlit as st\r\n\r\nst.write(dir(st.session_state))\r\n```",
+      "author": {
+        "login": "sfc-gh-dmatthews",
+        "type": "User"
+      },
+      "is_bot": false,
+      "retrieval_method": "github_public_html_embedded_data",
+      "retrieved_at": "2026-10-06T14:28:57.327962+00:00",
+      "body_sha256": "0e45363a2eefc730f73218a051df4aca419b62533042e3533c8b6924baa1a758",
+      "updated_at_basis": "lastEditedAt_or_createdAt_from_public_HTML",
+      "is_hidden": false
+    },
+    {
+      "id": 1648610955,
+      "html_url": "https://github.com/streamlit/streamlit/issues/7037#issuecomment-1648610955",
+      "created_at": "2023-07-24T21:04:29Z",
+      "updated_at": "2023-07-24T21:04:29Z",
+      "author_association": "CONTRIBUTOR",
+      "source_id": "comment:1648610955",
+      "issue_number": 7037,
+      "parent_source_id": "issue:7037",
+      "body": "Thanks for diagnosing the issue @sfc-gh-dmatthews!\r\n\r\nGoing to close this as it doesn't seem like this is a bug.",
+      "author": {
+        "login": "vdonato",
+        "type": "User"
+      },
+      "is_bot": false,
+      "retrieval_method": "github_public_html_embedded_data",
+      "retrieved_at": "2026-10-06T14:28:57.327962+00:00",
+      "body_sha256": "e5c9879c5bc47d3cab7a19dbf2b231bdd16041e92cd2fa384a4e3e7b9b5a04ed",
+      "updated_at_basis": "lastEditedAt_or_createdAt_from_public_HTML",
+      "is_hidden": false
+    }
+  ]
+}

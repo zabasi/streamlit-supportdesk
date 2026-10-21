@@ -1,0 +1,10 @@
+{
+  "offline_rebuild_identical_source_hashes": true,
+  "source_sha256s": {
+    "issues.jsonl": "fdd459addb3f25d7ae806c1f17e538ba1d343d27f1b49698d225c6dd1de37a70",
+    "comments.jsonl": "e16931b57da41666a2ccc6cb857b1d8c9dd5eff18e68837e43f80fb842948cd2",
+    "documents.jsonl": "e93fe46d99caf4e994443a31f57a3cdcaa91561eb215fd7cbc7f27f2b64b14d9",
+    "release_sections.jsonl": "57713524712ebb1908cb907f2ed71b7e3af7299eaaa2080f31896b127d4c77fa"
+  },
+  "metis_api_calls": 0
+}

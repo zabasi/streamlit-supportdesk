@@ -1,0 +1,102 @@
+{
+  "syntax_checked_python_files": 53,
+  "recovered_snapshot_hashes_checked": 267,
+  "snapshot_hash_mismatches": 0,
+  "v06_validation": {
+    "version": "v06",
+    "structural_status": "passed",
+    "source_records": 540,
+    "checks": {
+      "all_540_v05_texts_and_code_unchanged": true,
+      "stable_source_ids_and_roles": true,
+      "no_runtime_duplicate_source_ids": true,
+      "all_64_base_evidence_spans_exact_in_corpus": true,
+      "all_60_archived_evidence_spans_preserved": true,
+      "source_hash_and_evidence_hash_guards": true,
+      "all_30_original_case_reports_preserved": true,
+      "dates_and_environment_evidence_resolve": true,
+      "base_15_plus_15_and_category_balance_preserved": true,
+      "all_10_scenarios_have_step_rubrics": true,
+      "six_history_variants_same_split_as_base": true,
+      "eight_supplementary_tasks_cover_four_source_types": true,
+      "no_gold_in_agent_inputs": true,
+      "heldout_case_sources_not_in_index": true,
+      "archived_raw_sources_configs_and_old_evaluation_preserved": true,
+      "related_reference_spans_and_target_ids_resolve": true
+    },
+    "corpus_coverage_review": "30 bounded next-step rubrics reviewed by AI assistant; historical resolution and end-to-end agent behavior not verified",
+    "chunks_built": false,
+    "embeddings_built": false,
+    "runtime_solutions_verified": false,
+    "tracker_workflow_tests_executed": false,
+    "human_reviewed": false
+  },
+  "v06_contract_tests": {
+    "contract_checks_passed": 17,
+    "staged_scenarios_checked": 10,
+    "responses": "explicit offline placeholders, not model answers",
+    "fixtures_only": true,
+    "real_chunks_built": false,
+    "agent_quality_evaluated": false,
+    "tracker_workflow_executed": false
+  },
+  "explicit_loader": {
+    "source_record_counts": {
+      "issue": 126,
+      "comment": 214,
+      "documentation": 54,
+      "release_section": 111,
+      "linked_reference": 35
+    },
+    "total_source_records": 540,
+    "text_characters": 819188,
+    "chunks_built": false,
+    "embeddings_built": false,
+    "note": "Only each record text may be submitted for embedding. These are source records, not final chunks."
+  },
+  "offline_rebuild_validation": {
+    "version": "v06",
+    "structural_status": "passed",
+    "source_records": 540,
+    "checks": {
+      "all_540_v05_texts_and_code_unchanged": true,
+      "stable_source_ids_and_roles": true,
+      "no_runtime_duplicate_source_ids": true,
+      "all_64_base_evidence_spans_exact_in_corpus": true,
+      "all_60_archived_evidence_spans_preserved": true,
+      "source_hash_and_evidence_hash_guards": true,
+      "all_30_original_case_reports_preserved": true,
+      "dates_and_environment_evidence_resolve": true,
+      "base_15_plus_15_and_category_balance_preserved": true,
+      "all_10_scenarios_have_step_rubrics": true,
+      "six_history_variants_same_split_as_base": true,
+      "eight_supplementary_tasks_cover_four_source_types": true,
+      "no_gold_in_agent_inputs": true,
+      "heldout_case_sources_not_in_index": true,
+      "archived_raw_sources_configs_and_old_evaluation_preserved": true,
+      "related_reference_spans_and_target_ids_resolve": true
+    },
+    "corpus_coverage_review": "30 bounded next-step rubrics reviewed by AI assistant; historical resolution and end-to-end agent behavior not verified",
+    "chunks_built": false,
+    "embeddings_built": false,
+    "runtime_solutions_verified": false,
+    "tracker_workflow_tests_executed": false,
+    "human_reviewed": false
+  },
+  "rebuilt_records_equal": {
+    "retrieval_corpus/issues.jsonl": true,
+    "retrieval_corpus/comments.jsonl": true,
+    "retrieval_corpus/documents.jsonl": true,
+    "retrieval_corpus/release_sections.jsonl": true,
+    "retrieval_corpus/linked_references.jsonl": true,
+    "agent_inputs/development_inputs.jsonl": true,
+    "agent_inputs/test_inputs.jsonl": true,
+    "evaluator_only/development_rubrics.jsonl": true,
+    "evaluator_only/test_rubrics.jsonl": true
+  },
+  "collection_entrypoint_plan": "PLAN ONLY: no network requests or files created.\n1. download_issues.py\n2. download_comments.py\n3. download_documents.py\n4. download_release_notes.py\n5. build_corpus.py\nNew outputs: acquisition/data/raw and acquisition/data/corpus; frozen_v06 is unchanged.\n",
+  "exported_corpus_equal": true,
+  "network_requests": 0,
+  "llm_calls": 0,
+  "embedding_calls": 0
+}

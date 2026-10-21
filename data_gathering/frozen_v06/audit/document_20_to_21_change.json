@@ -1,0 +1,8 @@
+{
+  "previous_primary_page_count": 20,
+  "current_retained_page_count": 21,
+  "primary_20_page_ids_retained": true,
+  "added_page": "doc:pinned:content/develop/concepts/architecture/caching.md",
+  "added_page_role": "Cache sharing, mutation and concurrency versus per-session state; selected relevant sections only.",
+  "conclusion": "The extra page provides supplemental coverage; the count difference alone is not evidence that a core Session State page had been omitted. This is not a claim that every relevant Streamlit page has been collected."
+}

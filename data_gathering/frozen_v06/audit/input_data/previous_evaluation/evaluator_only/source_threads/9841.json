@@ -1,0 +1,118 @@
+{
+  "issue": {
+    "id": 2650516383,
+    "number": 9841,
+    "title": "Lagged session state management in st.form",
+    "html_url": "https://github.com/streamlit/streamlit/issues/9841",
+    "created_at": "2024-11-11T22:15:00Z",
+    "updated_at": "2024-11-13T12:00:20Z",
+    "closed_at": "2024-11-13T12:00:20Z",
+    "state": "closed",
+    "state_reason": "completed",
+    "author_association": "NONE",
+    "source_id": "issue:9841",
+    "repository": "streamlit/streamlit",
+    "body": "### Checklist\r\n\n\n### Summary\r\n\r\n\r\nUsing Streamlit 1.40.0 and Python 3.11.10, I seemed to have encountered a bug with st.text_area inside of st.form. Below is my code:\r\n```\r\nimport streamlit as st\r\n\r\nwith st.form(\"form\"):\r\n    test_text = st.text_area(\"test\", key=\"test input\")\r\n    submitted = st.form_submit_button(\"submit\")\r\n\r\nif submitted:\r\n    st.write(st.session_state)\r\n```\r\n\r\nWhat I would expect, per the behavior in previous streamlit versions, is when I ctrl+enter, it updates session state as you would expect it to while submitting the form. However it seems to be delayed. If you write in the text box, ctrl enter, it will have no text. You would have to edit the text again, then ctrl enter again, to get the text from the first edit.\r\n\r\n### Reproducible Code Example\r\n\r\n[![Open in Streamlit Cloud](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://issues.streamlitapp.com/?issue=gh-9841)\r\n\r\n```Python\r\nimport streamlit as st\r\n\r\nwith st.form(\"form\"):\r\n    test_text = st.text_area(\"test\", key=\"test input\")\r\n    submitted = st.form_submit_button(\"submit\")\r\n\r\nif submitted:\r\n    st.write(st.session_state)\r\n```\r\n\r\n\r\n### Steps To Reproduce\r\n\r\n1. Type in the form; hit ctrl + enter.\r\n2. Change the text in the box; hit ctrl + enter.\r\n\r\n### Expected Behavior\r\n\r\n_No response_\r\n\r\n### Current Behavior\r\n\r\n![image](https://github.com/user-attachments/assets/5537a0c6-6b38-4287-99a3-db77735eb231)\r\n\r\n\r\n### Is this a regression?\r\n\r\n- [X] Yes, this used to work in a previous version.\r\n\r\n### Debug info\r\n\r\n- Streamlit version: 1.40.0\r\n- Python version: 3.11\r\n- Operating System: WSL (Ubuntu 22)\r\n- Browser: Chrome in windows\r\n\r\n\r\n### Additional Information\r\n\r\n_No response_",
+    "labels": [
+      "type:bug",
+      "status:confirmed",
+      "priority:P2",
+      "feature:st.form",
+      "feature:st.text_area"
+    ],
+    "author": {
+      "login": "rgodbey-rev",
+      "type": "User"
+    },
+    "comment_count": 2,
+    "comments_complete": true,
+    "metadata_retrieved_at": "2026-10-06T14:27:25.875926+00:00",
+    "comments_retrieved_at": "2026-10-06T14:32:11.003540+00:00",
+    "comments_retrieval_method": "github_public_html_embedded_data",
+    "body_sha256": "bf7d1cb96e6715cc87859cfd6fba126cc2cc3f5249f66d457f6cd8d084a33327",
+    "original_body_sha256": "fd8bd2d71d1fda072b4437581500e202e4108f1f1b5618191c23a3ab8611e1a6",
+    "streamlit_version": {
+      "value": "1.40.0",
+      "evidence_text": "- Streamlit version: 1.40.0",
+      "start_char": 1536,
+      "end_char": 1564,
+      "method": "explicit_version_line_regex"
+    },
+    "python_version": {
+      "value": "3.11",
+      "evidence_text": "- Python version: 3.11",
+      "start_char": 1565,
+      "end_char": 1588,
+      "method": "explicit_version_line_regex"
+    },
+    "topic_tags_heuristic": [
+      "forms",
+      "initialization_or_update"
+    ],
+    "sampling_sources": [
+      "repo:streamlit/streamlit is:issue \"session state\" in:title,body created:<=2026-10-06"
+    ],
+    "relevance_basis": "state_label_or_title",
+    "evaluation_split": null,
+    "pilot_previously_inspected": false,
+    "historical_as_of_reconstruction": false,
+    "operating_system": {
+      "value": "WSL (Ubuntu 22)",
+      "evidence_text": "- Operating System: WSL (Ubuntu 22)",
+      "start_char": 1589,
+      "end_char": 1625,
+      "method": "explicit_environment_line_regex"
+    },
+    "browser": {
+      "value": "Chrome in windows",
+      "evidence_text": "- Browser: Chrome in windows",
+      "start_char": 1626,
+      "end_char": 1655,
+      "method": "explicit_environment_line_regex"
+    }
+  },
+  "comments": [
+    {
+      "id": 2469178936,
+      "html_url": "https://github.com/streamlit/streamlit/issues/9841#issuecomment-2469178936",
+      "created_at": "2024-11-11T22:15:11Z",
+      "updated_at": "2024-11-11T22:15:11Z",
+      "author_association": "CONTRIBUTOR",
+      "source_id": "comment:2469178936",
+      "issue_number": 9841,
+      "parent_source_id": "issue:9841",
+      "body": "**If this issue affects you, please react with a 👍 (thumbs up emoji) to the initial post.**\n\nYour feedback helps us prioritize which bugs to investigate and address first.\n\n![Visits](https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2Fstreamlit%2Fstreamlit%2Fissues%2F9841&title=visits&edge_flat=false)",
+      "author": {
+        "login": "github-actions",
+        "type": "Bot"
+      },
+      "is_bot": true,
+      "retrieval_method": "github_public_html_embedded_data",
+      "retrieved_at": "2026-10-06T14:32:11.003540+00:00",
+      "body_sha256": "3ccd75a551be227c4079b960e156d06f953b488f4d5a04f8885a980c9657a5de",
+      "updated_at_basis": "lastEditedAt_or_createdAt_from_public_HTML",
+      "is_hidden": false
+    },
+    {
+      "id": 2469382013,
+      "html_url": "https://github.com/streamlit/streamlit/issues/9841#issuecomment-2469382013",
+      "created_at": "2024-11-12T01:07:47Z",
+      "updated_at": "2024-11-12T01:07:47Z",
+      "author_association": "COLLABORATOR",
+      "source_id": "comment:2469382013",
+      "issue_number": 9841,
+      "parent_source_id": "issue:9841",
+      "body": "Hi @rgodbey-rev , thank you for filing this issue and for the very clear repro code! I was able to reproduce this and agree that this behavior has regressed between `1.39.0` and `1.40.0`. I will work with the team to get this resolved.\r\n\r\nAs a workaround, it seems like using the cursor to click the \"submit\" button, rather than using the `ctrl+enter` keyboard shortcut, will ensure the expected values are submitted.",
+      "author": {
+        "login": "sfc-gh-bnisco",
+        "type": "User"
+      },
+      "is_bot": false,
+      "retrieval_method": "github_public_html_embedded_data",
+      "retrieved_at": "2026-10-06T14:32:11.003540+00:00",
+      "body_sha256": "7d65738c973cca6554af862d1daae2f01d4558853cf7d39b2e2b67d88783aa0a",
+      "updated_at_basis": "lastEditedAt_or_createdAt_from_public_HTML",
+      "is_hidden": false
+    }
+  ]
+}

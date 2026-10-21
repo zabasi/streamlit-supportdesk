@@ -1,0 +1,139 @@
+{
+  "issue": {
+    "id": 1972756231,
+    "number": 7649,
+    "title": "If a selectbox is set to None using a session_state key, then interacting with another widget will make it return its first value instead of None",
+    "html_url": "https://github.com/streamlit/streamlit/issues/7649",
+    "created_at": "2023-11-01T17:03:42Z",
+    "updated_at": "2024-04-19T00:13:21Z",
+    "closed_at": "2024-04-19T00:13:21Z",
+    "state": "closed",
+    "state_reason": "completed",
+    "author_association": "CONTRIBUTOR",
+    "source_id": "issue:7649",
+    "repository": "streamlit/streamlit",
+    "body": "### Checklist\r\n\n\n### Summary\r\n\r\nIf a selectbox is set to None using a session_state key, then interacting with another widget will make it return its first value instead of None.\r\n\r\n### Reproducible Code Example\r\n\r\n[![Open in Streamlit Cloud](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://issues.streamlitapp.com/?issue=gh-7649)\r\n\r\n```Python\r\nimport streamlit as st\r\nst.header(\"Minimal example.\")\r\nselection1=st.selectbox(\"Select (normal)\",[\"a\",\"b\",\"c\"], None, key=\"select_normal\")\r\nst.write(selection1) #writes `None`, as expected.\r\n\r\nif \"select_keyed\" not in st.session_state: st.session_state[\"select_keyed\"] = None\r\nif st.button(\"reset the keyed\"):\r\n  st.session_state[\"select_keyed\"] = None\r\nselection2=st.selectbox(\"Select (keyed)\", [\"a\",\"b\",\"c\"], key=\"select_keyed\")\r\nst.write(selection2) #writes `None`, as expected, until you interact with any other widget, in which case it will become `a` instead.\r\nst.text_input(\"You can also type something here and press enter to trigger the bug.\")\r\n\r\nst.session_state\r\n```\r\n\r\n\r\n### Steps To Reproduce\r\n\r\n_No response_\r\n\r\n### Expected Behavior\r\n\r\n_No response_\r\n\r\n### Current Behavior\r\n\r\n_No response_\r\n\r\n### Is this a regression?\r\n\r\n- [ ] Yes, this used to work in a previous version.\r\n\r\n### Debug info\r\n\r\n- Streamlit version: 1.28.0\r\n- Python version: Python 3.11.0\r\n- Operating System: Windows\r\n- Browser: Firefox and Chrome\r\n\r\n\r\n### Additional Information\r\n\r\n_No response_",
+    "labels": [
+      "type:bug",
+      "status:confirmed",
+      "priority:P2",
+      "feature:st.selectbox"
+    ],
+    "author": {
+      "login": "wyattscarpenter",
+      "type": "User"
+    },
+    "comment_count": 3,
+    "comments_complete": true,
+    "metadata_retrieved_at": "2026-10-06T14:28:04.043219+00:00",
+    "comments_retrieved_at": "2026-10-06T14:31:29.957231+00:00",
+    "comments_retrieval_method": "github_public_html_embedded_data",
+    "body_sha256": "ca155e055ed2f39cd1ce59b419f572639c112d37f6c7856dcb4e780118dd544d",
+    "original_body_sha256": "421e0443a09ca9570103f900ac595c926254f8bc8262b8f26bf73f5fca40fe09",
+    "streamlit_version": {
+      "value": "1.28.0",
+      "evidence_text": "- Streamlit version: 1.28.0",
+      "start_char": 1285,
+      "end_char": 1313,
+      "method": "explicit_version_line_regex"
+    },
+    "python_version": {
+      "value": "3.11.0",
+      "evidence_text": "- Python version: Python 3.11.0",
+      "start_char": 1314,
+      "end_char": 1346,
+      "method": "explicit_version_line_regex"
+    },
+    "topic_tags_heuristic": [
+      "reset_or_persistence"
+    ],
+    "sampling_sources": [
+      "repo:streamlit/streamlit is:issue session_state in:title,body created:<=2026-10-06",
+      "repo:streamlit/streamlit is:issue \"session state\" in:title,body created:<=2026-10-06",
+      "repo:streamlit/streamlit is:issue \"widget state\" in:title,body created:<=2026-10-06"
+    ],
+    "relevance_basis": "state_label_or_title",
+    "evaluation_split": null,
+    "pilot_previously_inspected": false,
+    "historical_as_of_reconstruction": false,
+    "operating_system": {
+      "value": "Windows",
+      "evidence_text": "- Operating System: Windows",
+      "start_char": 1347,
+      "end_char": 1375,
+      "method": "explicit_environment_line_regex"
+    },
+    "browser": {
+      "value": "Firefox and Chrome",
+      "evidence_text": "- Browser: Firefox and Chrome",
+      "start_char": 1376,
+      "end_char": 1406,
+      "method": "explicit_environment_line_regex"
+    }
+  },
+  "comments": [
+    {
+      "id": 1789325405,
+      "html_url": "https://github.com/streamlit/streamlit/issues/7649#issuecomment-1789325405",
+      "created_at": "2023-11-01T17:03:55Z",
+      "updated_at": "2023-11-01T17:03:55Z",
+      "author_association": "CONTRIBUTOR",
+      "source_id": "comment:1789325405",
+      "issue_number": 7649,
+      "parent_source_id": "issue:7649",
+      "body": "**If this issue affects you, please react with a 👍 (thumbs up emoji) to the initial post.**\n\nYour feedback helps us prioritize which bugs to investigate and address first.\n\n![Visits](https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2Fstreamlit%2Fstreamlit%2Fissues%2F7649&title=visits&edge_flat=false)",
+      "author": {
+        "login": "github-actions",
+        "type": "Bot"
+      },
+      "is_bot": true,
+      "retrieval_method": "github_public_html_embedded_data",
+      "retrieved_at": "2026-10-06T14:31:29.957231+00:00",
+      "body_sha256": "d23799094386a79a0e156eae440fc6b8d18fbf800c258b1eba71a81ec2def6ad",
+      "updated_at_basis": "lastEditedAt_or_createdAt_from_public_HTML",
+      "is_hidden": false
+    },
+    {
+      "id": 1800123550,
+      "html_url": "https://github.com/streamlit/streamlit/issues/7649#issuecomment-1800123550",
+      "created_at": "2023-11-07T21:09:18Z",
+      "updated_at": "2023-11-07T21:09:18Z",
+      "author_association": "CONTRIBUTOR",
+      "source_id": "comment:1800123550",
+      "issue_number": 7649,
+      "parent_source_id": "issue:7649",
+      "body": "Hey @LukasMasuch this seems like a bug in the Select None. Any idea what could be causing it?",
+      "author": {
+        "login": "kmcgrady",
+        "type": "User"
+      },
+      "is_bot": false,
+      "retrieval_method": "github_public_html_embedded_data",
+      "retrieved_at": "2026-10-06T14:31:29.957231+00:00",
+      "body_sha256": "7a13051667d0560436e3187f45322c68f90a87951cc1da1c373ea317f1228e65",
+      "updated_at_basis": "lastEditedAt_or_createdAt_from_public_HTML",
+      "is_hidden": false
+    },
+    {
+      "id": 1800937012,
+      "html_url": "https://github.com/streamlit/streamlit/issues/7649#issuecomment-1800937012",
+      "created_at": "2023-11-08T03:04:49Z",
+      "updated_at": "2023-11-08T03:04:49Z",
+      "author_association": "COLLABORATOR",
+      "source_id": "comment:1800937012",
+      "issue_number": 7649,
+      "parent_source_id": "issue:7649",
+      "body": "I deployed the snippet [here](https://issues.streamlit.app/?issue=gh-7649). This indeed looks like a bug, and I think I know why this might happen. It probably also happens to other widgets. But it's a bit more tricky to fix and needs some more dedicated time.",
+      "author": {
+        "login": "lukasmasuch",
+        "type": "User"
+      },
+      "is_bot": false,
+      "retrieval_method": "github_public_html_embedded_data",
+      "retrieved_at": "2026-10-06T14:31:29.957231+00:00",
+      "body_sha256": "dac793799f3f28758a3dcc4fc02948cfe48348ad8e837c4173c1d5d333f51393",
+      "updated_at_basis": "lastEditedAt_or_createdAt_from_public_HTML",
+      "is_hidden": false
+    }
+  ]
+}

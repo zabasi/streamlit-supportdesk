@@ -1,0 +1,6 @@
+{
+  "selection": "preserved_from_previous_fixed_30_case_package",
+  "rubric_status": "team_human_signoff_pending",
+  "scenario_status": "specifications_not_executed",
+  "followup_visibility": "evaluator releases one due message; future turns must not be preloaded into agent input"
+}

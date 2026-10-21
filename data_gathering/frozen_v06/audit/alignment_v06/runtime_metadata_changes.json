@@ -1,0 +1,4254 @@
+[
+  {
+    "source_id": "issue:3532",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "issue:3586",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "issue:3605",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "issue:3646",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "issue:3670",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "issue:3714",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "issue:3764",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "issue:3843",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "issue:4113",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "issue:4195",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "issue:4223",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "issue:4247",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "issue:4264",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "issue:4277",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "issue:4345",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "issue:4538",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "issue:4540",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "issue:4543",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "issue:4553",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "issue:4651",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "issue:4695",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "issue:4815",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "issue:4925",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "issue:4949",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "issue:5018",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "issue:5102",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "issue:5301",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "issue:5529",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "issue:5537",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "issue:5567",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "issue:5571",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "issue:5581",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "issue:5584",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "issue:5618",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "issue:5690",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "issue:5815",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "issue:5826",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "issue:5833",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "issue:5880",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "issue:5922",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "issue:5954",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "issue:6152",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "issue:6167",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "issue:6218",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "issue:6370",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "issue:6415",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "issue:6540",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "issue:6571",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "issue:6643",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "issue:6772",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "issue:6818",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "issue:6898",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "issue:6939",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "issue:6950",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "issue:6969",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "issue:6970",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "issue:6995",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "issue:7084",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "issue:7087",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "issue:7206",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "issue:7216",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "issue:7225",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "issue:7290",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "issue:7299",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "issue:7530",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "issue:7534",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "issue:7563",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "issue:7588",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "issue:7615",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "issue:7851",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "issue:7862",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "issue:7873",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "issue:7891",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "issue:8073",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "issue:8129",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "issue:8136",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "issue:8174",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "issue:8349",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "issue:8380",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "issue:8475",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "issue:8608",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "issue:8609",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "issue:8715",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "issue:8833",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "issue:8961",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "issue:9030",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "issue:9089",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "issue:9163",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "issue:9171",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "issue:9194",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "issue:9415",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "issue:9428",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "issue:9455",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "issue:9505",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "issue:9814",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "issue:9825",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "issue:9917",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "issue:10007",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "issue:10045",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "issue:10067",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "issue:10089",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "issue:10115",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "issue:10154",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "issue:11040",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "issue:11679",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "issue:12013",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "issue:12022",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "issue:12165",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "issue:12506",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "issue:12740",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "issue:12782",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "issue:13009",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "issue:13337",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "issue:13409",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "issue:13466",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "issue:14710",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "issue:14717",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "issue:15544",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "issue:16203",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "issue:16240",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "issue:16242",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "issue:16269",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "issue:16721",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "issue:16730",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "issue:17026",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "issue:17250",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:884380879",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:884690277",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:893052727",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:913041329",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:917813858",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:918154020",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:918693624",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:918714853",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:919657195",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:924405437",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:942777873",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:953428446",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:984456023",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:998909519",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:999454266",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:1004484147",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:1007820799",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:1059153672",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:1060876828",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:1081298257",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:1085364835",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:1089656958",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:1100168148",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:1100314058",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:1100491200",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:1102110583",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:1109143498",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:1128466020",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:1146222189",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:1146248737",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:1185536251",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:1185650822",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:1186927498",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:1188293393",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:1191437346",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:1192266716",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:1195821252",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:1207059482",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:1215218638",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:1235962969",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:1236387939",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:1242559770",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:1274881298",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:1275840319",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:1277655781",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:1278636373",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:1284398224",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:1285448927",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:1285912864",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:1286593807",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:1286988732",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:1287208092",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:1287231184",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:1289117500",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:1310821438",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:1312065718",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:1314934007",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:1347666071",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:1350114377",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:1367638747",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:1367687458",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:1376356608",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:1440027657",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:1440076992",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:1440361034",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:1440841182",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:1453570024",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:1453645421",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:1453654758",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:1468286324",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:1493897295",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:1493908990",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:1520986763",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:1521285678",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:1522963364",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:1529714429",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:1538743723",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:1567314604",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:1611935325",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:1620139620",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:1622096730",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:1622887507",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:1628801233",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:1632130247",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:1633378328",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:1634285450",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:1634391446",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:1634406995",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:1634630888",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:1646682444",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:1651508101",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:1654569331",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:1666969927",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:1677505248",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:1703252321",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:1703856825",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:1713176863",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:1718152350",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:1725108263",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:1727212238",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:1764619046",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:1765666835",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:1765958416",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:1766323902",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:1766761598",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:1766792384",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:1770300771",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:1778654052",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:1781846630",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:1784354923",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:1820063423",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:1822556860",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:1858423001",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:1861835406",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:1866074428",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:1866122082",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:1866236244",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:1881894936",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:1882065243",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:1883147204",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:1885431392",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:1918922464",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:1922423051",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:1936401291",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:1939808275",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:1949639611",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:1951606512",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:1952278959",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:1955874237",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:1983394250",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:1991461255",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:2016905081",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:2016972760",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:2017071514",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:2024647811",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:2028939540",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:2029026874",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:2094861767",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:2096548706",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:2097834913",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:2097915019",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:2098690469",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:2151082626",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:2151741426",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:2184087813",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:2184946267",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:2184990741",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:2207398999",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:2242720685",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:2248712960",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:2256655473",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:2256771798",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:2257453839",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:2257741157",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:2258058142",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:2258678426",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:2258864797",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:2258886210",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:2259317665",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:2261553819",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:2264188174",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:2275713606",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:2338564480",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:2353641501",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:2379994222",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:2395023864",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:2422329810",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:2431804541",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:2466614509",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:2466815111",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:2469115094",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:2495181293",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:2497965560",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:2539300724",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:2545242591",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:2558390876",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:2575358799",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:2698403062",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:2752191136",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:2784032897",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:2784297840",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:2955247635",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:3106762122",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:3175711212",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:3176026484",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:3176967822",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:3215771739",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:3216541843",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:3218192215",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:3237599095",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:3249501480",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:3285268893",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:3304063759",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:3395242402",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:3407066968",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:3409170001",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:3430119616",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:3452137360",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:3542924264",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:3647347310",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:3647547488",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:3686106100",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:3704221181",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:4223994087",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:4225566093",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:4226629153",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:4238593980",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:4663959726",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:4991445370",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:5169263894",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:5498802345",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:5776979427",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:5795047669",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "comment:5861480559",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "doc:pinned:content/develop/api-reference/caching-and-state/session_state.md",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "doc:pinned:content/develop/concepts/architecture/session-state.md",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "doc:pinned:content/develop/concepts/architecture/widget-behavior.md",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "doc:pinned:content/develop/concepts/architecture/forms.md",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "doc:pinned:content/develop/concepts/multipage-apps/overview.md",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "doc:pinned:content/develop/concepts/multipage-apps/page-and-navigation.md",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "doc:pinned:content/develop/concepts/multipage-apps/page_directory.md",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "doc:pinned:content/develop/concepts/multipage-apps/widgets.md",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "doc:pinned:content/develop/tutorials/multipage-apps/custom-navigation.md",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "doc:pinned:content/develop/tutorials/multipage-apps/dynamic-navigation.md",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "doc:pinned:content/kb/FAQ/serializable-session-state.md",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "doc:pinned:content/kb/FAQ/widget-updating-session-state.md",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "doc:rendered:7890201016c75cb0",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "doc:rendered:aeb12a89c1bd5813",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "doc:rendered:9f138256cdc71bb8",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "doc:rendered:2170251fb07340cc",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "doc:rendered:27fb1333978502c5",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "doc:rendered:32ce4ac55c241013",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "doc:rendered:4e76630f08712af2",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "doc:rendered:c45a57055845df3b",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "doc:pinned:content/develop/concepts/architecture/caching.md",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "doc:linked:41220e86d1d43571a2f5",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type"
+    ]
+  },
+  {
+    "source_id": "doc:linked:e3c6cd07859b580cf16c",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type"
+    ]
+  },
+  {
+    "source_id": "doc:linked:b965c9a9da74f5676ffe",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type"
+    ]
+  },
+  {
+    "source_id": "doc:linked:a80b997108d279d99857",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type"
+    ]
+  },
+  {
+    "source_id": "doc:linked:82a97872765e5c5d1862",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type"
+    ]
+  },
+  {
+    "source_id": "doc:linked:f62d2bc4926afc5516ff",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type"
+    ]
+  },
+  {
+    "source_id": "doc:linked:614de844d83174c03c6b",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type"
+    ]
+  },
+  {
+    "source_id": "doc:linked:c056b2dffe9b2b9d0c5a",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type"
+    ]
+  },
+  {
+    "source_id": "doc:linked:406e2f692cec5dcfad82",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type"
+    ]
+  },
+  {
+    "source_id": "doc:linked:3398a7df36832851082e",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type"
+    ]
+  },
+  {
+    "source_id": "doc:linked:78cb80651cf78a0964fe",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type"
+    ]
+  },
+  {
+    "source_id": "doc:linked:f02ef9513774a92e45cb",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type"
+    ]
+  },
+  {
+    "source_id": "doc:linked:b4fe284d27403ee9d36e",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type"
+    ]
+  },
+  {
+    "source_id": "doc:linked:4393664d69b0c81f2504",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type"
+    ]
+  },
+  {
+    "source_id": "doc:linked:7cc964604f87c878b0fd",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type"
+    ]
+  },
+  {
+    "source_id": "doc:linked:bc99535048632be18e04",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type"
+    ]
+  },
+  {
+    "source_id": "doc:linked:3e6763d7dc2225f5c467",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type"
+    ]
+  },
+  {
+    "source_id": "doc:linked:125317a4b2d75737858b",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type"
+    ]
+  },
+  {
+    "source_id": "doc:linked:1a672b3e6d3a413e14a2",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type"
+    ]
+  },
+  {
+    "source_id": "doc:linked:b40cdea94393c153da48",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type"
+    ]
+  },
+  {
+    "source_id": "doc:linked:c4ef9eb35284c59634c2",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type"
+    ]
+  },
+  {
+    "source_id": "doc:linked:dbd6a580c6bc574f11c2",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type"
+    ]
+  },
+  {
+    "source_id": "doc:linked:fcac62998083dafde1f6",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type"
+    ]
+  },
+  {
+    "source_id": "doc:linked:ed65d8f03d4d9b9aeb73",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type"
+    ]
+  },
+  {
+    "source_id": "doc:linked:560ba59f10f9579c7bcf",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type"
+    ]
+  },
+  {
+    "source_id": "doc:linked:4bf3a73927a3d7d51d6f",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type"
+    ]
+  },
+  {
+    "source_id": "doc:linked:39e4ba37f3c93236c86e",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type"
+    ]
+  },
+  {
+    "source_id": "doc:linked:6308a54f4f7bbfc2bbaa",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type"
+    ]
+  },
+  {
+    "source_id": "doc:linked:4d90122c5d83ea8a2e4d",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type"
+    ]
+  },
+  {
+    "source_id": "doc:linked:0db59ac3b2c45a25e0d1",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type"
+    ]
+  },
+  {
+    "source_id": "doc:linked:c3cd7e50cac3584ea37e",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type"
+    ]
+  },
+  {
+    "source_id": "doc:linked:0db244f834ab7fe722ef",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type"
+    ]
+  },
+  {
+    "source_id": "doc:linked:f2bc33b819323233611a",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type"
+    ]
+  },
+  {
+    "source_id": "release:1.3.0:section:8",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "release:1.2.0:section:11",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "release:1.1.0:section:7",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "release:0.89.0:section:7",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "release:0.89.0:section:8",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "release:0.84.0:section:2",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "release:0.83.0:section:4",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "release:0.81.1:section:2",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "release:1.15.0:section:4",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "release:1.12.0:section:10",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "release:1.11.0:section:10",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "release:1.10.0:section:2",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "release:1.9.0:section:5",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "release:1.29.0:section:26",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "release:1.27.0:section:4",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "release:1.27.0:section:6",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "release:1.27.0:section:18",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "release:1.27.0:section:23",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "release:1.26.0:section:18",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "release:1.25.0:section:7",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "release:1.23.0:section:2",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "release:1.23.0:section:10",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "release:1.21.0:section:15",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "release:1.21.0:section:20",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "release:1.20.0:section:12",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "release:1.41.0:section:21",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "release:1.41.0:section:29",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "release:1.40.0:section:23",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "release:1.39.0:section:30",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "release:1.38.0:section:10",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "release:1.38.0:section:16",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "release:1.38.0:section:19",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "release:1.38.0:section:25",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "release:1.38.0:section:28",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "release:1.37.0:section:4",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "release:1.37.0:section:10",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "release:1.37.0:section:11",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "release:1.37.0:section:12",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "release:1.37.0:section:19",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "release:1.37.0:section:29",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "release:1.37.0:section:33",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "release:1.36.0:section:2",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "release:1.36.0:section:7",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "release:1.36.0:section:8",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "release:1.36.0:section:10",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "release:1.36.0:section:27",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "release:1.35.0:section:2",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "release:1.35.0:section:20",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "release:1.34.0:section:24",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "release:1.33.0:section:2",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "release:1.33.0:section:23",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "release:1.31.0:section:4",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "release:1.31.0:section:17",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "release:1.30.0:section:4",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "release:1.30.0:section:17",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "release:1.30.0:section:20",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "release:1.52.0:section:3",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "release:1.52.0:section:7",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "release:1.52.0:section:14",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "release:1.51.0:section:14",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "release:1.50.0:section:6",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "release:1.49.0:section:10",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "release:1.49.0:section:17",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "release:1.48.0:section:5",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "release:1.48.0:section:24",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "release:1.47.0:section:12",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "release:1.47.0:section:36",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "release:1.47.0:section:53",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "release:1.46.0:section:31",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "release:1.46.0:section:68",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "release:1.46.0:section:70",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "release:1.45.0:section:15",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "release:1.43.0:section:5",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "release:1.42.0:section:32",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "release:1.42.0:section:43",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "release:1.64.0:section:5",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "release:1.64.0:section:7",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "release:1.64.0:section:13",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "release:1.64.0:section:15",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "release:1.64.0:section:28",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "release:1.64.0:section:32",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "release:1.64.0:section:39",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "release:1.63.0:section:2",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "release:1.63.0:section:5",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "release:1.62.0:section:28",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "release:1.61.0:section:11",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "release:1.61.0:section:23",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "release:1.61.0:section:34",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "release:1.60.0:section:7",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "release:1.60.0:section:25",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "release:1.60.0:section:27",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "release:1.59.0:section:11",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "release:1.59.0:section:29",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "release:1.59.0:section:34",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "release:1.59.0:section:36",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "release:1.59.0:section:40",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "release:1.59.0:section:42",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "release:1.59.0:section:43",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "release:1.58.0:section:2",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "release:1.58.0:section:11",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "release:1.58.0:section:16",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "release:1.57.0:section:9",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "release:1.57.0:section:26",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "release:1.56.0:section:15",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "release:1.56.0:section:26",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "release:1.56.0:section:38",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "release:1.55.0:section:3",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "release:1.55.0:section:12",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "release:1.55.0:section:34",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "release:1.54.0:section:6",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "release:1.53.0:section:15",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type",
+      "metadata.text_cleanup.audit_source_id"
+    ]
+  },
+  {
+    "source_id": "linked:8242bee435fd5f31062c",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type"
+    ]
+  },
+  {
+    "source_id": "linked:efcf225600e4fbeb1fda",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type"
+    ]
+  },
+  {
+    "source_id": "linked:fcb205229adb54738c82",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type"
+    ]
+  },
+  {
+    "source_id": "linked:522aa60d4ef83e45d697",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type"
+    ]
+  },
+  {
+    "source_id": "linked:b3d1d4a78657dc86de54",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type"
+    ]
+  },
+  {
+    "source_id": "linked:0ca35591a0b2381f8707",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type"
+    ]
+  },
+  {
+    "source_id": "linked:3e8c10d33277220ac736",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type"
+    ]
+  },
+  {
+    "source_id": "linked:ceacd865f6cbaf34c0e7",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type"
+    ]
+  },
+  {
+    "source_id": "linked:3b23e6b3b252316c4afd",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type"
+    ]
+  },
+  {
+    "source_id": "linked:e010437c1f9c3f76b6f4",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type"
+    ]
+  },
+  {
+    "source_id": "linked:7b063466fe3415cc6e5b",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type"
+    ]
+  },
+  {
+    "source_id": "linked:c30765173e9bee9ab569",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type"
+    ]
+  },
+  {
+    "source_id": "linked:584dc6e7de2a1144991a",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type"
+    ]
+  },
+  {
+    "source_id": "linked:799dbe063fbe97d5071c",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type"
+    ]
+  },
+  {
+    "source_id": "linked:b2c5eba825fc898b8a47",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type"
+    ]
+  },
+  {
+    "source_id": "linked:e3b8ec243e5911c50ffe",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type"
+    ]
+  },
+  {
+    "source_id": "linked:5de1b3e2e2911ec8a2dd",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type"
+    ]
+  },
+  {
+    "source_id": "linked:dc9503cd41b0a1f3eed2",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type"
+    ]
+  },
+  {
+    "source_id": "linked:9d08e53051b262e8fe46",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type"
+    ]
+  },
+  {
+    "source_id": "linked:5f6ed7ff3904847fe83a",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type"
+    ]
+  },
+  {
+    "source_id": "linked:7f957d926cdaec28274f",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type"
+    ]
+  },
+  {
+    "source_id": "linked:7ab96c64800604bd7ac7",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type"
+    ]
+  },
+  {
+    "source_id": "linked:3ef74042d98e4f74ac8c",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type"
+    ]
+  },
+  {
+    "source_id": "linked:6d77b5faeda7f9f58fe1",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type"
+    ]
+  },
+  {
+    "source_id": "linked:564e9e31a64fecfb42a2",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type"
+    ]
+  },
+  {
+    "source_id": "linked:6160ad9cd8f8b69b400c",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type"
+    ]
+  },
+  {
+    "source_id": "linked:168a8383cb3aac557f0c",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type"
+    ]
+  },
+  {
+    "source_id": "linked:78ae17a9a0c0c449444d",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type"
+    ]
+  },
+  {
+    "source_id": "linked:b1cedb780bd0facde417",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type"
+    ]
+  },
+  {
+    "source_id": "linked:5b530ac51d6bc0adc31c",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type"
+    ]
+  },
+  {
+    "source_id": "linked:cece47be81fa239413e4",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type"
+    ]
+  },
+  {
+    "source_id": "linked:b03019a9a30890a4d555",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type"
+    ]
+  },
+  {
+    "source_id": "linked:acabc8c3caa99f0d296c",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type"
+    ]
+  },
+  {
+    "source_id": "linked:e6e751b23290184a772b",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type"
+    ]
+  },
+  {
+    "source_id": "linked:4174c512ff3b2fc82578",
+    "removed_runtime_fields": [
+      "metadata.source_id",
+      "metadata.source_type"
+    ]
+  }
+]

@@ -1,0 +1,118 @@
+{
+  "issue": {
+    "id": 1423268334,
+    "number": 5604,
+    "title": "text_area inside an expander doesn't load from session state ",
+    "html_url": "https://github.com/streamlit/streamlit/issues/5604",
+    "created_at": "2022-10-26T00:37:22Z",
+    "updated_at": "2023-10-19T16:49:02Z",
+    "closed_at": "2023-10-19T16:49:02Z",
+    "state": "closed",
+    "state_reason": "completed",
+    "author_association": "NONE",
+    "source_id": "issue:5604",
+    "repository": "streamlit/streamlit",
+    "body": "### Checklist\r\n\n\n### Summary\r\n\r\nThis is a weird one but quite pesky!\r\n\r\n### Reproducible Code Example\r\n\r\n```Python\r\nimport streamlit as st\r\nfrom time import sleep\r\n\r\n\r\nif not st.session_state:\r\n    st.session_state.update({\"text\": \"Hello, World!\"})\r\n\r\nif st.button(\"Press before expanding\"):\r\n    with st.spinner():\r\n        sleep(1)\r\n\r\nwith st.expander(\"Text Field inside\"):\r\n    st.text_area(\"Text\", key=\"text\")\r\n    st.write(st.session_state)\r\n```\r\n\r\n\r\n### Steps To Reproduce\r\n\r\n1. Run this code\r\n2. Press the button\r\n3. Wait...\r\n4. Expand Text Field\r\n\r\n### Expected Behavior\r\n\r\nThe text field is prefilled with \"Hello World\" \r\n\r\nIf you DO NOT press the button before expanding, this is the behavior\r\n\r\n\r\n### Current Behavior\r\n\r\nThe text field is empty, and hence is not the same as the session state\r\n\r\n### Is this a regression?\r\n\r\n- [ ] Yes, this used to work in a previous version.\r\n\r\n### Debug info\r\n\r\n- Streamlit version: 1.13.0\r\n- Python version: 3.10.5\r\n- Operating System: mac\r\n- Browser: chrome\r\n- Virtual environment: yes\r\n\r\n\r\n### Additional Information\r\n\r\nHere's a screenshot - \r\n\r\n<img width=\"799\" alt=\"image\" src=\"https://user-images.githubusercontent.com/19492893/197907334-6cd8c834-e4b7-4b79-98a7-f142d85413b4.png\">\r\n\r\n\r\n### Are you willing to submit a PR?\r\n\r\n- [ ] Yes, I am willing to submit a PR!\r\n\r\n---\r\n\r\nCommunity voting on feature requests enables the Streamlit team to understand which features are most important to our users.\r\n\r\n**If you'd like the Streamlit team to prioritize this feature request, please use the 👍 (thumbs up emoji) reaction in response to the initial post.**",
+    "labels": [
+      "type:bug",
+      "priority:P3",
+      "feature:st.session_state",
+      "feature:st.expander",
+      "feature:st.text_area"
+    ],
+    "author": {
+      "login": "devxpy",
+      "type": "User"
+    },
+    "comment_count": 2,
+    "comments_complete": true,
+    "metadata_retrieved_at": "2026-10-06T14:27:46.022568+00:00",
+    "comments_retrieved_at": "2026-10-06T14:28:29.995629+00:00",
+    "comments_retrieval_method": "github_public_html_embedded_data",
+    "body_sha256": "3b7f0f4712d621ddef596c34e60d8f32ef39d28d88f8219cbf6b8e96f8eb7268",
+    "original_body_sha256": "b793db75b96e890ba9cd17077695161f819572231ab06f3f80941bd32a55c2b5",
+    "streamlit_version": {
+      "value": "1.13.0",
+      "evidence_text": "- Streamlit version: 1.13.0",
+      "start_char": 909,
+      "end_char": 937,
+      "method": "explicit_version_line_regex"
+    },
+    "python_version": {
+      "value": "3.10.5",
+      "evidence_text": "- Python version: 3.10.5",
+      "start_char": 938,
+      "end_char": 963,
+      "method": "explicit_version_line_regex"
+    },
+    "topic_tags_heuristic": [
+      "initialization_or_update"
+    ],
+    "sampling_sources": [
+      "label:feature:st.session_state",
+      "repo:streamlit/streamlit is:issue \"session state\" in:title,body created:<=2026-10-06"
+    ],
+    "relevance_basis": "state_label_or_title",
+    "evaluation_split": null,
+    "pilot_previously_inspected": false,
+    "historical_as_of_reconstruction": false,
+    "operating_system": {
+      "value": "mac",
+      "evidence_text": "- Operating System: mac",
+      "start_char": 964,
+      "end_char": 988,
+      "method": "explicit_environment_line_regex"
+    },
+    "browser": {
+      "value": "chrome",
+      "evidence_text": "- Browser: chrome",
+      "start_char": 989,
+      "end_char": 1007,
+      "method": "explicit_environment_line_regex"
+    }
+  },
+  "comments": [
+    {
+      "id": 1292278595,
+      "html_url": "https://github.com/streamlit/streamlit/issues/5604#issuecomment-1292278595",
+      "created_at": "2022-10-26T16:08:05Z",
+      "updated_at": "2022-10-26T16:08:05Z",
+      "author_association": "CONTRIBUTOR",
+      "source_id": "comment:1292278595",
+      "issue_number": 5604,
+      "parent_source_id": "issue:5604",
+      "body": "Hello @devxpy thank you for opening this issue. I can reproduce this issue and confirm that this is bug. \r\nit is more correct to check that specific key in `session_state`, instead of checking session_state exists.\r\n```python\r\nif \"texttt\" not in st.session_state:\r\n    st.session_state[\"texttt\"] = \"Hello, World!\"\r\n```\r\n\r\n but anyway, this is not fixing the issue you described, so we will look into this and fix it in future\r\n \r\n Demo app: [![Open in Streamlit Cloud](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://issues.streamlitapp.com/?issue=gh-5604)",
+      "author": {
+        "login": "kajarenc",
+        "type": "User"
+      },
+      "is_bot": false,
+      "retrieval_method": "github_public_html_embedded_data",
+      "retrieved_at": "2026-10-06T14:28:29.995629+00:00",
+      "body_sha256": "616be4f092429112d776658449b24658b882e123789d1d33d59b32450dc3fab8",
+      "updated_at_basis": "lastEditedAt_or_createdAt_from_public_HTML",
+      "is_hidden": false
+    },
+    {
+      "id": 1327872005,
+      "html_url": "https://github.com/streamlit/streamlit/issues/5604#issuecomment-1327872005",
+      "created_at": "2022-11-25T20:35:40Z",
+      "updated_at": "2022-11-25T20:35:40Z",
+      "author_association": "NONE",
+      "source_id": "comment:1327872005",
+      "issue_number": 5604,
+      "parent_source_id": "issue:5604",
+      "body": "Any update on this? Seems like a pretty major bug!",
+      "author": {
+        "login": "devxpy",
+        "type": "User"
+      },
+      "is_bot": false,
+      "retrieval_method": "github_public_html_embedded_data",
+      "retrieved_at": "2026-10-06T14:28:29.995629+00:00",
+      "body_sha256": "f1ee8ecb1f6e1a2c99b1a4c99cd612b45820541070bfc2b96b22e231cc86a754",
+      "updated_at_basis": "lastEditedAt_or_createdAt_from_public_HTML",
+      "is_hidden": false
+    }
+  ]
+}

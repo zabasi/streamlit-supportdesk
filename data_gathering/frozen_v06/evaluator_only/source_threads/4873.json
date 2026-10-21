@@ -1,0 +1,173 @@
+{
+  "issue": {
+    "id": 1274979091,
+    "number": 4873,
+    "title": "using a datetime slider, the session_state.value is not being held after submitting the form",
+    "html_url": "https://github.com/streamlit/streamlit/issues/4873",
+    "created_at": "2022-06-17T12:35:11Z",
+    "updated_at": "2022-07-19T19:56:46Z",
+    "closed_at": "2022-07-19T07:55:51Z",
+    "state": "closed",
+    "state_reason": "completed",
+    "author_association": "NONE",
+    "source_id": "issue:4873",
+    "repository": "streamlit/streamlit",
+    "body": "### Summary\r\n\r\nWhen using a datetime slider to select a time-window inside a form, the widget value resets before being passed to the sessionstate after pressing submit. This is somehow linked to the fact that I am using datetime.now() to reset the initial input value of the slider upon form reset. \r\n\r\n### Steps to reproduce\r\n\r\nCode snippet:\r\n\r\nI've provided 5 forms where I try to pass on date, time or datetime selection.\r\nYou can see that by pressing \"submit\" the value is sometimes incorrectly being passed to the session state. \r\nOnly when I use a datetime slider that is completely independent from datetime.now() calls, it works (the 3th form)\r\n\r\n```python\r\nimport streamlit as st\r\nfrom datetime import datetime, timedelta, time, date\r\n\r\nwith st.form(\"timeselect\", clear_on_submit=True):\r\n    start_time = st.slider(\r\n        \"timeselect\",\r\n        min_value= datetime.now() - timedelta(days=2),\r\n        max_value= datetime.now() + timedelta(days=2),\r\n        value=(datetime.now() - timedelta(days=1), datetime.now()),\r\n        step= timedelta(hours=1),\r\n        format=\"MM/DD/YY - hh:mm\",\r\n        key='selectedtime')\r\n    submitted = st.form_submit_button(\"Submit\")\r\n\r\n    data = {\r\n    'datetime' : str(st.session_state.selectedtime),\r\n    }\r\n\r\n    st.write(data)\r\n\r\nwith st.form(\"timeselect_fixed limits\", clear_on_submit=True):\r\n    start_time = st.slider(\r\n        \"timeselect_fixed limits\",\r\n        min_value= datetime(2022,1,20),\r\n        max_value=  datetime(2024,1,20),\r\n        value=(datetime.now() - timedelta(days=1), datetime.now()),\r\n        step= timedelta(hours=1),\r\n        format=\"MM/DD/YY - hh:mm\",\r\n        key='selectedtime')\r\n    submitted = st.form_submit_button(\"Submit\")\r\n\r\n    data = {\r\n    'datetime' : str(st.session_state.selectedtime),\r\n    }\r\n\r\n    st.write(data)\r\n\r\nwith st.form(\"timeselect_fixed limits & start date\", clear_on_submit=True):\r\n    start_time = st.slider(\r\n        \"timeselect_fixed limits & start date\",\r\n        min_value= datetime(2022,1,20),\r\n        max_value=  datetime(2024,1,20),\r\n        value=datetime(2023,1,20),\r\n        step= timedelta(hours=1),\r\n        format=\"MM/DD/YY - hh:mm\",\r\n        key='selectedtime')\r\n    submitted = st.form_submit_button(\"Submit\")\r\n\r\n    data = {\r\n    'datetime' : str(st.session_state.selectedtime),\r\n    }\r\n\r\n    st.write(data)\r\n    \r\nwith st.form(\"my_form\", clear_on_submit=True):\r\n    coltop1, coltop2 = st.columns([1, 3])\r\n\r\n    dateselect = coltop1.date_input(\r\n        \"Select date of scrap\",\r\n        value=datetime.now(),\r\n        key='dateselect'\r\n        )\r\n\r\n    timeselect = coltop2.slider(\r\n        \"Select time of scrap detection (±5min):\",\r\n        value=(time(datetime.now().hour, datetime.now().minute)),\r\n        step=timedelta(minutes=5),\r\n        format=('HH:mm'),\r\n        key='timeselect'\r\n        )\r\n    submitted = st.form_submit_button(\"Submit\")\r\n\r\n    data = {\r\n        'date' : str(st.session_state.dateselect),\r\n        'time' : str(st.session_state.timeselect),\r\n        }\r\n\r\n    st.write(data)\r\n\r\nwith st.form(\"my_form2\", clear_on_submit=True):\r\n    coltop1, coltop2 = st.columns([1, 3])\r\n\r\n    dateselect = coltop1.date_input(\r\n        \"Select date\",\r\n        value=datetime.now(),\r\n        key='dateselect'\r\n        )\r\n\r\n    timeselect = coltop2.slider(\r\n        \"Select time (±5min):\",\r\n        value=datetime.now(),\r\n        step=timedelta(days=1),\r\n        format=\"MM/DD/YY\",\r\n        key='dateslider'\r\n        )\r\n    submitted = st.form_submit_button(\"Submit\")\r\n\r\n    data = {\r\n        'date' : str(st.session_state.dateselect),\r\n        'date2' : str(st.session_state.dateslider),\r\n        }\r\n\r\n    st.write(data)\r\n```\r\n\r\n\r\nIf applicable, please provide the steps we should take to reproduce the bug:\r\n\r\nClick on the buttons to submit the form. \r\n\r\n**Expected behavior:**\r\n\r\nOnce the submit button is pressed, the datetime value is being passed to the sessionstate. \r\n\r\n**Actual behavior:**\r\n\r\nThe slider is reset and the resetted value (datetime.now()) is being passed to the sessionstate. \r\n\r\n### Is this a regression?\r\n\r\nThat is, did this use to work the way you expected in the past?\r\nyes / no -- I don't know\r\n\r\n### Debug info\r\n\r\n- Streamlit version: 1.10.0\r\n- Python version: 3.10.5\r\n- Using: venv, was testing this on a docker, but I recreated the issue on a local streamlit script aswell\r\n- OS version: Windows 10\r\n- Browser version: Chrome Version 102.0.5005.115 (Official Build) (64-bit)\r\n\r\n### Additional information\r\n\r\n/",
+    "labels": [
+      "area:widgets",
+      "priority:P1",
+      "feature:st.slider"
+    ],
+    "author": {
+      "login": "BrtSnsn",
+      "type": "User"
+    },
+    "comment_count": 5,
+    "comments_complete": true,
+    "metadata_retrieved_at": "2026-10-06T14:27:52.872268+00:00",
+    "comments_retrieved_at": "2026-10-06T14:30:51.115086+00:00",
+    "comments_retrieval_method": "github_public_html_embedded_data",
+    "body_sha256": "1faba96c3dc5c6033b2bdb1228dddff535a394f6c6490af3afdd8dff7a4310e7",
+    "original_body_sha256": "1faba96c3dc5c6033b2bdb1228dddff535a394f6c6490af3afdd8dff7a4310e7",
+    "streamlit_version": {
+      "value": "1.10.0",
+      "evidence_text": "- Streamlit version: 1.10.0",
+      "start_char": 4176,
+      "end_char": 4204,
+      "method": "explicit_version_line_regex"
+    },
+    "python_version": {
+      "value": "3.10.5",
+      "evidence_text": "- Python version: 3.10.5",
+      "start_char": 4205,
+      "end_char": 4230,
+      "method": "explicit_version_line_regex"
+    },
+    "topic_tags_heuristic": [
+      "forms",
+      "reset_or_persistence"
+    ],
+    "sampling_sources": [
+      "repo:streamlit/streamlit is:issue \"session state\" in:title,body created:<=2026-10-06"
+    ],
+    "relevance_basis": "state_label_or_title",
+    "evaluation_split": null,
+    "pilot_previously_inspected": false,
+    "historical_as_of_reconstruction": false,
+    "operating_system": null,
+    "browser": {
+      "value": "Chrome Version 102.0.5005.115 (Official Build) (64-bit)",
+      "evidence_text": "- Browser version: Chrome Version 102.0.5005.115 (Official Build) (64-bit)",
+      "start_char": 4364,
+      "end_char": 4439,
+      "method": "explicit_environment_line_regex"
+    }
+  },
+  "comments": [
+    {
+      "id": 1166976427,
+      "html_url": "https://github.com/streamlit/streamlit/issues/4873#issuecomment-1166976427",
+      "created_at": "2022-06-27T07:19:09Z",
+      "updated_at": "2022-06-27T07:19:09Z",
+      "author_association": "CONTRIBUTOR",
+      "source_id": "comment:1166976427",
+      "issue_number": 4873,
+      "parent_source_id": "issue:4873",
+      "body": "Hey @BrtSnsn , thanks for submitting this issue. It looks like the 3rd and 4th forms are working properly but it seems like the 1st, 2nd, and 5th ones are properly working. Can you confirm if this is true?",
+      "author": {
+        "login": "willhuang1997",
+        "type": "User"
+      },
+      "is_bot": false,
+      "retrieval_method": "github_public_html_embedded_data",
+      "retrieved_at": "2026-10-06T14:30:51.115086+00:00",
+      "body_sha256": "e6ea65d040847b947bd584e7fa3b210ce895666e7318662f6608376433782c61",
+      "updated_at_basis": "lastEditedAt_or_createdAt_from_public_HTML",
+      "is_hidden": false
+    },
+    {
+      "id": 1167111526,
+      "html_url": "https://github.com/streamlit/streamlit/issues/4873#issuecomment-1167111526",
+      "created_at": "2022-06-27T09:28:59Z",
+      "updated_at": "2022-06-27T09:28:59Z",
+      "author_association": "NONE",
+      "source_id": "comment:1167111526",
+      "issue_number": 4873,
+      "parent_source_id": "issue:4873",
+      "body": "Hey, \r\nThat is correct: The 3rd & 4th forms are working as intended. \r\nThe 1st, 2nd & 5th are not.",
+      "author": {
+        "login": "BrtSnsn",
+        "type": "User"
+      },
+      "is_bot": false,
+      "retrieval_method": "github_public_html_embedded_data",
+      "retrieved_at": "2026-10-06T14:30:51.115086+00:00",
+      "body_sha256": "e4d9ac9744462a52173baf2ae9c5afa6cbcd4cdb809b4d7fd3d84d9951b9f7a8",
+      "updated_at_basis": "lastEditedAt_or_createdAt_from_public_HTML",
+      "is_hidden": false
+    },
+    {
+      "id": 1188706248,
+      "html_url": "https://github.com/streamlit/streamlit/issues/4873#issuecomment-1188706248",
+      "created_at": "2022-07-19T07:37:20Z",
+      "updated_at": "2022-07-19T07:37:20Z",
+      "author_association": "CONTRIBUTOR",
+      "source_id": "comment:1188706248",
+      "issue_number": 4873,
+      "parent_source_id": "issue:4873",
+      "body": "Hi @BrtSnsn , it was hard to debug this but I was able to do it with the help of my coworker. Sorry for the late reply. \r\n\r\nIt looks like the bug is being caused by `datetime.now()` because datetime.now() is constantly changing. Just some context: Streamlit works by completely rerunning the script and keeping track of widget ids and those widget ids are a hash of the specific parameters. With that context given, because datetime.now() is always changing, that causes those widgets ids to change and as a result, the session state is not being kept. \r\n\r\nWhat would probably work is changing the time to the day, hour, or minute of `datetime.now()`  depending on your usecase. Based on the architecture of this system, I'm not sure we can exactly solve the datetime.now() issue anytime soon given the architecture of streamlit but I plan to make a PR that suggests to users to not use `datetime.now()` and maybe use the day or hour because of this issue. \r\n\r\nSorry if this inconveniences you but thanks for submitting this issue. Happy streamlitting!",
+      "author": {
+        "login": "willhuang1997",
+        "type": "User"
+      },
+      "is_bot": false,
+      "retrieval_method": "github_public_html_embedded_data",
+      "retrieved_at": "2026-10-06T14:30:51.115086+00:00",
+      "body_sha256": "d006f1f0d88066ac7a993af7f21f2e785c200b9f2a3140a23ef3c42065e55f34",
+      "updated_at_basis": "lastEditedAt_or_createdAt_from_public_HTML",
+      "is_hidden": false
+    },
+    {
+      "id": 1188723849,
+      "html_url": "https://github.com/streamlit/streamlit/issues/4873#issuecomment-1188723849",
+      "created_at": "2022-07-19T07:55:51Z",
+      "updated_at": "2022-07-19T07:55:51Z",
+      "author_association": "NONE",
+      "source_id": "comment:1188723849",
+      "issue_number": 4873,
+      "parent_source_id": "issue:4873",
+      "body": "Hello @willhuang1997 ,\r\nso I would have to convert the `datetime.now()` into sessionstate parameters that will be cached in order to bypass this issue. \r\nThank you for figuring out this bug!",
+      "author": {
+        "login": "BrtSnsn",
+        "type": "User"
+      },
+      "is_bot": false,
+      "retrieval_method": "github_public_html_embedded_data",
+      "retrieved_at": "2026-10-06T14:30:51.115086+00:00",
+      "body_sha256": "74e100b139addd83601854786c39ef6d0bccae56a7c631c9dcd390cb40f8c3fd",
+      "updated_at_basis": "lastEditedAt_or_createdAt_from_public_HTML",
+      "is_hidden": false
+    },
+    {
+      "id": 1189494044,
+      "html_url": "https://github.com/streamlit/streamlit/issues/4873#issuecomment-1189494044",
+      "created_at": "2022-07-19T19:56:46Z",
+      "updated_at": "2022-07-19T19:56:46Z",
+      "author_association": "CONTRIBUTOR",
+      "source_id": "comment:1189494044",
+      "issue_number": 4873,
+      "parent_source_id": "issue:4873",
+      "body": "I think what you would have to do is not have the datetime.now() to be always changing. I'm not sure if caching that would solve your issue. If you try it out and it works, let me know!",
+      "author": {
+        "login": "willhuang1997",
+        "type": "User"
+      },
+      "is_bot": false,
+      "retrieval_method": "github_public_html_embedded_data",
+      "retrieved_at": "2026-10-06T14:30:51.115086+00:00",
+      "body_sha256": "e6b98618e5fef48b60811ed3a9fc2c405071adf2faf990d406a7e14db1c041c9",
+      "updated_at_basis": "lastEditedAt_or_createdAt_from_public_HTML",
+      "is_hidden": false
+    }
+  ]
+}

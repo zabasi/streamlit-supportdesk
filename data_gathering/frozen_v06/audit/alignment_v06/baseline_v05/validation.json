@@ -1,0 +1,37 @@
+{
+  "structural_status": "passed",
+  "version": "v05",
+  "source_records": 540,
+  "source_counts": {
+    "issue": 126,
+    "comment": 214,
+    "documentation": 54,
+    "release_section": 111,
+    "linked_reference": 35
+  },
+  "checks": {
+    "unique_sources": true,
+    "text_hashes": true,
+    "all_472_original_texts_and_metadata_fields_preserved": true,
+    "all_reference_urls_have_decisions": true,
+    "all_relations_resolve": true,
+    "all_new_text_reconstructs_from_selected_spans": true,
+    "original_evaluation_archives_and_config_unchanged": true,
+    "new_sources_exclude_blocked_evaluation_references": true,
+    "new_prose_has_no_reviewed_social_phrases_or_personal_addresses": true,
+    "fenced_code_balanced": true
+  },
+  "semantic_truth_certified": false,
+  "agent_behavior_evaluated": false,
+  "chunks_built": false,
+  "embeddings_built": false,
+  "baseline_v04_validation": "Passed before enrichment; original texts, evaluation and source archives remain exact.",
+  "limitations": [
+    "Link audit is first-hop and excludes URLs in protected code examples.",
+    "Unretrievable, private and deliberately unexpanded destinations are documented, not claimed as inspected.",
+    "Source claims and examples have not been executed.",
+    "Fresh API documentation declares its snapshot version and must not be assumed to describe old issues.",
+    "Link metadata requires explicit runtime support for neighbor retrieval.",
+    "No RAG quality metrics or paid project API calls were run."
+  ]
+}

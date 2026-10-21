@@ -1,0 +1,74 @@
+{
+  "issue": {
+    "id": 1115651106,
+    "number": 4325,
+    "title": "Utilizing Multiselect as a callback for a Session State only lets user choose 1 option",
+    "html_url": "https://github.com/streamlit/streamlit/issues/4325",
+    "created_at": "2022-01-27T00:54:41Z",
+    "updated_at": "2024-08-15T21:04:00Z",
+    "closed_at": "2022-01-27T22:36:36Z",
+    "state": "closed",
+    "state_reason": "completed",
+    "author_association": "NONE",
+    "source_id": "issue:4325",
+    "repository": "streamlit/streamlit",
+    "body": "### Summary\r\n\r\nI am using a session state for the purpose of annotating data. I display multiple datapoints, with numbered labels. I would like for the user to be able to check multiple boxes (representing the numbered labels), telling me which datapoints they think are mislabeled. Currently, after the user chooses one of the many options in the st.multiselect, the on_change occurs immediately. I would like it to wait until the user has checked all of the options that they want.\r\n\r\ntldr: Is there a way we can disable the callback feature of a user input, when it comes to using Session States?\r\n\r\n### Steps to reproduce\r\n\r\nCode snippet:\r\n\r\n```\r\ndetect_label_button = st.button('Start Labeling')\r\nif detect_label_button:\r\n      if \"annotations\" not in st.session_state:\r\n            st.session_state.annotations = {}\r\n            st.session_state.files = all_images\r\n            st.session_state.current_images = all_images[0]\r\n            st.session_state.count = 0\r\n            st.session_state.len = len(all_images)\r\n            \r\n      def annotate(labels):\r\n            st.session_state.annotations[st.session_state.count] = labels\r\n            st.session_state.count = st.session_state.count + 1\r\n            if st.session_state.count < st.session_state.len:\r\n                st.session_state.current_image = st.session_state.files[st.session_state.count]\r\n            \r\n     if st.session_state.count < st.session_state.len:\r\n            st.write(\r\n                \"Annotated:\",\r\n                len(st.session_state.annotations),\r\n                \"– Remaining:\",\r\n                st.session_state.len - st.session_state.count,\r\n            )\r\n        else:\r\n            st.success(\r\n                f\"🎈 Done! All {len(st.session_state.annotations)} images annotated.\"\r\n            )\r\n\r\n     if st.session_state.count < st.session_state.len:\r\n            # Display images in rows of 4\r\n            col1, col2, col3, col4 = st.columns(4)\r\n            for i,img in enumerate(st.session_state.current_images):\r\n                if i % 5 == 0:\r\n                    col1.image(img)\r\n                    col1.caption(str(i))\r\n                elif i % 5 == 1:\r\n                    col2.image(img)\r\n                    col2.caption(str(i))\r\n                elif i % 5 == 2:\r\n                    col3.image(img)\r\n                    col3.caption(str(i))\r\n                elif i % 5 == 3:\r\n                    col4.image(img)\r\n                    col4.caption(str(i))\r\n\r\n           # Asking the user to select all images that do not contain whistles\r\n          remove = st.multiselect('', [str(i) for i in range(len(st.session_state.current_images))])\r\n           \r\n           done_button = st.button('Submit', on_click=annotate, args=(labels))\r\n           if done_button:\r\n                st.write(\"\")\r\n```\r\n\r\n(Please provide a code snippet! This will help expedite us finding and solving the problem.)\r\n\r\nIf applicable, please provide the steps we should take to reproduce the bug:\r\n\r\n1. Go to '...'\r\n2. Click on '....'\r\n3. Scroll down to '....'\r\n\r\n**Expected behavior:**\r\n\r\nI would hope that the user could choose multiple options from the multiselect list.\r\n\r\n**Actual behavior:**\r\n\r\nThe user may only choose 1 option and then the callback immediately occurs.\r\n\r\n### Is this a regression?\r\n\r\nThat is, did this use to work the way you expected in the past?\r\nno\r\n\r\n### Debug info\r\n\r\n- Streamlit version: (get it with `$ streamlit version`)\r\n- Python version: (get it with `$ python --version`)\r\n- Using Conda? PipEnv? PyEnv? Pex?\r\n- OS version:\r\n- Browser version:\r\n\r\n### Additional information\r\n\r\nIf needed, add any other context about the problem here. For example, did this bug come from https://discuss.streamlit.io or another site? Link the original source here!",
+    "labels": [
+      "type:bug"
+    ],
+    "author": {
+      "login": "piperwolters",
+      "type": "User"
+    },
+    "comment_count": 1,
+    "comments_complete": true,
+    "metadata_retrieved_at": "2026-10-06T14:27:52.872268+00:00",
+    "comments_retrieved_at": "2026-10-06T14:30:34.461496+00:00",
+    "comments_retrieval_method": "github_public_html_embedded_data",
+    "body_sha256": "a32af60348329e47754fd46aa0762a5ddf47798f9388a9e75d691b44356c92c0",
+    "original_body_sha256": "a2653d10236a4fbe886ad2b3843b717d3351c8bcf995d1b2333218f95eb0b51f",
+    "streamlit_version": null,
+    "python_version": null,
+    "topic_tags_heuristic": [
+      "callbacks"
+    ],
+    "sampling_sources": [
+      "repo:streamlit/streamlit is:issue \"session state\" in:title,body created:<=2026-10-06"
+    ],
+    "relevance_basis": "state_label_or_title",
+    "evaluation_split": null,
+    "pilot_previously_inspected": false,
+    "historical_as_of_reconstruction": false,
+    "operating_system": null,
+    "browser": {
+      "value": "### Additional information",
+      "evidence_text": "- Browser version:\r\n\r\n### Additional information",
+      "start_char": 3549,
+      "end_char": 3598,
+      "method": "explicit_environment_line_regex"
+    }
+  },
+  "comments": [
+    {
+      "id": 1023705387,
+      "html_url": "https://github.com/streamlit/streamlit/issues/4325#issuecomment-1023705387",
+      "created_at": "2022-01-27T22:36:36Z",
+      "updated_at": "2022-01-27T22:36:36Z",
+      "author_association": "NONE",
+      "source_id": "comment:1023705387",
+      "issue_number": 4325,
+      "parent_source_id": "issue:4325",
+      "body": "Aha! I just found the wonderful st.form and st.form_submit_button features. Those have solved my issue. Thank you!!",
+      "author": {
+        "login": "piperwolters",
+        "type": "User"
+      },
+      "is_bot": false,
+      "retrieval_method": "github_public_html_embedded_data",
+      "retrieved_at": "2026-10-06T14:30:34.461496+00:00",
+      "body_sha256": "1e804af1367b2c288f8e36cb238b28f99a01dbd33872aa85c2f901fbb00223ad",
+      "updated_at_basis": "lastEditedAt_or_createdAt_from_public_HTML",
+      "is_hidden": false
+    }
+  ]
+}

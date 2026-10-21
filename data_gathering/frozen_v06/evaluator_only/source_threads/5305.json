@@ -1,0 +1,113 @@
+{
+  "issue": {
+    "id": 1360444756,
+    "number": 5305,
+    "title": "Pass state as parameter to `on_change` callback",
+    "html_url": "https://github.com/streamlit/streamlit/issues/5305",
+    "created_at": "2022-09-02T17:21:31Z",
+    "updated_at": "2026-08-30T13:44:17Z",
+    "closed_at": null,
+    "state": "open",
+    "state_reason": null,
+    "author_association": "NONE",
+    "source_id": "issue:5305",
+    "repository": "streamlit/streamlit",
+    "body": "### Problem\n\nCurrently it seems you need to access `st.session_state` to figure out what value was selected in the `on_change` callback, but that's limiting if you'd like to create more generic functions to handle these things.\n\n### Solution\n\nSend the selected value (and potentially index) automatically to the `on_change` callback function.\n\n### Additional context\n\nThis would allow doing something like:\n\n```python\ndef update_params(**kwargs):\n    st.experimental_set_query_params({kwargs[\"param_name\"]: kwargs[\"selected_value\"]})\n\nselection = st.selectbox(\n    \"Select something:\",\n   [\"Select....\", \"cat\", \"dog\"],\n    key=\"selection_1\",\n    # value and id get sent automatically as kwargs!\n    on_change=update_params,\n    kwargs={\"param_name\": \"selection_1\"},\n)\n```\n\nWhich is slightly nicer IMHO than having a function for every selectbox.\n\nLet me know if this isn't clear or doesn't make sense though...\n\n---\n\nCommunity voting on feature requests enables the Streamlit team to understand which features are most important to our users.\n\n**If you'd like the Streamlit team to prioritize this feature request, please use the 👍 (thumbs up emoji) reaction in response to the initial post.**\n\n![Views](https://api.views-badge.org/badge/st-issue-5305)",
+    "labels": [
+      "type:enhancement",
+      "feature:st.session_state"
+    ],
+    "author": {
+      "login": "alexscott-ff",
+      "type": "User"
+    },
+    "comment_count": 3,
+    "comments_complete": true,
+    "metadata_retrieved_at": "2026-10-06T14:27:46.022568+00:00",
+    "comments_retrieved_at": "2026-10-06T14:32:50.235443+00:00",
+    "comments_retrieval_method": "github_public_html_embedded_data",
+    "body_sha256": "00304e09c0c0474018e64f229d13cc46e91d83a16f0078e26ae50a02a0af7d70",
+    "original_body_sha256": "00304e09c0c0474018e64f229d13cc46e91d83a16f0078e26ae50a02a0af7d70",
+    "streamlit_version": null,
+    "python_version": null,
+    "topic_tags_heuristic": [
+      "callbacks",
+      "initialization_or_update"
+    ],
+    "sampling_sources": [
+      "label:feature:st.session_state",
+      "repo:streamlit/streamlit is:issue \"session state\" in:title,body created:<=2026-10-06"
+    ],
+    "relevance_basis": "state_label_or_title",
+    "evaluation_split": null,
+    "pilot_previously_inspected": false,
+    "historical_as_of_reconstruction": false,
+    "operating_system": null,
+    "browser": null
+  },
+  "comments": [
+    {
+      "id": 1254302345,
+      "html_url": "https://github.com/streamlit/streamlit/issues/5305#issuecomment-1254302345",
+      "created_at": "2022-09-21T22:34:28Z",
+      "updated_at": "2022-09-21T22:34:38Z",
+      "author_association": "COLLABORATOR",
+      "source_id": "comment:1254302345",
+      "issue_number": 5305,
+      "parent_source_id": "issue:5305",
+      "body": "Yeah good point. I think we'll need to rethink this (and in general how callbacks work) at some point. This will probably take a while because it's not our highgest priority + changing callbacks in this way would be a breaking change, so we can only introduce it once we go to 2.0.",
+      "author": {
+        "login": "jrieke",
+        "type": "User"
+      },
+      "is_bot": false,
+      "retrieval_method": "github_public_html_embedded_data",
+      "retrieved_at": "2026-10-06T14:32:50.235443+00:00",
+      "body_sha256": "c7468496048a61883cedfe7ad226b2d2cea054f4d67bdaed75ab62503159ac88",
+      "updated_at_basis": "lastEditedAt_or_createdAt_from_public_HTML",
+      "is_hidden": false
+    },
+    {
+      "id": 1601202110,
+      "html_url": "https://github.com/streamlit/streamlit/issues/5305#issuecomment-1601202110",
+      "created_at": "2023-06-21T16:46:38Z",
+      "updated_at": "2023-06-21T16:46:38Z",
+      "author_association": "NONE",
+      "source_id": "comment:1601202110",
+      "issue_number": 5305,
+      "parent_source_id": "issue:5305",
+      "body": "Hi, I also hope that passing arguments to `on_change` and `on_click` callbacks will be implemented in the future, but since I have been solving the same issue I wanted to provide a hacky solution which works for the moment.\r\n\r\nThe problem I was trying to solve more specifically was due to having a dynamic number of buttons, each which has to perform the same action but on a different set of data (one per button). Here's a minimum working solution for how I did it, where each button can be identified both by its id (the key) and its kind:\r\n```py\r\nimport streamlit as st\r\n\r\n\r\ndef get_callback_function_with_argument(kind, key):\r\n    if kind == \"btn_1\":\r\n        def function_one():\r\n            st.write(\"btn_1\", key)\r\n        return function_one\r\n\r\n    elif kind == \"btn_2\":\r\n        def function_two():\r\n            st.write(\"btn_2\", key)\r\n        return function_two\r\n\r\n\r\nfor i in range(10):\r\n    st.button(\r\n        label=f\"Button #{i}\",\r\n        on_click=get_callback_function_with_argument(\r\n            kind=\"btn_1\" if i % 2 == 0 else \"btn_2\",\r\n            key=i,\r\n        ),\r\n    )\r\n```",
+      "author": {
+        "login": "e-caste",
+        "type": "User"
+      },
+      "is_bot": false,
+      "retrieval_method": "github_public_html_embedded_data",
+      "retrieved_at": "2026-10-06T14:32:50.235443+00:00",
+      "body_sha256": "5a13327e28103060425ca5b07dd37f3cb98b1839cd5ddcb922704a05cbe5b61f",
+      "updated_at_basis": "lastEditedAt_or_createdAt_from_public_HTML",
+      "is_hidden": false
+    },
+    {
+      "id": 1753142239,
+      "html_url": "https://github.com/streamlit/streamlit/issues/5305#issuecomment-1753142239",
+      "created_at": "2023-10-09T14:40:42Z",
+      "updated_at": "2023-10-09T14:40:42Z",
+      "author_association": "NONE",
+      "source_id": "comment:1753142239",
+      "issue_number": 5305,
+      "parent_source_id": "issue:5305",
+      "body": "Thanks @e-caste. IMHO having a function create the individual callbacks is a good enough solution.",
+      "author": {
+        "login": "DavidWalz",
+        "type": "User"
+      },
+      "is_bot": false,
+      "retrieval_method": "github_public_html_embedded_data",
+      "retrieved_at": "2026-10-06T14:32:50.235443+00:00",
+      "body_sha256": "edbe3837647d51153f435fc8d1da42f01dd62c52ae4f925be65b34203ee980e8",
+      "updated_at_basis": "lastEditedAt_or_createdAt_from_public_HTML",
+      "is_hidden": false
+    }
+  ]
+}

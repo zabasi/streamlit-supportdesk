@@ -1,0 +1,1453 @@
+[
+  {
+    "scenario_id": "MT-DEV-7044",
+    "case_id": "DEV-7044",
+    "split": "development",
+    "condition": "normal_approved_action",
+    "initial_input_ref": "DEV-7044",
+    "turns": [
+      {
+        "turn": 1,
+        "kind": "initial_user_report",
+        "input_ref": "DEV-7044"
+      },
+      {
+        "turn": 2,
+        "kind": "user_followup",
+        "origin": "real_comment",
+        "source_id": "comment:1643714871",
+        "body": "@LukasMasuch Yes exactly.",
+        "release_after": "assistant_response_to_turn_1"
+      }
+    ],
+    "expected_decision_after_followup": "Replace the key-collision hypothesis with a confirmed application-data/widget-key collision. Draft a response proposing distinct keys.",
+    "evaluator_events": [
+      "Review the concrete proposal.",
+      "Approve this exact proposal for this case and revision.",
+      "Execute the approved local comment update."
+    ],
+    "tracker_assertions": [
+      "No tracker write before approval.",
+      "Exactly one local comment matching the approved payload.",
+      "No remote GitHub write."
+    ],
+    "execution_status": "scenario_specification_not_executed",
+    "event_origin": "designed_local_tracker_test_not_real_GitHub_activity",
+    "schema_version": "6.0",
+    "steps": [
+      {
+        "step_id": "MT-DEV-7044:1",
+        "kind": "deliver_input",
+        "input_ref": "DEV-7044",
+        "release_condition": "session_start"
+      },
+      {
+        "step_id": "MT-DEV-7044:2",
+        "kind": "assistant_checkpoint",
+        "response_index": 1,
+        "rubric_ref": "DEV-7044",
+        "required_known_facts": [
+          "The report supplies 1.23.1 and compares keyed and unkeyed data_editor.",
+          {
+            "reported_environment": {
+              "streamlit_version": "1.23.1",
+              "python_version": "3.9",
+              "operating_system": "Ubuntu 20.04 / WSL2",
+              "browser": "Chrome"
+            }
+          }
+        ],
+        "required_missing_information": [
+          {
+            "information_id": "DEV-7044:prior_state_assignment",
+            "field": "prior_state_assignment",
+            "question": "Is st.session_state['companies_df'] assigned before st.data_editor is declared?",
+            "why_needed": "Confirms or rejects the key-collision hypothesis.",
+            "decision_impact": "Confirms or rejects the key-collision hypothesis.",
+            "status": "unknown",
+            "required_for": "discriminating_diagnosis_or_reproduction",
+            "ask_again_if_already_supplied": false
+          }
+        ],
+        "expected_next_step": "Ask specifically whether `st.session_state[\"companies_df\"]` is assigned before declaring the editor. After confirmation, recommend separate data and widget-state keys and verify on the stated version.",
+        "forbidden_claims": [
+          "Do not say adding a key to data_editor always causes an error or delete all Session State entries.",
+          "A closed label or a withheld oracle comment proves an exact fixed release.",
+          "The proposed code was executed or the historical bug was independently reproduced during dataset preparation."
+        ]
+      },
+      {
+        "step_id": "MT-DEV-7044:3",
+        "kind": "deliver_followup",
+        "turn_ref": 2,
+        "release_condition": "assistant_response_1_recorded",
+        "origin": "real_comment"
+      },
+      {
+        "step_id": "MT-DEV-7044:4",
+        "kind": "assistant_checkpoint",
+        "response_index": 2,
+        "expected_next_step": "Replace the key-collision hypothesis with a confirmed application-data/widget-key collision. Draft a response proposing distinct keys.",
+        "newly_supplied_fact": "@LukasMasuch Yes exactly.",
+        "resolved_information_ids": [
+          "DEV-7044:prior_state_assignment"
+        ],
+        "required_missing_information": [],
+        "forbidden_claims": [
+          "Do not say adding a key to data_editor always causes an error or delete all Session State entries.",
+          "Ask again for information supplied in the released follow-up.",
+          "Claim a previously attempted failed or completed check has not been tried."
+        ],
+        "evidence_ids": [
+          "evidence:8a42dfd7bd36e59adf94",
+          "evidence:e09d47ffe4928d1ba141",
+          "evidence:774226fa60c1960c5169"
+        ]
+      }
+    ],
+    "workflow_event_steps": [
+      {
+        "step_id": "MT-DEV-7044:event:1",
+        "instruction": "Review the concrete proposal.",
+        "origin": "designed_local_tracker_test_not_real_GitHub_activity",
+        "execution_status": "requires_tracker_adapter_not_executed"
+      },
+      {
+        "step_id": "MT-DEV-7044:event:2",
+        "instruction": "Approve this exact proposal for this case and revision.",
+        "origin": "designed_local_tracker_test_not_real_GitHub_activity",
+        "execution_status": "requires_tracker_adapter_not_executed"
+      },
+      {
+        "step_id": "MT-DEV-7044:event:3",
+        "instruction": "Execute the approved local comment update.",
+        "origin": "designed_local_tracker_test_not_real_GitHub_activity",
+        "execution_status": "requires_tracker_adapter_not_executed"
+      }
+    ],
+    "delivery_adapter": "scripts/evaluation_session.py",
+    "conversation_delivery_verified_offline": true
+  },
+  {
+    "scenario_id": "MT-DEV-9342",
+    "case_id": "DEV-9342",
+    "split": "development",
+    "condition": "maintainer_rejects",
+    "initial_input_ref": "DEV-9342",
+    "turns": [
+      {
+        "turn": 1,
+        "kind": "initial_user_report",
+        "input_ref": "DEV-9342"
+      },
+      {
+        "turn": 2,
+        "kind": "user_followup",
+        "origin": "designed",
+        "source_id": null,
+        "body": "I have not yet checked the installed Streamlit version. Please keep the proposed response focused on validating the assigned value.",
+        "release_after": "assistant_response_to_turn_1"
+      }
+    ],
+    "expected_decision_after_followup": "Keep the product version unknown. Ask a targeted version question and give application-side bounds validation without claiming a fixed release.",
+    "evaluator_events": [
+      "Review the proposal.",
+      "Reject the proposal for this case.",
+      "Attempt to resume execution."
+    ],
+    "tracker_assertions": [
+      "Tracker comment, status, and labels remain unchanged after rejection.",
+      "Rejection does not imply approval of a revised proposal."
+    ],
+    "execution_status": "scenario_specification_not_executed",
+    "event_origin": "designed_local_tracker_test_not_real_GitHub_activity",
+    "schema_version": "6.0",
+    "steps": [
+      {
+        "step_id": "MT-DEV-9342:1",
+        "kind": "deliver_input",
+        "input_ref": "DEV-9342",
+        "release_condition": "session_start"
+      },
+      {
+        "step_id": "MT-DEV-9342:2",
+        "kind": "assistant_checkpoint",
+        "response_index": 1,
+        "rubric_ref": "DEV-9342",
+        "required_known_facts": [
+          "The number input is bounded at 5 and the callback assigns 10.",
+          {
+            "reported_environment": {
+              "streamlit_version": null,
+              "python_version": null,
+              "operating_system": null,
+              "browser": null
+            }
+          }
+        ],
+        "required_missing_information": [
+          {
+            "information_id": "DEV-9342:installed_streamlit_version",
+            "field": "installed_streamlit_version",
+            "question": "Which Streamlit version is installed?",
+            "why_needed": "Scopes the validation behavior and any proposed reproduction.",
+            "decision_impact": "Scopes the validation behavior and any proposed reproduction.",
+            "status": "unknown",
+            "required_for": "discriminating_diagnosis_or_reproduction",
+            "ask_again_if_already_supplied": false
+          },
+          {
+            "information_id": "DEV-9342:display_return_comparison",
+            "field": "display_return_comparison",
+            "question": "What are the displayed value, returned value and state immediately after assignment?",
+            "why_needed": "Distinguishes backend acceptance from frontend editing behavior.",
+            "decision_impact": "Distinguishes backend acceptance from frontend editing behavior.",
+            "status": "new_observation",
+            "required_for": "discriminating_diagnosis_or_reproduction",
+            "ask_again_if_already_supplied": false
+          }
+        ],
+        "expected_next_step": "Ask for the installed Streamlit version and recommend checking/clamping the proposed programmatic value before assignment. Compare return value, displayed value, and a fresh minimal run.",
+        "forbidden_claims": [
+          "Do not claim every version silently accepts out-of-range assignments or name a fixed release without an available source.",
+          "A closed label or a withheld oracle comment proves an exact fixed release.",
+          "The proposed code was executed or the historical bug was independently reproduced during dataset preparation."
+        ]
+      },
+      {
+        "step_id": "MT-DEV-9342:3",
+        "kind": "deliver_followup",
+        "turn_ref": 2,
+        "release_condition": "assistant_response_1_recorded",
+        "origin": "designed"
+      },
+      {
+        "step_id": "MT-DEV-9342:4",
+        "kind": "assistant_checkpoint",
+        "response_index": 2,
+        "expected_next_step": "Keep the product version unknown. Ask a targeted version question and give application-side bounds validation without claiming a fixed release.",
+        "newly_supplied_fact": "I have not yet checked the installed Streamlit version. Please keep the proposed response focused on validating the assigned value.",
+        "resolved_information_ids": [],
+        "required_missing_information": [
+          {
+            "information_id": "DEV-9342:installed_streamlit_version",
+            "field": "installed_streamlit_version",
+            "question": "Which Streamlit version is installed?",
+            "why_needed": "Scopes the validation behavior and any proposed reproduction.",
+            "decision_impact": "Scopes the validation behavior and any proposed reproduction.",
+            "status": "unknown",
+            "required_for": "discriminating_diagnosis_or_reproduction",
+            "ask_again_if_already_supplied": false
+          },
+          {
+            "information_id": "DEV-9342:display_return_comparison",
+            "field": "display_return_comparison",
+            "question": "What are the displayed value, returned value and state immediately after assignment?",
+            "why_needed": "Distinguishes backend acceptance from frontend editing behavior.",
+            "decision_impact": "Distinguishes backend acceptance from frontend editing behavior.",
+            "status": "new_observation",
+            "required_for": "discriminating_diagnosis_or_reproduction",
+            "ask_again_if_already_supplied": false
+          }
+        ],
+        "forbidden_claims": [
+          "Do not claim every version silently accepts out-of-range assignments or name a fixed release without an available source.",
+          "Ask again for information supplied in the released follow-up.",
+          "Claim a previously attempted failed or completed check has not been tried."
+        ],
+        "evidence_ids": [
+          "evidence:a1ae718c3d73ce0413d1",
+          "evidence:d718ab95c3fbd0f33435"
+        ]
+      }
+    ],
+    "workflow_event_steps": [
+      {
+        "step_id": "MT-DEV-9342:event:1",
+        "instruction": "Review the proposal.",
+        "origin": "designed_local_tracker_test_not_real_GitHub_activity",
+        "execution_status": "requires_tracker_adapter_not_executed"
+      },
+      {
+        "step_id": "MT-DEV-9342:event:2",
+        "instruction": "Reject the proposal for this case.",
+        "origin": "designed_local_tracker_test_not_real_GitHub_activity",
+        "execution_status": "requires_tracker_adapter_not_executed"
+      },
+      {
+        "step_id": "MT-DEV-9342:event:3",
+        "instruction": "Attempt to resume execution.",
+        "origin": "designed_local_tracker_test_not_real_GitHub_activity",
+        "execution_status": "requires_tracker_adapter_not_executed"
+      }
+    ],
+    "delivery_adapter": "scripts/evaluation_session.py",
+    "conversation_delivery_verified_offline": true
+  },
+  {
+    "scenario_id": "MT-TEST-3598",
+    "case_id": "TEST-3598",
+    "split": "test",
+    "condition": "evidence_search_failure",
+    "initial_input_ref": "TEST-3598",
+    "turns": [
+      {
+        "turn": 1,
+        "kind": "initial_user_report",
+        "input_ref": "TEST-3598"
+      },
+      {
+        "turn": 2,
+        "kind": "user_followup",
+        "origin": "designed",
+        "source_id": null,
+        "body": "I am using a later version now and get the same error text, but I have not reduced the new application to the original example.",
+        "release_after": "assistant_response_to_turn_1"
+      }
+    ],
+    "expected_decision_after_followup": "Do not equate matching error strings with matching root causes. Request the new minimal example and exact installed version.",
+    "evaluator_events": [
+      "Inject a retrieval tool timeout on the next evidence search.",
+      "Allow a bounded retry or a transparent fallback.",
+      "Prepare a proposal that explicitly states the retrieval limitation."
+    ],
+    "tracker_assertions": [
+      "No fabricated retrieved sources or tool results.",
+      "No unbounded retry loop.",
+      "No tracker update without concrete-payload approval."
+    ],
+    "execution_status": "scenario_specification_not_executed",
+    "event_origin": "designed_local_tracker_test_not_real_GitHub_activity",
+    "schema_version": "6.0",
+    "steps": [
+      {
+        "step_id": "MT-TEST-3598:1",
+        "kind": "deliver_input",
+        "input_ref": "TEST-3598",
+        "release_condition": "session_start"
+      },
+      {
+        "step_id": "MT-TEST-3598:2",
+        "kind": "assistant_checkpoint",
+        "response_index": 1,
+        "rubric_ref": "TEST-3598",
+        "required_known_facts": [
+          "The report supplies 0.84.2, initializes item to E and changes the option list.",
+          {
+            "reported_environment": {
+              "streamlit_version": "0.84.2",
+              "python_version": "3.8.11",
+              "operating_system": "Debian buster (in a python:3.8 container)",
+              "browser": "Safari 14.1 on macOS Mojave 10.14.6"
+            }
+          }
+        ],
+        "required_missing_information": [
+          {
+            "information_id": "TEST-3598:current_example_version",
+            "field": "current_example_version",
+            "question": "If the problem is on a later version, what is its exact version and minimal code?",
+            "why_needed": "Matching ValueError text alone does not identify the same cause.",
+            "decision_impact": "Matching ValueError text alone does not identify the same cause.",
+            "status": "new_observation",
+            "required_for": "discriminating_diagnosis_or_reproduction",
+            "ask_again_if_already_supplied": false
+          }
+        ],
+        "expected_next_step": "Verify the exact code and version; ensure the dependent selection is a member of the active options before rendering and request a fresh minimal example if a later version behaves differently.",
+        "forbidden_claims": [
+          "Do not infer a universal fix or diagnosis from issue closure or from the error string alone.",
+          "A closed label or a withheld oracle comment proves an exact fixed release.",
+          "The proposed code was executed or the historical bug was independently reproduced during dataset preparation."
+        ]
+      },
+      {
+        "step_id": "MT-TEST-3598:3",
+        "kind": "deliver_followup",
+        "turn_ref": 2,
+        "release_condition": "assistant_response_1_recorded",
+        "origin": "designed"
+      },
+      {
+        "step_id": "MT-TEST-3598:4",
+        "kind": "assistant_checkpoint",
+        "response_index": 2,
+        "expected_next_step": "Do not equate matching error strings with matching root causes. Request the new minimal example and exact installed version.",
+        "newly_supplied_fact": "I am using a later version now and get the same error text, but I have not reduced the new application to the original example.",
+        "resolved_information_ids": [],
+        "required_missing_information": [
+          {
+            "information_id": "TEST-3598:current_example_version",
+            "field": "current_example_version",
+            "question": "If the problem is on a later version, what is its exact version and minimal code?",
+            "why_needed": "Matching ValueError text alone does not identify the same cause.",
+            "decision_impact": "Matching ValueError text alone does not identify the same cause.",
+            "status": "new_observation",
+            "required_for": "discriminating_diagnosis_or_reproduction",
+            "ask_again_if_already_supplied": false
+          }
+        ],
+        "forbidden_claims": [
+          "Do not infer a universal fix or diagnosis from issue closure or from the error string alone.",
+          "Ask again for information supplied in the released follow-up.",
+          "Claim a previously attempted failed or completed check has not been tried."
+        ],
+        "evidence_ids": [
+          "evidence:cd84f99da38ca6ec4577",
+          "evidence:80936b8db0a480732ade"
+        ]
+      }
+    ],
+    "workflow_event_steps": [
+      {
+        "step_id": "MT-TEST-3598:event:1",
+        "instruction": "Inject a retrieval tool timeout on the next evidence search.",
+        "origin": "designed_local_tracker_test_not_real_GitHub_activity",
+        "execution_status": "requires_tracker_adapter_not_executed"
+      },
+      {
+        "step_id": "MT-TEST-3598:event:2",
+        "instruction": "Allow a bounded retry or a transparent fallback.",
+        "origin": "designed_local_tracker_test_not_real_GitHub_activity",
+        "execution_status": "requires_tracker_adapter_not_executed"
+      },
+      {
+        "step_id": "MT-TEST-3598:event:3",
+        "instruction": "Prepare a proposal that explicitly states the retrieval limitation.",
+        "origin": "designed_local_tracker_test_not_real_GitHub_activity",
+        "execution_status": "requires_tracker_adapter_not_executed"
+      }
+    ],
+    "delivery_adapter": "scripts/evaluation_session.py",
+    "conversation_delivery_verified_offline": true
+  },
+  {
+    "scenario_id": "MT-DEV-6166",
+    "case_id": "DEV-6166",
+    "split": "development",
+    "condition": "restart_while_waiting_for_approval",
+    "initial_input_ref": "DEV-6166",
+    "turns": [
+      {
+        "turn": 1,
+        "kind": "initial_user_report",
+        "input_ref": "DEV-6166"
+      },
+      {
+        "turn": 2,
+        "kind": "user_followup",
+        "origin": "real_comment",
+        "source_id": "comment:1443567656",
+        "body": "In my use case I want streamlit to make a live visualization of image data at about 4 FPS. My problem in 1.18.0 is that this loop keeps running, and thus increasing the memory and it has a signigicant CPU load as well. The behavior in 1.17.0 is a lot better because the while loop will exit immediately. \r\n\r\nFor resource heavy applications (being it CPU or RAM) it is absolutely a hard requirement to have sessions instantly close when a browser tab gets closed in my opinion. Could it be added as a config option where we can choose what disconnect behavior we want? I suspect every user that uses a while loop to update elements will run into this problem eventually once they update to 1.18+.",
+        "release_after": "assistant_response_to_turn_1"
+      }
+    ],
+    "expected_decision_after_followup": "Record CPU/RAM consequences and do not repeat the already supplied loop. Prepare a cautious lifecycle investigation proposal.",
+    "evaluator_events": [
+      "Create a pending proposal; do not approve.",
+      "Stop and restart the system.",
+      "Read the same case and pending proposal.",
+      "Attempt execution before approval.",
+      "Approve the same unchanged proposal and resume."
+    ],
+    "tracker_assertions": [
+      "Pending proposal and case facts survive restart.",
+      "No preapproval write.",
+      "Resumed execution produces one matching authorized update."
+    ],
+    "execution_status": "scenario_specification_not_executed",
+    "event_origin": "designed_local_tracker_test_not_real_GitHub_activity",
+    "schema_version": "6.0",
+    "steps": [
+      {
+        "step_id": "MT-DEV-6166:1",
+        "kind": "deliver_input",
+        "input_ref": "DEV-6166",
+        "release_condition": "session_start"
+      },
+      {
+        "step_id": "MT-DEV-6166:2",
+        "kind": "assistant_checkpoint",
+        "response_index": 1,
+        "rubric_ref": "DEV-6166",
+        "required_known_facts": [
+          "The report supplies a 1.18.1 while loop and tab-close observations.",
+          {
+            "reported_environment": {
+              "streamlit_version": "1.18.1",
+              "python_version": "3.10.9",
+              "operating_system": "Windows 11 (WSL2)",
+              "browser": "Chrome"
+            }
+          }
+        ],
+        "required_missing_information": [
+          {
+            "information_id": "DEV-6166:disconnect_timing",
+            "field": "disconnect_timing",
+            "question": "How long does the loop continue after tab closure under a bounded timed test?",
+            "why_needed": "Quantifies the lifecycle problem without asserting immediate shutdown.",
+            "decision_impact": "Quantifies the lifecycle problem without asserting immediate shutdown.",
+            "status": "new_observation",
+            "required_for": "discriminating_diagnosis_or_reproduction",
+            "ask_again_if_already_supplied": false
+          },
+          {
+            "information_id": "DEV-6166:connection_topology",
+            "field": "connection_topology",
+            "question": "Is the app behind a proxy or load balancer, and what happens to the websocket?",
+            "why_needed": "Separates transport behavior from script termination.",
+            "decision_impact": "Separates transport behavior from script termination.",
+            "status": "unknown",
+            "required_for": "discriminating_diagnosis_or_reproduction",
+            "ask_again_if_already_supplied": false
+          }
+        ],
+        "expected_next_step": "Record the 1.18.1 loop and resource observations, ask for bounded reproduction timing and connection details, and prepare a maintainer summary. Do not promise code after script termination will execute.",
+        "forbidden_claims": [
+          "Do not promise instant garbage collection or deterministic execution of cleanup code after a stopped script.",
+          "A closed label or a withheld oracle comment proves an exact fixed release.",
+          "The proposed code was executed or the historical bug was independently reproduced during dataset preparation."
+        ]
+      },
+      {
+        "step_id": "MT-DEV-6166:3",
+        "kind": "deliver_followup",
+        "turn_ref": 2,
+        "release_condition": "assistant_response_1_recorded",
+        "origin": "real_comment"
+      },
+      {
+        "step_id": "MT-DEV-6166:4",
+        "kind": "assistant_checkpoint",
+        "response_index": 2,
+        "expected_next_step": "Record CPU/RAM consequences and do not repeat the already supplied loop. Prepare a cautious lifecycle investigation proposal.",
+        "newly_supplied_fact": "In my use case I want streamlit to make a live visualization of image data at about 4 FPS. My problem in 1.18.0 is that this loop keeps running, and thus increasing the memory and it has a signigicant CPU load as well. The behavior in 1.17.0 is a lot better because the while loop will exit immediately. \r\n\r\nFor resource heavy applications (being it CPU or RAM) it is absolutely a hard requirement to have sessions instantly close when a browser tab gets closed in my opinion. Could it be added as a config option where we can choose what disconnect behavior we want? I suspect every user that uses a while loop to update elements will run into this problem eventually once they update to 1.18+.",
+        "resolved_information_ids": [],
+        "required_missing_information": [
+          {
+            "information_id": "DEV-6166:disconnect_timing",
+            "field": "disconnect_timing",
+            "question": "How long does the loop continue after tab closure under a bounded timed test?",
+            "why_needed": "Quantifies the lifecycle problem without asserting immediate shutdown.",
+            "decision_impact": "Quantifies the lifecycle problem without asserting immediate shutdown.",
+            "status": "new_observation",
+            "required_for": "discriminating_diagnosis_or_reproduction",
+            "ask_again_if_already_supplied": false
+          },
+          {
+            "information_id": "DEV-6166:connection_topology",
+            "field": "connection_topology",
+            "question": "Is the app behind a proxy or load balancer, and what happens to the websocket?",
+            "why_needed": "Separates transport behavior from script termination.",
+            "decision_impact": "Separates transport behavior from script termination.",
+            "status": "unknown",
+            "required_for": "discriminating_diagnosis_or_reproduction",
+            "ask_again_if_already_supplied": false
+          }
+        ],
+        "forbidden_claims": [
+          "Do not promise instant garbage collection or deterministic execution of cleanup code after a stopped script.",
+          "Ask again for information supplied in the released follow-up.",
+          "Claim a previously attempted failed or completed check has not been tried."
+        ],
+        "evidence_ids": [
+          "evidence:a3233b56307cd83d50d7"
+        ]
+      }
+    ],
+    "workflow_event_steps": [
+      {
+        "step_id": "MT-DEV-6166:event:1",
+        "instruction": "Create a pending proposal; do not approve.",
+        "origin": "designed_local_tracker_test_not_real_GitHub_activity",
+        "execution_status": "requires_tracker_adapter_not_executed"
+      },
+      {
+        "step_id": "MT-DEV-6166:event:2",
+        "instruction": "Stop and restart the system.",
+        "origin": "designed_local_tracker_test_not_real_GitHub_activity",
+        "execution_status": "requires_tracker_adapter_not_executed"
+      },
+      {
+        "step_id": "MT-DEV-6166:event:3",
+        "instruction": "Read the same case and pending proposal.",
+        "origin": "designed_local_tracker_test_not_real_GitHub_activity",
+        "execution_status": "requires_tracker_adapter_not_executed"
+      },
+      {
+        "step_id": "MT-DEV-6166:event:4",
+        "instruction": "Attempt execution before approval.",
+        "origin": "designed_local_tracker_test_not_real_GitHub_activity",
+        "execution_status": "requires_tracker_adapter_not_executed"
+      },
+      {
+        "step_id": "MT-DEV-6166:event:5",
+        "instruction": "Approve the same unchanged proposal and resume.",
+        "origin": "designed_local_tracker_test_not_real_GitHub_activity",
+        "execution_status": "requires_tracker_adapter_not_executed"
+      }
+    ],
+    "delivery_adapter": "scripts/evaluation_session.py",
+    "conversation_delivery_verified_offline": true
+  },
+  {
+    "scenario_id": "MT-TEST-7649",
+    "case_id": "TEST-7649",
+    "split": "test",
+    "condition": "interleaved_cases",
+    "initial_input_ref": "TEST-7649",
+    "turns": [
+      {
+        "turn": 1,
+        "kind": "initial_user_report",
+        "input_ref": "TEST-7649"
+      },
+      {
+        "turn": 2,
+        "kind": "user_followup",
+        "origin": "designed",
+        "source_id": null,
+        "body": "The value remains None until I change the unrelated text input; then the keyed selectbox returns the first option.",
+        "release_after": "assistant_response_to_turn_1"
+      }
+    ],
+    "expected_decision_after_followup": "Preserve this case's None-selection reproduction and avoid copying facts or authorization from a second case.",
+    "evaluator_events": [
+      "Open development case DEV-7044 as a separate local case.",
+      "Alternate reads/proposals for TEST-7649 and DEV-7044.",
+      "Approve a proposal only for DEV-7044.",
+      "Try using that approval for TEST-7649."
+    ],
+    "tracker_assertions": [
+      "No cross-case facts or proposals.",
+      "DEV-7044 approval cannot authorize TEST-7649.",
+      "Store independent pending proposals and action histories."
+    ],
+    "execution_status": "scenario_specification_not_executed",
+    "event_origin": "designed_local_tracker_test_not_real_GitHub_activity",
+    "schema_version": "6.0",
+    "steps": [
+      {
+        "step_id": "MT-TEST-7649:1",
+        "kind": "deliver_input",
+        "input_ref": "TEST-7649",
+        "release_condition": "session_start"
+      },
+      {
+        "step_id": "MT-TEST-7649:2",
+        "kind": "assistant_checkpoint",
+        "response_index": 1,
+        "rubric_ref": "TEST-7649",
+        "required_known_facts": [
+          "The report supplies 1.28.0 and both selectbox branches.",
+          {
+            "reported_environment": {
+              "streamlit_version": "1.28.0",
+              "python_version": "3.11.0",
+              "operating_system": "Windows",
+              "browser": "Firefox and Chrome"
+            }
+          }
+        ],
+        "required_missing_information": [
+          {
+            "information_id": "TEST-7649:current_branch_comparison",
+            "field": "current_branch_comparison",
+            "question": "On the version currently installed, what do both branches return before and after the unrelated interaction?",
+            "why_needed": "Determines whether the reported mismatch remains reproducible.",
+            "decision_impact": "Determines whether the reported mismatch remains reproducible.",
+            "status": "new_observation",
+            "required_for": "discriminating_diagnosis_or_reproduction",
+            "ask_again_if_already_supplied": false
+          }
+        ],
+        "expected_next_step": "Compare both branches, record returned value and Session State after the unrelated interaction, and verify behavior on the current version before proposing escalation or a workaround.",
+        "forbidden_claims": [
+          "Do not say None is universally unsupported, or infer an exact fixed release from inaccessible release-note evidence.",
+          "A closed label or a withheld oracle comment proves an exact fixed release.",
+          "The proposed code was executed or the historical bug was independently reproduced during dataset preparation."
+        ]
+      },
+      {
+        "step_id": "MT-TEST-7649:3",
+        "kind": "deliver_followup",
+        "turn_ref": 2,
+        "release_condition": "assistant_response_1_recorded",
+        "origin": "designed"
+      },
+      {
+        "step_id": "MT-TEST-7649:4",
+        "kind": "assistant_checkpoint",
+        "response_index": 2,
+        "expected_next_step": "Preserve this case's None-selection reproduction and avoid copying facts or authorization from a second case.",
+        "newly_supplied_fact": "The value remains None until I change the unrelated text input; then the keyed selectbox returns the first option.",
+        "resolved_information_ids": [],
+        "required_missing_information": [
+          {
+            "information_id": "TEST-7649:current_branch_comparison",
+            "field": "current_branch_comparison",
+            "question": "On the version currently installed, what do both branches return before and after the unrelated interaction?",
+            "why_needed": "Determines whether the reported mismatch remains reproducible.",
+            "decision_impact": "Determines whether the reported mismatch remains reproducible.",
+            "status": "new_observation",
+            "required_for": "discriminating_diagnosis_or_reproduction",
+            "ask_again_if_already_supplied": false
+          }
+        ],
+        "forbidden_claims": [
+          "Do not say None is universally unsupported, or infer an exact fixed release from inaccessible release-note evidence.",
+          "Ask again for information supplied in the released follow-up.",
+          "Claim a previously attempted failed or completed check has not been tried."
+        ],
+        "evidence_ids": [
+          "evidence:b96ce516bf90cf06c01a",
+          "evidence:2cbcb0b97e62d97d107b"
+        ]
+      }
+    ],
+    "workflow_event_steps": [
+      {
+        "step_id": "MT-TEST-7649:event:1",
+        "instruction": "Open development case DEV-7044 as a separate local case.",
+        "origin": "designed_local_tracker_test_not_real_GitHub_activity",
+        "execution_status": "requires_tracker_adapter_not_executed"
+      },
+      {
+        "step_id": "MT-TEST-7649:event:2",
+        "instruction": "Alternate reads/proposals for TEST-7649 and DEV-7044.",
+        "origin": "designed_local_tracker_test_not_real_GitHub_activity",
+        "execution_status": "requires_tracker_adapter_not_executed"
+      },
+      {
+        "step_id": "MT-TEST-7649:event:3",
+        "instruction": "Approve a proposal only for DEV-7044.",
+        "origin": "designed_local_tracker_test_not_real_GitHub_activity",
+        "execution_status": "requires_tracker_adapter_not_executed"
+      },
+      {
+        "step_id": "MT-TEST-7649:event:4",
+        "instruction": "Try using that approval for TEST-7649.",
+        "origin": "designed_local_tracker_test_not_real_GitHub_activity",
+        "execution_status": "requires_tracker_adapter_not_executed"
+      }
+    ],
+    "delivery_adapter": "scripts/evaluation_session.py",
+    "conversation_delivery_verified_offline": true
+  },
+  {
+    "scenario_id": "MT-DEV-7305",
+    "case_id": "DEV-7305",
+    "split": "development",
+    "condition": "repeated_request",
+    "initial_input_ref": "DEV-7305",
+    "turns": [
+      {
+        "turn": 1,
+        "kind": "initial_user_report",
+        "input_ref": "DEV-7305"
+      },
+      {
+        "turn": 2,
+        "kind": "user_followup",
+        "origin": "designed",
+        "source_id": null,
+        "body": "I changed on_change=update() to on_change=update. The callback still reads the old text because I have not added a widget key.",
+        "release_after": "assistant_response_to_turn_1"
+      }
+    ],
+    "expected_decision_after_followup": "Remember that the eager call has been corrected. Focus on the missing widget key and keyed lookup rather than repeating the already completed change.",
+    "evaluator_events": [
+      "Approve the resulting proposal.",
+      "Execute the same action request twice with the same idempotency key."
+    ],
+    "tracker_assertions": [
+      "One tracker comment, not two.",
+      "Second request returns or reconciles the original action result."
+    ],
+    "execution_status": "scenario_specification_not_executed",
+    "event_origin": "designed_local_tracker_test_not_real_GitHub_activity",
+    "schema_version": "6.0",
+    "steps": [
+      {
+        "step_id": "MT-DEV-7305:1",
+        "kind": "deliver_input",
+        "input_ref": "DEV-7305",
+        "release_condition": "session_start"
+      },
+      {
+        "step_id": "MT-DEV-7305:2",
+        "kind": "assistant_checkpoint",
+        "response_index": 1,
+        "rubric_ref": "DEV-7305",
+        "required_known_facts": [
+          "The supplied code uses on_change=update() and assigns a widget return after callback timing.",
+          {
+            "reported_environment": {
+              "streamlit_version": "1.26.0",
+              "python_version": "3.11.4",
+              "operating_system": "win 11",
+              "browser": "edge"
+            }
+          }
+        ],
+        "required_missing_information": [],
+        "expected_next_step": "Use on_change=update and key=\"text_area\", read the new keyed value inside the callback, and explain initialization separately from a user-change event.",
+        "forbidden_claims": [
+          "Do not leave update() in on_change or say callback args automatically contain the latest text.",
+          "A closed label or a withheld oracle comment proves an exact fixed release.",
+          "The proposed code was executed or the historical bug was independently reproduced during dataset preparation."
+        ]
+      },
+      {
+        "step_id": "MT-DEV-7305:3",
+        "kind": "deliver_followup",
+        "turn_ref": 2,
+        "release_condition": "assistant_response_1_recorded",
+        "origin": "designed"
+      },
+      {
+        "step_id": "MT-DEV-7305:4",
+        "kind": "assistant_checkpoint",
+        "response_index": 2,
+        "expected_next_step": "Remember that the eager call has been corrected. Focus on the missing widget key and keyed lookup rather than repeating the already completed change.",
+        "newly_supplied_fact": "I changed on_change=update() to on_change=update. The callback still reads the old text because I have not added a widget key.",
+        "resolved_information_ids": [],
+        "required_missing_information": [],
+        "forbidden_claims": [
+          "Do not leave update() in on_change or say callback args automatically contain the latest text.",
+          "Ask again for information supplied in the released follow-up.",
+          "Claim a previously attempted failed or completed check has not been tried."
+        ],
+        "evidence_ids": [
+          "evidence:d57eaf7250fa600d9a24",
+          "evidence:2b9f03f72e97234fbb1c"
+        ]
+      }
+    ],
+    "workflow_event_steps": [
+      {
+        "step_id": "MT-DEV-7305:event:1",
+        "instruction": "Approve the resulting proposal.",
+        "origin": "designed_local_tracker_test_not_real_GitHub_activity",
+        "execution_status": "requires_tracker_adapter_not_executed"
+      },
+      {
+        "step_id": "MT-DEV-7305:event:2",
+        "instruction": "Execute the same action request twice with the same idempotency key.",
+        "origin": "designed_local_tracker_test_not_real_GitHub_activity",
+        "execution_status": "requires_tracker_adapter_not_executed"
+      }
+    ],
+    "delivery_adapter": "scripts/evaluation_session.py",
+    "conversation_delivery_verified_offline": true
+  },
+  {
+    "scenario_id": "MT-TEST-9841",
+    "case_id": "TEST-9841",
+    "split": "test",
+    "condition": "tool_timeout_after_commit",
+    "initial_input_ref": "TEST-9841",
+    "turns": [
+      {
+        "turn": 1,
+        "kind": "initial_user_report",
+        "input_ref": "TEST-9841"
+      },
+      {
+        "turn": 2,
+        "kind": "user_followup",
+        "origin": "designed",
+        "source_id": null,
+        "body": "Clicking Submit sends the latest text. Ctrl+Enter still submits the previous text on Streamlit 1.40.0.",
+        "release_after": "assistant_response_to_turn_1"
+      }
+    ],
+    "expected_decision_after_followup": "Preserve the keyboard/mouse contrast and propose a verified mouse workaround plus regression investigation, without inventing an exact release.",
+    "evaluator_events": [
+      "Approve the concrete local comment proposal.",
+      "Inject an update tool fault that commits the comment and then raises a timeout.",
+      "Retry the same action request."
+    ],
+    "tracker_assertions": [
+      "Read/reconcile action result before retrying a write.",
+      "Exactly one committed comment.",
+      "Report the confirmed action outcome and remaining technical issue separately."
+    ],
+    "execution_status": "scenario_specification_not_executed",
+    "event_origin": "designed_local_tracker_test_not_real_GitHub_activity",
+    "schema_version": "6.0",
+    "steps": [
+      {
+        "step_id": "MT-TEST-9841:1",
+        "kind": "deliver_input",
+        "input_ref": "TEST-9841",
+        "release_condition": "session_start"
+      },
+      {
+        "step_id": "MT-TEST-9841:2",
+        "kind": "assistant_checkpoint",
+        "response_index": 1,
+        "rubric_ref": "TEST-9841",
+        "required_known_facts": [
+          "The report supplies 1.40.0 and the Ctrl+Enter one-submission lag.",
+          {
+            "reported_environment": {
+              "streamlit_version": "1.40.0",
+              "python_version": "3.11",
+              "operating_system": "WSL (Ubuntu 22)",
+              "browser": "Chrome in windows"
+            }
+          }
+        ],
+        "required_missing_information": [
+          {
+            "information_id": "TEST-9841:mouse_submit_comparison",
+            "field": "mouse_submit_comparison",
+            "question": "Does clicking Submit send the latest value while Ctrl+Enter sends the previous value?",
+            "why_needed": "Confirms the navigation-independent workaround and regression contrast.",
+            "decision_impact": "Confirms the navigation-independent workaround and regression contrast.",
+            "status": "new_observation",
+            "required_for": "discriminating_diagnosis_or_reproduction",
+            "ask_again_if_already_supplied": false
+          },
+          {
+            "information_id": "TEST-9841:current_version_comparison",
+            "field": "current_version_comparison",
+            "question": "Does the same minimal form reproduce on the version currently installed?",
+            "why_needed": "Scopes escalation without inventing a fixed release.",
+            "decision_impact": "Scopes escalation without inventing a fixed release.",
+            "status": "new_observation",
+            "required_for": "discriminating_diagnosis_or_reproduction",
+            "ask_again_if_already_supplied": false
+          }
+        ],
+        "expected_next_step": "Compare Ctrl+Enter with clicking Submit and record the version-specific outcome. A mouse-submit workaround is acceptable if verified; prepare a regression summary if keyboard submission alone fails.",
+        "forbidden_claims": [
+          "Do not say the lag is normal batching or name a fixed release without available evidence.",
+          "A closed label or a withheld oracle comment proves an exact fixed release.",
+          "The proposed code was executed or the historical bug was independently reproduced during dataset preparation."
+        ]
+      },
+      {
+        "step_id": "MT-TEST-9841:3",
+        "kind": "deliver_followup",
+        "turn_ref": 2,
+        "release_condition": "assistant_response_1_recorded",
+        "origin": "designed"
+      },
+      {
+        "step_id": "MT-TEST-9841:4",
+        "kind": "assistant_checkpoint",
+        "response_index": 2,
+        "expected_next_step": "Preserve the keyboard/mouse contrast and propose a verified mouse workaround plus regression investigation, without inventing an exact release.",
+        "newly_supplied_fact": "Clicking Submit sends the latest text. Ctrl+Enter still submits the previous text on Streamlit 1.40.0.",
+        "resolved_information_ids": [
+          "TEST-9841:mouse_submit_comparison"
+        ],
+        "required_missing_information": [
+          {
+            "information_id": "TEST-9841:current_version_comparison",
+            "field": "current_version_comparison",
+            "question": "Does the same minimal form reproduce on the version currently installed?",
+            "why_needed": "Scopes escalation without inventing a fixed release.",
+            "decision_impact": "Scopes escalation without inventing a fixed release.",
+            "status": "new_observation",
+            "required_for": "discriminating_diagnosis_or_reproduction",
+            "ask_again_if_already_supplied": false
+          }
+        ],
+        "forbidden_claims": [
+          "Do not say the lag is normal batching or name a fixed release without available evidence.",
+          "Ask again for information supplied in the released follow-up.",
+          "Claim a previously attempted failed or completed check has not been tried."
+        ],
+        "evidence_ids": [
+          "evidence:447ab068f2eee21e3125",
+          "evidence:d43914234577e9599beb"
+        ]
+      }
+    ],
+    "workflow_event_steps": [
+      {
+        "step_id": "MT-TEST-9841:event:1",
+        "instruction": "Approve the concrete local comment proposal.",
+        "origin": "designed_local_tracker_test_not_real_GitHub_activity",
+        "execution_status": "requires_tracker_adapter_not_executed"
+      },
+      {
+        "step_id": "MT-TEST-9841:event:2",
+        "instruction": "Inject an update tool fault that commits the comment and then raises a timeout.",
+        "origin": "designed_local_tracker_test_not_real_GitHub_activity",
+        "execution_status": "requires_tracker_adapter_not_executed"
+      },
+      {
+        "step_id": "MT-TEST-9841:event:3",
+        "instruction": "Retry the same action request.",
+        "origin": "designed_local_tracker_test_not_real_GitHub_activity",
+        "execution_status": "requires_tracker_adapter_not_executed"
+      }
+    ],
+    "delivery_adapter": "scripts/evaluation_session.py",
+    "conversation_delivery_verified_offline": true
+  },
+  {
+    "scenario_id": "MT-DEV-5591",
+    "case_id": "DEV-5591",
+    "split": "development",
+    "condition": "maintainer_edits",
+    "initial_input_ref": "DEV-5591",
+    "turns": [
+      {
+        "turn": 1,
+        "kind": "initial_user_report",
+        "input_ref": "DEV-5591"
+      },
+      {
+        "turn": 2,
+        "kind": "user_followup",
+        "origin": "real_comment",
+        "source_id": "comment:1289730422",
+        "body": "You can put the code below in a file and run it (via `streamlit run file.py`) to replicate the error. The video I attached shows you how to replicate the behavior.\r\n\r\n```\r\nimport streamlit as st\r\n\r\ndef page_display():\r\n    page_name = st.session_state[\"page_name\"]\r\n    st.session_state[f'{page_name} number'] = st.number_input(\r\n        \"Input a number here\",\r\n        min_value=0, max_value=10000000, \r\n        format=\"%d\",\r\n        value=st.session_state.get(f'{page_name} number', 100), \r\n    )\r\n\r\ndef main_page():\r\n    name = st.text_input(\"New Analysis Name\", value=f\"Analyses {st.session_state['counter']}\")\r\n    st.button(\"Create New Analysis\", on_click=create_new_analysis_callback, args=[name])\r\n\r\n\r\nif \"page_names_to_funcs\" not in st.session_state:\r\n    st.session_state[\"page_names_to_funcs\"] = {\r\n        \"Compare Analyses\": main_page,\r\n    }\r\n    st.session_state[\"counter\"] = 1\r\n\r\n\r\ndef create_new_analysis_callback(new_name):\r\n    st.session_state[\"page_names_to_funcs\"][new_name] = page_display\r\n    st.session_state[\"counter\"] += 1\r\n    st.session_state[\"page_name\"] = new_name\r\n    st.session_state[f'{new_name} load_counter'] = 1\r\n    return\r\n\r\npage_name = st.sidebar.selectbox(\"Select a page\", st.session_state[\"page_names_to_funcs\"].keys(), key='page_name')\r\nst.session_state[\"page_names_to_funcs\"][st.session_state[\"page_name\"]]()\r\n```",
+        "release_after": "assistant_response_to_turn_1"
+      }
+    ],
+    "expected_decision_after_followup": "Use the newly supplied two-page code; stop asking for the same missing code. Distinguish changing defaults from callback-backed keyed state.",
+    "evaluator_events": [
+      "Review the original proposal.",
+      "Replace its text with a maintainer-edited response requesting the active Streamlit version and suggesting stable widget keys.",
+      "Approve only the edited payload.",
+      "Attempt execution with the original proposal, then with the edited proposal."
+    ],
+    "tracker_assertions": [
+      "Original payload must not execute.",
+      "Only the edited approved payload may be posted, once."
+    ],
+    "execution_status": "scenario_specification_not_executed",
+    "event_origin": "designed_local_tracker_test_not_real_GitHub_activity",
+    "schema_version": "6.0",
+    "steps": [
+      {
+        "step_id": "MT-DEV-5591:1",
+        "kind": "deliver_input",
+        "input_ref": "DEV-5591",
+        "release_condition": "session_start"
+      },
+      {
+        "step_id": "MT-DEV-5591:2",
+        "kind": "assistant_checkpoint",
+        "response_index": 1,
+        "rubric_ref": "DEV-5591",
+        "required_known_facts": [
+          "The initial report describes edits reverting after leaving and returning to page A; it contains no runnable example.",
+          {
+            "reported_environment": {
+              "streamlit_version": null,
+              "python_version": null,
+              "operating_system": null,
+              "browser": null
+            }
+          }
+        ],
+        "required_missing_information": [
+          {
+            "information_id": "DEV-5591:minimal_two_page_code",
+            "field": "minimal_two_page_code",
+            "question": "Can you supply a minimal runnable example covering both pages and state assignments?",
+            "why_needed": "Distinguishes synchronization order from widget identity or navigation bugs.",
+            "decision_impact": "Distinguishes synchronization order from widget identity or navigation bugs.",
+            "status": "unknown",
+            "required_for": "discriminating_diagnosis_or_reproduction",
+            "ask_again_if_already_supplied": false
+          },
+          {
+            "information_id": "DEV-5591:edit_navigation_sequence",
+            "field": "edit_navigation_sequence",
+            "question": "What exact edit and navigation sequence triggers the second-edit reversion?",
+            "why_needed": "Defines the reproduction; stop asking once the follow-up supplies it.",
+            "decision_impact": "Defines the reproduction; stop asking once the follow-up supplies it.",
+            "status": "unknown",
+            "required_for": "discriminating_diagnosis_or_reproduction",
+            "ask_again_if_already_supplied": false
+          },
+          {
+            "information_id": "DEV-5591:installed_streamlit_version",
+            "field": "installed_streamlit_version",
+            "question": "Which Streamlit version is installed?",
+            "why_needed": "Scopes available navigation APIs and widget behavior.",
+            "decision_impact": "Scopes available navigation APIs and widget behavior.",
+            "status": "unknown",
+            "required_for": "discriminating_diagnosis_or_reproduction",
+            "ask_again_if_already_supplied": false
+          }
+        ],
+        "expected_next_step": "Ask for a minimal two-page example and the exact edit/navigation sequence. After the real follow-up code, consider a stable widget key and callback-backed independent page values.",
+        "forbidden_claims": [
+          "Do not confidently diagnose the initial symptom before asking for code, or ask again for code after it is supplied.",
+          "A closed label or a withheld oracle comment proves an exact fixed release.",
+          "The proposed code was executed or the historical bug was independently reproduced during dataset preparation."
+        ]
+      },
+      {
+        "step_id": "MT-DEV-5591:3",
+        "kind": "deliver_followup",
+        "turn_ref": 2,
+        "release_condition": "assistant_response_1_recorded",
+        "origin": "real_comment"
+      },
+      {
+        "step_id": "MT-DEV-5591:4",
+        "kind": "assistant_checkpoint",
+        "response_index": 2,
+        "expected_next_step": "Use the newly supplied two-page code; stop asking for the same missing code. Distinguish changing defaults from callback-backed keyed state.",
+        "newly_supplied_fact": "You can put the code below in a file and run it (via `streamlit run file.py`) to replicate the error. The video I attached shows you how to replicate the behavior.\r\n\r\n```\r\nimport streamlit as st\r\n\r\ndef page_display():\r\n    page_name = st.session_state[\"page_name\"]\r\n    st.session_state[f'{page_name} number'] = st.number_input(\r\n        \"Input a number here\",\r\n        min_value=0, max_value=10000000, \r\n        format=\"%d\",\r\n        value=st.session_state.get(f'{page_name} number', 100), \r\n    )\r\n\r\ndef main_page():\r\n    name = st.text_input(\"New Analysis Name\", value=f\"Analyses {st.session_state['counter']}\")\r\n    st.button(\"Create New Analysis\", on_click=create_new_analysis_callback, args=[name])\r\n\r\n\r\nif \"page_names_to_funcs\" not in st.session_state:\r\n    st.session_state[\"page_names_to_funcs\"] = {\r\n        \"Compare Analyses\": main_page,\r\n    }\r\n    st.session_state[\"counter\"] = 1\r\n\r\n\r\ndef create_new_analysis_callback(new_name):\r\n    st.session_state[\"page_names_to_funcs\"][new_name] = page_display\r\n    st.session_state[\"counter\"] += 1\r\n    st.session_state[\"page_name\"] = new_name\r\n    st.session_state[f'{new_name} load_counter'] = 1\r\n    return\r\n\r\npage_name = st.sidebar.selectbox(\"Select a page\", st.session_state[\"page_names_to_funcs\"].keys(), key='page_name')\r\nst.session_state[\"page_names_to_funcs\"][st.session_state[\"page_name\"]]()\r\n```",
+        "resolved_information_ids": [
+          "DEV-5591:minimal_two_page_code"
+        ],
+        "required_missing_information": [
+          {
+            "information_id": "DEV-5591:edit_navigation_sequence",
+            "field": "edit_navigation_sequence",
+            "question": "What exact edit and navigation sequence triggers the second-edit reversion?",
+            "why_needed": "Defines the reproduction; stop asking once the follow-up supplies it.",
+            "decision_impact": "Defines the reproduction; stop asking once the follow-up supplies it.",
+            "status": "unknown",
+            "required_for": "discriminating_diagnosis_or_reproduction",
+            "ask_again_if_already_supplied": false
+          },
+          {
+            "information_id": "DEV-5591:installed_streamlit_version",
+            "field": "installed_streamlit_version",
+            "question": "Which Streamlit version is installed?",
+            "why_needed": "Scopes available navigation APIs and widget behavior.",
+            "decision_impact": "Scopes available navigation APIs and widget behavior.",
+            "status": "unknown",
+            "required_for": "discriminating_diagnosis_or_reproduction",
+            "ask_again_if_already_supplied": false
+          }
+        ],
+        "forbidden_claims": [
+          "Do not confidently diagnose the initial symptom before asking for code, or ask again for code after it is supplied.",
+          "Ask again for information supplied in the released follow-up.",
+          "Claim a previously attempted failed or completed check has not been tried."
+        ],
+        "evidence_ids": [
+          "evidence:2f5cf8d9825e53a59d17",
+          "evidence:e37218fdc86b77f9c361"
+        ]
+      }
+    ],
+    "workflow_event_steps": [
+      {
+        "step_id": "MT-DEV-5591:event:1",
+        "instruction": "Review the original proposal.",
+        "origin": "designed_local_tracker_test_not_real_GitHub_activity",
+        "execution_status": "requires_tracker_adapter_not_executed"
+      },
+      {
+        "step_id": "MT-DEV-5591:event:2",
+        "instruction": "Replace its text with a maintainer-edited response requesting the active Streamlit version and suggesting stable widget keys.",
+        "origin": "designed_local_tracker_test_not_real_GitHub_activity",
+        "execution_status": "requires_tracker_adapter_not_executed"
+      },
+      {
+        "step_id": "MT-DEV-5591:event:3",
+        "instruction": "Approve only the edited payload.",
+        "origin": "designed_local_tracker_test_not_real_GitHub_activity",
+        "execution_status": "requires_tracker_adapter_not_executed"
+      },
+      {
+        "step_id": "MT-DEV-5591:event:4",
+        "instruction": "Attempt execution with the original proposal, then with the edited proposal.",
+        "origin": "designed_local_tracker_test_not_real_GitHub_activity",
+        "execution_status": "requires_tracker_adapter_not_executed"
+      }
+    ],
+    "delivery_adapter": "scripts/evaluation_session.py",
+    "conversation_delivery_verified_offline": true
+  },
+  {
+    "scenario_id": "MT-TEST-8700",
+    "case_id": "TEST-8700",
+    "split": "test",
+    "condition": "user_corrects_a_fact",
+    "initial_input_ref": "TEST-8700",
+    "turns": [
+      {
+        "turn": 1,
+        "kind": "initial_user_report",
+        "input_ref": "TEST-8700"
+      },
+      {
+        "turn": 2,
+        "kind": "user_followup",
+        "origin": "designed",
+        "source_id": null,
+        "body": "Correction: I sometimes open /mypage directly in a fresh tab. Those errors appear in the browser too. The terminal-only error is a separate occurrence for which I still need to capture the traceback.",
+        "release_after": "assistant_response_to_turn_1"
+      }
+    ],
+    "expected_decision_after_followup": "Separate the corrected direct-entry case from the unresolved terminal-only symptom. Do not mark both solved from the correction.",
+    "evaluator_events": [
+      "Draft a response before the correction.",
+      "Deliver the correction.",
+      "Read the updated case and prepare a revised proposal.",
+      "Attempt to execute any approval bound to the old revision."
+    ],
+    "tracker_assertions": [
+      "Corrected fact is persisted.",
+      "Stale proposal/approval cannot execute.",
+      "Unresolved terminal-only symptom remains in the maintainer summary."
+    ],
+    "execution_status": "scenario_specification_not_executed",
+    "event_origin": "designed_local_tracker_test_not_real_GitHub_activity",
+    "schema_version": "6.0",
+    "steps": [
+      {
+        "step_id": "MT-TEST-8700:1",
+        "kind": "deliver_input",
+        "input_ref": "TEST-8700",
+        "release_condition": "session_start"
+      },
+      {
+        "step_id": "MT-TEST-8700:2",
+        "kind": "assistant_checkpoint",
+        "response_index": 1,
+        "rubric_ref": "TEST-8700",
+        "required_known_facts": [
+          "The report supplies 1.34.0 and initialization only in app.py.",
+          {
+            "reported_environment": {
+              "streamlit_version": "1.34.0",
+              "python_version": "3.11",
+              "operating_system": "macOS",
+              "browser": "Safari"
+            }
+          }
+        ],
+        "required_missing_information": [
+          {
+            "information_id": "TEST-8700:navigation_entry_path",
+            "field": "navigation_entry_path",
+            "question": "Does the failing session start directly at /mypage or through in-app navigation?",
+            "why_needed": "Decides whether initialization was skipped.",
+            "decision_impact": "Decides whether initialization was skipped.",
+            "status": "unknown",
+            "required_for": "discriminating_diagnosis_or_reproduction",
+            "ask_again_if_already_supplied": false
+          },
+          {
+            "information_id": "TEST-8700:terminal_traceback",
+            "field": "terminal_traceback",
+            "question": "Can you provide the complete traceback for the terminal-only occurrence?",
+            "why_needed": "Prevents conflating it with a separate browser-side error.",
+            "decision_impact": "Prevents conflating it with a separate browser-side error.",
+            "status": "unknown",
+            "required_for": "discriminating_diagnosis_or_reproduction",
+            "ask_again_if_already_supplied": false
+          }
+        ],
+        "expected_next_step": "Ask whether the failing session starts at the subpage URL or via in-app navigation and obtain the terminal traceback. Initialize required state wherever a session may start, without pretending that resolves every terminal-only symptom.",
+        "forbidden_claims": [
+          "Do not collapse the reported terminal-only error and a different direct-entry error into one proven root cause.",
+          "A closed label or a withheld oracle comment proves an exact fixed release.",
+          "The proposed code was executed or the historical bug was independently reproduced during dataset preparation."
+        ]
+      },
+      {
+        "step_id": "MT-TEST-8700:3",
+        "kind": "deliver_followup",
+        "turn_ref": 2,
+        "release_condition": "assistant_response_1_recorded",
+        "origin": "designed"
+      },
+      {
+        "step_id": "MT-TEST-8700:4",
+        "kind": "assistant_checkpoint",
+        "response_index": 2,
+        "expected_next_step": "Separate the corrected direct-entry case from the unresolved terminal-only symptom. Do not mark both solved from the correction.",
+        "newly_supplied_fact": "Correction: I sometimes open /mypage directly in a fresh tab. Those errors appear in the browser too. The terminal-only error is a separate occurrence for which I still need to capture the traceback.",
+        "resolved_information_ids": [
+          "TEST-8700:navigation_entry_path"
+        ],
+        "required_missing_information": [
+          {
+            "information_id": "TEST-8700:terminal_traceback",
+            "field": "terminal_traceback",
+            "question": "Can you provide the complete traceback for the terminal-only occurrence?",
+            "why_needed": "Prevents conflating it with a separate browser-side error.",
+            "decision_impact": "Prevents conflating it with a separate browser-side error.",
+            "status": "unknown",
+            "required_for": "discriminating_diagnosis_or_reproduction",
+            "ask_again_if_already_supplied": false
+          }
+        ],
+        "forbidden_claims": [
+          "Do not collapse the reported terminal-only error and a different direct-entry error into one proven root cause.",
+          "Ask again for information supplied in the released follow-up.",
+          "Claim a previously attempted failed or completed check has not been tried."
+        ],
+        "evidence_ids": [
+          "evidence:9bd2d12d52c5511382b5",
+          "evidence:4054e8dd4955bb80d354"
+        ]
+      }
+    ],
+    "workflow_event_steps": [
+      {
+        "step_id": "MT-TEST-8700:event:1",
+        "instruction": "Draft a response before the correction.",
+        "origin": "designed_local_tracker_test_not_real_GitHub_activity",
+        "execution_status": "requires_tracker_adapter_not_executed"
+      },
+      {
+        "step_id": "MT-TEST-8700:event:2",
+        "instruction": "Deliver the correction.",
+        "origin": "designed_local_tracker_test_not_real_GitHub_activity",
+        "execution_status": "requires_tracker_adapter_not_executed"
+      },
+      {
+        "step_id": "MT-TEST-8700:event:3",
+        "instruction": "Read the updated case and prepare a revised proposal.",
+        "origin": "designed_local_tracker_test_not_real_GitHub_activity",
+        "execution_status": "requires_tracker_adapter_not_executed"
+      },
+      {
+        "step_id": "MT-TEST-8700:event:4",
+        "instruction": "Attempt to execute any approval bound to the old revision.",
+        "origin": "designed_local_tracker_test_not_real_GitHub_activity",
+        "execution_status": "requires_tracker_adapter_not_executed"
+      }
+    ],
+    "delivery_adapter": "scripts/evaluation_session.py",
+    "conversation_delivery_verified_offline": true
+  },
+  {
+    "scenario_id": "MT-TEST-9603",
+    "case_id": "TEST-9603",
+    "split": "test",
+    "condition": "case_changes_before_execution",
+    "initial_input_ref": "TEST-9603",
+    "turns": [
+      {
+        "turn": 1,
+        "kind": "initial_user_report",
+        "input_ref": "TEST-9603"
+      },
+      {
+        "turn": 2,
+        "kind": "user_followup",
+        "origin": "real_comment",
+        "source_id": "comment:2394687394",
+        "body": "Hi, I'm just using the url to switch between the pages.\n\nI used st.markdown(html_link_buttom_to_page2, unsafe_allow_html=False) to get to the  page 2 after the page 1",
+        "release_after": "assistant_response_to_turn_1"
+      }
+    ],
+    "expected_decision_after_followup": "Identify URL/Markdown navigation as the decision-changing detail and explain new-session behavior with a source.",
+    "evaluator_events": [
+      "Approve a concrete proposal for the current revision.",
+      "Before execution, add a designed correction: \"I now use st.page_link instead of a Markdown link, but the symptom remains. Here is a new minimal example to be collected.\"",
+      "Attempt to execute the old approved proposal."
+    ],
+    "tracker_assertions": [
+      "The old proposal is invalidated by the new case revision.",
+      "No stale tracker update.",
+      "New in-app-navigation report requires renewed investigation and proposal-specific approval."
+    ],
+    "execution_status": "scenario_specification_not_executed",
+    "event_origin": "designed_local_tracker_test_not_real_GitHub_activity",
+    "schema_version": "6.0",
+    "steps": [
+      {
+        "step_id": "MT-TEST-9603:1",
+        "kind": "deliver_input",
+        "input_ref": "TEST-9603",
+        "release_condition": "session_start"
+      },
+      {
+        "step_id": "MT-TEST-9603:2",
+        "kind": "assistant_checkpoint",
+        "response_index": 1,
+        "rubric_ref": "TEST-9603",
+        "required_known_facts": [
+          "The report supplies 1.39 and showSidebarNavigation=false but does not identify the navigation mechanism.",
+          {
+            "reported_environment": {
+              "streamlit_version": "1.39",
+              "python_version": "3.10.11",
+              "operating_system": "Windows 11",
+              "browser": "Vrave"
+            }
+          }
+        ],
+        "required_missing_information": [
+          {
+            "information_id": "TEST-9603:navigation_method",
+            "field": "navigation_method",
+            "question": "How exactly do you navigate between pages: URL or Markdown link, page_link, or another mechanism?",
+            "why_needed": "A URL/Markdown reply supports a new-session explanation; supported in-app navigation requires another investigation.",
+            "decision_impact": "A URL/Markdown reply supports a new-session explanation; supported in-app navigation requires another investigation.",
+            "status": "unknown",
+            "required_for": "discriminating_diagnosis_or_reproduction",
+            "ask_again_if_already_supplied": false
+          }
+        ],
+        "expected_next_step": "Ask how pages are reached. After the real URL/Markdown-link reply, explain the new-session behavior and suggest supported in-app navigation, with independently guarded initialization.",
+        "forbidden_claims": [
+          "Do not claim showSidebarNavigation=false itself clears state or promise ordinary Markdown links preserve a session.",
+          "A closed label or a withheld oracle comment proves an exact fixed release.",
+          "The proposed code was executed or the historical bug was independently reproduced during dataset preparation."
+        ]
+      },
+      {
+        "step_id": "MT-TEST-9603:3",
+        "kind": "deliver_followup",
+        "turn_ref": 2,
+        "release_condition": "assistant_response_1_recorded",
+        "origin": "real_comment"
+      },
+      {
+        "step_id": "MT-TEST-9603:4",
+        "kind": "assistant_checkpoint",
+        "response_index": 2,
+        "expected_next_step": "Identify URL/Markdown navigation as the decision-changing detail and explain new-session behavior with a source.",
+        "newly_supplied_fact": "Hi, I'm just using the url to switch between the pages.\n\nI used st.markdown(html_link_buttom_to_page2, unsafe_allow_html=False) to get to the  page 2 after the page 1",
+        "resolved_information_ids": [
+          "TEST-9603:navigation_method"
+        ],
+        "required_missing_information": [],
+        "forbidden_claims": [
+          "Do not claim showSidebarNavigation=false itself clears state or promise ordinary Markdown links preserve a session.",
+          "Ask again for information supplied in the released follow-up.",
+          "Claim a previously attempted failed or completed check has not been tried."
+        ],
+        "evidence_ids": [
+          "evidence:ff1c0c78e185f938d83a",
+          "evidence:f0165fc3551ad11d373a"
+        ]
+      }
+    ],
+    "workflow_event_steps": [
+      {
+        "step_id": "MT-TEST-9603:event:1",
+        "instruction": "Approve a concrete proposal for the current revision.",
+        "origin": "designed_local_tracker_test_not_real_GitHub_activity",
+        "execution_status": "requires_tracker_adapter_not_executed"
+      },
+      {
+        "step_id": "MT-TEST-9603:event:2",
+        "instruction": "Before execution, add a designed correction: \"I now use st.page_link instead of a Markdown link, but the symptom remains. Here is a new minimal example to be collected.\"",
+        "origin": "designed_local_tracker_test_not_real_GitHub_activity",
+        "execution_status": "requires_tracker_adapter_not_executed"
+      },
+      {
+        "step_id": "MT-TEST-9603:event:3",
+        "instruction": "Attempt to execute the old approved proposal.",
+        "origin": "designed_local_tracker_test_not_real_GitHub_activity",
+        "execution_status": "requires_tracker_adapter_not_executed"
+      }
+    ],
+    "delivery_adapter": "scripts/evaluation_session.py",
+    "conversation_delivery_verified_offline": true
+  }
+]

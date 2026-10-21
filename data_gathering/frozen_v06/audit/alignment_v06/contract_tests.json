@@ -1,0 +1,9 @@
+{
+  "contract_checks_passed": 17,
+  "staged_scenarios_checked": 10,
+  "responses": "explicit offline placeholders, not model answers",
+  "fixtures_only": true,
+  "real_chunks_built": false,
+  "agent_quality_evaluated": false,
+  "tracker_workflow_executed": false
+}

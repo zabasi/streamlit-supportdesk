@@ -1,0 +1,199 @@
+{
+  "issue": {
+    "id": 1813675477,
+    "number": 7044,
+    "title": "streamlit.errors.StreamlitAPIException for st.data_editor when using key",
+    "html_url": "https://github.com/streamlit/streamlit/issues/7044",
+    "created_at": "2023-07-20T10:36:27Z",
+    "updated_at": "2025-05-05T16:16:55Z",
+    "closed_at": "2023-07-20T11:10:52Z",
+    "state": "closed",
+    "state_reason": "completed",
+    "author_association": "NONE",
+    "source_id": "issue:7044",
+    "repository": "streamlit/streamlit",
+    "body": "### Checklist\n\n\n### Summary\n\nWhen using a key to create a data editor it throws the following error:\r\n`\r\nStreamlitAPIException: Values for st.button, st.download_button, st.file_uploader, st.data_editor and st.form cannot be set using st.session_state.\r\n`\r\n\r\nWhen removing the key, the error disappears.\n\n### Reproducible Code Example\n\n```Python\nWith key:\r\n\r\n`\r\nst.data_editor(\r\n    data=companies_df,\r\n    key='companies_df',\r\n    disabled=True,\r\n    hide_index=True,\r\n    height=500,\r\n    use_container_width=True,\r\n    column_config={\r\n        'name': st.column_config.TextColumn(width=100),\r\n        'ticker': st.column_config.TextColumn(width=25),\r\n        'exchange': st.column_config.TextColumn(width=25),\r\n        'score': st.column_config.ProgressColumn(width=100),\r\n        'description': st.column_config.TextColumn(width=100),\r\n        'url': st.column_config.LinkColumn(width=100),\r\n    },\r\n)\r\n`\r\n\r\nWithout key\r\n`\r\nst.data_editor(\r\n    data=companies_df,\r\n    disabled=True,\r\n    hide_index=True,\r\n    height=500,\r\n    use_container_width=True,\r\n    column_config={\r\n        'name': st.column_config.TextColumn(width=100),\r\n        'ticker': st.column_config.TextColumn(width=25),\r\n        'exchange': st.column_config.TextColumn(width=25),\r\n        'score': st.column_config.ProgressColumn(width=100),\r\n        'description': st.column_config.TextColumn(width=100),\r\n        'url': st.column_config.LinkColumn(width=100),\r\n    },\r\n)\r\n`\n```\n\n\n### Steps To Reproduce\n\n_No response_\n\n### Expected Behavior\n\nApp should work with key\n\n### Current Behavior\n\nThrows error when using key\n\n### Is this a regression?\n\n- [ ] Yes, this used to work in a previous version.\n\n### Debug info\n\n- Streamlit version: 1.23.1\r\n- Python version: 3.9\r\n- Operating System: Ubuntu 20.04 / WSL2\r\n- Browser: Chrome\r\n\n\n### Additional Information\n\nTested both on local and on Streamlit cloud",
+    "labels": [
+      "type:bug",
+      "feature:st.data_editor"
+    ],
+    "author": {
+      "login": "fabmeyer",
+      "type": "User"
+    },
+    "comment_count": 6,
+    "comments_complete": true,
+    "metadata_retrieved_at": "2026-10-06T14:27:46.022568+00:00",
+    "comments_retrieved_at": "2026-10-06T14:38:10.045192+00:00",
+    "comments_retrieval_method": "github_public_html_embedded_data",
+    "body_sha256": "3b5bf098bc2e4506e84469e5156c92afdc553b08d12d0b892a62e0508d88afc5",
+    "original_body_sha256": "a5facbba3583eaaeba4facab090f04ae504cafa01851e7090cc2cfdec9cb0054",
+    "streamlit_version": {
+      "value": "1.23.1",
+      "evidence_text": "- Streamlit version: 1.23.1",
+      "start_char": 1691,
+      "end_char": 1719,
+      "method": "explicit_version_line_regex"
+    },
+    "python_version": {
+      "value": "3.9",
+      "evidence_text": "- Python version: 3.9",
+      "start_char": 1720,
+      "end_char": 1742,
+      "method": "explicit_version_line_regex"
+    },
+    "topic_tags_heuristic": [
+      "forms",
+      "reset_or_persistence"
+    ],
+    "sampling_sources": [
+      "repo:streamlit/streamlit is:issue \"session state\" in:title,body created:<=2026-10-06"
+    ],
+    "relevance_basis": "body_keyword_requires_review",
+    "evaluation_split": null,
+    "pilot_previously_inspected": false,
+    "historical_as_of_reconstruction": false,
+    "operating_system": {
+      "value": "Ubuntu 20.04 / WSL2",
+      "evidence_text": "- Operating System: Ubuntu 20.04 / WSL2",
+      "start_char": 1743,
+      "end_char": 1783,
+      "method": "explicit_environment_line_regex"
+    },
+    "browser": {
+      "value": "Chrome",
+      "evidence_text": "- Browser: Chrome",
+      "start_char": 1784,
+      "end_char": 1802,
+      "method": "explicit_environment_line_regex"
+    }
+  },
+  "comments": [
+    {
+      "id": 1643705373,
+      "html_url": "https://github.com/streamlit/streamlit/issues/7044#issuecomment-1643705373",
+      "created_at": "2023-07-20T10:53:04Z",
+      "updated_at": "2023-07-20T10:53:04Z",
+      "author_association": "COLLABORATOR",
+      "source_id": "comment:1643705373",
+      "issue_number": 7044,
+      "parent_source_id": "issue:7044",
+      "body": "@fabmeyer Thanks for reporting this issue. Do you set the session state for `companies_df` anywhere in your code like this: `st.session_state[\"companies_df\"] = ...`",
+      "author": {
+        "login": "lukasmasuch",
+        "type": "User"
+      },
+      "is_bot": false,
+      "retrieval_method": "github_public_html_embedded_data",
+      "retrieved_at": "2026-10-06T14:38:10.045192+00:00",
+      "body_sha256": "ebacb0843428827291cd1a960fc54da33b4f4fb6d491ddf417c46151eecc1416",
+      "updated_at_basis": "lastEditedAt_or_createdAt_from_public_HTML",
+      "is_hidden": false
+    },
+    {
+      "id": 1643714871,
+      "html_url": "https://github.com/streamlit/streamlit/issues/7044#issuecomment-1643714871",
+      "created_at": "2023-07-20T10:59:22Z",
+      "updated_at": "2023-07-20T10:59:22Z",
+      "author_association": "NONE",
+      "source_id": "comment:1643714871",
+      "issue_number": 7044,
+      "parent_source_id": "issue:7044",
+      "body": "@LukasMasuch Yes exactly.",
+      "author": {
+        "login": "fabmeyer",
+        "type": "User"
+      },
+      "is_bot": false,
+      "retrieval_method": "github_public_html_embedded_data",
+      "retrieved_at": "2026-10-06T14:38:10.045192+00:00",
+      "body_sha256": "fdcb3b8e89233b5da3c5fbc7609758a2289b309bdd0cacab555e36dcb3e577ae",
+      "updated_at_basis": "lastEditedAt_or_createdAt_from_public_HTML",
+      "is_hidden": false
+    },
+    {
+      "id": 1643723956,
+      "html_url": "https://github.com/streamlit/streamlit/issues/7044#issuecomment-1643723956",
+      "created_at": "2023-07-20T11:06:16Z",
+      "updated_at": "2023-07-20T11:06:16Z",
+      "author_association": "COLLABORATOR",
+      "source_id": "comment:1643723956",
+      "issue_number": 7044,
+      "parent_source_id": "issue:7044",
+      "body": "Ok, yep that is expected to not work for `st.data_editor` at the moment. We might allow manually modifying the widget via its widget state in the future, but right now you can only read the value.",
+      "author": {
+        "login": "lukasmasuch",
+        "type": "User"
+      },
+      "is_bot": false,
+      "retrieval_method": "github_public_html_embedded_data",
+      "retrieved_at": "2026-10-06T14:38:10.045192+00:00",
+      "body_sha256": "9b221cd2e782056b4d19f5c891f43e962a0ee7ff656fc243d15469d7e67ce04d",
+      "updated_at_basis": "lastEditedAt_or_createdAt_from_public_HTML",
+      "is_hidden": false
+    },
+    {
+      "id": 1643729786,
+      "html_url": "https://github.com/streamlit/streamlit/issues/7044#issuecomment-1643729786",
+      "created_at": "2023-07-20T11:10:52Z",
+      "updated_at": "2023-07-20T11:10:52Z",
+      "author_association": "COLLABORATOR",
+      "source_id": "comment:1643729786",
+      "issue_number": 7044,
+      "parent_source_id": "issue:7044",
+      "body": "Closing this since it is expected that you cannot write to the session state with the same key as used with the data editor.",
+      "author": {
+        "login": "lukasmasuch",
+        "type": "User"
+      },
+      "is_bot": false,
+      "retrieval_method": "github_public_html_embedded_data",
+      "retrieved_at": "2026-10-06T14:38:10.045192+00:00",
+      "body_sha256": "c7b73a5852f591d3fac200b0e95705af4abbb8829c3674ab1ee95801f0621ff3",
+      "updated_at_basis": "lastEditedAt_or_createdAt_from_public_HTML",
+      "is_hidden": false
+    },
+    {
+      "id": 1649329632,
+      "html_url": "https://github.com/streamlit/streamlit/issues/7044#issuecomment-1649329632",
+      "created_at": "2023-07-25T08:05:15Z",
+      "updated_at": "2023-07-25T08:05:15Z",
+      "author_association": "NONE",
+      "source_id": "comment:1649329632",
+      "issue_number": 7044,
+      "parent_source_id": "issue:7044",
+      "body": "I get the same error, without writing to the `st.session_state` key anywhere in the code. Just having the `data_editor` writing to a given `st.session_state` key raises the error.",
+      "author": {
+        "login": "dnarh",
+        "type": "User"
+      },
+      "is_bot": false,
+      "retrieval_method": "github_public_html_embedded_data",
+      "retrieved_at": "2026-10-06T14:38:10.045192+00:00",
+      "body_sha256": "7fe3c5d85409fdca9d9c754ca3c418e126c9f2ee7fa66e2b48c7eacf00abfeea",
+      "updated_at_basis": "lastEditedAt_or_createdAt_from_public_HTML",
+      "is_hidden": false
+    },
+    {
+      "id": 1649411361,
+      "html_url": "https://github.com/streamlit/streamlit/issues/7044#issuecomment-1649411361",
+      "created_at": "2023-07-25T08:56:09Z",
+      "updated_at": "2023-07-25T08:56:22Z",
+      "author_association": "COLLABORATOR",
+      "source_id": "comment:1649411361",
+      "issue_number": 7044,
+      "parent_source_id": "issue:7044",
+      "body": "@dnarh this would be unexpected. Do you have a reproducible example for this?",
+      "author": {
+        "login": "lukasmasuch",
+        "type": "User"
+      },
+      "is_bot": false,
+      "retrieval_method": "github_public_html_embedded_data",
+      "retrieved_at": "2026-10-06T14:38:10.045192+00:00",
+      "body_sha256": "9fb099a2afcd5062f4e3bfe59b2706b39e53d4ef41328a1d5e3856aa16197235",
+      "updated_at_basis": "lastEditedAt_or_createdAt_from_public_HTML",
+      "is_hidden": false
+    }
+  ]
+}

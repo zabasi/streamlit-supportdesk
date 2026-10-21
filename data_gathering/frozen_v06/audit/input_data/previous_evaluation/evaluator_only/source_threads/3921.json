@@ -1,0 +1,187 @@
+{
+  "issue": {
+    "id": 1028106891,
+    "number": 3921,
+    "title": "Warning when initialisation st.number_input using state API",
+    "html_url": "https://github.com/streamlit/streamlit/issues/3921",
+    "created_at": "2021-10-16T17:43:57Z",
+    "updated_at": "2021-11-10T22:14:37Z",
+    "closed_at": "2021-11-10T22:14:36Z",
+    "state": "closed",
+    "state_reason": "completed",
+    "author_association": "NONE",
+    "source_id": "issue:3921",
+    "repository": "streamlit/streamlit",
+    "body": "### Summary\r\n\r\nWhen using State API st.number_input() always result in a warning: `The widget with key \"....\" was created with a default value but also had its value set via the Session State API.`\r\n\r\n### Steps to reproduce\r\n\r\nCode snippet:\r\n\r\n```\r\nst.session_state['comp.pagination.chunk_size'] = 5\r\nitems_per_page = component.number_input(\r\n        \"Genes per page:\",\r\n        min_value=1,\r\n        max_value=100,\r\n        key='comp.pagination.chunk_size'\r\n)\r\n\r\n\r\n```\r\n\r\nIf applicable, please provide the steps we should take to reproduce the bug:\r\n\r\n1. Go ceate a simple app with number_input comp\r\n2. Run `streamlit run app.py`\r\n3. You will see a waring\r\n\r\n**Expected behavior:**\r\n\r\nExpected: No warning\r\n\r\n**Actual behavior:**\r\n\r\nActual: Warning is shown.\r\n![image](https://user-images.githubusercontent.com/72933/137596977-4758e2ad-dcf0-444e-bf48-2dbf8235839c.png)\r\n\r\n\r\n### Is this a regression?\r\n\r\nNo\r\n\r\n### Debug info\r\n\r\n- Streamlit version: 1.00.\r\n- Python version: 3.8.1\r\n- Using Conda\r\n- OS version: MacOS 11.3\r\n- Browser version: Safari\r\n\r\n### Additional information\r\n\r\nThe issue is because `NumberInputMixin.number_input` initializes `value` with not None default:\r\n```\r\nclass NumberInputMixin:\r\n    def number_input(\r\n        self,\r\n        label: str,\r\n        min_value: Optional[Number] = None,\r\n        max_value: Optional[Number] = None,\r\n        value=NoValue(),\r\n        ...\r\n```\r\n\r\nso the check doesn't work properly, because it assumes that not initialized state corresponds to `None`\r\n```\r\ncheck_session_state_rules(default_value=value, key=key)\r\n```\r\nHere I cannot pass `value=None` as a workaround because `NumberInputMixin` because then I'll get `All numerical arguments must be of the same type`. \r\n\r\nSo expected behaviour is to init `value` with `None`. Then if key exists in state update it from state, otherwise show warning that widget already initialized from session API.",
+    "labels": [
+      "type:bug"
+    ],
+    "author": {
+      "login": "iromeo",
+      "type": "User"
+    },
+    "comment_count": 6,
+    "comments_complete": true,
+    "metadata_retrieved_at": "2026-10-06T14:28:11.874253+00:00",
+    "comments_retrieved_at": "2026-10-06T14:34:44.713846+00:00",
+    "comments_retrieval_method": "github_public_html_embedded_data",
+    "body_sha256": "a5180556fb9c157cd9216a20a480643bcfe8730679e956000a78bd08a017c77b",
+    "original_body_sha256": "f6c709b034759f80e72768dcead463f1898e55dee892f5d676304026719a61c5",
+    "streamlit_version": null,
+    "python_version": {
+      "value": "3.8.1",
+      "evidence_text": "- Python version: 3.8.1",
+      "start_char": 957,
+      "end_char": 981,
+      "method": "explicit_version_line_regex"
+    },
+    "topic_tags_heuristic": [
+      "initialization_or_update",
+      "widget_identity"
+    ],
+    "sampling_sources": [
+      "repo:streamlit/streamlit is:issue \"session state\" in:title,body created:<=2026-10-06",
+      "repo:streamlit/streamlit is:issue \"widget state\" in:title,body created:<=2026-10-06"
+    ],
+    "relevance_basis": "body_keyword_requires_review",
+    "evaluation_split": null,
+    "pilot_previously_inspected": false,
+    "historical_as_of_reconstruction": false,
+    "operating_system": null,
+    "browser": {
+      "value": "Safari",
+      "evidence_text": "- Browser version: Safari",
+      "start_char": 1023,
+      "end_char": 1049,
+      "method": "explicit_environment_line_regex"
+    }
+  },
+  "comments": [
+    {
+      "id": 946183378,
+      "html_url": "https://github.com/streamlit/streamlit/issues/3921#issuecomment-946183378",
+      "created_at": "2021-10-18T21:31:28Z",
+      "updated_at": "2021-10-18T21:31:28Z",
+      "author_association": "COLLABORATOR",
+      "source_id": "comment:946183378",
+      "issue_number": 3921,
+      "parent_source_id": "issue:3921",
+      "body": "Hi @iromeo,\r\nThanks for bringing this issue up. It looks like you are setting the value of the number_input widget prior to each run through the following line of code, which doesn't allow for changes to the value through the widget:\r\n`st.session_state['comp.pagination.chunk_size'] = 5`\r\n\r\nThis is actually intended behavior. The following code should help, where we initialize on the first run. Please let me know should you need additional help!\r\n```python\r\nif 'comp.pagination.chunk_size' not in st.session_state:\r\n    st.session_state['comp.pagination.chunk_size'] = 5\r\n\r\nitems_per_page = st.number_input(\r\n        \"Genes per page:\",\r\n        min_value=1,\r\n        max_value=100,\r\n        key='comp.pagination.chunk_size'\r\n)\r\n```",
+      "author": {
+        "login": "mayagbarnes",
+        "type": "User"
+      },
+      "is_bot": false,
+      "retrieval_method": "github_public_html_embedded_data",
+      "retrieved_at": "2026-10-06T14:34:44.713846+00:00",
+      "body_sha256": "7fa45f09b20ffacb2a02a1b83e782b3258e170dc906fe3ba2d20bd877f1e8dfe",
+      "updated_at_basis": "lastEditedAt_or_createdAt_from_public_HTML",
+      "is_hidden": false
+    },
+    {
+      "id": 946454309,
+      "html_url": "https://github.com/streamlit/streamlit/issues/3921#issuecomment-946454309",
+      "created_at": "2021-10-19T07:51:52Z",
+      "updated_at": "2021-10-21T15:59:25Z",
+      "author_association": "NONE",
+      "source_id": "comment:946454309",
+      "issue_number": 3921,
+      "parent_source_id": "issue:3921",
+      "body": "Hi @mayagbarnes,\r\n> The following code should help, where we initialize on the first run\r\n\r\nThank you for the reply. Actually, I do the same lazy initialization and forget to mention it in the issue description. For the first app run (after server started) component key is in any case not in cache, so I omitted 'if' condition in the minimal test case, seems it confused you.\r\n\r\nI suppose you didn't check that you suggested example works as you expected. For your example I get the same error:\r\n\r\n![image](https://user-images.githubusercontent.com/72933/137865247-388e4428-4f0a-401f-8775-c12d5e0a701c.png)\r\n\r\nAccording to  `st.number_input` implementation details, this cannot work. Please read my explanation in `Additional information` section and check the source code.",
+      "author": {
+        "login": "iromeo",
+        "type": "User"
+      },
+      "is_bot": false,
+      "retrieval_method": "github_public_html_embedded_data",
+      "retrieved_at": "2026-10-06T14:34:44.713846+00:00",
+      "body_sha256": "209af44e28000c2473a4432aedd9ad2df4defeaf9b830700a7b8177e17f20829",
+      "updated_at_basis": "lastEditedAt_or_createdAt_from_public_HTML",
+      "is_hidden": false
+    },
+    {
+      "id": 948180423,
+      "html_url": "https://github.com/streamlit/streamlit/issues/3921#issuecomment-948180423",
+      "created_at": "2021-10-21T01:41:02Z",
+      "updated_at": "2021-10-21T01:41:02Z",
+      "author_association": "COLLABORATOR",
+      "source_id": "comment:948180423",
+      "issue_number": 3921,
+      "parent_source_id": "issue:3921",
+      "body": "Hi @iromeo,\r\n\r\nThanks for your reply! Upon revisiting - I think the intent of the warning is to note duplicated efforts (directly setting `'comp.pagination.chunk_size'` with `st.session_state` when `st.number_input`'s value is already tied to session state via key). \r\n\r\nI did miss that warning reappearing, my mistake! Please see below (better tested 😄) code, and let me know if you are still getting the same warning!\r\n```python\r\n# Directly setting number_input's default value through value parameter, remove session state initialization\r\n  items_per_page = st.number_input(\r\n          \"Genes per page:\",\r\n          min_value=1,\r\n          max_value=100,\r\n          value=5,\r\n          key='comp.pagination.chunk_size'\r\n  )\r\n```",
+      "author": {
+        "login": "mayagbarnes",
+        "type": "User"
+      },
+      "is_bot": false,
+      "retrieval_method": "github_public_html_embedded_data",
+      "retrieved_at": "2026-10-06T14:34:44.713846+00:00",
+      "body_sha256": "895819d7c74948aef0f0ccd8e471ef7861ff4183c15d30465faa9176047f5ec5",
+      "updated_at_basis": "lastEditedAt_or_createdAt_from_public_HTML",
+      "is_hidden": false
+    },
+    {
+      "id": 948364904,
+      "html_url": "https://github.com/streamlit/streamlit/issues/3921#issuecomment-948364904",
+      "created_at": "2021-10-21T08:09:05Z",
+      "updated_at": "2021-10-21T15:55:29Z",
+      "author_association": "NONE",
+      "source_id": "comment:948364904",
+      "issue_number": 3921,
+      "parent_source_id": "issue:3921",
+      "body": "Hello @mayagbarnes, thank you for your reply.  I know that I could init the component without using State API (as in your example), but this issue is about using state API, so a workaround the inits component without using of state API is not what I'm talking about.\r\n\r\nLet me formulate the issue in another way, I hope it will be more clear: \r\n\r\n----\r\n\r\nAt the moment `st.number_input`  behaviour is not consistent with `st.selectbox` and `st.text_input` terms of initialization via State API:\r\n\r\nSelect box and text input produce no warnings for:\r\n```\r\nimport streamlit as st\r\n\r\nif 'comp.pagination.chunk_size' not in st.session_state:\r\n    st.session_state['comp.pagination.chunk_size'] = 5\r\n\r\nitems_per_page = st.selectbox(\r\n        \"Genes per page:\",\r\n        options=range(10),\r\n        key='comp.pagination.chunk_size'\r\n)\r\n```\r\n\r\nText input produces a warning for:\r\n```\r\nimport streamlit as st\r\nif 'comp.pagination.chunk_size' not in st.session_state:\r\n    st.session_state['comp.pagination.chunk_size'] = 5\r\n\r\n\r\nitems_per_page = st.number_input(\r\n        \"Genes per page:\",\r\n        min_value=1,\r\n        max_value=100,\r\n        key='comp.pagination.chunk_size'\r\n)\r\n\r\n```\r\n\r\nAnd the cause of such inconsistency is in impl difference of `st.selectbox` and `st.number_input`. \r\n\r\n`st.selectbox` constructor:\r\n```\r\nclass SelectboxMixin:\r\n    def selectbox(\r\n        self,\r\n        # ..\r\n        index: int = 0,\r\n         # ..\r\n         )\r\n#...\r\ncheck_session_state_rules(default_value=None if index == 0 else index, key=key)\r\n# ...\r\n```\r\n\r\n\r\n`st.number_input` constructor:\r\n```\r\nclass NumberInputMixin:\r\n    def number_input(\r\n        self,\r\n        # ..\r\n        value=NoValue(),\r\n        # ..\r\n        )\r\n#...\r\ncheck_session_state_rules(default_value=value, key=key)\r\n# ...\r\n```\r\n\r\nSeems it is pretty clear that consistent behaviour for `st.number_input` will be:\r\n```\r\n# ..\r\ncheck_session_state_rules(default_value=None if value == NoValue() else value, key=key)\r\n# ..\r\n```",
+      "author": {
+        "login": "iromeo",
+        "type": "User"
+      },
+      "is_bot": false,
+      "retrieval_method": "github_public_html_embedded_data",
+      "retrieved_at": "2026-10-06T14:34:44.713846+00:00",
+      "body_sha256": "8d3f385d767f44d6b1b8beabf5b17ac4a564a70898f0e47d73894b704d87f1e0",
+      "updated_at_basis": "lastEditedAt_or_createdAt_from_public_HTML",
+      "is_hidden": false
+    },
+    {
+      "id": 952597050,
+      "html_url": "https://github.com/streamlit/streamlit/issues/3921#issuecomment-952597050",
+      "created_at": "2021-10-27T06:56:03Z",
+      "updated_at": "2021-10-27T06:56:03Z",
+      "author_association": "CONTRIBUTOR",
+      "source_id": "comment:952597050",
+      "issue_number": 3921,
+      "parent_source_id": "issue:3921",
+      "body": "Thanks for reporting this @iromeo,\r\n\r\nI believe you're right, and the behavior of `st.number_input` is inconsistent with other widgets -- this likely happened simply because of an oversight when we were implementing `st.session_state`.\r\n\r\nI'm about to go on vacation so can't promise that I'll have a fix for this out extremely quickly 😅, but I'll be sure to get one out when I return the second week of November (alternatively, it'd be greatly appreciated if you would like to submit a small PR to fix this behavior, as from what I can tell the proposed change at the end of your last comment is indeed the correct fix 🙂).",
+      "author": {
+        "login": "vdonato",
+        "type": "User"
+      },
+      "is_bot": false,
+      "retrieval_method": "github_public_html_embedded_data",
+      "retrieved_at": "2026-10-06T14:34:44.713846+00:00",
+      "body_sha256": "fa3b18a82f13dab27dc16ee460101f1e3d01c96a2d48c5a28e2e3c5530310cd3",
+      "updated_at_basis": "lastEditedAt_or_createdAt_from_public_HTML",
+      "is_hidden": false
+    },
+    {
+      "id": 952600095,
+      "html_url": "https://github.com/streamlit/streamlit/issues/3921#issuecomment-952600095",
+      "created_at": "2021-10-27T07:01:05Z",
+      "updated_at": "2021-10-27T07:01:05Z",
+      "author_association": "NONE",
+      "source_id": "comment:952600095",
+      "issue_number": 3921,
+      "parent_source_id": "issue:3921",
+      "body": "@vdonato thanks, I'll try\nto make a PR for this. Have a good vacation!",
+      "author": {
+        "login": "iromeo",
+        "type": "User"
+      },
+      "is_bot": false,
+      "retrieval_method": "github_public_html_embedded_data",
+      "retrieved_at": "2026-10-06T14:34:44.713846+00:00",
+      "body_sha256": "740f5e2ca7e5cab357956cdd690794e73c2474ed134dcdc8502a92aa8a8dda29",
+      "updated_at_basis": "lastEditedAt_or_createdAt_from_public_HTML",
+      "is_hidden": false
+    }
+  ]
+}

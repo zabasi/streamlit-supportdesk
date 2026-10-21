@@ -1,0 +1,2282 @@
+[
+  {
+    "source_id": "release:1.3.0:section:8",
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Direct state, widget value/identity, callback, re-execution, page lifecycle or relevant testing change.",
+    "approved_text": "- 🪲 Bug fix: Allow `st.session_state` to be used to set number_input values with no warning ([#4047](https://github.com/streamlit/streamlit/pull/4047)).",
+    "parent_source_id": "release:1.3.0",
+    "start_char": 367,
+    "end_char": 520,
+    "source_slice": "- 🪲 Bug fix: Allow `st.session_state` to be used to set number_input values with no warning ([#4047](https://github.com/streamlit/streamlit/pull/4047)).\n",
+    "sha256": "94d32253397c64116bef856b4ec704ecc5029e3d0a02ee5567791340688b37af"
+  },
+  {
+    "source_id": "release:1.2.0:section:6",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.2.0:section:11",
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Direct state, widget value/identity, callback, re-execution, page lifecycle or relevant testing change.",
+    "approved_text": "- 🖨️ Ability to print session state ([#3970](https://github.com/streamlit/streamlit/pull/3970)).",
+    "parent_source_id": "release:1.2.0",
+    "start_char": 1270,
+    "end_char": 1366,
+    "source_slice": "- 🖨️ Ability to print session state ([#3970](https://github.com/streamlit/streamlit/pull/3970)).",
+    "sha256": "9160e74657b6bd4c4bda79dcaa9237fb311153a4f472b22391f97adf30824bc1"
+  },
+  {
+    "source_id": "release:1.1.0:section:7",
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Direct state, widget value/identity, callback, re-execution, page lifecycle or relevant testing change.",
+    "approved_text": "- 🪲 Bug fix: Allow initialization of range slider with session state ([#3586](https://github.com/streamlit/streamlit/issues/3586)).",
+    "parent_source_id": "release:1.1.0",
+    "start_char": 419,
+    "end_char": 551,
+    "source_slice": "- 🪲 Bug fix: Allow initialization of range slider with session state ([#3586](https://github.com/streamlit/streamlit/issues/3586)).\n",
+    "sha256": "0b2c6c815cf878255978cd0b9411b509459a5e1871822a12d2f8d6f2e30602e6"
+  },
+  {
+    "source_id": "release:0.89.0:section:7",
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Direct state, widget value/identity, callback, re-execution, page lifecycle or relevant testing change.",
+    "approved_text": "- 🧠 We've modified session state to reset widgets if any of their arguments changed even if they provide a key.\n  - Some widget behavior may have changed, but we believe this change makes the most sense. We have added a section to [our documentation](/develop/concepts/widget-semantics) describing how they behave.",
+    "parent_source_id": "release:0.89.0",
+    "start_char": 517,
+    "end_char": 833,
+    "source_slice": "- 🧠 We've modified session state to reset widgets if any of their arguments changed even if they provide a key.\n  - Some widget behavior may have changed, but we believe this change makes the most sense. We have added a section to [our documentation](/develop/concepts/widget-semantics) describing how they behave.\n\n",
+    "sha256": "4efeeb9505595bb4b557ccc709e88f63fd47c610733c52c60f9985b00af388e6"
+  },
+  {
+    "source_id": "release:0.89.0:section:8",
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Direct state, widget value/identity, callback, re-execution, page lifecycle or relevant testing change.",
+    "approved_text": "- Some widget behavior may have changed, but we believe this change makes the most sense. We have added a section to [our documentation](/develop/concepts/widget-semantics) describing how they behave.",
+    "parent_source_id": "release:0.89.0",
+    "start_char": 631,
+    "end_char": 833,
+    "source_slice": "- Some widget behavior may have changed, but we believe this change makes the most sense. We have added a section to [our documentation](/develop/concepts/widget-semantics) describing how they behave.\n\n",
+    "sha256": "bb0ae0d49eebd664fcca8c34b175345c0577ae5b39a137a8db64d32508fc3419"
+  },
+  {
+    "source_id": "release:0.88.0:section:2",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:0.84.0:section:2",
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Direct state, widget value/identity, callback, re-execution, page lifecycle or relevant testing change.",
+    "approved_text": "- 🧠 Introducing `st.session_state` and widget callbacks to allow you to add statefulness to your apps. Check out the [blog post](http://blog.streamlit.io/session-state-for-streamlit/)",
+    "parent_source_id": "release:0.84.0",
+    "start_char": 64,
+    "end_char": 249,
+    "source_slice": "- 🧠 Introducing `st.session_state` and widget callbacks to allow you to add statefulness to your apps. Check out the [blog post](http://blog.streamlit.io/session-state-for-streamlit/)\n\n",
+    "sha256": "406dd947516daea35893c5d98fc2ec575cb7b9d56a635ed16d2e63f0e858712f"
+  },
+  {
+    "source_id": "release:0.84.0:section:7",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:0.83.0:section:4",
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Direct state, widget value/identity, callback, re-execution, page lifecycle or relevant testing change.",
+    "approved_text": "- 📄 `st.form` now has a `clear_on_submit` parameter which \"resets\" all the form's widgets when the form is submitted.",
+    "parent_source_id": "release:0.83.0",
+    "start_char": 225,
+    "end_char": 344,
+    "source_slice": "- 📄 `st.form` now has a `clear_on_submit` parameter which \"resets\" all the form's widgets when the form is submitted.\n\n",
+    "sha256": "dacd9aa4a764171fdb3290793c2af0401b6908bc53e64ebb74480b651ebb3034"
+  },
+  {
+    "source_id": "release:0.81.1:section:2",
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Direct state, widget value/identity, callback, re-execution, page lifecycle or relevant testing change.",
+    "approved_text": "- 📝 Introducing `st.form` and `st.form_submit_button` to allow you to batch input widgets. Check out our [blog post](http://blog.streamlit.io/introducing-submit-button-and-forms)",
+    "parent_source_id": "release:0.81.1",
+    "start_char": 65,
+    "end_char": 244,
+    "source_slice": "- 📝 Introducing `st.form` and `st.form_submit_button` to allow you to batch input widgets. Check out our [blog post](http://blog.streamlit.io/introducing-submit-button-and-forms)\n",
+    "sha256": "e600ec55ea327f06269e34aaa6a16865631cc243c819c28bbd7d0fbbaf59b17b"
+  },
+  {
+    "source_id": "release:0.80.0:section:7",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:0.79.0:section:4",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.16.0:section:7",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.15.0:section:2",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.15.0:section:4",
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Direct state, widget value/identity, callback, re-execution, page lifecycle or relevant testing change.",
+    "approved_text": "- 🔁 Functions cached with `st.experimental_memo` or `st.experimental_singleton` can contain Streamlit widgets using the `experimental_allow_widgets` parameter. This allows caching checkboxes, sliders, radio buttons, and more!",
+    "parent_source_id": "release:1.15.0",
+    "start_char": 404,
+    "end_char": 631,
+    "source_slice": "- 🔁 Functions cached with `st.experimental_memo` or `st.experimental_singleton` can contain Streamlit widgets using the `experimental_allow_widgets` parameter. This allows caching checkboxes, sliders, radio buttons, and more!\n\n",
+    "sha256": "c76608d876cc396c20caf531d6b44459c50ffdf17ca3a0432a13c8e7f9b15362"
+  },
+  {
+    "source_id": "release:1.14.0:section:2",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.14.0:section:5",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.14.0:section:11",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.14.0:section:15",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.13.0:section:2",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.12.0:section:10",
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Direct state, widget value/identity, callback, re-execution, page lifecycle or relevant testing change.",
+    "approved_text": "- 🍊 `st.slider` range values can now be set through `st.session_state` ([#5007](https://github.com/streamlit/streamlit/pull/5007)).",
+    "parent_source_id": "release:1.12.0",
+    "start_char": 963,
+    "end_char": 1095,
+    "source_slice": "- 🍊 `st.slider` range values can now be set through `st.session_state` ([#5007](https://github.com/streamlit/streamlit/pull/5007)).\n",
+    "sha256": "9385f12ba2bc08f0e23ec57e0f6069fd7236f4eebda8efab04ba5113716ec910"
+  },
+  {
+    "source_id": "release:1.12.0:section:19",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.11.0:section:10",
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Direct state, widget value/identity, callback, re-execution, page lifecycle or relevant testing change.",
+    "approved_text": "- 🏎 Bug fix for a race condition that destroyed widget state with rapid interaction ([#4882](https://github.com/streamlit/streamlit/pull/4882)).",
+    "parent_source_id": "release:1.11.0",
+    "start_char": 810,
+    "end_char": 955,
+    "source_slice": "- 🏎 Bug fix for a race condition that destroyed widget state with rapid interaction ([#4882](https://github.com/streamlit/streamlit/pull/4882)).\n",
+    "sha256": "37763c3913fdf7d67abd305d46c277fe065fd259e9daf8c3f742aadff543bd79"
+  },
+  {
+    "source_id": "release:1.10.0:section:2",
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Direct state, widget value/identity, callback, re-execution, page lifecycle or relevant testing change.",
+    "approved_text": "- 📖 Introducing native support for multipage apps! Check out our [blog post](https://blog.streamlit.io/introducing-multipage-apps) and try out our new `streamlit hello`.",
+    "parent_source_id": "release:1.10.0",
+    "start_char": 69,
+    "end_char": 240,
+    "source_slice": "- 📖 Introducing native support for multipage apps! Check out our [blog post](https://blog.streamlit.io/introducing-multipage-apps) and try out our new `streamlit hello`.\n\n",
+    "sha256": "d5820a6df1ff8501c2b15e2a5c5a7e5deea7a2fe61a3689d6a002ca628a6f5f5"
+  },
+  {
+    "source_id": "release:1.10.0:section:10",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.9.0:section:5",
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Direct state, widget value/identity, callback, re-execution, page lifecycle or relevant testing change.",
+    "approved_text": "- 🏇 Widgets when `disabled` is set/unset will maintain its value ([#4527](https://github.com/streamlit/streamlit/pull/4527)).",
+    "parent_source_id": "release:1.9.0",
+    "start_char": 310,
+    "end_char": 436,
+    "source_slice": "- 🏇 Widgets when `disabled` is set/unset will maintain its value ([#4527](https://github.com/streamlit/streamlit/pull/4527)).\n",
+    "sha256": "a4db42b1fb66c3dc75bfa25012f770ea08ee57120760141a9e32bb0fe1452541"
+  },
+  {
+    "source_id": "release:1.6.0:section:2",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.5.0:section:3",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.4.0:section:4",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.29.0:section:2",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.29.0:section:26",
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Direct state, widget value/identity, callback, re-execution, page lifecycle or relevant testing change.",
+    "approved_text": "- 🕷️ Bug fix: `st.rerun` no longer causes a `RecursionError` when used with `st.chat_input` ([#7643](https://github.com/streamlit/streamlit/pull/7643), [#7629](https://github.com/streamlit/streamlit/issues/7629)).",
+    "parent_source_id": "release:1.29.0",
+    "start_char": 4232,
+    "end_char": 4446,
+    "source_slice": "- 🕷️ Bug fix: `st.rerun` no longer causes a `RecursionError` when used with `st.chat_input` ([#7643](https://github.com/streamlit/streamlit/pull/7643), [#7629](https://github.com/streamlit/streamlit/issues/7629)).\n",
+    "sha256": "ae9fe66b703e4723f7b8a756293732dcf7bdae0f381ff4a9b4d903e6ebcec957"
+  },
+  {
+    "source_id": "release:1.29.0:section:32",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.28.0:section:14",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.28.0:section:25",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.27.0:section:3",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.27.0:section:4",
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Direct state, widget value/identity, callback, re-execution, page lifecycle or relevant testing change.",
+    "approved_text": "- 🏃 Announcing the general availability of [`st.rerun`](/develop/api-reference/execution-flow/st.rerun), a command to interrupt your script and trigger an immediate rerun.",
+    "parent_source_id": "release:1.27.0",
+    "start_char": 477,
+    "end_char": 650,
+    "source_slice": "- 🏃 Announcing the general availability of [`st.rerun`](/develop/api-reference/execution-flow/st.rerun), a command to interrupt your script and trigger an immediate rerun.\n\n",
+    "sha256": "0a6b33e5cb104831c6e095b66b2dd9d1945bcca4532001a2538ba0e1f7cf860e"
+  },
+  {
+    "source_id": "release:1.27.0:section:6",
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Direct state, widget value/identity, callback, re-execution, page lifecycle or relevant testing change.",
+    "approved_text": "- 👻 You can initialize widgets with an empty state by setting `None` as an initial value for [`st.number_input`](/develop/api-reference/widgets/st.number_input), [`st.selectbox`](/develop/api-reference/widgets/st.selectbox), [`st.date_input`](/develop/api-reference/widgets/st.date_input), [`st.time_input`](/develop/api-reference/widgets/st.time_input), [`st.radio`](/develop/api-reference/widgets/st.radio), [`st.text_input`](/develop/api-reference/widgets/st.text_input), and [`st.text_area`](/develop/api-reference/widgets/st.text_area)!",
+    "parent_source_id": "release:1.27.0",
+    "start_char": 671,
+    "end_char": 1213,
+    "source_slice": "- 👻 You can initialize widgets with an empty state by setting `None` as an initial value for [`st.number_input`](/develop/api-reference/widgets/st.number_input), [`st.selectbox`](/develop/api-reference/widgets/st.selectbox), [`st.date_input`](/develop/api-reference/widgets/st.date_input), [`st.time_input`](/develop/api-reference/widgets/st.time_input), [`st.radio`](/develop/api-reference/widgets/st.radio), [`st.text_input`](/develop/api-reference/widgets/st.text_input), and [`st.text_area`](/develop/api-reference/widgets/st.text_area)!\n",
+    "sha256": "53529ada8fcde81f0ca63dddd123ff978d83bb155df8934469a660d29d506b57"
+  },
+  {
+    "source_id": "release:1.27.0:section:7",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.27.0:section:15",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.27.0:section:18",
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Direct state, widget value/identity, callback, re-execution, page lifecycle or relevant testing change.",
+    "approved_text": "- 🦠 Bug fix: Additional error handling was added to `st.session_state` ([#7280](https://github.com/streamlit/streamlit/pull/7280), [#7206](https://github.com/streamlit/streamlit/issues/7206)).",
+    "parent_source_id": "release:1.27.0",
+    "start_char": 3467,
+    "end_char": 3660,
+    "source_slice": "- 🦠 Bug fix: Additional error handling was added to `st.session_state` ([#7280](https://github.com/streamlit/streamlit/pull/7280), [#7206](https://github.com/streamlit/streamlit/issues/7206)).\n",
+    "sha256": "8a7c3e5b39c6e1239609ca186e79dadab5d82cf121cc76fb5b0d5bc102a88c68"
+  },
+  {
+    "source_id": "release:1.27.0:section:23",
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Direct state, widget value/identity, callback, re-execution, page lifecycle or relevant testing change.",
+    "approved_text": "- 🐌 Bug fix: Widgets consistently recognize user interaction while a page is still running, with or without `fastRerun` enabled ([#7283](https://github.com/streamlit/streamlit/pull/7283), [#6643](https://github.com/streamlit/streamlit/issues/6643)).",
+    "parent_source_id": "release:1.27.0",
+    "start_char": 4428,
+    "end_char": 4678,
+    "source_slice": "- 🐌 Bug fix: Widgets consistently recognize user interaction while a page is still running, with or without `fastRerun` enabled ([#7283](https://github.com/streamlit/streamlit/pull/7283), [#6643](https://github.com/streamlit/streamlit/issues/6643)).\n",
+    "sha256": "e516e4a5ce03f793675345efcf332da900a7f7d11fec8d41cf0b99235b0abd6d"
+  },
+  {
+    "source_id": "release:1.26.0:section:3",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.26.0:section:9",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.26.0:section:11",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.26.0:section:14",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.26.0:section:18",
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Direct state, widget value/identity, callback, re-execution, page lifecycle or relevant testing change.",
+    "approved_text": "- 🪱 Bug fix: `st.file_uploader` no longer causes session state to reset when a websocket connection is dropped and reconnected ([#7149](https://github.com/streamlit/streamlit/pull/7149), [#7025](https://github.com/streamlit/streamlit/pull/7025)).",
+    "parent_source_id": "release:1.26.0",
+    "start_char": 3287,
+    "end_char": 3534,
+    "source_slice": "- 🪱 Bug fix: `st.file_uploader` no longer causes session state to reset when a websocket connection is dropped and reconnected ([#7149](https://github.com/streamlit/streamlit/pull/7149), [#7025](https://github.com/streamlit/streamlit/pull/7025)).\n",
+    "sha256": "54a20c92d603ac1c43ef38823140db9005d931f7c2577532ac3471e844465811"
+  },
+  {
+    "source_id": "release:1.25.0:section:5",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.25.0:section:7",
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Direct state, widget value/identity, callback, re-execution, page lifecycle or relevant testing change.",
+    "approved_text": "- ↩️ [Forms](/develop/api-reference/execution-flow/st.form) can now be submitted with Enter/Return while inside [`st.text_input`](/develop/api-reference/widgets/st.text_input), [`st.number_input`](/develop/api-reference/widgets/st.number_input), or [`st.text_area`](/develop/api-reference/widgets/st.text_area) ([#6911](https://github.com/streamlit/streamlit/pull/6911), [#3790](https://github.com/streamlit/streamlit/issues/3790)).",
+    "parent_source_id": "release:1.25.0",
+    "start_char": 1105,
+    "end_char": 1538,
+    "source_slice": "- ↩️ [Forms](/develop/api-reference/execution-flow/st.form) can now be submitted with Enter/Return while inside [`st.text_input`](/develop/api-reference/widgets/st.text_input), [`st.number_input`](/develop/api-reference/widgets/st.number_input), or [`st.text_area`](/develop/api-reference/widgets/st.text_area) ([#6911](https://github.com/streamlit/streamlit/pull/6911), [#3790](https://github.com/streamlit/streamlit/issues/3790)).\n",
+    "sha256": "df7e5fb2134dadcfbe3e881e75256c58574231f678ce1bedb709a853b9d005e1"
+  },
+  {
+    "source_id": "release:1.25.0:section:12",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.24.0:section:8",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.24.0:section:10",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.23.0:section:2",
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Direct state, widget value/identity, callback, re-execution, page lifecycle or relevant testing change.",
+    "approved_text": "- ✂️ Announcing the general availability of [st.data_editor](/develop/api-reference/data/st.data_editor), a widget that allows you to edit DataFrames and many other data structures in a table-like UI. **Breaking change:** the data editor's representation used in `st.session_state` was altered. Find out more about the new format in [Access edited data](/develop/concepts/design/dataframes#access-edited-data).",
+    "parent_source_id": "release:1.23.0",
+    "start_char": 69,
+    "end_char": 480,
+    "source_slice": "- ✂️ Announcing the general availability of [st.data_editor](/develop/api-reference/data/st.data_editor), a widget that allows you to edit DataFrames and many other data structures in a table-like UI. **Breaking change:** the data editor's representation used in `st.session_state` was altered. Find out more about the new format in [Access edited data](/develop/concepts/design/dataframes#access-edited-data).\n",
+    "sha256": "e6d9d5ec1ccda4fee95ce9f17a3260dafa5da294cb70a0d082f737cd8a6c622c"
+  },
+  {
+    "source_id": "release:1.23.0:section:10",
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Direct state, widget value/identity, callback, re-execution, page lifecycle or relevant testing change.",
+    "approved_text": "- 🤫 The new `global.disableWidgetStateDuplicationWarning` configuration option allows the silencing of warnings triggered by setting widget default values and keyed session state values concurrently ([#3605](https://github.com/streamlit/streamlit/issues/3605), [#6640](https://github.com/streamlit/streamlit/pull/6640)). Thanks, [@antonAce](https://github.com/antonAce)!",
+    "parent_source_id": "release:1.23.0",
+    "start_char": 2444,
+    "end_char": 2816,
+    "source_slice": "- 🤫 The new `global.disableWidgetStateDuplicationWarning` configuration option allows the silencing of warnings triggered by setting widget default values and keyed session state values concurrently ([#3605](https://github.com/streamlit/streamlit/issues/3605), [#6640](https://github.com/streamlit/streamlit/pull/6640)). Thanks, [@antonAce](https://github.com/antonAce)!\n\n",
+    "sha256": "9ed1a94ba3089bedbe0cfe6fc529e44b3c85f547933c110e9d33cc4432f95cfd"
+  },
+  {
+    "source_id": "release:1.23.0:section:32",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.23.0:section:33",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.21.0:section:6",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.21.0:section:15",
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Direct state, widget value/identity, callback, re-execution, page lifecycle or relevant testing change.",
+    "approved_text": "- 🪲 Bug fixes: don't push browser history states on rerun, use HTTPS to load external resources in `streamlit hello`, and make the browser back button work for multipage apps ([#5292](https://github.com/streamlit/streamlit/issues/5292), [#6266](https://github.com/streamlit/streamlit/pull/6266), [#6232](https://github.com/streamlit/streamlit/pull/6232)). Thanks, [whitphx](https://github.com/whitphx)!",
+    "parent_source_id": "release:1.21.0",
+    "start_char": 3075,
+    "end_char": 3478,
+    "source_slice": "- 🪲 Bug fixes: don't push browser history states on rerun, use HTTPS to load external resources in `streamlit hello`, and make the browser back button work for multipage apps ([#5292](https://github.com/streamlit/streamlit/issues/5292), [#6266](https://github.com/streamlit/streamlit/pull/6266), [#6232](https://github.com/streamlit/streamlit/pull/6232)). Thanks, [whitphx](https://github.com/whitphx)!\n",
+    "sha256": "b44a9b18ffd629fa9e18b53e77182c4bcba7110bae08077eb00f5b30e2eafb89"
+  },
+  {
+    "source_id": "release:1.21.0:section:20",
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Direct state, widget value/identity, callback, re-execution, page lifecycle or relevant testing change.",
+    "approved_text": "- 🐛 Bug fix: `CachedStFunctionWarning` mentions `experimental_allow_widgets` instead of the deprecated `suppress_st_warning` ([#6216](https://github.com/streamlit/streamlit/issues/6216), [#6217](https://github.com/streamlit/streamlit/pull/6217)).",
+    "parent_source_id": "release:1.21.0",
+    "start_char": 4562,
+    "end_char": 4808,
+    "source_slice": "- 🐛 Bug fix: `CachedStFunctionWarning` mentions `experimental_allow_widgets` instead of the deprecated `suppress_st_warning` ([#6216](https://github.com/streamlit/streamlit/issues/6216), [#6217](https://github.com/streamlit/streamlit/pull/6217)).",
+    "sha256": "ddc350bfdb552f968271d64edd43d0b66f0ed42a8679a4c36646ddf907e2c3cf"
+  },
+  {
+    "source_id": "release:1.20.0:section:12",
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Direct state, widget value/identity, callback, re-execution, page lifecycle or relevant testing change.",
+    "approved_text": "- ⏱️ Made ping and websocket timeouts far more forgiving ([#6212](https://github.com/streamlit/streamlit/pull/6212)).",
+    "parent_source_id": "release:1.20.0",
+    "start_char": 1843,
+    "end_char": 1961,
+    "source_slice": "- ⏱️ Made ping and websocket timeouts far more forgiving ([#6212](https://github.com/streamlit/streamlit/pull/6212)).\n",
+    "sha256": "8bfb95127e7eb34c48df074f04784834eb67f604cd1c4232bbf6808f758d4936"
+  },
+  {
+    "source_id": "release:1.19.0:section:2",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.18.0:section:15",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.17.0:section:5",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.41.0:section:5",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.41.0:section:7",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.41.0:section:21",
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Direct state, widget value/identity, callback, re-execution, page lifecycle or relevant testing change.",
+    "approved_text": "- 👻 Bug fix: `st.rerun` will raise an error if an invalid `scope` is passed to it ([#9911](https://github.com/streamlit/streamlit/pull/9911), [#9908](https://github.com/streamlit/streamlit/issues/9908)).",
+    "parent_source_id": "release:1.41.0",
+    "start_char": 4057,
+    "end_char": 4261,
+    "source_slice": "- 👻 Bug fix: `st.rerun` will raise an error if an invalid `scope` is passed to it ([#9911](https://github.com/streamlit/streamlit/pull/9911), [#9908](https://github.com/streamlit/streamlit/issues/9908)).\n",
+    "sha256": "3c7335cd2275650775960cad8ed16ba81229fe875a75235a6d2940daca4e3f5e"
+  },
+  {
+    "source_id": "release:1.41.0:section:29",
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Direct state, widget value/identity, callback, re-execution, page lifecycle or relevant testing change.",
+    "approved_text": "- 🦠 Bug fix: `st.text_area` correctly matches the value in Session State when used with a key ([#9829](https://github.com/streamlit/streamlit/pull/9829), [#9825](https://github.com/streamlit/streamlit/issues/9825)).",
+    "parent_source_id": "release:1.41.0",
+    "start_char": 5940,
+    "end_char": 6156,
+    "source_slice": "- 🦠 Bug fix: `st.text_area` correctly matches the value in Session State when used with a key ([#9829](https://github.com/streamlit/streamlit/pull/9829), [#9825](https://github.com/streamlit/streamlit/issues/9825)).\n",
+    "sha256": "0ea0da2b898bbfc60cf05726ff353e23c4a595c3a952c157158512af1a68bde1"
+  },
+  {
+    "source_id": "release:1.41.0:section:35",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.40.0:section:2",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.40.0:section:3",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.40.0:section:4",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.40.0:section:10",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.40.0:section:23",
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Direct state, widget value/identity, callback, re-execution, page lifecycle or relevant testing change.",
+    "approved_text": "- 🐞 Bug fix: Streamlit clears fragment auto-reruns when a user changes pages. This prevents an invalid index ([#9617](https://github.com/streamlit/streamlit/pull/9617)).",
+    "parent_source_id": "release:1.40.0",
+    "start_char": 3042,
+    "end_char": 3212,
+    "source_slice": "- 🐞 Bug fix: Streamlit clears fragment auto-reruns when a user changes pages. This prevents an invalid index ([#9617](https://github.com/streamlit/streamlit/pull/9617)).\n",
+    "sha256": "8ad74ccb01f3380641e7257f8d0a67d9736f739d09c9033ae3f2ef5ab9fe1440"
+  },
+  {
+    "source_id": "release:1.40.0:section:25",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.39.0:section:2",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.39.0:section:5",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.39.0:section:13",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.39.0:section:28",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.39.0:section:30",
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Direct state, widget value/identity, callback, re-execution, page lifecycle or relevant testing change.",
+    "approved_text": "- 👻 Bug fix: Fragment elements don't disappear when used with custom components and callbacks ([#9381](https://github.com/streamlit/streamlit/pull/9381), [#9389](https://github.com/streamlit/streamlit/pull/9389), [#9372](https://github.com/streamlit/streamlit/issues/9372)).",
+    "parent_source_id": "release:1.39.0",
+    "start_char": 5209,
+    "end_char": 5484,
+    "source_slice": "- 👻 Bug fix: Fragment elements don't disappear when used with custom components and callbacks ([#9381](https://github.com/streamlit/streamlit/pull/9381), [#9389](https://github.com/streamlit/streamlit/pull/9389), [#9372](https://github.com/streamlit/streamlit/issues/9372)).\n",
+    "sha256": "90d4cf552771f94d52e5728d0abe5e2e47b1b2e6cad1d36b1734d3220fee1031"
+  },
+  {
+    "source_id": "release:1.38.0:section:10",
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Direct state, widget value/identity, callback, re-execution, page lifecycle or relevant testing change.",
+    "approved_text": "- 🌐 For better app efficiency, a WebSocket reconnect will not trigger a rerun unless a script run was interrupted ([#9083](https://github.com/streamlit/streamlit/pull/9083)).",
+    "parent_source_id": "release:1.38.0",
+    "start_char": 1192,
+    "end_char": 1367,
+    "source_slice": "- 🌐 For better app efficiency, a WebSocket reconnect will not trigger a rerun unless a script run was interrupted ([#9083](https://github.com/streamlit/streamlit/pull/9083)).\n",
+    "sha256": "a83f6571495e3e5010ed257d27a1937eeff2da6ec3f3391ec79bdf8ab91ff340"
+  },
+  {
+    "source_id": "release:1.38.0:section:16",
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Direct state, widget value/identity, callback, re-execution, page lifecycle or relevant testing change.",
+    "approved_text": "- 🪹 Bug fix: When a parent fragment updates, Streamlit cleans up child fragments correctly ([#9246](https://github.com/streamlit/streamlit/pull/9246), [#9233](https://github.com/streamlit/streamlit/issues/9233), [#9267](https://github.com/streamlit/streamlit/issues/9267)).",
+    "parent_source_id": "release:1.38.0",
+    "start_char": 2399,
+    "end_char": 2673,
+    "source_slice": "- 🪹 Bug fix: When a parent fragment updates, Streamlit cleans up child fragments correctly ([#9246](https://github.com/streamlit/streamlit/pull/9246), [#9233](https://github.com/streamlit/streamlit/issues/9233), [#9267](https://github.com/streamlit/streamlit/issues/9267)).\n",
+    "sha256": "d587b13e7be1e544d9210fe81fd4cdf23b183362ee4cf97593b3f5b23897aee3"
+  },
+  {
+    "source_id": "release:1.38.0:section:17",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.38.0:section:19",
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Direct state, widget value/identity, callback, re-execution, page lifecycle or relevant testing change.",
+    "approved_text": "- ☠️ Bug fix: Widget state is preserved when page reruns are interrupted with another rerun ([#9187](https://github.com/streamlit/streamlit/pull/9187), [#9163](https://github.com/streamlit/streamlit/issues/9163)). Thanks, [dannyopts](https://github.com/dannyopts)!",
+    "parent_source_id": "release:1.38.0",
+    "start_char": 3227,
+    "end_char": 3492,
+    "source_slice": "- ☠️ Bug fix: Widget state is preserved when page reruns are interrupted with another rerun ([#9187](https://github.com/streamlit/streamlit/pull/9187), [#9163](https://github.com/streamlit/streamlit/issues/9163)). Thanks, [dannyopts](https://github.com/dannyopts)!\n",
+    "sha256": "a6a2a48985612d08cee9b64ae3309cb3a1d8d5437355c0a663b1e50613e50501"
+  },
+  {
+    "source_id": "release:1.38.0:section:24",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.38.0:section:25",
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Direct state, widget value/identity, callback, re-execution, page lifecycle or relevant testing change.",
+    "approved_text": "- 🐌 Bug fix: Automatically rerunning fragments don't raise `FragmentStorageKeyError` to prevent a possible race condition ([#9183](https://github.com/streamlit/streamlit/pull/9183), [#9080](https://github.com/streamlit/streamlit/issues/9080)).",
+    "parent_source_id": "release:1.38.0",
+    "start_char": 4723,
+    "end_char": 4967,
+    "source_slice": "- 🐌 Bug fix: Automatically rerunning fragments don't raise `FragmentStorageKeyError` to prevent a possible race condition ([#9183](https://github.com/streamlit/streamlit/pull/9183), [#9080](https://github.com/streamlit/streamlit/issues/9080)).\n",
+    "sha256": "49e546aa5af04ac6681f9e1b4197b17665970d99ca8cde3ba679132f7b0d9a84"
+  },
+  {
+    "source_id": "release:1.38.0:section:28",
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Direct state, widget value/identity, callback, re-execution, page lifecycle or relevant testing change.",
+    "approved_text": "- 🦂 Bug fix: We reverted a change to fragments which caused some widgets to lose state in some circumstances ([#9178](https://github.com/streamlit/streamlit/pull/9178), [#9171](https://github.com/streamlit/streamlit/issues/9171)).",
+    "parent_source_id": "release:1.38.0",
+    "start_char": 5386,
+    "end_char": 5617,
+    "source_slice": "- 🦂 Bug fix: We reverted a change to fragments which caused some widgets to lose state in some circumstances ([#9178](https://github.com/streamlit/streamlit/pull/9178), [#9171](https://github.com/streamlit/streamlit/issues/9171)).\n",
+    "sha256": "9972faa33f7898fa78163819963bb5c31190d4598de40fa10088614ee17931c8"
+  },
+  {
+    "source_id": "release:1.38.0:section:29",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.37.0:section:3",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.37.0:section:4",
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Direct state, widget value/identity, callback, re-execution, page lifecycle or relevant testing change.",
+    "approved_text": "- 👟 Announcing the general availability of [`st.fragment`](/develop/api-reference/execution-flow/st.fragment), a decorator that lets you rerun functions independently of the whole page.",
+    "parent_source_id": "release:1.37.0",
+    "start_char": 301,
+    "end_char": 487,
+    "source_slice": "- 👟 Announcing the general availability of [`st.fragment`](/develop/api-reference/execution-flow/st.fragment), a decorator that lets you rerun functions independently of the whole page.\n",
+    "sha256": "73fcff61db141e14d5b4eec7f8a43334517bd5db6cfe26993d4ce423b9818ffa"
+  },
+  {
+    "source_id": "release:1.37.0:section:10",
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Direct state, widget value/identity, callback, re-execution, page lifecycle or relevant testing change.",
+    "approved_text": "- 🔭 Within a fragment, you can scope [`st.rerun`](/develop/api-reference/execution-flow/st.rerun) to the fragment.",
+    "parent_source_id": "release:1.37.0",
+    "start_char": 1069,
+    "end_char": 1184,
+    "source_slice": "- 🔭 Within a fragment, you can scope [`st.rerun`](/develop/api-reference/execution-flow/st.rerun) to the fragment.\n",
+    "sha256": "63eb164454cdd9fe36e8be4fa83817a82b8b2526f3eed238576615bd11487a1e"
+  },
+  {
+    "source_id": "release:1.37.0:section:11",
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Direct state, widget value/identity, callback, re-execution, page lifecycle or relevant testing change.",
+    "approved_text": "- 🪺 Streamlit supports nested fragments ([#8931](https://github.com/streamlit/streamlit/pull/8931), [#8635](https://github.com/streamlit/streamlit/issues/8635)).",
+    "parent_source_id": "release:1.37.0",
+    "start_char": 1184,
+    "end_char": 1346,
+    "source_slice": "- 🪺 Streamlit supports nested fragments ([#8931](https://github.com/streamlit/streamlit/pull/8931), [#8635](https://github.com/streamlit/streamlit/issues/8635)).\n",
+    "sha256": "8c01ea5f707bee77b2d2869459347df1df7967355a0aa82b10234ca0397e6c6e"
+  },
+  {
+    "source_id": "release:1.37.0:section:12",
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Direct state, widget value/identity, callback, re-execution, page lifecycle or relevant testing change.",
+    "approved_text": "- 📞 Fragments can be used in callback functions ([#8916](https://github.com/streamlit/streamlit/pull/8916), [#8591](https://github.com/streamlit/streamlit/issues/8591)).",
+    "parent_source_id": "release:1.37.0",
+    "start_char": 1346,
+    "end_char": 1517,
+    "source_slice": "- 📞 Fragments can be used in callback functions ([#8916](https://github.com/streamlit/streamlit/pull/8916), [#8591](https://github.com/streamlit/streamlit/issues/8591)).\n\n",
+    "sha256": "88eecbeb65ccb306b9e906a8c19dc0fe192ca741d94c5bc28acd0f65aab52362"
+  },
+  {
+    "source_id": "release:1.37.0:section:19",
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Direct state, widget value/identity, callback, re-execution, page lifecycle or relevant testing change.",
+    "approved_text": "- 🦎 Bug fix: Nested fragments rerun correctly when a child fragment precedes a widget in the parent fragment ([#9114](https://github.com/streamlit/streamlit/pull/9114)).",
+    "parent_source_id": "release:1.37.0",
+    "start_char": 2278,
+    "end_char": 2448,
+    "source_slice": "- 🦎 Bug fix: Nested fragments rerun correctly when a child fragment precedes a widget in the parent fragment ([#9114](https://github.com/streamlit/streamlit/pull/9114)).\n",
+    "sha256": "89434eb760e53eeb47c33008a2c36cca1841a54a8926c785041a0e0ecc2a6e37"
+  },
+  {
+    "source_id": "release:1.37.0:section:24",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.37.0:section:29",
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Direct state, widget value/identity, callback, re-execution, page lifecycle or relevant testing change.",
+    "approved_text": "- 🦀 Bug fix: Streamlit correctly raises a `KeyError` when encountered in a fragment instead of a misleading, fragment-related error ([#9011](https://github.com/streamlit/streamlit/pull/9011), [#8494](https://github.com/streamlit/streamlit/issues/8494)).",
+    "parent_source_id": "release:1.37.0",
+    "start_char": 4296,
+    "end_char": 4550,
+    "source_slice": "- 🦀 Bug fix: Streamlit correctly raises a `KeyError` when encountered in a fragment instead of a misleading, fragment-related error ([#9011](https://github.com/streamlit/streamlit/pull/9011), [#8494](https://github.com/streamlit/streamlit/issues/8494)).\n",
+    "sha256": "ba1c5054d53209cf75a79ac9f5e9df3aaef856c55e664ca392cf58e40ff73a58"
+  },
+  {
+    "source_id": "release:1.37.0:section:30",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.37.0:section:32",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.37.0:section:33",
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Direct state, widget value/identity, callback, re-execution, page lifecycle or relevant testing change.",
+    "approved_text": "- 🪲 Bug fix: Using `st.rerun` in a fragment will not cause the app's main body content to render in the fragment in rare events ([#8798](https://github.com/streamlit/streamlit/pull/8798)).",
+    "parent_source_id": "release:1.37.0",
+    "start_char": 5177,
+    "end_char": 5366,
+    "source_slice": "- 🪲 Bug fix: Using `st.rerun` in a fragment will not cause the app's main body content to render in the fragment in rare events ([#8798](https://github.com/streamlit/streamlit/pull/8798)).\n",
+    "sha256": "48518634ea98b32dbe27c2fea54690eaafebb898708a9108883b9bc341e4177d"
+  },
+  {
+    "source_id": "release:1.37.0:section:34",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.36.0:section:2",
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Direct state, widget value/identity, callback, re-execution, page lifecycle or relevant testing change.",
+    "approved_text": "- 🧭 Introducing [`st.navigation`](/develop/api-reference/navigation/st.navigation) and [`st.Page`](/develop/api-reference/navigation/st.page) for a new way to define multipage apps! Check out the [docs](/develop/concepts/multipage-apps/overview) to learn more.",
+    "parent_source_id": "release:1.36.0",
+    "start_char": 70,
+    "end_char": 332,
+    "source_slice": "- 🧭 Introducing [`st.navigation`](/develop/api-reference/navigation/st.navigation) and [`st.Page`](/develop/api-reference/navigation/st.page) for a new way to define multipage apps! Check out the [docs](/develop/concepts/multipage-apps/overview) to learn more.\n\n",
+    "sha256": "46ce49befd905d2ce16cd2de99254ab6c495fa353882b94ddfddbbed7fdac401"
+  },
+  {
+    "source_id": "release:1.36.0:section:7",
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Direct state, widget value/identity, callback, re-execution, page lifecycle or relevant testing change.",
+    "approved_text": "- 📲 Custom components support callback functions ([#8633](https://github.com/streamlit/streamlit/pull/8633), [#3977](https://github.com/streamlit/streamlit/issues/3977)).",
+    "parent_source_id": "release:1.36.0",
+    "start_char": 652,
+    "end_char": 823,
+    "source_slice": "- 📲 Custom components support callback functions ([#8633](https://github.com/streamlit/streamlit/pull/8633), [#3977](https://github.com/streamlit/streamlit/issues/3977)).\n",
+    "sha256": "b9e1e2a7f0c2359ebefa5633a03c9995f758d35ccd7f91536a483692b81d61ab"
+  },
+  {
+    "source_id": "release:1.36.0:section:8",
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Direct state, widget value/identity, callback, re-execution, page lifecycle or relevant testing change.",
+    "approved_text": "- 📥 Fragments no longer support rendering widgets outside of their main body ([#8756](https://github.com/streamlit/streamlit/pull/8756)).",
+    "parent_source_id": "release:1.36.0",
+    "start_char": 823,
+    "end_char": 961,
+    "source_slice": "- 📥 Fragments no longer support rendering widgets outside of their main body ([#8756](https://github.com/streamlit/streamlit/pull/8756)).\n",
+    "sha256": "bd568c99f9ccafe4988c91f3bd94c1ec5275d8a49ffc94e5aae6c9bc880920be"
+  },
+  {
+    "source_id": "release:1.36.0:section:10",
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Direct state, widget value/identity, callback, re-execution, page lifecycle or relevant testing change.",
+    "approved_text": "- ⌛ The caching parameter `experimental_allow_widgets` is deprecated ([#8817](https://github.com/streamlit/streamlit/pull/8817)).",
+    "parent_source_id": "release:1.36.0",
+    "start_char": 1268,
+    "end_char": 1398,
+    "source_slice": "- ⌛ The caching parameter `experimental_allow_widgets` is deprecated ([#8817](https://github.com/streamlit/streamlit/pull/8817)).\n",
+    "sha256": "f6d7d57370da30874411d23996b1b70719fdc16a2da8fb45a88303107ba028c4"
+  },
+  {
+    "source_id": "release:1.36.0:section:14",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.36.0:section:22",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.36.0:section:27",
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Direct state, widget value/identity, callback, re-execution, page lifecycle or relevant testing change.",
+    "approved_text": "- 🐞 Bug fix: Updated the error message for disallowed writes to Session State ([#8720](https://github.com/streamlit/streamlit/pull/8720), [#8715](https://github.com/streamlit/streamlit/issues/8715)).",
+    "parent_source_id": "release:1.36.0",
+    "start_char": 4365,
+    "end_char": 4565,
+    "source_slice": "- 🐞 Bug fix: Updated the error message for disallowed writes to Session State ([#8720](https://github.com/streamlit/streamlit/pull/8720), [#8715](https://github.com/streamlit/streamlit/issues/8715)).\n",
+    "sha256": "fa15d418b837535e3364929bbd4701f81c880687ec0c09765cafa72eff849205"
+  },
+  {
+    "source_id": "release:1.35.0:section:2",
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Direct state, widget value/identity, callback, re-execution, page lifecycle or relevant testing change.",
+    "approved_text": "- 📈 Announcing user selections for charts! Use [`st.plotly_chart`](/develop/api-reference/charts/st.plotly_chart), [`st.altair_chart`](/develop/api-reference/charts/st.altair_chart), and [`st.vega_lite_chart`](/develop/api-reference/charts/st.vega_lite_chart) to make chart widgets for even more interactive apps.",
+    "parent_source_id": "release:1.35.0",
+    "start_char": 69,
+    "end_char": 383,
+    "source_slice": "- 📈 Announcing user selections for charts! Use [`st.plotly_chart`](/develop/api-reference/charts/st.plotly_chart), [`st.altair_chart`](/develop/api-reference/charts/st.altair_chart), and [`st.vega_lite_chart`](/develop/api-reference/charts/st.vega_lite_chart) to make chart widgets for even more interactive apps.\n",
+    "sha256": "590c18ae45bc15d58d76148885e4862e867b8fa805b920a15147c4d5ca9aa3b0"
+  },
+  {
+    "source_id": "release:1.35.0:section:6",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.35.0:section:20",
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Direct state, widget value/identity, callback, re-execution, page lifecycle or relevant testing change.",
+    "approved_text": "- 🐜 Bug fix: Streamlit correctly clears stale elements when using `st.rerun` ([#8599](https://github.com/streamlit/streamlit/pull/8599), [#8360](https://github.com/streamlit/streamlit/issues/8360)).",
+    "parent_source_id": "release:1.35.0",
+    "start_char": 3383,
+    "end_char": 3582,
+    "source_slice": "- 🐜 Bug fix: Streamlit correctly clears stale elements when using `st.rerun` ([#8599](https://github.com/streamlit/streamlit/pull/8599), [#8360](https://github.com/streamlit/streamlit/issues/8360)).\n",
+    "sha256": "9038a7663712b5bdb47ea3c125f007d28705ee5894a9caafb61d25695cbbd44c"
+  },
+  {
+    "source_id": "release:1.34.0:section:24",
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Direct state, widget value/identity, callback, re-execution, page lifecycle or relevant testing change.",
+    "approved_text": "- 🪳 Bug fix: `st.file_uploader` callback is correctly executed once per file selection after the first selection ([#8493](https://github.com/streamlit/streamlit/pull/8493), [#4877](https://github.com/streamlit/streamlit/issues/4877)).",
+    "parent_source_id": "release:1.34.0",
+    "start_char": 3810,
+    "end_char": 4045,
+    "source_slice": "- 🪳 Bug fix: `st.file_uploader` callback is correctly executed once per file selection after the first selection ([#8493](https://github.com/streamlit/streamlit/pull/8493), [#4877](https://github.com/streamlit/streamlit/issues/4877)).\n",
+    "sha256": "92700d143c5ee88ce696928398e305cf16231aff6d1a79beba86ec6fa84bbba8"
+  },
+  {
+    "source_id": "release:1.33.0:section:2",
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Direct state, widget value/identity, callback, re-execution, page lifecycle or relevant testing change.",
+    "approved_text": "- 👟 Introducing [`st.experimental_fragment`](/develop/api-reference/execution-flow/st.fragment) to decorate functions and rerun them independently of the whole page. Check out the [docs](/develop/concepts/architecture/fragments) and give your apps a speed boost!",
+    "parent_source_id": "release:1.33.0",
+    "start_char": 70,
+    "end_char": 333,
+    "source_slice": "- 👟 Introducing [`st.experimental_fragment`](/develop/api-reference/execution-flow/st.fragment) to decorate functions and rerun them independently of the whole page. Check out the [docs](/develop/concepts/architecture/fragments) and give your apps a speed boost!\n",
+    "sha256": "58f5f27c8cc1e8af24393ba265904148b4b300cd198889e8d17b41f18d717e32"
+  },
+  {
+    "source_id": "release:1.33.0:section:7",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.33.0:section:11",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.33.0:section:15",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.33.0:section:23",
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Direct state, widget value/identity, callback, re-execution, page lifecycle or relevant testing change.",
+    "approved_text": "- 🐜 Bug fix: Using `st.rerun` with a triggering widget in `AppTest` no longer creates an infinite loop ([#8264](https://github.com/streamlit/streamlit/pull/8264), [#7768](https://github.com/streamlit/streamlit/issues/7768)).",
+    "parent_source_id": "release:1.33.0",
+    "start_char": 4290,
+    "end_char": 4515,
+    "source_slice": "- 🐜 Bug fix: Using `st.rerun` with a triggering widget in `AppTest` no longer creates an infinite loop ([#8264](https://github.com/streamlit/streamlit/pull/8264), [#7768](https://github.com/streamlit/streamlit/issues/7768)).\n",
+    "sha256": "d59a2a0f34bff60d83e935511f4c9de82bc03761976df38dfdd63115e2b3a83f"
+  },
+  {
+    "source_id": "release:1.31.0:section:4",
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Direct state, widget value/identity, callback, re-execution, page lifecycle or relevant testing change.",
+    "approved_text": "- 🔗 Introducing `st.page_link`! Now, you can build custom navigation menus for your multipage apps. Check out [our docs](/develop/api-reference/widgets/st.page_link) to see how.",
+    "parent_source_id": "release:1.31.0",
+    "start_char": 155,
+    "end_char": 333,
+    "source_slice": "- 🔗 Introducing `st.page_link`! Now, you can build custom navigation menus for your multipage apps. Check out [our docs](/develop/api-reference/widgets/st.page_link) to see how.\n",
+    "sha256": "90148200eed5688f641392651b402c8719f1a3bfe648cc1c50f444f4b5f6668c"
+  },
+  {
+    "source_id": "release:1.31.0:section:7",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.31.0:section:17",
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Direct state, widget value/identity, callback, re-execution, page lifecycle or relevant testing change.",
+    "approved_text": "- 🐛 Bug fix: `AppTest` correctly sees widgets inside containers ([#7923](https://github.com/streamlit/streamlit/pull/7923), [#7711](https://github.com/streamlit/streamlit/issues/7711)).",
+    "parent_source_id": "release:1.31.0",
+    "start_char": 2367,
+    "end_char": 2553,
+    "source_slice": "- 🐛 Bug fix: `AppTest` correctly sees widgets inside containers ([#7923](https://github.com/streamlit/streamlit/pull/7923), [#7711](https://github.com/streamlit/streamlit/issues/7711)).\n",
+    "sha256": "8ea259a387b3cddb96980ddc85a3fe668e891b375c1adfb38a81d7fb6567b136"
+  },
+  {
+    "source_id": "release:1.30.0:section:4",
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Direct state, widget value/identity, callback, re-execution, page lifecycle or relevant testing change.",
+    "approved_text": "- 🔄 Announcing `st.switch_page` to programmatically switch pages in multipage apps! Check out our [docs](/develop/api-reference/navigation/st.switch_page) to learn about this highly anticipated feature!",
+    "parent_source_id": "release:1.30.0",
+    "start_char": 155,
+    "end_char": 358,
+    "source_slice": "- 🔄 Announcing `st.switch_page` to programmatically switch pages in multipage apps! Check out our [docs](/develop/api-reference/navigation/st.switch_page) to learn about this highly anticipated feature!\n",
+    "sha256": "8a6e8613c7775cfb189f0e6ffefc544398a644097ff196d482b3a83b1a5890fe"
+  },
+  {
+    "source_id": "release:1.30.0:section:9",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.30.0:section:17",
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Direct state, widget value/identity, callback, re-execution, page lifecycle or relevant testing change.",
+    "approved_text": "- 🪱 Bug fix: Widgets raise an exception if its values aren't Python comparable ([#7840](https://github.com/streamlit/streamlit/pull/7840), [#3714](https://github.com/streamlit/streamlit/issues/3714)).",
+    "parent_source_id": "release:1.30.0",
+    "start_char": 2616,
+    "end_char": 2817,
+    "source_slice": "- 🪱 Bug fix: Widgets raise an exception if its values aren't Python comparable ([#7840](https://github.com/streamlit/streamlit/pull/7840), [#3714](https://github.com/streamlit/streamlit/issues/3714)).\n",
+    "sha256": "22ed091376f93b74c522e81c367ff2c9949fdf2836dfbc87eabc157de2978cbf"
+  },
+  {
+    "source_id": "release:1.30.0:section:20",
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Direct state, widget value/identity, callback, re-execution, page lifecycle or relevant testing change.",
+    "approved_text": "- 🐜 Bug fix: Enter-to-submit is automatically disabled when the associated `st.form_submit_button` is disabled ([#7827](https://github.com/streamlit/streamlit/pull/7827), [#7822](https://github.com/streamlit/streamlit/issues/7822)).",
+    "parent_source_id": "release:1.30.0",
+    "start_char": 3126,
+    "end_char": 3359,
+    "source_slice": "- 🐜 Bug fix: Enter-to-submit is automatically disabled when the associated `st.form_submit_button` is disabled ([#7827](https://github.com/streamlit/streamlit/pull/7827), [#7822](https://github.com/streamlit/streamlit/issues/7822)).\n",
+    "sha256": "87a23f42c3cba931d13468fdcf2fea054295125e99c43374632500d141391e91"
+  },
+  {
+    "source_id": "release:1.52.0:section:2",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.52.0:section:3",
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Direct state, widget value/identity, callback, re-execution, page lifecycle or relevant testing change.",
+    "approved_text": "- 📩 To avoid blocking your script, you can pass a callable to [`st.download_button`](/develop/api-reference/widgets/st.download_button) for on-demand download generation ([#12942](https://github.com/streamlit/streamlit/pull/12942), [#5053](https://github.com/streamlit/streamlit/issues/5053)).",
+    "parent_source_id": "release:1.52.0",
+    "start_char": 202,
+    "end_char": 496,
+    "source_slice": "- 📩 To avoid blocking your script, you can pass a callable to [`st.download_button`](/develop/api-reference/widgets/st.download_button) for on-demand download generation ([#12942](https://github.com/streamlit/streamlit/pull/12942), [#5053](https://github.com/streamlit/streamlit/issues/5053)).\n",
+    "sha256": "d82b36de71c95c014cb1684c95fa3bc298add66ed7156bc519becae4fead39cc"
+  },
+  {
+    "source_id": "release:1.52.0:section:6",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.52.0:section:7",
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Direct state, widget value/identity, callback, re-execution, page lifecycle or relevant testing change.",
+    "approved_text": "- ❓ You can now pass query parameters to [`st.switch_page`](/develop/api-reference/navigation/st.switch_page) and [`st.page_link`](/develop/api-reference/widgets/st.page_link) ([#13027](https://github.com/streamlit/streamlit/pull/13027), [#8102](https://github.com/streamlit/streamlit/issues/8102), [#8112](https://github.com/streamlit/streamlit/issues/8112), [#13093](https://github.com/streamlit/streamlit/pull/13093)).",
+    "parent_source_id": "release:1.52.0",
+    "start_char": 962,
+    "end_char": 1384,
+    "source_slice": "- ❓ You can now pass query parameters to [`st.switch_page`](/develop/api-reference/navigation/st.switch_page) and [`st.page_link`](/develop/api-reference/widgets/st.page_link) ([#13027](https://github.com/streamlit/streamlit/pull/13027), [#8102](https://github.com/streamlit/streamlit/issues/8102), [#8112](https://github.com/streamlit/streamlit/issues/8112), [#13093](https://github.com/streamlit/streamlit/pull/13093)).\n",
+    "sha256": "89e4d92c0bf65cd6d53e18d35a9eb6b009c6c99333a5defd35d302faf8ec28b4"
+  },
+  {
+    "source_id": "release:1.52.0:section:14",
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Direct state, widget value/identity, callback, re-execution, page lifecycle or relevant testing change.",
+    "approved_text": "- 🔑 To prevent widgets from resetting when you change a parameter, widgets are transitioning to an identity based only on their keys (if provided). The following widgets use only their key for their identity:\n  - `st.file_uploader`\n  - `st.camera_input`",
+    "parent_source_id": "release:1.52.0",
+    "start_char": 3253,
+    "end_char": 3507,
+    "source_slice": "- 🔑 To prevent widgets from resetting when you change a parameter, widgets are transitioning to an identity based only on their keys (if provided). The following widgets use only their key for their identity:\n  - `st.file_uploader`\n  - `st.camera_input`\n",
+    "sha256": "ff8177fed237d3435047c0090c54bab129838064a99ba0f5027d70f828fc5e89"
+  },
+  {
+    "source_id": "release:1.52.0:section:33",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.52.0:section:34",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.52.0:section:44",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.51.0:section:11",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.51.0:section:14",
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Direct state, widget value/identity, callback, re-execution, page lifecycle or relevant testing change.",
+    "approved_text": "- 🔑 To prevent widgets from resetting when you change a parameter, widgets are transitioning to an identity based only on their keys (if provided). The following widgets use only their key for their identity:\n  - `st.color_picker`\n  - `st.segmented_control`\n  - `st.radio`\n  - `st.audio_input`\n  - `st.slider`\n  - `st.select_slider`\n  - `st.chat_input`\n  - `st.feedback`\n  - `st.pills`",
+    "parent_source_id": "release:1.51.0",
+    "start_char": 1818,
+    "end_char": 2204,
+    "source_slice": "- 🔑 To prevent widgets from resetting when you change a parameter, widgets are transitioning to an identity based only on their keys (if provided). The following widgets use only their key for their identity:\n  - `st.color_picker`\n  - `st.segmented_control`\n  - `st.radio`\n  - `st.audio_input`\n  - `st.slider`\n  - `st.select_slider`\n  - `st.chat_input`\n  - `st.feedback`\n  - `st.pills`\n",
+    "sha256": "c3fae71fdeed1d93d66c11244d6fea30b2dfd96857c6526f4b9e1244d6f17287"
+  },
+  {
+    "source_id": "release:1.51.0:section:34",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.50.0:section:6",
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Direct state, widget value/identity, callback, re-execution, page lifecycle or relevant testing change.",
+    "approved_text": "- 🔑 To prevent widgets from resetting when you change a parameter, widgets are transitioning to an identity based only on their keys (if provided). The following widgets use only their key for their identity:\n  - `st.button`\n  - `st.download_button`\n  - `st.form_submit_button`\n  - `st.checkbox`\n  - `st.toggle`\n  - `st.text_area`\n  - `st.text_input`\n  - `st.number_input`\n  - `st.time_input`\n  - `st.date_input`\n  - `st.selectbox`\n  - `st.multiselect`\n  - Custom components",
+    "parent_source_id": "release:1.50.0",
+    "start_char": 700,
+    "end_char": 1175,
+    "source_slice": "- 🔑 To prevent widgets from resetting when you change a parameter, widgets are transitioning to an identity based only on their keys (if provided). The following widgets use only their key for their identity:\n  - `st.button`\n  - `st.download_button`\n  - `st.form_submit_button`\n  - `st.checkbox`\n  - `st.toggle`\n  - `st.text_area`\n  - `st.text_input`\n  - `st.number_input`\n  - `st.time_input`\n  - `st.date_input`\n  - `st.selectbox`\n  - `st.multiselect`\n  - Custom components\n",
+    "sha256": "f0c8fcdeac0366a7aab985a276177d96a98198a79d2e2b910d521415f678357b"
+  },
+  {
+    "source_id": "release:1.50.0:section:9",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.50.0:section:22",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.49.0:section:6",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.49.0:section:10",
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Direct state, widget value/identity, callback, re-execution, page lifecycle or relevant testing change.",
+    "approved_text": "- 🔑 [`st.form_submit_button`](/develop/api-reference/execution-flow/st.form_submit_button) has a `key` parameter ([#12190](https://github.com/streamlit/streamlit/pull/12190), [#12121](https://github.com/streamlit/streamlit/issues/12121)).",
+    "parent_source_id": "release:1.49.0",
+    "start_char": 1223,
+    "end_char": 1462,
+    "source_slice": "- 🔑 [`st.form_submit_button`](/develop/api-reference/execution-flow/st.form_submit_button) has a `key` parameter ([#12190](https://github.com/streamlit/streamlit/pull/12190), [#12121](https://github.com/streamlit/streamlit/issues/12121)).\n",
+    "sha256": "6b8d2455bf4cdbac8e0009aff6c7b1dbd7b3feabbecacbab4cfa546f36787090"
+  },
+  {
+    "source_id": "release:1.49.0:section:17",
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Direct state, widget value/identity, callback, re-execution, page lifecycle or relevant testing change.",
+    "approved_text": "- 🧹 We removed deprecated commands and parameters: `st.experimental_dialog`, `st.experimental_fragment`, and caching's `experimental_allow_widgets` ([#12167](https://github.com/streamlit/streamlit/pull/12167)).",
+    "parent_source_id": "release:1.49.0",
+    "start_char": 2571,
+    "end_char": 2783,
+    "source_slice": "- 🧹 We removed deprecated commands and parameters: `st.experimental_dialog`, `st.experimental_fragment`, and caching's `experimental_allow_widgets` ([#12167](https://github.com/streamlit/streamlit/pull/12167)).\n\n",
+    "sha256": "5fffe9c7c1f92463c66f214dece08035e62d94cef64728c05b14606113081bd3"
+  },
+  {
+    "source_id": "release:1.49.0:section:33",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.49.0:section:38",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.48.0:section:5",
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Direct state, widget value/identity, callback, re-execution, page lifecycle or relevant testing change.",
+    "approved_text": "- 💬 You can configure the dismissibility of [`st.dialog`](/develop/api-reference/execution-flow/st.dialog) and set callback functions ([#9504](https://github.com/streamlit/streamlit/pull/9504), [#12034](https://github.com/streamlit/streamlit/pull/12034)). Thanks, [souvikmaji](https://github.com/souvikmaji)!",
+    "parent_source_id": "release:1.48.0",
+    "start_char": 601,
+    "end_char": 910,
+    "source_slice": "- 💬 You can configure the dismissibility of [`st.dialog`](/develop/api-reference/execution-flow/st.dialog) and set callback functions ([#9504](https://github.com/streamlit/streamlit/pull/9504), [#12034](https://github.com/streamlit/streamlit/pull/12034)). Thanks, [souvikmaji](https://github.com/souvikmaji)!\n",
+    "sha256": "22279ca8c6ad6559078db08b39b610efad4cdb13c36c79ad4a6f66b06261120e"
+  },
+  {
+    "source_id": "release:1.48.0:section:6",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.48.0:section:15",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.48.0:section:24",
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Direct state, widget value/identity, callback, re-execution, page lifecycle or relevant testing change.",
+    "approved_text": "- 🐞 Bug fix: Linting accepts lists in addition to tuples for callback arguments in widgets ([#12039](https://github.com/streamlit/streamlit/pull/12039)).",
+    "parent_source_id": "release:1.48.0",
+    "start_char": 5203,
+    "end_char": 5357,
+    "source_slice": "- 🐞 Bug fix: Linting accepts lists in addition to tuples for callback arguments in widgets ([#12039](https://github.com/streamlit/streamlit/pull/12039)).\n",
+    "sha256": "e55170c21e4f4502ca2a8101ac62362763b28e44594da97f1eea35e08fa4cdfe"
+  },
+  {
+    "source_id": "release:1.47.0:section:12",
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Direct state, widget value/identity, callback, re-execution, page lifecycle or relevant testing change.",
+    "approved_text": "- 💬 You can set the unsubmitted value of [`st.chat_input`](/develop/api-reference/chat/st.chat_input) through Session State ([#10175](https://github.com/streamlit/streamlit/pull/10175), [#7166](https://github.com/streamlit/streamlit/issues/7166)).",
+    "parent_source_id": "release:1.47.0",
+    "start_char": 857,
+    "end_char": 1105,
+    "source_slice": "- 💬 You can set the unsubmitted value of [`st.chat_input`](/develop/api-reference/chat/st.chat_input) through Session State ([#10175](https://github.com/streamlit/streamlit/pull/10175), [#7166](https://github.com/streamlit/streamlit/issues/7166)).\n",
+    "sha256": "e0afe3c29417322d5b3d068ccc2f5907249893a682b4e3ddfe8199b7d136d193"
+  },
+  {
+    "source_id": "release:1.47.0:section:13",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.47.0:section:14",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.47.0:section:15",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.47.0:section:25",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.47.0:section:29",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.47.0:section:34",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.47.0:section:36",
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Direct state, widget value/identity, callback, re-execution, page lifecycle or relevant testing change.",
+    "approved_text": "- ⏳ Bug fix: When a WebSocket reconnects, the app will fully rerun to prevent missing fragments ([#11890](https://github.com/streamlit/streamlit/pull/11890), [#11660](https://github.com/streamlit/streamlit/issues/11660)).",
+    "parent_source_id": "release:1.47.0",
+    "start_char": 5810,
+    "end_char": 6032,
+    "source_slice": "- ⏳ Bug fix: When a WebSocket reconnects, the app will fully rerun to prevent missing fragments ([#11890](https://github.com/streamlit/streamlit/pull/11890), [#11660](https://github.com/streamlit/streamlit/issues/11660)).\n",
+    "sha256": "1e15b0f65ced1c1025051aa6bf095f715b2eb90d41a803f3bbf0537cf82bf9f3"
+  },
+  {
+    "source_id": "release:1.47.0:section:47",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.47.0:section:53",
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Direct state, widget value/identity, callback, re-execution, page lifecycle or relevant testing change.",
+    "approved_text": "- 🕷️ Bug fix: The WebSocket ping interval does not exceed the timeout interval ([#11693](https://github.com/streamlit/streamlit/pull/11693), [#11670](https://github.com/streamlit/streamlit/issues/11670)).",
+    "parent_source_id": "release:1.47.0",
+    "start_char": 9596,
+    "end_char": 9801,
+    "source_slice": "- 🕷️ Bug fix: The WebSocket ping interval does not exceed the timeout interval ([#11693](https://github.com/streamlit/streamlit/pull/11693), [#11670](https://github.com/streamlit/streamlit/issues/11670)).\n",
+    "sha256": "2cafd7622d9ba925ee3fe698887665d0c95dd7a7b72a272e9efd62714a5a47d1"
+  },
+  {
+    "source_id": "release:1.46.0:section:7",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.46.0:section:31",
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Direct state, widget value/identity, callback, re-execution, page lifecycle or relevant testing change.",
+    "approved_text": "- 🎫 A button's placement in the sidebar or main body of an app is included in its widget identity ([#10881](https://github.com/streamlit/streamlit/pull/10881), [#10598](https://github.com/streamlit/streamlit/issues/10598)). Thanks, [joaooliveira-11](https://github.com/joaooliveira-11)!",
+    "parent_source_id": "release:1.46.0",
+    "start_char": 5453,
+    "end_char": 5740,
+    "source_slice": "- 🎫 A button's placement in the sidebar or main body of an app is included in its widget identity ([#10881](https://github.com/streamlit/streamlit/pull/10881), [#10598](https://github.com/streamlit/streamlit/issues/10598)). Thanks, [joaooliveira-11](https://github.com/joaooliveira-11)!\n",
+    "sha256": "4585bbb9bcc965461716f1bebebba86bd8a74a9eb6aea00ae99e963476aa8f86"
+  },
+  {
+    "source_id": "release:1.46.0:section:63",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.46.0:section:68",
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Direct state, widget value/identity, callback, re-execution, page lifecycle or relevant testing change.",
+    "approved_text": "- 🪲 Bug fix: Displaying elements within a fragment's callback logs a clear warning that it's not supported ([#10942](https://github.com/streamlit/streamlit/pull/10942), [#10475](https://github.com/streamlit/streamlit/issues/10475)). Thanks, [Zane-dev16](https://github.com/Zane-dev16)!",
+    "parent_source_id": "release:1.46.0",
+    "start_char": 13952,
+    "end_char": 14238,
+    "source_slice": "- 🪲 Bug fix: Displaying elements within a fragment's callback logs a clear warning that it's not supported ([#10942](https://github.com/streamlit/streamlit/pull/10942), [#10475](https://github.com/streamlit/streamlit/issues/10475)). Thanks, [Zane-dev16](https://github.com/Zane-dev16)!\n",
+    "sha256": "84a4d9390316e46a6e5a96da044c1b8d0c32b6b44ebe677b525daafdea010592"
+  },
+  {
+    "source_id": "release:1.46.0:section:70",
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Direct state, widget value/identity, callback, re-execution, page lifecycle or relevant testing change.",
+    "approved_text": "- 🐝 Bug fix: Page runs end correctly to prevent invalid widget states ([#11258](https://github.com/streamlit/streamlit/pull/11258), [#11202](https://github.com/streamlit/streamlit/issues/11202)).",
+    "parent_source_id": "release:1.46.0",
+    "start_char": 14456,
+    "end_char": 14652,
+    "source_slice": "- 🐝 Bug fix: Page runs end correctly to prevent invalid widget states ([#11258](https://github.com/streamlit/streamlit/pull/11258), [#11202](https://github.com/streamlit/streamlit/issues/11202)).\n",
+    "sha256": "f11d1e81187cf2a642073739790342d7c866bf76572cee62ad087552968400fe"
+  },
+  {
+    "source_id": "release:1.46.0:section:72",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.45.0:section:4",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.45.0:section:9",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.45.0:section:15",
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Direct state, widget value/identity, callback, re-execution, page lifecycle or relevant testing change.",
+    "approved_text": "- 🔁 Bug fix: `st.context` retains its information when calling `st.rerun` ([#11113](https://github.com/streamlit/streamlit/pull/11113), [#11111](https://github.com/streamlit/streamlit/issues/11111)).",
+    "parent_source_id": "release:1.45.0",
+    "start_char": 3043,
+    "end_char": 3243,
+    "source_slice": "- 🔁 Bug fix: `st.context` retains its information when calling `st.rerun` ([#11113](https://github.com/streamlit/streamlit/pull/11113), [#11111](https://github.com/streamlit/streamlit/issues/11111)).\n",
+    "sha256": "ca2dfc8279e81ba2f4a02e2edd4417508bd73203841ff2715619f14421b27c8f"
+  },
+  {
+    "source_id": "release:1.45.0:section:17",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.45.0:section:25",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.45.0:section:28",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.44.0:section:9",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.43.0:section:5",
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Direct state, widget value/identity, callback, re-execution, page lifecycle or relevant testing change.",
+    "approved_text": "- 🏃 You can prevent [`st.download_button`](/develop/api-reference/widgets/st.download_button) from triggering a rerun by setting `on_click=\"ignore\"` ([#10296](https://github.com/streamlit/streamlit/pull/10296), [#4382](https://github.com/streamlit/streamlit/issues/4382)).",
+    "parent_source_id": "release:1.43.0",
+    "start_char": 387,
+    "end_char": 660,
+    "source_slice": "- 🏃 You can prevent [`st.download_button`](/develop/api-reference/widgets/st.download_button) from triggering a rerun by setting `on_click=\"ignore\"` ([#10296](https://github.com/streamlit/streamlit/pull/10296), [#4382](https://github.com/streamlit/streamlit/issues/4382)).\n",
+    "sha256": "67906c17959ca6c52f52c071e58fc65355e4670e460227959d1a1cf424cefb41"
+  },
+  {
+    "source_id": "release:1.43.0:section:30",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.42.0:section:32",
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Direct state, widget value/identity, callback, re-execution, page lifecycle or relevant testing change.",
+    "approved_text": "- 🦀 Bug fix: When a fragment ID is not found, Streamlit logs a warning but doesn't raise an error ([#9921](https://github.com/streamlit/streamlit/issues/9921), [#10130](https://github.com/streamlit/streamlit/pull/10130)).",
+    "parent_source_id": "release:1.42.0",
+    "start_char": 5604,
+    "end_char": 5826,
+    "source_slice": "- 🦀 Bug fix: When a fragment ID is not found, Streamlit logs a warning but doesn't raise an error ([#9921](https://github.com/streamlit/streamlit/issues/9921), [#10130](https://github.com/streamlit/streamlit/pull/10130)).\n",
+    "sha256": "1cc9c69f6a08a38a3f1cea6401d2cfab4204b5e3f5bde0669d843872335d9ed5"
+  },
+  {
+    "source_id": "release:1.42.0:section:42",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.42.0:section:43",
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Direct state, widget value/identity, callback, re-execution, page lifecycle or relevant testing change.",
+    "approved_text": "- 🕷️ Bug fix: Widgets correctly submit values if a user edits the value and immediately clicks a button ([#10007](https://github.com/streamlit/streamlit/issues/10007), [#10018](https://github.com/streamlit/streamlit/pull/10018)).",
+    "parent_source_id": "release:1.42.0",
+    "start_char": 7654,
+    "end_char": 7884,
+    "source_slice": "- 🕷️ Bug fix: Widgets correctly submit values if a user edits the value and immediately clicks a button ([#10007](https://github.com/streamlit/streamlit/issues/10007), [#10018](https://github.com/streamlit/streamlit/pull/10018)).\n",
+    "sha256": "807dbcdf65dbbfcc8beb131dc14c8a269b072b3a39e5a3d97c3be0f616b82a77"
+  },
+  {
+    "source_id": "release:1.64.0:section:5",
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Direct state, widget value/identity, callback, re-execution, page lifecycle or relevant testing change.",
+    "approved_text": "- 🆕 Announcing live updates for [`st.text_input`](/develop/api-reference/widgets/st.text_input): set `live=True` and the widget commits while the user types, after a short pause ([#16662](https://github.com/streamlit/streamlit/pull/16662), [#4553](https://github.com/streamlit/streamlit/issues/4553)).",
+    "parent_source_id": "release:1.64.0",
+    "start_char": 894,
+    "end_char": 1197,
+    "source_slice": "- 🆕 Announcing live updates for [`st.text_input`](/develop/api-reference/widgets/st.text_input): set `live=True` and the widget commits while the user types, after a short pause ([#16662](https://github.com/streamlit/streamlit/pull/16662), [#4553](https://github.com/streamlit/streamlit/issues/4553)).\n\n",
+    "sha256": "31b60b5b7a006272f09b6b223aeeb41239a79925b9562010b938860a5692021b"
+  },
+  {
+    "source_id": "release:1.64.0:section:7",
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Direct state, widget value/identity, callback, re-execution, page lifecycle or relevant testing change.",
+    "approved_text": "- 🎛 The `on_change=\"ignore\"` mode reaches three more widgets, so a new value updates the widget and any bound query parameter without a rerun:\n    - [`st.number_input`](/develop/api-reference/widgets/st.number_input) ([#16649](https://github.com/streamlit/streamlit/pull/16649)).\n    - [`st.select_slider`](/develop/api-reference/widgets/st.select_slider) ([#16776](https://github.com/streamlit/streamlit/pull/16776)).\n    - [`st.selectbox`](/develop/api-reference/widgets/st.selectbox) ([#16862](https://github.com/streamlit/streamlit/pull/16862)).",
+    "parent_source_id": "release:1.64.0",
+    "start_char": 1218,
+    "end_char": 1768,
+    "source_slice": "- 🎛 The `on_change=\"ignore\"` mode reaches three more widgets, so a new value updates the widget and any bound query parameter without a rerun:\n    - [`st.number_input`](/develop/api-reference/widgets/st.number_input) ([#16649](https://github.com/streamlit/streamlit/pull/16649)).\n    - [`st.select_slider`](/develop/api-reference/widgets/st.select_slider) ([#16776](https://github.com/streamlit/streamlit/pull/16776)).\n    - [`st.selectbox`](/develop/api-reference/widgets/st.selectbox) ([#16862](https://github.com/streamlit/streamlit/pull/16862)).\n",
+    "sha256": "8bc3366302acdac936305ee0f04af5501b71e22a11505a9d4d5bfa430cd99c01"
+  },
+  {
+    "source_id": "release:1.64.0:section:8",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.64.0:section:9",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.64.0:section:10",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.64.0:section:13",
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Direct state, widget value/identity, callback, re-execution, page lifecycle or relevant testing change.",
+    "approved_text": "- 🐛 Bug fix: [`st.dialog`](/develop/api-reference/execution-flow/st.dialog) hides a leftover dialog as soon as the next full-app run starts, so `st.rerun()` closes the modal before later blocking work ([#16901](https://github.com/streamlit/streamlit/pull/16901), [#9405](https://github.com/streamlit/streamlit/issues/9405)).",
+    "parent_source_id": "release:1.64.0",
+    "start_char": 2107,
+    "end_char": 2432,
+    "source_slice": "- 🐛 Bug fix: [`st.dialog`](/develop/api-reference/execution-flow/st.dialog) hides a leftover dialog as soon as the next full-app run starts, so `st.rerun()` closes the modal before later blocking work ([#16901](https://github.com/streamlit/streamlit/pull/16901), [#9405](https://github.com/streamlit/streamlit/issues/9405)).\n",
+    "sha256": "45ac57f5da06cd0eeb5ab91d9287a1bc9cf7fd09300268209c35c44b52a4ffbb"
+  },
+  {
+    "source_id": "release:1.64.0:section:15",
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Direct state, widget value/identity, callback, re-execution, page lifecycle or relevant testing change.",
+    "approved_text": "- 🪲 Bug fix: Widgets after [`st.rerun`](/develop/api-reference/execution-flow/st.rerun) keep the values the user selected, instead of resetting to their defaults ([#16762](https://github.com/streamlit/streamlit/pull/16762), [#3533](https://github.com/streamlit/streamlit/issues/3533)).",
+    "parent_source_id": "release:1.64.0",
+    "start_char": 2808,
+    "end_char": 3094,
+    "source_slice": "- 🪲 Bug fix: Widgets after [`st.rerun`](/develop/api-reference/execution-flow/st.rerun) keep the values the user selected, instead of resetting to their defaults ([#16762](https://github.com/streamlit/streamlit/pull/16762), [#3533](https://github.com/streamlit/streamlit/issues/3533)).\n",
+    "sha256": "8ce504dd4d00d60c0e29f76c3726d7a2931a8dda393751fb14ac71f23e4a2373"
+  },
+  {
+    "source_id": "release:1.64.0:section:19",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.64.0:section:25",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.64.0:section:26",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.64.0:section:28",
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Direct state, widget value/identity, callback, re-execution, page lifecycle or relevant testing change.",
+    "approved_text": "- 🦎 Bug fix: Widgets raise an actionable error for an `on_change` mode they do not support ([#16889](https://github.com/streamlit/streamlit/pull/16889)).",
+    "parent_source_id": "release:1.64.0",
+    "start_char": 6088,
+    "end_char": 6242,
+    "source_slice": "- 🦎 Bug fix: Widgets raise an actionable error for an `on_change` mode they do not support ([#16889](https://github.com/streamlit/streamlit/pull/16889)).\n",
+    "sha256": "693f9329f688876f58ccdf551de18993bb2ca8fec0b24fa9f2ccd64a879bffbd"
+  },
+  {
+    "source_id": "release:1.64.0:section:32",
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Direct state, widget value/identity, callback, re-execution, page lifecycle or relevant testing change.",
+    "approved_text": "- 🪲 Bug fix: Coalesced reruns dispatch only the callbacks that have not run yet ([#16765](https://github.com/streamlit/streamlit/pull/16765)).",
+    "parent_source_id": "release:1.64.0",
+    "start_char": 6808,
+    "end_char": 6951,
+    "source_slice": "- 🪲 Bug fix: Coalesced reruns dispatch only the callbacks that have not run yet ([#16765](https://github.com/streamlit/streamlit/pull/16765)).\n",
+    "sha256": "9629461ad3337fc54448a520cc8ee9b105469cfa4e931f45d83f995e7ee4564c"
+  },
+  {
+    "source_id": "release:1.64.0:section:33",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.64.0:section:34",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.64.0:section:35",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.64.0:section:39",
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Direct state, widget value/identity, callback, re-execution, page lifecycle or relevant testing change.",
+    "approved_text": "- 🦠 Bug fix: `AppTest.session_state` supports the same dict methods as [`st.session_state`](/develop/api-reference/caching-and-state/st.session_state), which are `get`, `keys`, `items`, `values`, `to_dict`, `len`, and iteration ([#16897](https://github.com/streamlit/streamlit/pull/16897)).",
+    "parent_source_id": "release:1.64.0",
+    "start_char": 8380,
+    "end_char": 8671,
+    "source_slice": "- 🦠 Bug fix: `AppTest.session_state` supports the same dict methods as [`st.session_state`](/develop/api-reference/caching-and-state/st.session_state), which are `get`, `keys`, `items`, `values`, `to_dict`, `len`, and iteration ([#16897](https://github.com/streamlit/streamlit/pull/16897)).\n",
+    "sha256": "d7f2399075960b01d28f78cc6116529e0f6a921d7230e277ab34eefd5522dfca"
+  },
+  {
+    "source_id": "release:1.63.0:section:2",
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Direct state, widget value/identity, callback, re-execution, page lifecycle or relevant testing change.",
+    "approved_text": "- 🎯 Introducing event-scoped fragment reruns, which let a widget callback rerun just one named fragment:\n    - Name a fragment with `@st.fragment(key=…)` and target it with [`st.rerun`](/develop/api-reference/execution-flow/st.rerun)`(\"filters\")` or `st.rerun([\"alpha\", \"beta\"])` from an `on_change` or `on_click` callback ([#16161](https://github.com/streamlit/streamlit/pull/16161)).\n    - `st.rerun()` and `st.switch_page()` now take effect inside widget callbacks instead of being discarded with a warning; apps that relied on the previous no-op will now rerun ([#16158](https://github.com/streamlit/streamlit/pull/16158)).",
+    "parent_source_id": "release:1.63.0",
+    "start_char": 74,
+    "end_char": 702,
+    "source_slice": "- 🎯 Introducing event-scoped fragment reruns, which let a widget callback rerun just one named fragment:\n    - Name a fragment with `@st.fragment(key=…)` and target it with [`st.rerun`](/develop/api-reference/execution-flow/st.rerun)`(\"filters\")` or `st.rerun([\"alpha\", \"beta\"])` from an `on_change` or `on_click` callback ([#16161](https://github.com/streamlit/streamlit/pull/16161)).\n    - `st.rerun()` and `st.switch_page()` now take effect inside widget callbacks instead of being discarded with a warning; apps that relied on the previous no-op will now rerun ([#16158](https://github.com/streamlit/streamlit/pull/16158)).\n",
+    "sha256": "e30305b8c2f51ead0d51f46df38154a4ff30691c32821772ce6345d28475d8eb"
+  },
+  {
+    "source_id": "release:1.63.0:section:3",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.63.0:section:4",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.63.0:section:5",
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Direct state, widget value/identity, callback, re-execution, page lifecycle or relevant testing change.",
+    "approved_text": "- ✨ Introducing `on_change=\"ignore\"`, a new mode that updates a widget in the browser without rerunning your app. Your script receives the buffered value on the next rerun, such as a button click, and the mode is available on [`st.slider`](/develop/api-reference/widgets/st.slider) and [`st.text_input`](/develop/api-reference/widgets/st.text_input) ([#14828](https://github.com/streamlit/streamlit/pull/14828), [#16605](https://github.com/streamlit/streamlit/pull/16605)).",
+    "parent_source_id": "release:1.63.0",
+    "start_char": 702,
+    "end_char": 1176,
+    "source_slice": "- ✨ Introducing `on_change=\"ignore\"`, a new mode that updates a widget in the browser without rerunning your app. Your script receives the buffered value on the next rerun, such as a button click, and the mode is available on [`st.slider`](/develop/api-reference/widgets/st.slider) and [`st.text_input`](/develop/api-reference/widgets/st.text_input) ([#14828](https://github.com/streamlit/streamlit/pull/14828), [#16605](https://github.com/streamlit/streamlit/pull/16605)).\n",
+    "sha256": "f7f7d3bd49fec44b05895f1363ed1482d063e608819b46b358ecd0e36572aec0"
+  },
+  {
+    "source_id": "release:1.63.0:section:9",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.63.0:section:12",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.63.0:section:21",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.63.0:section:25",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.62.0:section:2",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.62.0:section:3",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.62.0:section:5",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.62.0:section:6",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.62.0:section:10",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.62.0:section:11",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.62.0:section:20",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.62.0:section:28",
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Direct state, widget value/identity, callback, re-execution, page lifecycle or relevant testing change.",
+    "approved_text": "- 🐞 Bug fix: Nested [`st.fragment`](/develop/api-reference/execution-flow/st.fragment) functions with queued periodic reruns no longer execute twice and create duplicate element IDs ([#16314](https://github.com/streamlit/streamlit/pull/16314), [#10719](https://github.com/streamlit/streamlit/issues/10719)).",
+    "parent_source_id": "release:1.62.0",
+    "start_char": 7259,
+    "end_char": 7567,
+    "source_slice": "- 🐞 Bug fix: Nested [`st.fragment`](/develop/api-reference/execution-flow/st.fragment) functions with queued periodic reruns no longer execute twice and create duplicate element IDs ([#16314](https://github.com/streamlit/streamlit/pull/16314), [#10719](https://github.com/streamlit/streamlit/issues/10719)).\n",
+    "sha256": "2c773cba060e44ee67b47240e88a8394fc7b85a5182414b1dfd5c117f94bf2b7"
+  },
+  {
+    "source_id": "release:1.62.0:section:30",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.62.0:section:34",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.62.0:section:37",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.62.0:section:38",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.62.0:section:39",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.61.0:section:6",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.61.0:section:7",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.61.0:section:8",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.61.0:section:10",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.61.0:section:11",
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Direct state, widget value/identity, callback, re-execution, page lifecycle or relevant testing change.",
+    "approved_text": "- 🛡 The `disabled` widget parameter is now enforced server-side, so a disabled widget never accepts a value from the browser ([#16209](https://github.com/streamlit/streamlit/pull/16209)).",
+    "parent_source_id": "release:1.61.0",
+    "start_char": 2893,
+    "end_char": 3081,
+    "source_slice": "- 🛡 The `disabled` widget parameter is now enforced server-side, so a disabled widget never accepts a value from the browser ([#16209](https://github.com/streamlit/streamlit/pull/16209)).\n",
+    "sha256": "adfacfc1a7e30b8896dd073f3944336dbae287b2e43a5893a871b4a887585bde"
+  },
+  {
+    "source_id": "release:1.61.0:section:23",
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Direct state, widget value/identity, callback, re-execution, page lifecycle or relevant testing change.",
+    "approved_text": "- 🦠 Bug fix: `AppTest` multipage path handling is now deterministic and better documented ([#16122](https://github.com/streamlit/streamlit/pull/16122), [#8429](https://github.com/streamlit/streamlit/issues/8429), [#8154](https://github.com/streamlit/streamlit/issues/8154)).",
+    "parent_source_id": "release:1.61.0",
+    "start_char": 5788,
+    "end_char": 6063,
+    "source_slice": "- 🦠 Bug fix: `AppTest` multipage path handling is now deterministic and better documented ([#16122](https://github.com/streamlit/streamlit/pull/16122), [#8429](https://github.com/streamlit/streamlit/issues/8429), [#8154](https://github.com/streamlit/streamlit/issues/8154)).\n",
+    "sha256": "f21b0f14915ede8c77236e48d95ece15ac4c478d7a4d85358d64b23e2fb1cb36"
+  },
+  {
+    "source_id": "release:1.61.0:section:25",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.61.0:section:34",
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Direct state, widget value/identity, callback, re-execution, page lifecycle or relevant testing change.",
+    "approved_text": "- 🪲 Bug fix: Fragments nested inside a shared container no longer lose their children after the enclosing parent fragment reruns ([#16171](https://github.com/streamlit/streamlit/pull/16171), [#12514](https://github.com/streamlit/streamlit/issues/12514)).",
+    "parent_source_id": "release:1.61.0",
+    "start_char": 8591,
+    "end_char": 8846,
+    "source_slice": "- 🪲 Bug fix: Fragments nested inside a shared container no longer lose their children after the enclosing parent fragment reruns ([#16171](https://github.com/streamlit/streamlit/pull/16171), [#12514](https://github.com/streamlit/streamlit/issues/12514)).\n",
+    "sha256": "55574d0574da837ab72709228a349114f2ff12ba4fe4714ae157aac9193c4cda"
+  },
+  {
+    "source_id": "release:1.61.0:section:36",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.61.0:section:40",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.60.0:section:7",
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Direct state, widget value/identity, callback, re-execution, page lifecycle or relevant testing change.",
+    "approved_text": "- New `server.maxWidgetStateSize` config option (default 25 MB) limits the widget state payload a client can send per script rerun, hardening against oversized widget and custom-component payloads ([#15804](https://github.com/streamlit/streamlit/pull/15804)).",
+    "parent_source_id": "release:1.60.0",
+    "start_char": 1085,
+    "end_char": 1345,
+    "source_slice": "- New `server.maxWidgetStateSize` config option (default 25 MB) limits the widget state payload a client can send per script rerun, hardening against oversized widget and custom-component payloads ([#15804](https://github.com/streamlit/streamlit/pull/15804)).\n",
+    "sha256": "3a6ba19a689e78309e28384ec23fce1d06a390b446a8da6801f9b4535a10f861"
+  },
+  {
+    "source_id": "release:1.60.0:section:23",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.60.0:section:25",
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Direct state, widget value/identity, callback, re-execution, page lifecycle or relevant testing change.",
+    "approved_text": "- 🦟 Bug fix: `run_every` auto-rerun timers are now deduplicated per fragment, preventing duplicate reruns ([#15912](https://github.com/streamlit/streamlit/pull/15912)).",
+    "parent_source_id": "release:1.60.0",
+    "start_char": 4723,
+    "end_char": 4892,
+    "source_slice": "- 🦟 Bug fix: `run_every` auto-rerun timers are now deduplicated per fragment, preventing duplicate reruns ([#15912](https://github.com/streamlit/streamlit/pull/15912)).\n",
+    "sha256": "004f51363ec940405b99e63f9a3987e89c5ea4c7dea0eeb2637f081098ee2e88"
+  },
+  {
+    "source_id": "release:1.60.0:section:27",
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Direct state, widget value/identity, callback, re-execution, page lifecycle or relevant testing change.",
+    "approved_text": "- 🦗 Bug fix: Auto-rerun correctly stops when a fragment is evicted ([#15932](https://github.com/streamlit/streamlit/pull/15932)).",
+    "parent_source_id": "release:1.60.0",
+    "start_char": 5061,
+    "end_char": 5191,
+    "source_slice": "- 🦗 Bug fix: Auto-rerun correctly stops when a fragment is evicted ([#15932](https://github.com/streamlit/streamlit/pull/15932)).\n",
+    "sha256": "1c63264f655eb1e39f246e944dc3e2614c442c0511bd79c55058a0cf81615a64"
+  },
+  {
+    "source_id": "release:1.60.0:section:41",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.59.0:section:7",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.59.0:section:11",
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Direct state, widget value/identity, callback, re-execution, page lifecycle or relevant testing change.",
+    "approved_text": "- 🧩 [`st.fragment`](/develop/api-reference/execution-flow/st.fragment) can now write to containers defined outside the fragment. Fragments can update any part of your app — including elements created before the fragment — without triggering a full rerun ([#15623](https://github.com/streamlit/streamlit/pull/15623), [#15620](https://github.com/streamlit/streamlit/pull/15620), [#10481](https://github.com/streamlit/streamlit/issues/10481)).",
+    "parent_source_id": "release:1.59.0",
+    "start_char": 3072,
+    "end_char": 3513,
+    "source_slice": "- 🧩 [`st.fragment`](/develop/api-reference/execution-flow/st.fragment) can now write to containers defined outside the fragment. Fragments can update any part of your app — including elements created before the fragment — without triggering a full rerun ([#15623](https://github.com/streamlit/streamlit/pull/15623), [#15620](https://github.com/streamlit/streamlit/pull/15620), [#10481](https://github.com/streamlit/streamlit/issues/10481)).\n",
+    "sha256": "5cfb3c82c45c4c63a7b9f418e274f12f8fde5f63dd17d2b20bc15e74dec63d0a"
+  },
+  {
+    "source_id": "release:1.59.0:section:15",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.59.0:section:26",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.59.0:section:29",
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Direct state, widget value/identity, callback, re-execution, page lifecycle or relevant testing change.",
+    "approved_text": "- 🦋 Bug fix: `@st.fragment(run_every=...)` no longer raises a `TypeError` in `_run_with_thread_state` ([#15376](https://github.com/streamlit/streamlit/pull/15376)).",
+    "parent_source_id": "release:1.59.0",
+    "start_char": 7174,
+    "end_char": 7339,
+    "source_slice": "- 🦋 Bug fix: `@st.fragment(run_every=...)` no longer raises a `TypeError` in `_run_with_thread_state` ([#15376](https://github.com/streamlit/streamlit/pull/15376)).\n",
+    "sha256": "77266d1c2704b1909923a77bc9e474debe2bee1e5033f2dd90b976d967a4f1fd"
+  },
+  {
+    "source_id": "release:1.59.0:section:34",
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Direct state, widget value/identity, callback, re-execution, page lifecycle or relevant testing change.",
+    "approved_text": "- 🕷️ Bug fix: `widgetMgr` is synced correctly to fix lazy loading in `tab.open` ([#15460](https://github.com/streamlit/streamlit/pull/15460)).",
+    "parent_source_id": "release:1.59.0",
+    "start_char": 7951,
+    "end_char": 8094,
+    "source_slice": "- 🕷️ Bug fix: `widgetMgr` is synced correctly to fix lazy loading in `tab.open` ([#15460](https://github.com/streamlit/streamlit/pull/15460)).\n",
+    "sha256": "98b683048b01d271df2fd36a2022eb6ba9b214f9fdb43b5b9e91be7d6d5df50c"
+  },
+  {
+    "source_id": "release:1.59.0:section:36",
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Direct state, widget value/identity, callback, re-execution, page lifecycle or relevant testing change.",
+    "approved_text": "- 🪰 Bug fix: [`st.pills`](/develop/api-reference/widgets/st.pills) and [`st.segmented_control`](/develop/api-reference/widgets/st.segmented_control) callbacks now fire correctly after selection ([#15522](https://github.com/streamlit/streamlit/pull/15522)).",
+    "parent_source_id": "release:1.59.0",
+    "start_char": 8253,
+    "end_char": 8510,
+    "source_slice": "- 🪰 Bug fix: [`st.pills`](/develop/api-reference/widgets/st.pills) and [`st.segmented_control`](/develop/api-reference/widgets/st.segmented_control) callbacks now fire correctly after selection ([#15522](https://github.com/streamlit/streamlit/pull/15522)).\n",
+    "sha256": "9c48dfbeb86d07f181f6701d6865e24c2aa6c97e0569b717b6f5ad026305c362"
+  },
+  {
+    "source_id": "release:1.59.0:section:40",
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Direct state, widget value/identity, callback, re-execution, page lifecycle or relevant testing change.",
+    "approved_text": "- 🦗 Bug fix: `AppTest` now correctly handles formatted labels in `format_func` widgets ([#15564](https://github.com/streamlit/streamlit/pull/15564)).",
+    "parent_source_id": "release:1.59.0",
+    "start_char": 8966,
+    "end_char": 9116,
+    "source_slice": "- 🦗 Bug fix: `AppTest` now correctly handles formatted labels in `format_func` widgets ([#15564](https://github.com/streamlit/streamlit/pull/15564)).\n",
+    "sha256": "184fcc2e6620bde8e17df439f8d9b767374ea338b83bb5b1d7e0130da2595715"
+  },
+  {
+    "source_id": "release:1.59.0:section:42",
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Direct state, widget value/identity, callback, re-execution, page lifecycle or relevant testing change.",
+    "approved_text": "- 🐌 Bug fix: [`st.selectbox`](/develop/api-reference/widgets/st.selectbox) no longer loses its selection when `format_func` depends on object identity ([#15639](https://github.com/streamlit/streamlit/pull/15639)).",
+    "parent_source_id": "release:1.59.0",
+    "start_char": 9292,
+    "end_char": 9506,
+    "source_slice": "- 🐌 Bug fix: [`st.selectbox`](/develop/api-reference/widgets/st.selectbox) no longer loses its selection when `format_func` depends on object identity ([#15639](https://github.com/streamlit/streamlit/pull/15639)).\n",
+    "sha256": "83b05bf850afb34ec76d326406e429abb76870b06975b1443f66358b5ceff51a"
+  },
+  {
+    "source_id": "release:1.59.0:section:43",
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Direct state, widget value/identity, callback, re-execution, page lifecycle or relevant testing change.",
+    "approved_text": "- 🦎 Bug fix: Pressing Escape no longer clears the current selection in [`st.multiselect`](/develop/api-reference/widgets/st.multiselect) ([#15646](https://github.com/streamlit/streamlit/pull/15646)).",
+    "parent_source_id": "release:1.59.0",
+    "start_char": 9506,
+    "end_char": 9706,
+    "source_slice": "- 🦎 Bug fix: Pressing Escape no longer clears the current selection in [`st.multiselect`](/develop/api-reference/widgets/st.multiselect) ([#15646](https://github.com/streamlit/streamlit/pull/15646)).\n",
+    "sha256": "236a4e062eb8a486fdba2977bc3868484d374c2067c52539a878808ff163c463"
+  },
+  {
+    "source_id": "release:1.58.0:section:2",
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Direct state, widget value/identity, callback, re-execution, page lifecycle or relevant testing change.",
+    "approved_text": "- 🌟 Introducing `parallel=True` for [`@st.fragment`](/develop/api-reference/execution-flow/st.fragment), which lets fragments run concurrently for more responsive apps and background-style workflows ([#15214](https://github.com/streamlit/streamlit/pull/15214)).",
+    "parent_source_id": "release:1.58.0",
+    "start_char": 69,
+    "end_char": 331,
+    "source_slice": "- 🌟 Introducing `parallel=True` for [`@st.fragment`](/develop/api-reference/execution-flow/st.fragment), which lets fragments run concurrently for more responsive apps and background-style workflows ([#15214](https://github.com/streamlit/streamlit/pull/15214)).\n",
+    "sha256": "14cd6e9e0673a41b574ede4dbebcbc77fd5d11b1ab5b4c21bb62df7f7674567c"
+  },
+  {
+    "source_id": "release:1.58.0:section:9",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.58.0:section:11",
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Direct state, widget value/identity, callback, re-execution, page lifecycle or relevant testing change.",
+    "approved_text": "- 🐛 Query-parameter-bound widgets now keep the URL in sync when their values change through Session State ([#14744](https://github.com/streamlit/streamlit/pull/14744)).",
+    "parent_source_id": "release:1.58.0",
+    "start_char": 1834,
+    "end_char": 2003,
+    "source_slice": "- 🐛 Query-parameter-bound widgets now keep the URL in sync when their values change through Session State ([#14744](https://github.com/streamlit/streamlit/pull/14744)).\n",
+    "sha256": "9340fdaa8442c1addd0b176a8eaddd3b76776081ea975727702d380bb232d713"
+  },
+  {
+    "source_id": "release:1.58.0:section:12",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.58.0:section:16",
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Direct state, widget value/identity, callback, re-execution, page lifecycle or relevant testing change.",
+    "approved_text": "- 🦋 Bug fix: Fragment apps no longer crash because of stale auto-reruns ([#15130](https://github.com/streamlit/streamlit/pull/15130), [#15084](https://github.com/streamlit/streamlit/issues/15084)).",
+    "parent_source_id": "release:1.58.0",
+    "start_char": 2828,
+    "end_char": 3026,
+    "source_slice": "- 🦋 Bug fix: Fragment apps no longer crash because of stale auto-reruns ([#15130](https://github.com/streamlit/streamlit/pull/15130), [#15084](https://github.com/streamlit/streamlit/issues/15084)).\n",
+    "sha256": "5ca9e656b9985f4614ae833b7a0317cfeeb71ec76e6dc3b3b6d1fc3841183508"
+  },
+  {
+    "source_id": "release:1.58.0:section:23",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.58.0:section:27",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.58.0:section:28",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.57.0:section:8",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.57.0:section:9",
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Direct state, widget value/identity, callback, re-execution, page lifecycle or relevant testing change.",
+    "approved_text": "- 🧪 [`st.testing.v1.AppTest`](/develop/api-reference/app-testing/st.testing.v1.apptest) now supports [`st.pills`](/develop/api-reference/widgets/st.pills), [`st.segmented_control`](/develop/api-reference/widgets/st.segmented_control), and `st.dataframe` key lookups ([#14518](https://github.com/streamlit/streamlit/pull/14518), [#11361](https://github.com/streamlit/streamlit/issues/11361), [#11338](https://github.com/streamlit/streamlit/issues/11338)).",
+    "parent_source_id": "release:1.57.0",
+    "start_char": 1942,
+    "end_char": 2397,
+    "source_slice": "- 🧪 [`st.testing.v1.AppTest`](/develop/api-reference/app-testing/st.testing.v1.apptest) now supports [`st.pills`](/develop/api-reference/widgets/st.pills), [`st.segmented_control`](/develop/api-reference/widgets/st.segmented_control), and `st.dataframe` key lookups ([#14518](https://github.com/streamlit/streamlit/pull/14518), [#11361](https://github.com/streamlit/streamlit/issues/11361), [#11338](https://github.com/streamlit/streamlit/issues/11338)).\n",
+    "sha256": "53762018a1fd1e116106d99528aa9ac6a389377d33fb4b1ebaa344b888e64434"
+  },
+  {
+    "source_id": "release:1.57.0:section:11",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.57.0:section:26",
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Direct state, widget value/identity, callback, re-execution, page lifecycle or relevant testing change.",
+    "approved_text": "- 🪳 Bug fix: [`st.radio`](/develop/api-reference/widgets/st.radio) now retains selections when using `format_func` with custom option objects ([#14815](https://github.com/streamlit/streamlit/pull/14815), [#14814](https://github.com/streamlit/streamlit/issues/14814)).",
+    "parent_source_id": "release:1.57.0",
+    "start_char": 5599,
+    "end_char": 5867,
+    "source_slice": "- 🪳 Bug fix: [`st.radio`](/develop/api-reference/widgets/st.radio) now retains selections when using `format_func` with custom option objects ([#14815](https://github.com/streamlit/streamlit/pull/14815), [#14814](https://github.com/streamlit/streamlit/issues/14814)).\n",
+    "sha256": "e03072a0602ec7da77a0f3824d0b2c48b4c910e5deaa228021013290eadcf29f"
+  },
+  {
+    "source_id": "release:1.57.0:section:28",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.57.0:section:29",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.56.0:section:2",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.56.0:section:4",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.56.0:section:15",
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Direct state, widget value/identity, callback, re-execution, page lifecycle or relevant testing change.",
+    "approved_text": "- ⚡ [`st.link_button`](/develop/api-reference/widgets/st.link_button) now supports an `on_click` callback that triggers a rerun before navigating ([#14116](https://github.com/streamlit/streamlit/pull/14116), [#7453](https://github.com/streamlit/streamlit/issues/7453)).",
+    "parent_source_id": "release:1.56.0",
+    "start_char": 3558,
+    "end_char": 3828,
+    "source_slice": "- ⚡ [`st.link_button`](/develop/api-reference/widgets/st.link_button) now supports an `on_click` callback that triggers a rerun before navigating ([#14116](https://github.com/streamlit/streamlit/pull/14116), [#7453](https://github.com/streamlit/streamlit/issues/7453)).\n",
+    "sha256": "eba2870e57ffbf0db31f5eb7b8e76ff73f3e09326862d2d0796e1d5040bb8ae6"
+  },
+  {
+    "source_id": "release:1.56.0:section:16",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.56.0:section:20",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.56.0:section:26",
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Direct state, widget value/identity, callback, re-execution, page lifecycle or relevant testing change.",
+    "approved_text": "- 🔧 Widget state duplication warnings are now logged to the console instead of displayed in the app UI ([#14141](https://github.com/streamlit/streamlit/pull/14141)).",
+    "parent_source_id": "release:1.56.0",
+    "start_char": 6325,
+    "end_char": 6491,
+    "source_slice": "- 🔧 Widget state duplication warnings are now logged to the console instead of displayed in the app UI ([#14141](https://github.com/streamlit/streamlit/pull/14141)).\n",
+    "sha256": "b3efad02376028d0be78dff97390889c6a4a8029542ae674dca37bffc576bc48"
+  },
+  {
+    "source_id": "release:1.56.0:section:38",
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Direct state, widget value/identity, callback, re-execution, page lifecycle or relevant testing change.",
+    "approved_text": "- 🪰 Bug fix: Bound query params are now correctly restored in the URL when navigating in multi-page apps ([#14374](https://github.com/streamlit/streamlit/pull/14374), [#14350](https://github.com/streamlit/streamlit/issues/14350)).",
+    "parent_source_id": "release:1.56.0",
+    "start_char": 8636,
+    "end_char": 8867,
+    "source_slice": "- 🪰 Bug fix: Bound query params are now correctly restored in the URL when navigating in multi-page apps ([#14374](https://github.com/streamlit/streamlit/pull/14374), [#14350](https://github.com/streamlit/streamlit/issues/14350)).\n",
+    "sha256": "7a7bfa98929aeee6e224f0dac83086d08b8f42d7129395d28161d4b4dcd3ba6d"
+  },
+  {
+    "source_id": "release:1.55.0:section:3",
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Direct state, widget value/identity, callback, re-execution, page lifecycle or relevant testing change.",
+    "approved_text": "- 🖇️ Announcing widget binding! Most non-trigger widgets have a `bind` parameter to simplify syncing widget state with query parameters.",
+    "parent_source_id": "release:1.55.0",
+    "start_char": 444,
+    "end_char": 582,
+    "source_slice": "- 🖇️ Announcing widget binding! Most non-trigger widgets have a `bind` parameter to simplify syncing widget state with query parameters.\n\n",
+    "sha256": "7465b3baa5af3d051979362df7be6d3a532aa202fcaf2c56443a014b5ff934fe"
+  },
+  {
+    "source_id": "release:1.55.0:section:12",
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Direct state, widget value/identity, callback, re-execution, page lifecycle or relevant testing change.",
+    "approved_text": "- 🔑 To prevent widgets from resetting when you change a parameter, widgets are transitioning to an identity based only on their keys (if provided). The following widgets use only their key for their identity:\n  - [`st.pills`](/develop/api-reference/widgets/st.pills)\n  - [`st.segmented_control`](/develop/api-reference/widgets/st.segmented_control)",
+    "parent_source_id": "release:1.55.0",
+    "start_char": 2615,
+    "end_char": 2964,
+    "source_slice": "- 🔑 To prevent widgets from resetting when you change a parameter, widgets are transitioning to an identity based only on their keys (if provided). The following widgets use only their key for their identity:\n  - [`st.pills`](/develop/api-reference/widgets/st.pills)\n  - [`st.segmented_control`](/develop/api-reference/widgets/st.segmented_control)\n",
+    "sha256": "5c0bde9811cf6e9127f88771f2e4e299c357b995786db333d63fe1f486c6be74"
+  },
+  {
+    "source_id": "release:1.55.0:section:13",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.55.0:section:14",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.55.0:section:19",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.55.0:section:22",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.55.0:section:34",
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Direct state, widget value/identity, callback, re-execution, page lifecycle or relevant testing change.",
+    "approved_text": "- 🦎 Bug fix: `st.date_input` values are normalized in Session State to prevent a type error ([#14123](https://github.com/streamlit/streamlit/pull/14123), [#14109](https://github.com/streamlit/streamlit/issues/14109)).",
+    "parent_source_id": "release:1.55.0",
+    "start_char": 6577,
+    "end_char": 6795,
+    "source_slice": "- 🦎 Bug fix: `st.date_input` values are normalized in Session State to prevent a type error ([#14123](https://github.com/streamlit/streamlit/pull/14123), [#14109](https://github.com/streamlit/streamlit/issues/14109)).\n",
+    "sha256": "0e1132d0466fcc9ade3a81c74aa6427fafca8841498d098da8736b18a38205da"
+  },
+  {
+    "source_id": "release:1.54.0:section:6",
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Direct state, widget value/identity, callback, re-execution, page lifecycle or relevant testing change.",
+    "approved_text": "- 🥷 To prevent widgets from resetting when you change a parameter, widgets are transitioning to an identity based only on their keys (if provided). The following widgets use only their key for their identity:\n  - `st.dataframe` (with selections)\n  - `st.area_chart`\n  - `st.bar_chart`\n  - `st.line_chart`\n  - `st.scatter_chart`\n  - `st.altair_chart`\n  - `st.vegalite_chart`\n  - `st.pydeck_chart`\n  - `st.date_input`\n  - `st.datetime_input`\n  - `st.radio`\n  - `st.select_slider`",
+    "parent_source_id": "release:1.54.0",
+    "start_char": 1300,
+    "end_char": 1778,
+    "source_slice": "- 🥷 To prevent widgets from resetting when you change a parameter, widgets are transitioning to an identity based only on their keys (if provided). The following widgets use only their key for their identity:\n  - `st.dataframe` (with selections)\n  - `st.area_chart`\n  - `st.bar_chart`\n  - `st.line_chart`\n  - `st.scatter_chart`\n  - `st.altair_chart`\n  - `st.vegalite_chart`\n  - `st.pydeck_chart`\n  - `st.date_input`\n  - `st.datetime_input`\n  - `st.radio`\n  - `st.select_slider`\n",
+    "sha256": "7e0604b4952d81c96675cec86247b5e0969e7d8b980264b277604508460b958d"
+  },
+  {
+    "source_id": "release:1.53.0:section:15",
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Direct state, widget value/identity, callback, re-execution, page lifecycle or relevant testing change.",
+    "approved_text": "- 🔢 `st.number_input` doesn't include `min` and `max` in widget identity when a `key` is provided ([#13512](https://github.com/streamlit/streamlit/pull/13512), [#11277](https://github.com/streamlit/streamlit/issues/11277)).",
+    "parent_source_id": "release:1.53.0",
+    "start_char": 3367,
+    "end_char": 3591,
+    "source_slice": "- 🔢 `st.number_input` doesn't include `min` and `max` in widget identity when a `key` is provided ([#13512](https://github.com/streamlit/streamlit/pull/13512), [#11277](https://github.com/streamlit/streamlit/issues/11277)).\n",
+    "sha256": "5496964411c6991ec7a066dab86e2c3c1a76671f06d62db6a8c37fca2ada0e60"
+  },
+  {
+    "source_id": "release:1.53.0:section:16",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.53.0:section:19",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.53.0:section:21",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  },
+  {
+    "source_id": "release:1.53.0:section:23",
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Unrelated layout, styling, accessibility, general-widget feature, caching infrastructure or redundant/orphan child bullet."
+  }
+]

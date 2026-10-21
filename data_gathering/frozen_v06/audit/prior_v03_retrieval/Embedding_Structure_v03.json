@@ -1,0 +1,309 @@
+{
+  "contract_version": "3.0",
+  "status": "source_envelopes_delivered_chunking_and_embeddings_not_implemented",
+  "language_policy": {
+    "guides_and_metadata": "English",
+    "source_content": "Preserve original source language. Do not translate."
+  },
+  "runtime_input_paths": [
+    "retrieval_corpus/issues.jsonl",
+    "retrieval_corpus/comments.jsonl",
+    "retrieval_corpus/documents.jsonl",
+    "retrieval_corpus/release_sections.jsonl"
+  ],
+  "runtime_excluded_directories": [
+    "audit",
+    "review_pending",
+    "evaluator_only",
+    "agent_inputs",
+    "config",
+    "scripts"
+  ],
+  "source_envelope": {
+    "required_fields": [
+      "source_id",
+      "source_type",
+      "text",
+      "metadata",
+      "text_sha256"
+    ],
+    "source_type_enum": [
+      "issue",
+      "comment",
+      "documentation",
+      "release_section"
+    ],
+    "text": "The only embedding input at source level. Includes a compact title/context prefix where appropriate. Final chunk text is used after chunking.",
+    "text_sha256": "SHA-256 of the exact UTF-8 text field.",
+    "metadata": "Separate provenance and evidence role. Do not serialize this object into embedding text.",
+    "metadata_fields_by_type": {
+      "documentation": [
+        "commit",
+        "content_path",
+        "content_sha256",
+        "evidence_role",
+        "html_url",
+        "media_present",
+        "raw_source_sha256",
+        "repository",
+        "representation",
+        "retrieval_body_sha256",
+        "retrieved_at",
+        "source_body_sha256",
+        "source_id",
+        "source_type",
+        "source_url",
+        "title",
+        "version_applicability"
+      ],
+      "issue": [
+        "author_association",
+        "body_sha256",
+        "browser",
+        "closed_at",
+        "created_at",
+        "evidence_role",
+        "family_id",
+        "html_url",
+        "id",
+        "labels",
+        "media_present",
+        "number",
+        "operating_system",
+        "python_version",
+        "repository",
+        "scope_match_basis",
+        "source_id",
+        "source_intent_hint",
+        "source_type",
+        "state",
+        "state_reason",
+        "streamlit_version",
+        "title",
+        "updated_at",
+        "usage_constraint",
+        "verification_status"
+      ],
+      "release_section": [
+        "body_sha256",
+        "commit",
+        "evidence_role",
+        "html_url",
+        "parent_source_id",
+        "release_date",
+        "relevance_basis",
+        "retrieved_at",
+        "section_heading",
+        "source_id",
+        "source_type",
+        "source_url",
+        "version"
+      ],
+      "comment": [
+        "allowed_use_after_review",
+        "author_association",
+        "body_sha256",
+        "created_at",
+        "embedding_allowed",
+        "evidence_role",
+        "html_url",
+        "id",
+        "issue_number",
+        "media_present",
+        "parent_source_id",
+        "review_flags",
+        "source_id",
+        "source_type",
+        "updated_at",
+        "verification_status",
+        "allowed_use",
+        "supporting_source_ids",
+        "reviewer",
+        "review_rationale",
+        "version_applicability_review",
+        "media_independence_review"
+      ]
+    }
+  },
+  "source_counts_at_delivery": {
+    "retrieval_issues": 126,
+    "retrieval_comments_approved": 214,
+    "retrieval_documentation_pages": 21,
+    "retrieval_release_sections": 111,
+    "comments_pending_review": 13
+  },
+  "actual_source_example": {
+    "source_id": "issue:7851",
+    "source_type": "issue",
+    "text": "Title: Make Streamlit more friendly to multi-threading\nEvidence role: Historical feature request: proposed APIs are not evidence of implemented behavior.\n\n### Summary\n\nStreamlit doesn't currently tackle multi-threading as a core feature and leads to some undefined behavior when used (ex: empty session state). \n\n### Why?\n\n**Related issue submissions:**\n#1906 \n#7290 \n#7655",
+    "metadata": {
+      "source_id": "issue:7851",
+      "id": 2047604103,
+      "number": 7851,
+      "html_url": "https://github.com/streamlit/streamlit/issues/7851",
+      "title": "Make Streamlit more friendly to multi-threading",
+      "repository": "streamlit/streamlit",
+      "created_at": "2023-12-18T23:01:08Z",
+      "updated_at": "2026-08-22T10:23:42Z",
+      "closed_at": null,
+      "state": "open",
+      "state_reason": null,
+      "labels": [
+        "type:enhancement",
+        "area:performance",
+        "area:threading/processing"
+      ],
+      "author_association": "COLLABORATOR",
+      "streamlit_version": null,
+      "python_version": null,
+      "operating_system": null,
+      "browser": null,
+      "body_sha256": "655d43dceb66871c2554322f89fc6057e95b7c1d9c6bce8ad621316219c9d461",
+      "family_id": "family:1a7f67c7a3ec1109",
+      "verification_status": "reported_not_independently_verified",
+      "source_type": "issue",
+      "scope_match_basis": "body_narrative_requires_review",
+      "media_present": false,
+      "evidence_role": "reported_problem_not_verified_solution",
+      "source_intent_hint": "feature_request",
+      "usage_constraint": "Historical feature request: proposed APIs are not evidence of implemented behavior.",
+      "reviewer_kind": "ai_assistant",
+      "scope_review": {
+        "number": 7851,
+        "decision": "approve",
+        "reviewer": "ai_assistant_content_review",
+        "rationale": "Retains a Session State report or directly related widget/callback/rerun/page/test interaction; report is evidence of a problem, not proof of a correct cause or fix."
+      },
+      "code_usage": "reported_reproduction_not_executed",
+      "runtime_verified": false,
+      "human_reviewed": false
+    },
+    "text_sha256": "8a4014ed23c6c6f3c75a5c0dd90730772de5fb0c4028ff297f8ff3888fae307d"
+  },
+  "future_chunk_contract": {
+    "status": "proposed_not_generated",
+    "fields": {
+      "chunk_id": "Stable ID computed from source_id, source text hash, chunker configuration hash, and chunk index.",
+      "source_id": "Parent delivered source_id.",
+      "chunk_index": "Zero-based order within a source.",
+      "text": "Exact source text slice with code fences preserved; the only payload submitted for embedding.",
+      "metadata": "Inherited source metadata plus chunk offsets, source text hash, and chunker configuration hash.",
+      "text_sha256": "SHA-256 of the final chunk text."
+    },
+    "offset_basis": "Character offsets into the delivered source envelope text, not original GitHub bodies or archived rubric span bodies.",
+    "proposed_starting_configuration": {
+      "target_tokens": 400,
+      "overlap_tokens": 80,
+      "tokenizer": "Choose with the embedding model; not selected in this delivery.",
+      "split_priority": [
+        "section boundaries",
+        "paragraphs",
+        "complete code fences"
+      ],
+      "oversized_code_block_policy": "Prefer a standalone code chunk within the chosen model limit. If a split is required, retain enough context and explicit continuation metadata.",
+      "tuning_policy": "Tune on development cases only; freeze configuration before test execution."
+    },
+    "identity_warning": "Chunk indices alone are unstable after source edits. Include source/configuration hashes in chunk identity."
+  },
+  "approval_policy": {
+    "default_comment_index_count": 214,
+    "pending_comments": 13,
+    "approval_file": "config/comment_reviews.json",
+    "required_approval_fields": [
+      "source_id",
+      "decision",
+      "reviewer",
+      "rationale",
+      "approved_text",
+      "allowed_use",
+      "evidence_source_ids",
+      "version_applicability"
+    ],
+    "allowed_use_enum": [
+      "reported_observation",
+      "diagnostic_context",
+      "corroborated_claim"
+    ],
+    "approved_text_rule": "Exact selected source substring reviewed by an AI assistant in thread context; approval permits a specified evidence role and does not certify runtime correctness.",
+    "corroborated_claim_rule": "A narrow claim must have an exact supporting official snapshot span and a version-applicability note.",
+    "media_rule": "For a media-containing candidate, media_independence must equal selected_excerpt_is_self_contained_without_media."
+  },
+  "evidence_interpretation": {
+    "issue": "An unverified reported problem, observation, or proposal; not a verified solution.",
+    "comment": "Use according to the recorded AI review role and limitation. Reported observations, diagnoses and proposed workarounds are not independently executed fixes.",
+    "documentation": "Official snapshot; check applicability to the user version.",
+    "release_section": "Official change for its explicit version/date; check that it addresses the claim."
+  },
+  "evaluation_boundary": {
+    "fixed_development_cases": 15,
+    "fixed_test_cases": 15,
+    "future_turns": "Evaluator-only; release a due message after the specified prior assistant response.",
+    "gold": "Never add evaluator rubrics, full held-out threads, or audit snapshots to the retrieval index.",
+    "access_control": "The runner must enforce path access. The loader allowlist is not OS isolation."
+  },
+  "provenance_hashes": {
+    "body_sha256": "Normalized source body hash where provided.",
+    "source_body_sha256": "Canonical archived documentation body hash.",
+    "text_sha256": "Transformed delivered source envelope text hash.",
+    "rubric_offsets": "Offsets into archived canonical documentation body; do not apply directly to retrieval or chunk text."
+  },
+  "api_execution": {
+    "embedding_api_calls": 0,
+    "model_api_calls": 0,
+    "model_embedding_api_cost_usd": 0,
+    "embeddings_built": false,
+    "chunks_built": false
+  },
+  "project_budget": {
+    "team_total_api_budget_usd": 5,
+    "gateway": "Metis",
+    "covers": [
+      "development",
+      "corpus and query embedding",
+      "tests",
+      "model evaluation",
+      "final runs",
+      "bonus work"
+    ],
+    "model_selection": "deferred_by_user",
+    "external_project_spend_so_far_usd": null,
+    "new_metis_api_calls_during_this_preparation": 0,
+    "embedding_expenditure_during_this_preparation_usd": 0,
+    "cost_guaranteed": false,
+    "next_cost_gate": "Count selected text with the chosen tokenizer and measure a small pilot using actual Metis rates and remaining balance; do not re-embed unchanged text."
+  },
+  "source_volume": {
+    "source_records": 472,
+    "text_characters": 634118,
+    "text_utf8_bytes": 635269,
+    "text_whitespace_words": 83050,
+    "exact_model_token_count": null,
+    "tokenizer_selection": "Deferred until model selection; characters/words are volume measurements, not token counts or cost guarantees.",
+    "corpus_code_fence_records": 166,
+    "comment_code_fence_records": 43,
+    "media_containing_comments_with_independent_text_selected": 12,
+    "release_versions_in_selected_input": 52,
+    "issue_topic_counts_heuristic": {
+      "reset_or_persistence": 36,
+      "initialization_or_update": 59,
+      "widget_identity": 11,
+      "callbacks": 37,
+      "serialization": 10,
+      "multipage": 7,
+      "session_lifecycle": 12,
+      "forms": 7,
+      "testing": 9
+    },
+    "documentation_pages_before": 20,
+    "documentation_pages_after": 21,
+    "new_document_source_id": "doc:pinned:content/develop/concepts/architecture/caching.md",
+    "prior_20_document_ids_retained": true,
+    "prior_343_candidate_ids_retained": 175,
+    "useful_comments_recovered_from_old_automatic_filters": 39,
+    "comments_initially_screened_with_original_164_parents": 623,
+    "comments_removed_with_38_irrelevant_parents": 136,
+    "comments_reviewed_after_final_parent_selection": 487,
+    "runtime_evaluation_performed": false,
+    "validated_existing_official_evidence_spans": 60
+  }
+}

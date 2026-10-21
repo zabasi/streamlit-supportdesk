@@ -1,0 +1,115 @@
+{
+  "issue": {
+    "id": 1890555943,
+    "number": 7305,
+    "title": "on_change not able to access text_area text on initalization and later on uses old text_area value",
+    "html_url": "https://github.com/streamlit/streamlit/issues/7305",
+    "created_at": "2023-09-11T13:45:41Z",
+    "updated_at": "2024-08-15T20:52:24Z",
+    "closed_at": "2023-09-11T20:07:40Z",
+    "state": "closed",
+    "state_reason": "completed",
+    "author_association": "NONE",
+    "source_id": "issue:7305",
+    "repository": "streamlit/streamlit",
+    "body": "### Checklist\n\n\n### Summary\n\non_change not able to access text_area text on initalization and later on uses old text_area value as it could be seen in example below.\r\nNote that old value issue could be resolved by replacing\r\nst.session_state[\"text_area\"] = st.text_area(\"example test\", \"hello form the textbox\", on_change=update())\r\nwith\r\nst.text_area(\"example test\", \"hello form the textbox\", on_change=update(), key = \"text_area\"), but  it as I understood it unexpected behavior\n\n### Reproducible Code Example\n\n```Python\nimport streamlit as st\r\n\r\ndef update():\r\n    if \"text_area\" in st.session_state:\r\n        st.write(st.session_state.text_area)\r\n    else:\r\n        st.write(st.session_state.temp_text)\r\n\r\nst.session_state.temp_text = \"no acess to text_area\"\r\nst.session_state[\"text_area\"] = st.text_area(\"example test\", \"hello form the textbox\", on_change=update())\n```\n\n\n### Steps To Reproduce\n\nRun the script, see it states \"no acess to text_area\" above text area.\r\nType text in text_area pres crl+enter to apply changes\n\n### Expected Behavior\n\nshow text_area text in each of the steps\n\n### Current Behavior\n\nas described in bug description\n\n### Is this a regression?\n\n- [ ] Yes, this used to work in a previous version.\n\n### Debug info\n\n- Streamlit version:1.26.0\r\n- Python version: 3.11.4\r\n- Operating System: win 11\r\n- Browser: edge\r\n\n\n### Additional Information\n\n_No response_",
+    "labels": [
+      "type:bug",
+      "feature:st.text_area"
+    ],
+    "author": {
+      "login": "vuksan314",
+      "type": "User"
+    },
+    "comment_count": 2,
+    "comments_complete": true,
+    "metadata_retrieved_at": "2026-10-06T14:27:46.022568+00:00",
+    "comments_retrieved_at": "2026-10-06T14:38:36.069743+00:00",
+    "comments_retrieval_method": "github_public_html_embedded_data",
+    "body_sha256": "294c587569505fc1e0b832af118ea6300cb871e35e0dc4a9e4276c19d644aeab",
+    "original_body_sha256": "decf3a1b402c1315419b417c9ac4be4c0197376fe885a0d4a648d3947a882b85",
+    "streamlit_version": {
+      "value": "1.26.0",
+      "evidence_text": "- Streamlit version:1.26.0",
+      "start_char": 1245,
+      "end_char": 1272,
+      "method": "explicit_version_line_regex"
+    },
+    "python_version": {
+      "value": "3.11.4",
+      "evidence_text": "- Python version: 3.11.4",
+      "start_char": 1273,
+      "end_char": 1298,
+      "method": "explicit_version_line_regex"
+    },
+    "topic_tags_heuristic": [
+      "callbacks",
+      "initialization_or_update"
+    ],
+    "sampling_sources": [
+      "repo:streamlit/streamlit is:issue \"session state\" in:title,body created:<=2026-10-06"
+    ],
+    "relevance_basis": "body_keyword_requires_review",
+    "evaluation_split": null,
+    "pilot_previously_inspected": false,
+    "historical_as_of_reconstruction": false,
+    "operating_system": {
+      "value": "win 11",
+      "evidence_text": "- Operating System: win 11",
+      "start_char": 1299,
+      "end_char": 1326,
+      "method": "explicit_environment_line_regex"
+    },
+    "browser": {
+      "value": "edge",
+      "evidence_text": "- Browser: edge",
+      "start_char": 1327,
+      "end_char": 1343,
+      "method": "explicit_environment_line_regex"
+    }
+  },
+  "comments": [
+    {
+      "id": 1713919406,
+      "html_url": "https://github.com/streamlit/streamlit/issues/7305#issuecomment-1713919406",
+      "created_at": "2023-09-11T13:45:53Z",
+      "updated_at": "2023-09-11T13:45:53Z",
+      "author_association": "CONTRIBUTOR",
+      "source_id": "comment:1713919406",
+      "issue_number": 7305,
+      "parent_source_id": "issue:7305",
+      "body": "**If this issue affects you, please react with a 👍 (thumbs up emoji) to the initial post.**\n\nYour feedback helps us prioritize which bugs to investigate and address first.\n\n![Visits](https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2Fstreamlit%2Fstreamlit%2Fissues%2F7305&title=visits&edge_flat=false)",
+      "author": {
+        "login": "github-actions",
+        "type": "Bot"
+      },
+      "is_bot": true,
+      "retrieval_method": "github_public_html_embedded_data",
+      "retrieved_at": "2026-10-06T14:38:36.069743+00:00",
+      "body_sha256": "236b92e2c1722953db202256ca893a10dbeca8317c4909d6e82b178b65df263b",
+      "updated_at_basis": "lastEditedAt_or_createdAt_from_public_HTML",
+      "is_hidden": false
+    },
+    {
+      "id": 1714506435,
+      "html_url": "https://github.com/streamlit/streamlit/issues/7305#issuecomment-1714506435",
+      "created_at": "2023-09-11T20:07:41Z",
+      "updated_at": "2023-09-11T20:08:01Z",
+      "author_association": "CONTRIBUTOR",
+      "source_id": "comment:1714506435",
+      "issue_number": 7305,
+      "parent_source_id": "issue:7305",
+      "body": "Hi @vuksan314,\r\n\r\nThis is expected behavior. Callbacks are run before the main script run, so if you're setting `st.session_state[\"text_area\"]` to the value from the `st.text_area` widget within the script run, the callback will have already run at that point, so a change to the text area won't be reflected. You'll need to set a `key` in the `st.text_area` widget for this to work as expected.",
+      "author": {
+        "login": "vdonato",
+        "type": "User"
+      },
+      "is_bot": false,
+      "retrieval_method": "github_public_html_embedded_data",
+      "retrieved_at": "2026-10-06T14:38:36.069743+00:00",
+      "body_sha256": "66ce5911f92df03875d5476356bc5cc64a7a4da1ac9e8db730b044a94a11fcf8",
+      "updated_at_basis": "lastEditedAt_or_createdAt_from_public_HTML",
+      "is_hidden": false
+    }
+  ]
+}

@@ -1,0 +1,148 @@
+{
+  "issue": {
+    "id": 1419831367,
+    "number": 5591,
+    "title": "Session state changes not getting through on multipage st.sidebar app",
+    "html_url": "https://github.com/streamlit/streamlit/issues/5591",
+    "created_at": "2022-10-23T15:28:07Z",
+    "updated_at": "2024-11-23T01:15:32Z",
+    "closed_at": "2024-11-23T01:15:32Z",
+    "state": "closed",
+    "state_reason": "not_planned",
+    "author_association": "NONE",
+    "source_id": "issue:5591",
+    "repository": "streamlit/streamlit",
+    "body": "### Checklist\r\n\n\n### Summary\r\n\r\n[This bug is related to this issue thread](https://discuss.streamlit.io/t/preserving-state-across-sidebar-pages/107)\r\n\r\n[Here’s a video of the bug I’m about to describe](https://imgur.com/a/rozHEyF)\r\n\r\nOn a multi-page app creating using st.sidebar, the session state of the input widgets doesn't work correctly. When I input a value on page A and then leave and come back, the state is preserved fine. Now after coming back to page A, every time I try to edit that value on page A more than 1 time, the value changes back to it’s previous state. So I have to input edits twice for them to actually change the value of the input.\r\n\r\n### Reproducible Code Example\r\n\r\n_No response_\r\n\r\n### Steps To Reproduce\r\n\r\n_No response_\r\n\r\n### Expected Behavior\r\n\r\n_No response_\r\n\r\n### Current Behavior\r\n\r\n_No response_\r\n\r\n### Is this a regression?\r\n\r\n- [ ] Yes, this used to work in a previous version.\r\n\r\n### Debug info\r\n\r\n- Streamlit version:\r\n- Python version:\r\n- Operating System:\r\n- Browser:\r\n- Virtual environment:\r\n\r\n\r\n### Additional Information\r\n\r\n_No response_\r\n\r\n### Are you willing to submit a PR?\r\n\r\n- [ ] Yes, I am willing to submit a PR!\r\n\r\n---\r\n\r\nCommunity voting on feature requests enables the Streamlit team to understand which features are most important to our users.\r\n\r\n**If you'd like the Streamlit team to prioritize this feature request, please use the 👍 (thumbs up emoji) reaction in response to the initial post.**",
+    "labels": [
+      "type:bug",
+      "status:confirmed",
+      "priority:P3",
+      "feature:st.session_state"
+    ],
+    "author": {
+      "login": "Mochael",
+      "type": "User"
+    },
+    "comment_count": 4,
+    "comments_complete": true,
+    "metadata_retrieved_at": "2026-10-06T14:28:04.043219+00:00",
+    "comments_retrieved_at": "2026-10-06T14:28:30.886398+00:00",
+    "comments_retrieval_method": "github_public_html_embedded_data",
+    "body_sha256": "ebc24355efbf03276f981d053231c94193f076307f9058019ff7bd4728a57d7c",
+    "original_body_sha256": "c2606d1d983103463fff82bf12f70d7292981305b9195e671a3432ec21d4d767",
+    "streamlit_version": null,
+    "python_version": null,
+    "topic_tags_heuristic": [
+      "multipage"
+    ],
+    "sampling_sources": [
+      "label:feature:st.session_state",
+      "repo:streamlit/streamlit is:issue \"session state\" in:title,body created:<=2026-10-06",
+      "repo:streamlit/streamlit is:issue \"widget state\" in:title,body created:<=2026-10-06"
+    ],
+    "relevance_basis": "state_label_or_title",
+    "evaluation_split": null,
+    "pilot_previously_inspected": false,
+    "historical_as_of_reconstruction": false,
+    "operating_system": {
+      "value": "- Browser:",
+      "evidence_text": "- Operating System:\r\n- Browser:",
+      "start_char": 983,
+      "end_char": 1015,
+      "method": "explicit_environment_line_regex"
+    },
+    "browser": {
+      "value": "- Virtual environment:",
+      "evidence_text": "- Browser:\r\n- Virtual environment:",
+      "start_char": 1004,
+      "end_char": 1039,
+      "method": "explicit_environment_line_regex"
+    }
+  },
+  "comments": [
+    {
+      "id": 1289154669,
+      "html_url": "https://github.com/streamlit/streamlit/issues/5591#issuecomment-1289154669",
+      "created_at": "2022-10-24T14:48:21Z",
+      "updated_at": "2022-10-24T14:48:21Z",
+      "author_association": "CONTRIBUTOR",
+      "source_id": "comment:1289154669",
+      "issue_number": 5591,
+      "parent_source_id": "issue:5591",
+      "body": "Hey, @Mochael ! Could you please provide a code example to reproduce that issue? \r\n\r\nIt could be a simple 2 pages app with all necessary widgets, and please describe a scenario to reproduce that behavior. \r\n\r\nThank you",
+      "author": {
+        "login": "kajarenc",
+        "type": "User"
+      },
+      "is_bot": false,
+      "retrieval_method": "github_public_html_embedded_data",
+      "retrieved_at": "2026-10-06T14:28:30.886398+00:00",
+      "body_sha256": "129db25495db2b3ad7a4c22e0dc728656d427c55c578532f0ff35c936b8a0f1f",
+      "updated_at_basis": "lastEditedAt_or_createdAt_from_public_HTML",
+      "is_hidden": false
+    },
+    {
+      "id": 1289730422,
+      "html_url": "https://github.com/streamlit/streamlit/issues/5591#issuecomment-1289730422",
+      "created_at": "2022-10-24T22:50:42Z",
+      "updated_at": "2022-10-24T22:54:00Z",
+      "author_association": "NONE",
+      "source_id": "comment:1289730422",
+      "issue_number": 5591,
+      "parent_source_id": "issue:5591",
+      "body": "You can put the code below in a file and run it (via `streamlit run file.py`) to replicate the error. The video I attached shows you how to replicate the behavior.\r\n\r\n```\r\nimport streamlit as st\r\n\r\ndef page_display():\r\n    page_name = st.session_state[\"page_name\"]\r\n    st.session_state[f'{page_name} number'] = st.number_input(\r\n        \"Input a number here\",\r\n        min_value=0, max_value=10000000, \r\n        format=\"%d\",\r\n        value=st.session_state.get(f'{page_name} number', 100), \r\n    )\r\n\r\ndef main_page():\r\n    name = st.text_input(\"New Analysis Name\", value=f\"Analyses {st.session_state['counter']}\")\r\n    st.button(\"Create New Analysis\", on_click=create_new_analysis_callback, args=[name])\r\n\r\n\r\nif \"page_names_to_funcs\" not in st.session_state:\r\n    st.session_state[\"page_names_to_funcs\"] = {\r\n        \"Compare Analyses\": main_page,\r\n    }\r\n    st.session_state[\"counter\"] = 1\r\n\r\n\r\ndef create_new_analysis_callback(new_name):\r\n    st.session_state[\"page_names_to_funcs\"][new_name] = page_display\r\n    st.session_state[\"counter\"] += 1\r\n    st.session_state[\"page_name\"] = new_name\r\n    st.session_state[f'{new_name} load_counter'] = 1\r\n    return\r\n\r\npage_name = st.sidebar.selectbox(\"Select a page\", st.session_state[\"page_names_to_funcs\"].keys(), key='page_name')\r\nst.session_state[\"page_names_to_funcs\"][st.session_state[\"page_name\"]]()\r\n```",
+      "author": {
+        "login": "Mochael",
+        "type": "User"
+      },
+      "is_bot": false,
+      "retrieval_method": "github_public_html_embedded_data",
+      "retrieved_at": "2026-10-06T14:28:30.886398+00:00",
+      "body_sha256": "54414263bd2e237154f7b4656cc3a9df412d602dd19f1aa94ef603923939dc1b",
+      "updated_at_basis": "lastEditedAt_or_createdAt_from_public_HTML",
+      "is_hidden": false
+    },
+    {
+      "id": 1291867143,
+      "html_url": "https://github.com/streamlit/streamlit/issues/5591#issuecomment-1291867143",
+      "created_at": "2022-10-26T11:08:19Z",
+      "updated_at": "2022-10-26T11:08:19Z",
+      "author_association": "CONTRIBUTOR",
+      "source_id": "comment:1291867143",
+      "issue_number": 5591,
+      "parent_source_id": "issue:5591",
+      "body": "Thanks, @Mochael , for sharing the code for this app, I can confirm that this is strange behavior. \r\n\r\nNote for developers who will look into this issue in future: demo app with this issue could be found here: [![Open in Streamlit Cloud](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://issues.streamlitapp.com/?issue=gh-5591)",
+      "author": {
+        "login": "kajarenc",
+        "type": "User"
+      },
+      "is_bot": false,
+      "retrieval_method": "github_public_html_embedded_data",
+      "retrieved_at": "2026-10-06T14:28:30.886398+00:00",
+      "body_sha256": "293710383361637bd5df2da2b77fdaeb65e1b03d30a62c62ca9102c9a6344c54",
+      "updated_at_basis": "lastEditedAt_or_createdAt_from_public_HTML",
+      "is_hidden": false
+    },
+    {
+      "id": 2495178619,
+      "html_url": "https://github.com/streamlit/streamlit/issues/5591#issuecomment-2495178619",
+      "created_at": "2024-11-23T01:15:32Z",
+      "updated_at": "2024-11-23T01:15:32Z",
+      "author_association": "CONTRIBUTOR",
+      "source_id": "comment:2495178619",
+      "issue_number": 5591,
+      "parent_source_id": "issue:5591",
+      "body": "Going to close this issue as this is unfortunately expected behavior. The way to address this is to leverage callbacks and widget keys. See example\r\n\r\n```python\r\nimport streamlit as st\r\n\r\ndef page_display():\r\n    page_name = st.session_state[\"page_name\"]\r\n    ############### NEW STUFF ###############\r\n    var_name = f'{page_name} number'\r\n\r\n    if 'page_number' not in st.session_state:\r\n        if var_name in st.session_state:\r\n            st.session_state['page_number'] = st.session_state[var_name]\r\n        else:\r\n            st.session_state['page_number'] = 100\r\n\r\n    def callback():\r\n        st.session_state[var_name] = st.session_state.page_number\r\n\r\n    st.number_input(\r\n        \"Input a number here\",\r\n        min_value=0, max_value=10000000,\r\n        format=\"%d\",\r\n        on_change=callback,\r\n        key=\"page_number\",\r\n    )\r\n    ############# END NEW STUFF ############# \r\n\r\n\r\ndef main_page():\r\n    name = st.text_input(\"New Analysis Name\",\r\n                         value=f\"Analyses {st.session_state['counter']}\")\r\n    st.button(\"Create New Analysis\", on_click=create_new_analysis_callback, args=[name])\r\n\r\n\r\nif \"page_names_to_funcs\" not in st.session_state:\r\n    st.session_state[\"page_names_to_funcs\"] = {\r\n        \"Compare Analyses\": main_page,\r\n    }\r\n    st.session_state[\"counter\"] = 1\r\n\r\n\r\ndef create_new_analysis_callback(new_name):\r\n    st.session_state[\"page_names_to_funcs\"][new_name] = page_display\r\n    st.session_state[\"counter\"] += 1\r\n    st.session_state[\"page_name\"] = new_name\r\n    st.session_state[f'{new_name} load_counter'] = 1\r\n    return\r\n\r\n\r\npage_name = st.sidebar.selectbox(\"Select a page\",\r\n                                 st.session_state[\"page_names_to_funcs\"].keys(),\r\n                                 key='page_name')\r\nst.session_state[\"page_names_to_funcs\"][st.session_state[\"page_name\"]]()\r\n```\r\n\r\nThere are two reason the issue occurs:\r\n1. The value is set differently on the widget itself. This causes Streamlit to think it's a new widget.\r\n2. The session state gets updated out of step. This tends to be associated with the off by one error where the UI does not reflect the update.\r\n\r\nHope that helps!",
+      "author": {
+        "login": "kmcgrady",
+        "type": "User"
+      },
+      "is_bot": false,
+      "retrieval_method": "github_public_html_embedded_data",
+      "retrieved_at": "2026-10-06T14:28:30.886398+00:00",
+      "body_sha256": "b5ec2d184d05859d7793826c10fe7c4d02582b5c99f2950c469d458e68d0e0a7",
+      "updated_at_basis": "lastEditedAt_or_createdAt_from_public_HTML",
+      "is_hidden": false
+    }
+  ]
+}

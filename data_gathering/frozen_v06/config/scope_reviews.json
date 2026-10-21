@@ -1,0 +1,1031 @@
+[
+  {
+    "number": 8308,
+    "decision": "exclude",
+    "reviewer": "assistant_scope_review",
+    "rationale": "Primary request concerns asynchronous caching; Session State appears as a workaround rather than the reported problem."
+  },
+  {
+    "number": 10748,
+    "decision": "exclude",
+    "reviewer": "assistant_scope_review",
+    "rationale": "Proposal for a new stepper widget; state mention does not make it a Session State troubleshooting report."
+  },
+  {
+    "number": 12395,
+    "decision": "exclude",
+    "reviewer": "assistant_scope_review",
+    "rationale": "Broad cross-filtering API proposal; excluded to keep the selected troubleshooting scope narrow."
+  },
+  {
+    "number": 13610,
+    "decision": "exclude",
+    "reviewer": "assistant_scope_review",
+    "rationale": "Logging integration proposal using a state-stored container; primary goal is logging infrastructure."
+  },
+  {
+    "number": 16888,
+    "decision": "exclude",
+    "reviewer": "assistant_scope_review",
+    "rationale": "Authentication/session-cookie proposal; this is not the same concept as st.session_state."
+  },
+  {
+    "number": 16539,
+    "decision": "exclude",
+    "reviewer": "assistant_scope_review",
+    "rationale": "Metric sparkline rendering failure; Session State counters are a peripheral attempted mitigation."
+  },
+  {
+    "number": 14827,
+    "decision": "exclude",
+    "reviewer": "assistant_scope_review",
+    "rationale": "Download-menu feature proposal; retain in archive but exclude from this focused troubleshooting corpus."
+  },
+  {
+    "number": 3531,
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "File-uploader accumulation; Session State is only the reason for upgrading."
+  },
+  {
+    "number": 3768,
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Ghost rendering after a release; no demonstrated Session State value problem."
+  },
+  {
+    "number": 4239,
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Query-string preservation in Always Rerun; Session State is an incidental internal comparison."
+  },
+  {
+    "number": 4410,
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Secrets-file reload, not Session State key lifecycle."
+  },
+  {
+    "number": 4653,
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Plotly camera state, not st.session_state."
+  },
+  {
+    "number": 4660,
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Browser AJAX/CORS API proposal; state is only a suggested destination."
+  },
+  {
+    "number": 4828,
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Third-party browser component data persists after Session State is explicitly empty."
+  },
+  {
+    "number": 4923,
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Set-to-JSON display formatting, not state persistence or access."
+  },
+  {
+    "number": 5420,
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Pandas column KeyError with app-specific data and no reproducible state failure."
+  },
+  {
+    "number": 5808,
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Ag-grid database refresh; state is an attempted workaround with no reproducible state example."
+  },
+  {
+    "number": 5993,
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Dependency installation/DLL failure; state appears only in imports."
+  },
+  {
+    "number": 6579,
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Initial sidebar configuration from URL, not state lifecycle."
+  },
+  {
+    "number": 6798,
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Multiple-sidebar layout proposal; state is an incidental example."
+  },
+  {
+    "number": 6823,
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Application-specific NoneType.get_cube with no reproducible state failure."
+  },
+  {
+    "number": 7144,
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Progress/timer feature proposal; state is a peripheral workaround."
+  },
+  {
+    "number": 7176,
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "General SQL convenience/error-handling API proposal."
+  },
+  {
+    "number": 7318,
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Metrics endpoint content disposition, not state behavior."
+  },
+  {
+    "number": 7336,
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Database/native memory crash; no isolated Session State failure."
+  },
+  {
+    "number": 7992,
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Markdown links in radio labels, not state behavior."
+  },
+  {
+    "number": 8041,
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Custom-component load timeout, not state access/persistence."
+  },
+  {
+    "number": 8052,
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Selected frontend tab jumps; no demonstrated loss of Session State data."
+  },
+  {
+    "number": 8186,
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Drawer-layout feature proposal; state is an incidental workaround."
+  },
+  {
+    "number": 8344,
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "LangChain Runnable receives a list; no evidence Session State altered the stored type."
+  },
+  {
+    "number": 8456,
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Browser clipboard API proposal."
+  },
+  {
+    "number": 8717,
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Widget return-type overloads, not Session State access/persistence."
+  },
+  {
+    "number": 9002,
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "IFrame focus regression; author explicitly says state/content is not reset."
+  },
+  {
+    "number": 9021,
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "General interface freeze/global lock proposal."
+  },
+  {
+    "number": 9055,
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Scroll/focus jumps; state mutation is incidental and values are not reported lost."
+  },
+  {
+    "number": 9073,
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Fragment return-value proposal; state is an alternative workaround."
+  },
+  {
+    "number": 9310,
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Async progress-bar proposal rather than a concrete state troubleshooting problem."
+  },
+  {
+    "number": 9362,
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Chart-series selection with no isolated state lifecycle/access diagnosis."
+  },
+  {
+    "number": 9609,
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Output flicker with no code or demonstrated state loss."
+  },
+  {
+    "number": 9857,
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "RAG answer-quality problem without demonstrated Session State failure."
+  },
+  {
+    "number": 10043,
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Upload routing across load-balanced nodes; state/Redis is an attempted workaround."
+  },
+  {
+    "number": 10101,
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Tenant-folder navigation proposal; state is an incidental role carrier."
+  },
+  {
+    "number": 10111,
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Query-parameter exception wording, not Session State exceptions."
+  },
+  {
+    "number": 10160,
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "OAuth error handling; state is an incidental display mechanism."
+  },
+  {
+    "number": 10220,
+    "decision": "exclude",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Dynamic page-title proposal; not Session State troubleshooting."
+  },
+  {
+    "number": 3586,
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Retains a Session State report or directly related widget/callback/rerun/page/test interaction; report is evidence of a problem, not proof of a correct cause or fix."
+  },
+  {
+    "number": 6152,
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Retains a Session State report or directly related widget/callback/rerun/page/test interaction; report is evidence of a problem, not proof of a correct cause or fix."
+  },
+  {
+    "number": 8715,
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Retains a Session State report or directly related widget/callback/rerun/page/test interaction; report is evidence of a problem, not proof of a correct cause or fix."
+  },
+  {
+    "number": 4113,
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Retains a Session State report or directly related widget/callback/rerun/page/test interaction; report is evidence of a problem, not proof of a correct cause or fix."
+  },
+  {
+    "number": 3605,
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Retains a Session State report or directly related widget/callback/rerun/page/test interaction; report is evidence of a problem, not proof of a correct cause or fix."
+  },
+  {
+    "number": 6167,
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Retains a Session State report or directly related widget/callback/rerun/page/test interaction; report is evidence of a problem, not proof of a correct cause or fix."
+  },
+  {
+    "number": 13337,
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Retains a Session State report or directly related widget/callback/rerun/page/test interaction; report is evidence of a problem, not proof of a correct cause or fix."
+  },
+  {
+    "number": 7206,
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Retains a Session State report or directly related widget/callback/rerun/page/test interaction; report is evidence of a problem, not proof of a correct cause or fix."
+  },
+  {
+    "number": 4651,
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Retains a Session State report or directly related widget/callback/rerun/page/test interaction; report is evidence of a problem, not proof of a correct cause or fix."
+  },
+  {
+    "number": 7216,
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Retains a Session State report or directly related widget/callback/rerun/page/test interaction; report is evidence of a problem, not proof of a correct cause or fix."
+  },
+  {
+    "number": 7225,
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Retains a Session State report or directly related widget/callback/rerun/page/test interaction; report is evidence of a problem, not proof of a correct cause or fix."
+  },
+  {
+    "number": 5690,
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Retains a Session State report or directly related widget/callback/rerun/page/test interaction; report is evidence of a problem, not proof of a correct cause or fix."
+  },
+  {
+    "number": 3646,
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Retains a Session State report or directly related widget/callback/rerun/page/test interaction; report is evidence of a problem, not proof of a correct cause or fix."
+  },
+  {
+    "number": 6218,
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Retains a Session State report or directly related widget/callback/rerun/page/test interaction; report is evidence of a problem, not proof of a correct cause or fix."
+  },
+  {
+    "number": 3670,
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Retains a Session State report or directly related widget/callback/rerun/page/test interaction; report is evidence of a problem, not proof of a correct cause or fix."
+  },
+  {
+    "number": 4695,
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Retains a Session State report or directly related widget/callback/rerun/page/test interaction; report is evidence of a problem, not proof of a correct cause or fix."
+  },
+  {
+    "number": 9814,
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Retains a Session State report or directly related widget/callback/rerun/page/test interaction; report is evidence of a problem, not proof of a correct cause or fix."
+  },
+  {
+    "number": 9825,
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Retains a Session State report or directly related widget/callback/rerun/page/test interaction; report is evidence of a problem, not proof of a correct cause or fix."
+  },
+  {
+    "number": 13409,
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Retains a Session State report or directly related widget/callback/rerun/page/test interaction; report is evidence of a problem, not proof of a correct cause or fix."
+  },
+  {
+    "number": 4195,
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Retains a Session State report or directly related widget/callback/rerun/page/test interaction; report is evidence of a problem, not proof of a correct cause or fix."
+  },
+  {
+    "number": 6772,
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Retains a Session State report or directly related widget/callback/rerun/page/test interaction; report is evidence of a problem, not proof of a correct cause or fix."
+  },
+  {
+    "number": 7290,
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Retains a Session State report or directly related widget/callback/rerun/page/test interaction; report is evidence of a problem, not proof of a correct cause or fix."
+  },
+  {
+    "number": 4223,
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Retains a Session State report or directly related widget/callback/rerun/page/test interaction; report is evidence of a problem, not proof of a correct cause or fix."
+  },
+  {
+    "number": 8833,
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Retains a Session State report or directly related widget/callback/rerun/page/test interaction; report is evidence of a problem, not proof of a correct cause or fix."
+  },
+  {
+    "number": 3714,
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Retains a Session State report or directly related widget/callback/rerun/page/test interaction; report is evidence of a problem, not proof of a correct cause or fix."
+  },
+  {
+    "number": 7299,
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Retains a Session State report or directly related widget/callback/rerun/page/test interaction; report is evidence of a problem, not proof of a correct cause or fix."
+  },
+  {
+    "number": 17026,
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Retains a Session State report or directly related widget/callback/rerun/page/test interaction; report is evidence of a problem, not proof of a correct cause or fix."
+  },
+  {
+    "number": 4247,
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Retains a Session State report or directly related widget/callback/rerun/page/test interaction; report is evidence of a problem, not proof of a correct cause or fix."
+  },
+  {
+    "number": 13466,
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Retains a Session State report or directly related widget/callback/rerun/page/test interaction; report is evidence of a problem, not proof of a correct cause or fix."
+  },
+  {
+    "number": 8349,
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Retains a Session State report or directly related widget/callback/rerun/page/test interaction; report is evidence of a problem, not proof of a correct cause or fix."
+  },
+  {
+    "number": 6818,
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Retains a Session State report or directly related widget/callback/rerun/page/test interaction; report is evidence of a problem, not proof of a correct cause or fix."
+  },
+  {
+    "number": 4264,
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Retains a Session State report or directly related widget/callback/rerun/page/test interaction; report is evidence of a problem, not proof of a correct cause or fix."
+  },
+  {
+    "number": 7851,
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Retains a Session State report or directly related widget/callback/rerun/page/test interaction; report is evidence of a problem, not proof of a correct cause or fix."
+  },
+  {
+    "number": 3764,
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Retains a Session State report or directly related widget/callback/rerun/page/test interaction; report is evidence of a problem, not proof of a correct cause or fix."
+  },
+  {
+    "number": 4277,
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Retains a Session State report or directly related widget/callback/rerun/page/test interaction; report is evidence of a problem, not proof of a correct cause or fix."
+  },
+  {
+    "number": 5301,
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Retains a Session State report or directly related widget/callback/rerun/page/test interaction; report is evidence of a problem, not proof of a correct cause or fix."
+  },
+  {
+    "number": 5815,
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Retains a Session State report or directly related widget/callback/rerun/page/test interaction; report is evidence of a problem, not proof of a correct cause or fix."
+  },
+  {
+    "number": 7862,
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Retains a Session State report or directly related widget/callback/rerun/page/test interaction; report is evidence of a problem, not proof of a correct cause or fix."
+  },
+  {
+    "number": 15544,
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Retains a Session State report or directly related widget/callback/rerun/page/test interaction; report is evidence of a problem, not proof of a correct cause or fix."
+  },
+  {
+    "number": 8380,
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Retains a Session State report or directly related widget/callback/rerun/page/test interaction; report is evidence of a problem, not proof of a correct cause or fix."
+  },
+  {
+    "number": 9917,
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Retains a Session State report or directly related widget/callback/rerun/page/test interaction; report is evidence of a problem, not proof of a correct cause or fix."
+  },
+  {
+    "number": 7873,
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Retains a Session State report or directly related widget/callback/rerun/page/test interaction; report is evidence of a problem, not proof of a correct cause or fix."
+  },
+  {
+    "number": 5826,
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Retains a Session State report or directly related widget/callback/rerun/page/test interaction; report is evidence of a problem, not proof of a correct cause or fix."
+  },
+  {
+    "number": 9415,
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Retains a Session State report or directly related widget/callback/rerun/page/test interaction; report is evidence of a problem, not proof of a correct cause or fix."
+  },
+  {
+    "number": 5833,
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Retains a Session State report or directly related widget/callback/rerun/page/test interaction; report is evidence of a problem, not proof of a correct cause or fix."
+  },
+  {
+    "number": 4815,
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Retains a Session State report or directly related widget/callback/rerun/page/test interaction; report is evidence of a problem, not proof of a correct cause or fix."
+  },
+  {
+    "number": 13009,
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Retains a Session State report or directly related widget/callback/rerun/page/test interaction; report is evidence of a problem, not proof of a correct cause or fix."
+  },
+  {
+    "number": 7891,
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Retains a Session State report or directly related widget/callback/rerun/page/test interaction; report is evidence of a problem, not proof of a correct cause or fix."
+  },
+  {
+    "number": 9428,
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Retains a Session State report or directly related widget/callback/rerun/page/test interaction; report is evidence of a problem, not proof of a correct cause or fix."
+  },
+  {
+    "number": 12506,
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Retains a Session State report or directly related widget/callback/rerun/page/test interaction; report is evidence of a problem, not proof of a correct cause or fix."
+  },
+  {
+    "number": 6370,
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Retains a Session State report or directly related widget/callback/rerun/page/test interaction; report is evidence of a problem, not proof of a correct cause or fix."
+  },
+  {
+    "number": 12013,
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Retains a Session State report or directly related widget/callback/rerun/page/test interaction; report is evidence of a problem, not proof of a correct cause or fix."
+  },
+  {
+    "number": 9455,
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Retains a Session State report or directly related widget/callback/rerun/page/test interaction; report is evidence of a problem, not proof of a correct cause or fix."
+  },
+  {
+    "number": 6898,
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Retains a Session State report or directly related widget/callback/rerun/page/test interaction; report is evidence of a problem, not proof of a correct cause or fix."
+  },
+  {
+    "number": 12022,
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Retains a Session State report or directly related widget/callback/rerun/page/test interaction; report is evidence of a problem, not proof of a correct cause or fix."
+  },
+  {
+    "number": 5880,
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Retains a Session State report or directly related widget/callback/rerun/page/test interaction; report is evidence of a problem, not proof of a correct cause or fix."
+  },
+  {
+    "number": 4345,
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Retains a Session State report or directly related widget/callback/rerun/page/test interaction; report is evidence of a problem, not proof of a correct cause or fix."
+  },
+  {
+    "number": 8961,
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Retains a Session State report or directly related widget/callback/rerun/page/test interaction; report is evidence of a problem, not proof of a correct cause or fix."
+  },
+  {
+    "number": 3843,
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Retains a Session State report or directly related widget/callback/rerun/page/test interaction; report is evidence of a problem, not proof of a correct cause or fix."
+  },
+  {
+    "number": 6415,
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Retains a Session State report or directly related widget/callback/rerun/page/test interaction; report is evidence of a problem, not proof of a correct cause or fix."
+  },
+  {
+    "number": 10007,
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Retains a Session State report or directly related widget/callback/rerun/page/test interaction; report is evidence of a problem, not proof of a correct cause or fix."
+  },
+  {
+    "number": 6939,
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Retains a Session State report or directly related widget/callback/rerun/page/test interaction; report is evidence of a problem, not proof of a correct cause or fix."
+  },
+  {
+    "number": 8475,
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Retains a Session State report or directly related widget/callback/rerun/page/test interaction; report is evidence of a problem, not proof of a correct cause or fix."
+  },
+  {
+    "number": 11040,
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Retains a Session State report or directly related widget/callback/rerun/page/test interaction; report is evidence of a problem, not proof of a correct cause or fix."
+  },
+  {
+    "number": 9505,
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Retains a Session State report or directly related widget/callback/rerun/page/test interaction; report is evidence of a problem, not proof of a correct cause or fix."
+  },
+  {
+    "number": 5922,
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Retains a Session State report or directly related widget/callback/rerun/page/test interaction; report is evidence of a problem, not proof of a correct cause or fix."
+  },
+  {
+    "number": 6950,
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Retains a Session State report or directly related widget/callback/rerun/page/test interaction; report is evidence of a problem, not proof of a correct cause or fix."
+  },
+  {
+    "number": 6969,
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Retains a Session State report or directly related widget/callback/rerun/page/test interaction; report is evidence of a problem, not proof of a correct cause or fix."
+  },
+  {
+    "number": 6970,
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Retains a Session State report or directly related widget/callback/rerun/page/test interaction; report is evidence of a problem, not proof of a correct cause or fix."
+  },
+  {
+    "number": 4925,
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Retains a Session State report or directly related widget/callback/rerun/page/test interaction; report is evidence of a problem, not proof of a correct cause or fix."
+  },
+  {
+    "number": 10045,
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Retains a Session State report or directly related widget/callback/rerun/page/test interaction; report is evidence of a problem, not proof of a correct cause or fix."
+  },
+  {
+    "number": 5954,
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Retains a Session State report or directly related widget/callback/rerun/page/test interaction; report is evidence of a problem, not proof of a correct cause or fix."
+  },
+  {
+    "number": 9030,
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Retains a Session State report or directly related widget/callback/rerun/page/test interaction; report is evidence of a problem, not proof of a correct cause or fix."
+  },
+  {
+    "number": 16203,
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Retains a Session State report or directly related widget/callback/rerun/page/test interaction; report is evidence of a problem, not proof of a correct cause or fix."
+  },
+  {
+    "number": 16721,
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Retains a Session State report or directly related widget/callback/rerun/page/test interaction; report is evidence of a problem, not proof of a correct cause or fix."
+  },
+  {
+    "number": 6995,
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Retains a Session State report or directly related widget/callback/rerun/page/test interaction; report is evidence of a problem, not proof of a correct cause or fix."
+  },
+  {
+    "number": 10067,
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Retains a Session State report or directly related widget/callback/rerun/page/test interaction; report is evidence of a problem, not proof of a correct cause or fix."
+  },
+  {
+    "number": 4949,
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Retains a Session State report or directly related widget/callback/rerun/page/test interaction; report is evidence of a problem, not proof of a correct cause or fix."
+  },
+  {
+    "number": 16730,
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Retains a Session State report or directly related widget/callback/rerun/page/test interaction; report is evidence of a problem, not proof of a correct cause or fix."
+  },
+  {
+    "number": 17250,
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Retains a Session State report or directly related widget/callback/rerun/page/test interaction; report is evidence of a problem, not proof of a correct cause or fix."
+  },
+  {
+    "number": 7530,
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Retains a Session State report or directly related widget/callback/rerun/page/test interaction; report is evidence of a problem, not proof of a correct cause or fix."
+  },
+  {
+    "number": 10089,
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Retains a Session State report or directly related widget/callback/rerun/page/test interaction; report is evidence of a problem, not proof of a correct cause or fix."
+  },
+  {
+    "number": 7534,
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Retains a Session State report or directly related widget/callback/rerun/page/test interaction; report is evidence of a problem, not proof of a correct cause or fix."
+  },
+  {
+    "number": 16240,
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Retains a Session State report or directly related widget/callback/rerun/page/test interaction; report is evidence of a problem, not proof of a correct cause or fix."
+  },
+  {
+    "number": 16242,
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Retains a Session State report or directly related widget/callback/rerun/page/test interaction; report is evidence of a problem, not proof of a correct cause or fix."
+  },
+  {
+    "number": 14710,
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Retains a Session State report or directly related widget/callback/rerun/page/test interaction; report is evidence of a problem, not proof of a correct cause or fix."
+  },
+  {
+    "number": 14717,
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Retains a Session State report or directly related widget/callback/rerun/page/test interaction; report is evidence of a problem, not proof of a correct cause or fix."
+  },
+  {
+    "number": 9089,
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Retains a Session State report or directly related widget/callback/rerun/page/test interaction; report is evidence of a problem, not proof of a correct cause or fix."
+  },
+  {
+    "number": 10115,
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Retains a Session State report or directly related widget/callback/rerun/page/test interaction; report is evidence of a problem, not proof of a correct cause or fix."
+  },
+  {
+    "number": 12165,
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Retains a Session State report or directly related widget/callback/rerun/page/test interaction; report is evidence of a problem, not proof of a correct cause or fix."
+  },
+  {
+    "number": 8073,
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Retains a Session State report or directly related widget/callback/rerun/page/test interaction; report is evidence of a problem, not proof of a correct cause or fix."
+  },
+  {
+    "number": 7563,
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Retains a Session State report or directly related widget/callback/rerun/page/test interaction; report is evidence of a problem, not proof of a correct cause or fix."
+  },
+  {
+    "number": 6540,
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Retains a Session State report or directly related widget/callback/rerun/page/test interaction; report is evidence of a problem, not proof of a correct cause or fix."
+  },
+  {
+    "number": 16269,
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Retains a Session State report or directly related widget/callback/rerun/page/test interaction; report is evidence of a problem, not proof of a correct cause or fix."
+  },
+  {
+    "number": 5529,
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Retains a Session State report or directly related widget/callback/rerun/page/test interaction; report is evidence of a problem, not proof of a correct cause or fix."
+  },
+  {
+    "number": 5018,
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Retains a Session State report or directly related widget/callback/rerun/page/test interaction; report is evidence of a problem, not proof of a correct cause or fix."
+  },
+  {
+    "number": 11679,
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Retains a Session State report or directly related widget/callback/rerun/page/test interaction; report is evidence of a problem, not proof of a correct cause or fix."
+  },
+  {
+    "number": 8608,
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Retains a Session State report or directly related widget/callback/rerun/page/test interaction; report is evidence of a problem, not proof of a correct cause or fix.",
+    "excerpt_before": "But it works with native widgets:",
+    "append_from": "### Debug info",
+    "excerpt_rationale": "Retain the custom-component reproduction and environment; omit the dubious native-widget comparison with recursive callback indentation and an extra unmatched fence."
+  },
+  {
+    "number": 5537,
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Retains a Session State report or directly related widget/callback/rerun/page/test interaction; report is evidence of a problem, not proof of a correct cause or fix."
+  },
+  {
+    "number": 8609,
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Retains a Session State report or directly related widget/callback/rerun/page/test interaction; report is evidence of a problem, not proof of a correct cause or fix."
+  },
+  {
+    "number": 7588,
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Retains a Session State report or directly related widget/callback/rerun/page/test interaction; report is evidence of a problem, not proof of a correct cause or fix."
+  },
+  {
+    "number": 10154,
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Retains a Session State report or directly related widget/callback/rerun/page/test interaction; report is evidence of a problem, not proof of a correct cause or fix."
+  },
+  {
+    "number": 6571,
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Retains a Session State report or directly related widget/callback/rerun/page/test interaction; report is evidence of a problem, not proof of a correct cause or fix."
+  },
+  {
+    "number": 7084,
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Retains a Session State report or directly related widget/callback/rerun/page/test interaction; report is evidence of a problem, not proof of a correct cause or fix."
+  },
+  {
+    "number": 7087,
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Retains a Session State report or directly related widget/callback/rerun/page/test interaction; report is evidence of a problem, not proof of a correct cause or fix."
+  },
+  {
+    "number": 4538,
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Retains a Session State report or directly related widget/callback/rerun/page/test interaction; report is evidence of a problem, not proof of a correct cause or fix."
+  },
+  {
+    "number": 4540,
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Retains a Session State report or directly related widget/callback/rerun/page/test interaction; report is evidence of a problem, not proof of a correct cause or fix."
+  },
+  {
+    "number": 4543,
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Retains a Session State report or directly related widget/callback/rerun/page/test interaction; report is evidence of a problem, not proof of a correct cause or fix."
+  },
+  {
+    "number": 5567,
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Retains a Session State report or directly related widget/callback/rerun/page/test interaction; report is evidence of a problem, not proof of a correct cause or fix."
+  },
+  {
+    "number": 7615,
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Retains a Session State report or directly related widget/callback/rerun/page/test interaction; report is evidence of a problem, not proof of a correct cause or fix."
+  },
+  {
+    "number": 8129,
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Retains a Session State report or directly related widget/callback/rerun/page/test interaction; report is evidence of a problem, not proof of a correct cause or fix."
+  },
+  {
+    "number": 5571,
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Retains a Session State report or directly related widget/callback/rerun/page/test interaction; report is evidence of a problem, not proof of a correct cause or fix."
+  },
+  {
+    "number": 12740,
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Retains a Session State report or directly related widget/callback/rerun/page/test interaction; report is evidence of a problem, not proof of a correct cause or fix."
+  },
+  {
+    "number": 8136,
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Retains a Session State report or directly related widget/callback/rerun/page/test interaction; report is evidence of a problem, not proof of a correct cause or fix."
+  },
+  {
+    "number": 4553,
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Retains a Session State report or directly related widget/callback/rerun/page/test interaction; report is evidence of a problem, not proof of a correct cause or fix."
+  },
+  {
+    "number": 3532,
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Retains a Session State report or directly related widget/callback/rerun/page/test interaction; report is evidence of a problem, not proof of a correct cause or fix."
+  },
+  {
+    "number": 5581,
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Retains a Session State report or directly related widget/callback/rerun/page/test interaction; report is evidence of a problem, not proof of a correct cause or fix."
+  },
+  {
+    "number": 9163,
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Retains a Session State report or directly related widget/callback/rerun/page/test interaction; report is evidence of a problem, not proof of a correct cause or fix."
+  },
+  {
+    "number": 5584,
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Retains a Session State report or directly related widget/callback/rerun/page/test interaction; report is evidence of a problem, not proof of a correct cause or fix."
+  },
+  {
+    "number": 9171,
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Retains a Session State report or directly related widget/callback/rerun/page/test interaction; report is evidence of a problem, not proof of a correct cause or fix."
+  },
+  {
+    "number": 9194,
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Retains a Session State report or directly related widget/callback/rerun/page/test interaction; report is evidence of a problem, not proof of a correct cause or fix."
+  },
+  {
+    "number": 5102,
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Retains a Session State report or directly related widget/callback/rerun/page/test interaction; report is evidence of a problem, not proof of a correct cause or fix."
+  },
+  {
+    "number": 8174,
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Retains a Session State report or directly related widget/callback/rerun/page/test interaction; report is evidence of a problem, not proof of a correct cause or fix."
+  },
+  {
+    "number": 12782,
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Retains a Session State report or directly related widget/callback/rerun/page/test interaction; report is evidence of a problem, not proof of a correct cause or fix."
+  },
+  {
+    "number": 5618,
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Retains a Session State report or directly related widget/callback/rerun/page/test interaction; report is evidence of a problem, not proof of a correct cause or fix."
+  },
+  {
+    "number": 6643,
+    "decision": "approve",
+    "reviewer": "ai_assistant_content_review",
+    "rationale": "Retains a Session State report or directly related widget/callback/rerun/page/test interaction; report is evidence of a problem, not proof of a correct cause or fix."
+  }
+]

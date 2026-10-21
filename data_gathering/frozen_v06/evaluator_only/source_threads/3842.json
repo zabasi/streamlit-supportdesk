@@ -1,0 +1,88 @@
+{
+  "issue": {
+    "id": 1006172395,
+    "number": 3842,
+    "title": "Session State not working as expected in Streamlit 0.89.0",
+    "html_url": "https://github.com/streamlit/streamlit/issues/3842",
+    "created_at": "2021-09-24T07:34:41Z",
+    "updated_at": "2024-08-15T21:22:56Z",
+    "closed_at": "2021-09-27T16:38:34Z",
+    "state": "closed",
+    "state_reason": "completed",
+    "author_association": "NONE",
+    "source_id": "issue:3842",
+    "repository": "streamlit/streamlit",
+    "body": "### Summary\r\n\r\nst.session_state() is not working as expected. After clicking on the form, it disappears.\r\n\r\n### Steps to reproduce\r\n\r\nCode snippet:\r\n\r\n```python\r\nimport streamlit as st\r\n\r\nst.session_state[\"count\"] = 0\r\nif st.button(\"Update Count\"): \r\n    st.session_state[\"count\"] = 1\r\n\r\nif st.session_state[\"count\"] == 1:\r\n    with st.form(\"form\"):\r\n        if st.form_submit_button(\"Display Count\"):\r\n            st.write(st.session_state[\"count\"])\r\n```\r\n\r\n**Expected behavior:**\r\n\r\nThe form should not disappear and the Count should be displayed.\r\n\r\n**Actual behavior:**\r\n\r\nThe form disappears after clicking the `Display Count` button\r\n\r\n### Is this a regression?\r\n\r\nYes\r\n\r\n### Debug info\r\n\r\n- Streamlit version: 0.89.0\r\n- Python version: 3.9.7\r\n- Using PyEnv\r\n- OS version: Ubuntu 18.04.6 LTS \r\n- Browser version: Brave 1.29.81",
+    "labels": [
+      "type:bug"
+    ],
+    "author": {
+      "login": "hx-rohan",
+      "type": "User"
+    },
+    "comment_count": 1,
+    "comments_complete": true,
+    "metadata_retrieved_at": "2026-10-06T14:27:52.872268+00:00",
+    "comments_retrieved_at": "2026-10-06T14:30:07.937226+00:00",
+    "comments_retrieval_method": "github_public_html_embedded_data",
+    "body_sha256": "baa0df0214a88042696d228ee62bfaa657ff194b9dfb503bde650ba29591eac1",
+    "original_body_sha256": "67500d6216450702c6da3891741afc5973b4b60209e77c6921ddce3c6398bf21",
+    "streamlit_version": {
+      "value": "0.89.0",
+      "evidence_text": "- Streamlit version: 0.89.0",
+      "start_char": 696,
+      "end_char": 724,
+      "method": "explicit_version_line_regex"
+    },
+    "python_version": {
+      "value": "3.9.7",
+      "evidence_text": "- Python version: 3.9.7",
+      "start_char": 725,
+      "end_char": 749,
+      "method": "explicit_version_line_regex"
+    },
+    "topic_tags_heuristic": [
+      "forms",
+      "reset_or_persistence",
+      "initialization_or_update"
+    ],
+    "sampling_sources": [
+      "repo:streamlit/streamlit is:issue \"session state\" in:title,body created:<=2026-10-06"
+    ],
+    "relevance_basis": "state_label_or_title",
+    "evaluation_split": null,
+    "pilot_previously_inspected": false,
+    "historical_as_of_reconstruction": false,
+    "operating_system": null,
+    "browser": {
+      "value": "Brave 1.29.81",
+      "evidence_text": "- Browser version: Brave 1.29.81",
+      "start_char": 800,
+      "end_char": 832,
+      "method": "explicit_environment_line_regex"
+    }
+  },
+  "comments": [
+    {
+      "id": 928057355,
+      "html_url": "https://github.com/streamlit/streamlit/issues/3842#issuecomment-928057355",
+      "created_at": "2021-09-27T16:38:34Z",
+      "updated_at": "2021-09-27T16:38:34Z",
+      "author_association": "CONTRIBUTOR",
+      "source_id": "comment:928057355",
+      "issue_number": 3842,
+      "parent_source_id": "issue:3842",
+      "body": "Hi @hx-rohan Thanks for the report!\r\n\r\nBase on the code, this is expected behavior.\r\n\r\nOn first run, session state is set to 0\r\nOn button click, session state is set to 0, then it's set to 1 because the button click returns True\r\nOn form click (or really any other rerun), the session state is set to 0, thereby removing the form.\r\n\r\nThe way to fix this is to initialize session state.\r\n\r\n```python\r\nimport streamlit as st\r\n\r\n# New Code\r\nif \"count\" not in st.session_state:\r\n\tst.session_state[\"count\"] = 0\r\n\r\nif st.button(\"Update Count\"): \r\n    st.session_state[\"count\"] = 1\r\n\r\nif st.session_state[\"count\"] == 1:\r\n    with st.form(\"form\"):\r\n        if st.form_submit_button(\"Display Count\"):\r\n            st.write(st.session_state[\"count\"])\r\n```\r\n\r\nI believe this addresses your issue. I'm going to close this issue, but let me know if there's an issue.",
+      "author": {
+        "login": "kmcgrady",
+        "type": "User"
+      },
+      "is_bot": false,
+      "retrieval_method": "github_public_html_embedded_data",
+      "retrieved_at": "2026-10-06T14:30:07.937226+00:00",
+      "body_sha256": "e3fd03fe3575f84af511f116cddaae987eec984ea0321660f388fe94291d971a",
+      "updated_at_basis": "lastEditedAt_or_createdAt_from_public_HTML",
+      "is_hidden": false
+    }
+  ]
+}

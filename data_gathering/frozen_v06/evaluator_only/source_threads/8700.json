@@ -1,0 +1,161 @@
+{
+  "issue": {
+    "id": 2301858314,
+    "number": 8700,
+    "title": "KeyError (only in terminal) when accessing session_state key in a multipage app ",
+    "html_url": "https://github.com/streamlit/streamlit/issues/8700",
+    "created_at": "2024-05-17T05:30:50Z",
+    "updated_at": "2024-05-21T10:20:17Z",
+    "closed_at": "2024-05-21T10:20:17Z",
+    "state": "closed",
+    "state_reason": "completed",
+    "author_association": "NONE",
+    "source_id": "issue:8700",
+    "repository": "streamlit/streamlit",
+    "body": "### Checklist\r\n\n\n### Summary\r\n\r\nI have encountered an issue when using `st.session_state` in a multipage Streamlit app. The app runs without any errors in the browser, and I can successfully access and modify the  `st.session_state` values. However, in the terminal where I run the app, I get a `KeyError` indicating that the key is missing from `st.session_state`.\r\n\r\n### Reproducible Code Example\r\n\r\n_No response_\r\n\r\n### Steps To Reproduce\r\n\r\n1. Create a Streamlit app with the following directory structure\r\n├── app.py\r\n└── pages\r\n    └── mypage.py\r\n\r\n2. In `app.py`, add the following code:\r\n```\r\nimport streamlit as st\r\n\r\nif 'my_val' not in st.session_state:\r\n    st.session_state.my_val = 1\r\n```\r\n\r\n3. In `mypage.py` , add the following code:\r\n```\r\nimport streamlit as st\r\n\r\nst.session_state.my_val = st.session_state.my_val + 1\r\nst.write(st.session_state.my_val)\r\n```\r\n\r\n4. Start the Streamlit app using the command: `streamlit run app.py`\r\n5. Navigate between the main page and `mypage.py` in the browser.\r\n6. After a while, check the error message in the terminal.\r\n\r\n\r\n### Expected Behavior\r\n\r\nThe terminal should not display any `KeyError`\r\n\r\n### Current Behavior\r\n\r\nThe app runs fine in the browser, and `my_val`  increments as expected when navigating between pages.\r\nHowever, the terminal displays a `KeyError` indicating that the key \"my_val\"  is missing from `st.session_state`.\r\n\r\n### Is this a regression?\r\n\r\n- [ ] Yes, this used to work in a previous version.\r\n\r\n### Debug info\r\n\r\n- Streamlit version: 1.34.0\r\n- Python version: 3.11\r\n- Operating System: macOS\r\n- Browser: Safari\r\n\r\n\r\n### Additional Information\r\n\r\n_No response_",
+    "labels": [
+      "type:bug",
+      "status:cannot-reproduce",
+      "feature:st.session_state",
+      "feature:multipage-apps"
+    ],
+    "author": {
+      "login": "luxiaolei",
+      "type": "User"
+    },
+    "comment_count": 4,
+    "comments_complete": true,
+    "metadata_retrieved_at": "2026-10-06T14:27:35.341260+00:00",
+    "comments_retrieved_at": "2026-10-06T14:29:16.665674+00:00",
+    "comments_retrieval_method": "github_public_html_embedded_data",
+    "body_sha256": "b740f1ede435829027f892660f51e991efcc908db63c59cba1d48d069108cad0",
+    "original_body_sha256": "32e8f08bc0350bc69d3180dec0d26c7922c26e2221a8d529f3b86684ef21e0f0",
+    "streamlit_version": {
+      "value": "1.34.0",
+      "evidence_text": "- Streamlit version: 1.34.0",
+      "start_char": 1500,
+      "end_char": 1528,
+      "method": "explicit_version_line_regex"
+    },
+    "python_version": {
+      "value": "3.11",
+      "evidence_text": "- Python version: 3.11",
+      "start_char": 1529,
+      "end_char": 1552,
+      "method": "explicit_version_line_regex"
+    },
+    "topic_tags_heuristic": [
+      "multipage",
+      "initialization_or_update"
+    ],
+    "sampling_sources": [
+      "label:feature:st.session_state",
+      "repo:streamlit/streamlit is:issue session_state in:title,body created:<=2026-10-06",
+      "repo:streamlit/streamlit is:issue \"session state\" in:title,body created:<=2026-10-06"
+    ],
+    "relevance_basis": "state_label_or_title",
+    "evaluation_split": null,
+    "pilot_previously_inspected": false,
+    "historical_as_of_reconstruction": false,
+    "operating_system": {
+      "value": "macOS",
+      "evidence_text": "- Operating System: macOS",
+      "start_char": 1553,
+      "end_char": 1579,
+      "method": "explicit_environment_line_regex"
+    },
+    "browser": {
+      "value": "Safari",
+      "evidence_text": "- Browser: Safari",
+      "start_char": 1580,
+      "end_char": 1598,
+      "method": "explicit_environment_line_regex"
+    }
+  },
+  "comments": [
+    {
+      "id": 2116695120,
+      "html_url": "https://github.com/streamlit/streamlit/issues/8700#issuecomment-2116695120",
+      "created_at": "2024-05-17T05:31:00Z",
+      "updated_at": "2024-05-17T05:31:00Z",
+      "author_association": "CONTRIBUTOR",
+      "source_id": "comment:2116695120",
+      "issue_number": 8700,
+      "parent_source_id": "issue:8700",
+      "body": "**If this issue affects you, please react with a 👍 (thumbs up emoji) to the initial post.**\n\nYour feedback helps us prioritize which bugs to investigate and address first.\n\n![Visits](https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2Fstreamlit%2Fstreamlit%2Fissues%2F8700&title=visits&edge_flat=false)",
+      "author": {
+        "login": "github-actions",
+        "type": "Bot"
+      },
+      "is_bot": true,
+      "retrieval_method": "github_public_html_embedded_data",
+      "retrieved_at": "2026-10-06T14:29:16.665674+00:00",
+      "body_sha256": "87b27bf55e544482ef4a915f1b6c994a5cbced215c0ef183231bd0e8ac42b276",
+      "updated_at_basis": "lastEditedAt_or_createdAt_from_public_HTML",
+      "is_hidden": false
+    },
+    {
+      "id": 2116864874,
+      "html_url": "https://github.com/streamlit/streamlit/issues/8700#issuecomment-2116864874",
+      "created_at": "2024-05-17T06:45:23Z",
+      "updated_at": "2024-05-17T06:45:23Z",
+      "author_association": "CONTRIBUTOR",
+      "source_id": "comment:2116864874",
+      "issue_number": 8700,
+      "parent_source_id": "issue:8700",
+      "body": "I _suspect_ this will go away if you add a `if \"my_val\" in st.session_state` guard to your subpage, but agree that doesn't explain why you would get an issue only in your terminal.",
+      "author": {
+        "login": "Asaurus1",
+        "type": "User"
+      },
+      "is_bot": false,
+      "retrieval_method": "github_public_html_embedded_data",
+      "retrieved_at": "2026-10-06T14:29:16.665674+00:00",
+      "body_sha256": "7547803a470dd3884f43200d61c362320826d3da71a30571991d68f7f0aac335",
+      "updated_at_basis": "lastEditedAt_or_createdAt_from_public_HTML",
+      "is_hidden": false
+    },
+    {
+      "id": 2119064311,
+      "html_url": "https://github.com/streamlit/streamlit/issues/8700#issuecomment-2119064311",
+      "created_at": "2024-05-19T02:09:18Z",
+      "updated_at": "2024-05-19T02:09:18Z",
+      "author_association": "CONTRIBUTOR",
+      "source_id": "comment:2119064311",
+      "issue_number": 8700,
+      "parent_source_id": "issue:8700",
+      "body": "I'm not able to reproduce this error with the latest version of streamlit. I _am_ able to produce key errors if I refresh and go directly to the \"mypage.py\" page (e.g. start a session on that page) which makes sense, since my_val doesn't exist yet. But those key errors also show up in the app.",
+      "author": {
+        "login": "Asaurus1",
+        "type": "User"
+      },
+      "is_bot": false,
+      "retrieval_method": "github_public_html_embedded_data",
+      "retrieved_at": "2026-10-06T14:29:16.665674+00:00",
+      "body_sha256": "c4b394b7ac71cd13b07822307ad3ed2ca61cb00ed2e7c2769b2de7c363209a3f",
+      "updated_at_basis": "lastEditedAt_or_createdAt_from_public_HTML",
+      "is_hidden": false
+    },
+    {
+      "id": 2122288012,
+      "html_url": "https://github.com/streamlit/streamlit/issues/8700#issuecomment-2122288012",
+      "created_at": "2024-05-21T10:20:17Z",
+      "updated_at": "2024-05-21T10:20:17Z",
+      "author_association": "COLLABORATOR",
+      "source_id": "comment:2122288012",
+      "issue_number": 8700,
+      "parent_source_id": "issue:8700",
+      "body": "Thanks @Asaurus1 for responding to this! I agree with your assessment that in general `if \"my_val\" in st.session_state` should guard against this behavior. Indeed, if you start the app and go directly to `/mypage`, I get a key error, which is expected as explained above. As I am also not able to reproduce any other behavior, I am going to close the issue. @luxiaolei feel free to re-open the issue if you have more details on how this can be reproduced or feel the original issue was misunderstood 🙂",
+      "author": {
+        "login": "raethlein",
+        "type": "User"
+      },
+      "is_bot": false,
+      "retrieval_method": "github_public_html_embedded_data",
+      "retrieved_at": "2026-10-06T14:29:16.665674+00:00",
+      "body_sha256": "6fff0918ee4549f187aca3e81aeeaa10d49efd3062805e0caf60bfb9279ab5da",
+      "updated_at_basis": "lastEditedAt_or_createdAt_from_public_HTML",
+      "is_hidden": false
+    }
+  ]
+}

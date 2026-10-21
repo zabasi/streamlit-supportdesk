@@ -1,0 +1,160 @@
+{
+  "issue": {
+    "id": 2924831578,
+    "number": 10805,
+    "title": "Widget state is not persisted after adding run_every to a fragment",
+    "html_url": "https://github.com/streamlit/streamlit/issues/10805",
+    "created_at": "2025-03-17T12:08:06Z",
+    "updated_at": "2026-09-19T08:46:30Z",
+    "closed_at": null,
+    "state": "open",
+    "state_reason": null,
+    "author_association": "CONTRIBUTOR",
+    "source_id": "issue:10805",
+    "repository": "streamlit/streamlit",
+    "body": "### Checklist\n\n\n### Summary\n\nTo persist widget values I use the interrupt the widget clean-up process documented [here](https://docs.streamlit.io/develop/concepts/architecture/widget-behavior#interrupting-the-widget-clean-up-process).\nI find this works very well for me, until recently, when I added a fragment with `run_every=2`, and now I notice that the session state is not persisting between pages.\n\n### Reproducible Code Example\n\n```Python\n#!/usr/bin/env python3\n\nimport streamlit as st\n\nkey = \"test_radio\"\noptions = [\"option 1\", \"option 2\"]\nprint(f\"State value for {key} is {st.session_state.get(key, 'unset')}\")\nst.session_state[key] = st.session_state.get(key, options[0]) # Interrupt cleanup, and set a default value for the key\nst.radio(\"Test radio\", options=options, key=key)\n\n@st.fragment(run_every=2)\ndef test_fragment():\n    pass\n\ntest_fragment() # Commenting this changes the behaviour\n```\n\n### Steps To Reproduce\n\n1. Create `main.py` and `pages/1_other_page.py` with the code from \"Reproducible Code Example\"\n2. Launch the app and choose \"option 2\".\n3. Wait 2 seconds then navigate to \"Other Page\".\n4. Observe \"option 1\" is selected.\n5. Choose \"option 2\" then immediately navigate back to main page, in under 2 seconds\n6. Observe \"option 2\" is selected.\n\n=== Successful variants ===\nA. Comment out the `test_fragment()` line and repeat the test. This time you'll observe \"option 2\" is always selected, as expected.\nB. Remove the `run_every` parameter and repeat the test. This time you'll observe \"option 2\" is always selected, as expected.\n\n### Expected Behavior\n\nThe state values associated with widgets should be available at the top of a new page, before streamlit cleanup process begins. In the given example, \"option 2\" should stay selected when switching between pages.\n\n### Current Behavior\n\nWidget state is being cleared out prematurely.\n\n### Is this a regression?\n\n- [ ] Yes, this used to work in a previous version.\n\n### Debug info\n\n- Streamlit version: 1.43.1\n- Python version: 3.10.14\n- Operating System: Ubuntu 22.04.1\n- Browser: Firefox 136.0.1\n\n\n### Additional Information\n\n_No response_",
+    "labels": [
+      "type:bug",
+      "status:confirmed",
+      "priority:P3",
+      "feature:st.fragment"
+    ],
+    "author": {
+      "login": "OSalama",
+      "type": "User"
+    },
+    "comment_count": 4,
+    "comments_complete": true,
+    "metadata_retrieved_at": "2026-10-06T14:28:04.043219+00:00",
+    "comments_retrieved_at": "2026-10-06T14:32:19.114260+00:00",
+    "comments_retrieval_method": "github_public_html_embedded_data",
+    "body_sha256": "c1e6fd526b515e3de7ebac82e3e16aaaf0325bf0e68ac9f7f362659059f4f177",
+    "original_body_sha256": "64638ffecf4a8df3b996c32f12bf03e653853c8e5593e55d8b37bc094cb172da",
+    "streamlit_version": {
+      "value": "1.43.1",
+      "evidence_text": "- Streamlit version: 1.43.1",
+      "start_char": 1961,
+      "end_char": 1988,
+      "method": "explicit_version_line_regex"
+    },
+    "python_version": {
+      "value": "3.10.14",
+      "evidence_text": "- Python version: 3.10.14",
+      "start_char": 1989,
+      "end_char": 2014,
+      "method": "explicit_version_line_regex"
+    },
+    "topic_tags_heuristic": [
+      "multipage",
+      "reset_or_persistence"
+    ],
+    "sampling_sources": [
+      "repo:streamlit/streamlit is:issue \"session state\" in:title,body created:<=2026-10-06",
+      "repo:streamlit/streamlit is:issue \"widget state\" in:title,body created:<=2026-10-06"
+    ],
+    "relevance_basis": "state_label_or_title",
+    "evaluation_split": null,
+    "pilot_previously_inspected": false,
+    "historical_as_of_reconstruction": false,
+    "operating_system": {
+      "value": "Ubuntu 22.04.1",
+      "evidence_text": "- Operating System: Ubuntu 22.04.1",
+      "start_char": 2015,
+      "end_char": 2049,
+      "method": "explicit_environment_line_regex"
+    },
+    "browser": {
+      "value": "Firefox 136.0.1",
+      "evidence_text": "- Browser: Firefox 136.0.1",
+      "start_char": 2050,
+      "end_char": 2076,
+      "method": "explicit_environment_line_regex"
+    }
+  },
+  "comments": [
+    {
+      "id": 2729249398,
+      "html_url": "https://github.com/streamlit/streamlit/issues/10805#issuecomment-2729249398",
+      "created_at": "2025-03-17T12:08:20Z",
+      "updated_at": "2025-03-26T17:53:12Z",
+      "author_association": "CONTRIBUTOR",
+      "source_id": "comment:2729249398",
+      "issue_number": 10805,
+      "parent_source_id": "issue:10805",
+      "body": "**If this issue affects you, please react with a 👍 (thumbs up emoji) to the initial post.**\n\nYour feedback helps us prioritize which bugs to investigate and address first.\n\n![Views](https://api.views-badge.org/badge/st-issue-10805)",
+      "author": {
+        "login": "github-actions",
+        "type": "Bot"
+      },
+      "is_bot": true,
+      "retrieval_method": "github_public_html_embedded_data",
+      "retrieved_at": "2026-10-06T14:32:19.114260+00:00",
+      "body_sha256": "4954e3896d3869748c15ec72f16fd7b9ac4d4433f1863c1917a0cfac67caf781",
+      "updated_at_basis": "lastEditedAt_or_createdAt_from_public_HTML",
+      "is_hidden": false
+    },
+    {
+      "id": 2730265716,
+      "html_url": "https://github.com/streamlit/streamlit/issues/10805#issuecomment-2730265716",
+      "created_at": "2025-03-17T17:05:50Z",
+      "updated_at": "2025-03-17T17:05:50Z",
+      "author_association": "CONTRIBUTOR",
+      "source_id": "comment:2730265716",
+      "issue_number": 10805,
+      "parent_source_id": "issue:10805",
+      "body": "Hey @OSalama thank you for opening this issue!\n\nI was able to reproduce it on my local setup. \n\nYeah, just to clarify, the content of both `main.py` and `pages/1_other_page.py` are identical to the code you provided in the issue, and both contain fragment rerun, correct?",
+      "author": {
+        "login": "kajarenc",
+        "type": "User"
+      },
+      "is_bot": false,
+      "retrieval_method": "github_public_html_embedded_data",
+      "retrieved_at": "2026-10-06T14:32:19.114260+00:00",
+      "body_sha256": "789721dadbf76636238ae672d5590412657ac9b3d1263c00d7b0519854eba690",
+      "updated_at_basis": "lastEditedAt_or_createdAt_from_public_HTML",
+      "is_hidden": false
+    },
+    {
+      "id": 2730278210,
+      "html_url": "https://github.com/streamlit/streamlit/issues/10805#issuecomment-2730278210",
+      "created_at": "2025-03-17T17:10:16Z",
+      "updated_at": "2025-03-17T17:14:32Z",
+      "author_association": "CONTRIBUTOR",
+      "source_id": "comment:2730278210",
+      "issue_number": 10805,
+      "parent_source_id": "issue:10805",
+      "body": "> Hey [@OSalama](https://github.com/OSalama) thank you for opening this issue!\n> \n> I was able to reproduce it on my local setup.\n> \n> Yeah, just to clarify, the content of both `main.py` and `pages/1_other_page.py` are identical to the code you provided in the issue, and both contain fragment rerun, correct?\n\nCorrect! In my real examples I have different contents between pages, but use a handful of widgets with the same keys, and expect the values to persist.\nI suspect removing the fragment rerun from `pages/1_other_page.py` would still trigger the issue, as long as you select the radio value from the main page.",
+      "author": {
+        "login": "OSalama",
+        "type": "User"
+      },
+      "is_bot": false,
+      "retrieval_method": "github_public_html_embedded_data",
+      "retrieved_at": "2026-10-06T14:32:19.114260+00:00",
+      "body_sha256": "fca17a5744a895dc479112af8832d62313b97ce6934c868c722cd177a7f8fd94",
+      "updated_at_basis": "lastEditedAt_or_createdAt_from_public_HTML",
+      "is_hidden": false
+    },
+    {
+      "id": 3052408591,
+      "html_url": "https://github.com/streamlit/streamlit/issues/10805#issuecomment-3052408591",
+      "created_at": "2025-07-09T12:08:28Z",
+      "updated_at": "2025-07-09T12:08:28Z",
+      "author_association": "NONE",
+      "source_id": "comment:3052408591",
+      "issue_number": 10805,
+      "parent_source_id": "issue:10805",
+      "body": "I don't think this is only an issue with run_every but with every fragment rerun within a multipage app where you want other widget states to persist.\nSo this bug can also be triggered by putting a widget inside the fragment, interacting with that and then switching the page.",
+      "author": {
+        "login": "jofa-k",
+        "type": "User"
+      },
+      "is_bot": false,
+      "retrieval_method": "github_public_html_embedded_data",
+      "retrieved_at": "2026-10-06T14:32:19.114260+00:00",
+      "body_sha256": "d877ad4402c311400f5276a5f826d55e77180cc78a6f1792788bf3b129d96622",
+      "updated_at_basis": "lastEditedAt_or_createdAt_from_public_HTML",
+      "is_hidden": false
+    }
+  ]
+}

@@ -1,0 +1,245 @@
+[
+  {
+    "case_id": "DEV-9342",
+    "field": "operating_system",
+    "before": "- Browser:",
+    "after": null,
+    "evidence": null
+  },
+  {
+    "case_id": "DEV-9342",
+    "field": "browser",
+    "before": "### Additional Information",
+    "after": null,
+    "evidence": null
+  },
+  {
+    "case_id": "DEV-4338",
+    "field": "streamlit_version",
+    "before": "0.89.0",
+    "after": "0.89.0 to 1.5.0",
+    "evidence": {
+      "start_char": 2767,
+      "end_char": 2782,
+      "text": "0.89.0 to 1.5.0",
+      "offset_basis": "agent_input.user_report",
+      "interpretation": "Explicit report string; no version normalization or inference."
+    }
+  },
+  {
+    "case_id": "DEV-4338",
+    "field": "python_version",
+    "before": "3.8.6",
+    "after": "3.8.6 (pyenv)",
+    "evidence": {
+      "start_char": 2802,
+      "end_char": 2815,
+      "text": "3.8.6 (pyenv)",
+      "offset_basis": "agent_input.user_report",
+      "interpretation": "Explicit report string; no version normalization or inference."
+    }
+  },
+  {
+    "case_id": "DEV-3903",
+    "field": "operating_system",
+    "before": null,
+    "after": "Linux Mint",
+    "evidence": {
+      "start_char": 2316,
+      "end_char": 2326,
+      "text": "Linux Mint",
+      "offset_basis": "agent_input.user_report",
+      "interpretation": "Explicit report string; no version normalization or inference."
+    }
+  },
+  {
+    "case_id": "DEV-4325",
+    "field": "browser",
+    "before": "### Additional information",
+    "after": null,
+    "evidence": null
+  },
+  {
+    "case_id": "DEV-3585",
+    "field": "operating_system",
+    "before": null,
+    "after": "Win 10",
+    "evidence": {
+      "start_char": 1037,
+      "end_char": 1043,
+      "text": "Win 10",
+      "offset_basis": "agent_input.user_report",
+      "interpretation": "Explicit report string; no version normalization or inference."
+    }
+  },
+  {
+    "case_id": "DEV-3842",
+    "field": "operating_system",
+    "before": null,
+    "after": "Ubuntu 18.04.6 LTS",
+    "evidence": {
+      "start_char": 779,
+      "end_char": 798,
+      "text": "Ubuntu 18.04.6 LTS ",
+      "offset_basis": "agent_input.user_report",
+      "interpretation": "Explicit report string; no version normalization or inference."
+    }
+  },
+  {
+    "case_id": "DEV-4082",
+    "field": "operating_system",
+    "before": null,
+    "after": "Ubuntu 20.04.3 LTS 64 bit",
+    "evidence": {
+      "start_char": 1330,
+      "end_char": 1355,
+      "text": "Ubuntu 20.04.3 LTS 64 bit",
+      "offset_basis": "agent_input.user_report",
+      "interpretation": "Explicit report string; no version normalization or inference."
+    }
+  },
+  {
+    "case_id": "DEV-5591",
+    "field": "operating_system",
+    "before": "- Browser:",
+    "after": null,
+    "evidence": null
+  },
+  {
+    "case_id": "DEV-5591",
+    "field": "browser",
+    "before": "- Virtual environment:",
+    "after": null,
+    "evidence": null
+  },
+  {
+    "case_id": "DEV-4989",
+    "field": "operating_system",
+    "before": null,
+    "after": "Fedora 36",
+    "evidence": {
+      "start_char": 1556,
+      "end_char": 1565,
+      "text": "Fedora 36",
+      "offset_basis": "agent_input.user_report",
+      "interpretation": "Explicit report string; no version normalization or inference."
+    }
+  },
+  {
+    "case_id": "TEST-4884",
+    "field": "streamlit_version",
+    "before": null,
+    "after": "1.10.0",
+    "evidence": {
+      "start_char": 1351,
+      "end_char": 1365,
+      "text": "version 1.10.0",
+      "offset_basis": "agent_input.user_report",
+      "interpretation": "Explicit report string; no version normalization or inference."
+    }
+  },
+  {
+    "case_id": "TEST-4884",
+    "field": "python_version",
+    "before": null,
+    "after": "3.10.4",
+    "evidence": {
+      "start_char": 1373,
+      "end_char": 1379,
+      "text": "3.10.4",
+      "offset_basis": "agent_input.user_report",
+      "interpretation": "Explicit report string; no version normalization or inference."
+    }
+  },
+  {
+    "case_id": "TEST-3921",
+    "field": "streamlit_version",
+    "before": null,
+    "after": "1.00.",
+    "evidence": {
+      "start_char": 950,
+      "end_char": 955,
+      "text": "1.00.",
+      "offset_basis": "agent_input.user_report",
+      "interpretation": "Explicit report string; no version normalization or inference."
+    }
+  },
+  {
+    "case_id": "TEST-3921",
+    "field": "operating_system",
+    "before": null,
+    "after": "MacOS 11.3",
+    "evidence": {
+      "start_char": 1011,
+      "end_char": 1021,
+      "text": "MacOS 11.3",
+      "offset_basis": "agent_input.user_report",
+      "interpretation": "Explicit report string; no version normalization or inference."
+    }
+  },
+  {
+    "case_id": "TEST-3598",
+    "field": "operating_system",
+    "before": null,
+    "after": "Debian buster (in a python:3.8 container)",
+    "evidence": {
+      "start_char": 3258,
+      "end_char": 3299,
+      "text": "Debian buster (in a python:3.8 container)",
+      "offset_basis": "agent_input.user_report",
+      "interpretation": "Explicit report string; no version normalization or inference."
+    }
+  },
+  {
+    "case_id": "TEST-9657",
+    "field": "streamlit_version",
+    "before": "1.25.0",
+    "after": "1.25.0, up to 1.39.0, may affect earlier versions as well",
+    "evidence": {
+      "start_char": 2529,
+      "end_char": 2586,
+      "text": "1.25.0, up to 1.39.0, may affect earlier versions as well",
+      "offset_basis": "agent_input.user_report",
+      "interpretation": "Explicit report string; no version normalization or inference."
+    }
+  },
+  {
+    "case_id": "TEST-9657",
+    "field": "python_version",
+    "before": "3.12.6",
+    "after": "3.12.6, also tried on 3.9",
+    "evidence": {
+      "start_char": 2606,
+      "end_char": 2631,
+      "text": "3.12.6, also tried on 3.9",
+      "offset_basis": "agent_input.user_report",
+      "interpretation": "Explicit report string; no version normalization or inference."
+    }
+  },
+  {
+    "case_id": "TEST-3601",
+    "field": "operating_system",
+    "before": null,
+    "after": "Debian buster (in a python:3.8 container)",
+    "evidence": {
+      "start_char": 1758,
+      "end_char": 1799,
+      "text": "Debian buster (in a python:3.8 container)",
+      "offset_basis": "agent_input.user_report",
+      "interpretation": "Explicit report string; no version normalization or inference."
+    }
+  },
+  {
+    "case_id": "TEST-4873",
+    "field": "operating_system",
+    "before": null,
+    "after": "Windows 10",
+    "evidence": {
+      "start_char": 4352,
+      "end_char": 4362,
+      "text": "Windows 10",
+      "offset_basis": "agent_input.user_report",
+      "interpretation": "Explicit report string; no version normalization or inference."
+    }
+  }
+]

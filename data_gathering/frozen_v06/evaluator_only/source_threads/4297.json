@@ -1,0 +1,233 @@
+{
+  "issue": {
+    "id": 1107811785,
+    "number": 4297,
+    "title": "User's session_state is reset on websocket close",
+    "html_url": "https://github.com/streamlit/streamlit/issues/4297",
+    "created_at": "2022-01-19T08:41:33Z",
+    "updated_at": "2023-01-24T07:10:06Z",
+    "closed_at": "2023-01-24T00:06:33Z",
+    "state": "closed",
+    "state_reason": "completed",
+    "author_association": "NONE",
+    "source_id": "issue:4297",
+    "repository": "streamlit/streamlit",
+    "body": "### Summary\r\n\r\nWhen using session_state on the backend and browsing the app, if the websocket close between the front and the back, on websocket re establishment session_state is lost.\r\n \r\n### Steps to reproduce\r\nHaving a proxy between the front and the back, setting a connection timeout with the value of your choice, websocket will close after this value and session_state for this particular user will be lost.\r\n\r\nIt happened to me because I have my streamlit app running on GCP Cloud Run behind a Load Balancer. \r\nI can set the timeout to maximum 60 minutes but best behaviour would be that streamlit backend is able to recover session_state of a particular user on websocket re establishment.\r\n\r\n**Expected behavior:**\r\n\r\nUser will see no change on websocket close -> backend is able to retrieve session_state for the user on websocket close/reopen.\r\n\r\n**Actual behavior:**\r\n\r\nUser losts his work saved in session_state on websocket close.\r\n\r\n### Debug info\r\n\r\n- Streamlit version: 1.3.1\r\n- Python version: 3.7.10\r\n- Using Conda [X]\r\n\r\n### Additional information\r\nWould love to have a workaround I could apply now :)\r\nAnd subsidiary question would be: is this planed to store session_state on an external datastore (redis?).\r\nIt seems that it would allow running multiple backends behind a LB to handle more users simultaneously.",
+    "labels": [
+      "type:bug",
+      "feature:state",
+      "status:confirmed",
+      "priority:P2"
+    ],
+    "author": {
+      "login": "ael-g",
+      "type": "User"
+    },
+    "comment_count": 8,
+    "comments_complete": true,
+    "metadata_retrieved_at": "2026-10-06T14:27:52.872268+00:00",
+    "comments_retrieved_at": "2026-10-06T14:47:13.806243+00:00",
+    "comments_retrieval_method": "github_rest_comments",
+    "body_sha256": "5adcbee453275f6a07268c1d8785f21cc4ff49f3915adc2d6e77f9b442690ce9",
+    "original_body_sha256": "5a7c403b6775adc405e830d0cf7a0aebc19d4f0225d3ce5298d3b26f9c59bebb",
+    "streamlit_version": {
+      "value": "1.3.1",
+      "evidence_text": "- Streamlit version: 1.3.1",
+      "start_char": 967,
+      "end_char": 994,
+      "method": "explicit_version_line_regex"
+    },
+    "python_version": {
+      "value": "3.7.10",
+      "evidence_text": "- Python version: 3.7.10",
+      "start_char": 995,
+      "end_char": 1020,
+      "method": "explicit_version_line_regex"
+    },
+    "topic_tags_heuristic": [
+      "reset_or_persistence",
+      "session_lifecycle",
+      "frontend_backend_consistency"
+    ],
+    "sampling_sources": [
+      "repo:streamlit/streamlit is:issue session_state in:title,body created:<=2026-10-06",
+      "repo:streamlit/streamlit is:issue \"session state\" in:title,body created:<=2026-10-06"
+    ],
+    "relevance_basis": "state_label_or_title",
+    "evaluation_split": null,
+    "pilot_previously_inspected": false,
+    "historical_as_of_reconstruction": false,
+    "operating_system": null,
+    "browser": null
+  },
+  "comments": [
+    {
+      "id": 1019023631,
+      "html_url": "https://github.com/streamlit/streamlit/issues/4297#issuecomment-1019023631",
+      "created_at": "2022-01-22T02:45:03Z",
+      "updated_at": "2022-01-22T02:45:28Z",
+      "author_association": "CONTRIBUTOR",
+      "source_id": "comment:1019023631",
+      "issue_number": 4297,
+      "parent_source_id": "issue:4297",
+      "body": "Thanks for reporting this @ael-g!\r\n\r\nWe'll see what we can do to prioritize a fix. I can't give any guarantees on a timeline for this at the moment, but there may be some overlap with fixing this bug and the multi-page apps project currently in flight, so there's a chance that this gets addressed relatively soon as part of that work.",
+      "author": {
+        "login": "vdonato",
+        "type": "User"
+      },
+      "is_bot": false,
+      "retrieval_method": "github_rest_comments",
+      "retrieved_at": "2026-10-06T14:47:13.806243+00:00",
+      "body_sha256": "901cacb694f2b185b9f1de1131ce53f6c07e6214cd79ab3bd5856e42d251b17a",
+      "updated_at_basis": "rest_updated_at",
+      "is_hidden": false
+    },
+    {
+      "id": 1305478489,
+      "html_url": "https://github.com/streamlit/streamlit/issues/4297#issuecomment-1305478489",
+      "created_at": "2022-11-07T11:37:33Z",
+      "updated_at": "2022-11-07T11:37:33Z",
+      "author_association": "NONE",
+      "source_id": "comment:1305478489",
+      "issue_number": 4297,
+      "parent_source_id": "issue:4297",
+      "body": "@vdonato any news on this topic?",
+      "author": {
+        "login": "liebehentze",
+        "type": "User"
+      },
+      "is_bot": false,
+      "retrieval_method": "github_rest_comments",
+      "retrieved_at": "2026-10-06T14:47:13.806243+00:00",
+      "body_sha256": "0bda086d58e6ff5584c64d201eaf810661fd7abd39bc9da6e03539c664655dc4",
+      "updated_at_basis": "rest_updated_at",
+      "is_hidden": false
+    },
+    {
+      "id": 1306260254,
+      "html_url": "https://github.com/streamlit/streamlit/issues/4297#issuecomment-1306260254",
+      "created_at": "2022-11-07T21:54:50Z",
+      "updated_at": "2022-11-07T21:54:50Z",
+      "author_association": "CONTRIBUTOR",
+      "source_id": "comment:1306260254",
+      "issue_number": 4297,
+      "parent_source_id": "issue:4297",
+      "body": "@liebehentze thanks for the nudge on this.\r\n\r\nWork on this is moving along relatively slowly (it's been on my radar for some now, but unfortunately more urgent things have repeatedly derailed me being able to really able to spend as much time as I'd like on it). There's a feature branch with the work I've been doing to implement this that lives at https://github.com/streamlit/streamlit/tree/feature/session-manager.\r\n\r\nIdeally, I'd like to get the implementation work for this done in the next few weeks, which now seems feasible because the work that has kept me from doing so is now wrapped up.\r\n\r\nLaunch may take a bit more time than that, though, because it turns out this work is surprisingly closely related to some (very) long-term plans we have on the Streamlit roadmap (such as enabling Streamlit to run in a more stateless/\"serverless\" manner 🤯 ), so we need to be careful when releasing this to ensure that we don't do anything that'll make progress on our very long-term goals more difficult down the line.",
+      "author": {
+        "login": "vdonato",
+        "type": "User"
+      },
+      "is_bot": false,
+      "retrieval_method": "github_rest_comments",
+      "retrieved_at": "2026-10-06T14:47:13.806243+00:00",
+      "body_sha256": "60f0d33031ddb2fb8d96aab724cf220d8e80096f2b1757a85ea9f9624b1daea7",
+      "updated_at_basis": "rest_updated_at",
+      "is_hidden": false
+    },
+    {
+      "id": 1306260588,
+      "html_url": "https://github.com/streamlit/streamlit/issues/4297#issuecomment-1306260588",
+      "created_at": "2022-11-07T21:54:59Z",
+      "updated_at": "2022-11-07T21:54:59Z",
+      "author_association": "CONTRIBUTOR",
+      "source_id": "comment:1306260588",
+      "issue_number": 4297,
+      "parent_source_id": "issue:4297",
+      "body": "Oops didn't mean to close",
+      "author": {
+        "login": "vdonato",
+        "type": "User"
+      },
+      "is_bot": false,
+      "retrieval_method": "github_rest_comments",
+      "retrieved_at": "2026-10-06T14:47:13.806243+00:00",
+      "body_sha256": "0fd422d30227df25eb2d5bf89f4cd6d99d94d1c9887388627447e46002327fc3",
+      "updated_at_basis": "rest_updated_at",
+      "is_hidden": false
+    },
+    {
+      "id": 1311360474,
+      "html_url": "https://github.com/streamlit/streamlit/issues/4297#issuecomment-1311360474",
+      "created_at": "2022-11-11T08:03:07Z",
+      "updated_at": "2022-11-11T08:03:07Z",
+      "author_association": "NONE",
+      "source_id": "comment:1311360474",
+      "issue_number": 4297,
+      "parent_source_id": "issue:4297",
+      "body": "Thanks for this really quick response, sound good. This would really help us because we are using streamlit in an environment where randomly (between a few min to an hour) a new websocket connection needs to be reestablished (still figuring out why). This might be related to an existing VPN connection we need to establish to reach the server (which might be a bit unstable). Still fishing in the mud...",
+      "author": {
+        "login": "liebehentze",
+        "type": "User"
+      },
+      "is_bot": false,
+      "retrieval_method": "github_rest_comments",
+      "retrieved_at": "2026-10-06T14:47:13.806243+00:00",
+      "body_sha256": "2a6cdeb6425830a02ed34405e97eb881a5be7392aaf7d723b0968b00111007da",
+      "updated_at_basis": "rest_updated_at",
+      "is_hidden": false
+    },
+    {
+      "id": 1344774666,
+      "html_url": "https://github.com/streamlit/streamlit/issues/4297#issuecomment-1344774666",
+      "created_at": "2022-12-09T20:58:21Z",
+      "updated_at": "2022-12-09T20:58:21Z",
+      "author_association": "NONE",
+      "source_id": "comment:1344774666",
+      "issue_number": 4297,
+      "parent_source_id": "issue:4297",
+      "body": "Bump, this would be very useful for my use case as well",
+      "author": {
+        "login": "mwharton3",
+        "type": "User"
+      },
+      "is_bot": false,
+      "retrieval_method": "github_rest_comments",
+      "retrieved_at": "2026-10-06T14:47:13.806243+00:00",
+      "body_sha256": "aa8a5df6f2d1e545b566a6331fc93712133d71de60d1e11003a16ab8e46819f5",
+      "updated_at_basis": "rest_updated_at",
+      "is_hidden": false
+    },
+    {
+      "id": 1401182866,
+      "html_url": "https://github.com/streamlit/streamlit/issues/4297#issuecomment-1401182866",
+      "created_at": "2023-01-24T00:09:07Z",
+      "updated_at": "2023-01-24T00:09:07Z",
+      "author_association": "CONTRIBUTOR",
+      "source_id": "comment:1401182866",
+      "issue_number": 4297,
+      "parent_source_id": "issue:4297",
+      "body": "We missed the cutoff to get this included in 1.18 by a day 😕 \r\n\r\nThe fixes for this should appear starting in 1.19",
+      "author": {
+        "login": "vdonato",
+        "type": "User"
+      },
+      "is_bot": false,
+      "retrieval_method": "github_rest_comments",
+      "retrieved_at": "2026-10-06T14:47:13.806243+00:00",
+      "body_sha256": "76ab25ca06a215e066f697e6c6b0efbe31c13c375527fbb66ddcf2752a7b53f2",
+      "updated_at_basis": "rest_updated_at",
+      "is_hidden": false
+    },
+    {
+      "id": 1401478695,
+      "html_url": "https://github.com/streamlit/streamlit/issues/4297#issuecomment-1401478695",
+      "created_at": "2023-01-24T07:10:06Z",
+      "updated_at": "2023-01-24T07:10:06Z",
+      "author_association": "NONE",
+      "source_id": "comment:1401478695",
+      "issue_number": 4297,
+      "parent_source_id": "issue:4297",
+      "body": "Good to hear.",
+      "author": {
+        "login": "liebehentze",
+        "type": "User"
+      },
+      "is_bot": false,
+      "retrieval_method": "github_rest_comments",
+      "retrieved_at": "2026-10-06T14:47:13.806243+00:00",
+      "body_sha256": "2ad503a520fcbdc7a981c67cf18e6d09678af02a36a5bbfca2df2b8160da9b81",
+      "updated_at_basis": "rest_updated_at",
+      "is_hidden": false
+    }
+  ]
+}

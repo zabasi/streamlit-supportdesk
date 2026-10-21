@@ -1,0 +1,196 @@
+{
+  "issue": {
+    "id": 2582822132,
+    "number": 9657,
+    "title": "After first input, st.number_input requires to input twice to get the right value returned if the widget's value parameter is assigned a class property which is stored in st.session_state",
+    "html_url": "https://github.com/streamlit/streamlit/issues/9657",
+    "created_at": "2024-10-12T10:54:48Z",
+    "updated_at": "2025-09-05T17:04:25Z",
+    "closed_at": "2025-09-05T17:04:25Z",
+    "state": "closed",
+    "state_reason": "completed",
+    "author_association": "NONE",
+    "source_id": "issue:9657",
+    "repository": "streamlit/streamlit",
+    "body": "### Checklist\r\n\n\n### Summary\r\n\r\nst.number_input is expected return the increase number by 1 after clicked on +, and keep increasing the value after each click on +. It cannot work as expected if its value parameter is assigned a class property and the class/object which is stored in st.session_state.\r\n\r\nAfter first input, st.number_input requires to input twice to get the right value returned if the widget's value parameter is assigned from a class property.\r\n\r\nThe same behavior even if keys in the value directly to the widget. Similar behavior is observed on st.text_input, st.date_input,  st.text_area  as well. Maybe more.\r\n\r\n### Reproducible Code Example\r\n\r\n[![Open in Streamlit Cloud](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://issues.streamlitapp.com/?issue=gh-9657)\r\n\r\n```Python\r\nimport datetime\r\nimport streamlit as st\r\n\r\nclass EES():\r\n    amount: int = 0\r\n\r\nif 'ees' not in st.session_state:\r\n    st.session_state.ees = EES()\r\n    st.session_state.ees.amount = 1\r\n    st.session_state.logs = []\r\n\r\nst.write('before', datetime.datetime.now(), st.session_state.ees.amount)\r\n\r\nvalue = st.number_input(\"Value\", min_value=0, value=st.session_state.ees.amount)\r\n\r\nif value != st.session_state.ees.amount:\r\n    msg = 'number changed'\r\n    st.write('after', datetime.datetime.now(), value, st.session_state.ees.amount, msg)\r\n    st.session_state.ees.amount = value\r\n    # st.rerun()\r\nelse:\r\n    msg = 'no change'\r\n\r\nst.session_state.logs.append(str([value, msg]))\r\n\r\nst.write('end', datetime.datetime.now(), st.session_state.ees.amount)\r\n\r\nst.write('change log', st.session_state.logs)\r\n```\r\n\r\n\r\n### Steps To Reproduce\r\n\r\n1. run the code example\r\n2. click the + of the number input widget for several times\r\n\r\n### Expected Behavior\r\n\r\nThe value should be increased by 1 on each click on the +. The value change log should be as following.\r\n\r\n[1, 'no change']\r\n[2, 'number changed']\r\n[3, 'number changed']\r\n[4, 'number changed']\r\n[5, 'number changed']\r\n\r\n### Current Behavior\r\n\r\nThe value change log is as following. Three clicks on + are required in order get it from 1 to 3. It happens the same if keys in the value directly to the widget. Similar behavior is observed on st.text_input as well.\r\n\r\n[1, 'no change']\r\n[2, 'number changed']\r\n[2, 'no change']\r\n[3, 'number changed']\r\n[3, 'no change']\r\n[4, 'number changed']\r\n[4, 'no change']\r\n[5, 'number changed']\r\n\r\n### Is this a regression?\r\n\r\n- [ ] Yes, this used to work in a previous version.\r\n\r\n### Debug info\r\n\r\n- Streamlit version: 1.25.0, up to 1.39.0, may affect earlier versions as well\r\n- Python version: 3.12.6, also tried on 3.9\r\n- Operating System: Linux 6.11.2\r\n- Browser: Firefox\r\n\r\n\r\n### Additional Information\r\n\r\n![Screenshot_2024-10-12_18-36-42](https://github.com/user-attachments/assets/78b4c5c4-23d3-4807-9ee2-4b679b1ca525)",
+    "labels": [
+      "type:enhancement",
+      "feature:st.number_input"
+    ],
+    "author": {
+      "login": "v116mo",
+      "type": "User"
+    },
+    "comment_count": 6,
+    "comments_complete": true,
+    "metadata_retrieved_at": "2026-10-06T14:27:25.875926+00:00",
+    "comments_retrieved_at": "2026-10-06T14:32:01.879899+00:00",
+    "comments_retrieval_method": "github_public_html_embedded_data",
+    "body_sha256": "c28e905d0eedcfc0972dd7bfda6c72f9a72e355508d1867004a05c46b695a999",
+    "original_body_sha256": "a095b8f50323f53b5cb5039fcb051d397d43a1e56bf2e73ee678b37db2ac4836",
+    "streamlit_version": {
+      "value": "1.25.0",
+      "evidence_text": "- Streamlit version: 1.25.0, up to 1.39.0, may affect earlier versions as well",
+      "start_char": 2508,
+      "end_char": 2587,
+      "method": "explicit_version_line_regex"
+    },
+    "python_version": {
+      "value": "3.12.6",
+      "evidence_text": "- Python version: 3.12.6, also tried on 3.9",
+      "start_char": 2588,
+      "end_char": 2632,
+      "method": "explicit_version_line_regex"
+    },
+    "topic_tags_heuristic": [],
+    "sampling_sources": [
+      "repo:streamlit/streamlit is:issue \"session state\" in:title,body created:<=2026-10-06"
+    ],
+    "relevance_basis": "state_label_or_title",
+    "evaluation_split": null,
+    "pilot_previously_inspected": false,
+    "historical_as_of_reconstruction": false,
+    "operating_system": {
+      "value": "Linux 6.11.2",
+      "evidence_text": "- Operating System: Linux 6.11.2",
+      "start_char": 2633,
+      "end_char": 2666,
+      "method": "explicit_environment_line_regex"
+    },
+    "browser": {
+      "value": "Firefox",
+      "evidence_text": "- Browser: Firefox",
+      "start_char": 2667,
+      "end_char": 2686,
+      "method": "explicit_environment_line_regex"
+    }
+  },
+  "comments": [
+    {
+      "id": 2408520854,
+      "html_url": "https://github.com/streamlit/streamlit/issues/9657#issuecomment-2408520854",
+      "created_at": "2024-10-12T10:54:58Z",
+      "updated_at": "2025-03-26T18:29:07Z",
+      "author_association": "CONTRIBUTOR",
+      "source_id": "comment:2408520854",
+      "issue_number": 9657,
+      "parent_source_id": "issue:9657",
+      "body": "**If this issue affects you, please react with a 👍 (thumbs up emoji) to the initial post.**\n\nYour feedback helps us prioritize which bugs to investigate and address first.\n\n![Views](https://api.views-badge.org/badge/st-issue-9657)",
+      "author": {
+        "login": "github-actions",
+        "type": "Bot"
+      },
+      "is_bot": true,
+      "retrieval_method": "github_public_html_embedded_data",
+      "retrieved_at": "2026-10-06T14:32:01.879899+00:00",
+      "body_sha256": "c531d00163c897e3d24a90f7aaead58ae06e1dbec90096e5ea06552fcb912879",
+      "updated_at_basis": "lastEditedAt_or_createdAt_from_public_HTML",
+      "is_hidden": false
+    },
+    {
+      "id": 2411930266,
+      "html_url": "https://github.com/streamlit/streamlit/issues/9657#issuecomment-2411930266",
+      "created_at": "2024-10-14T18:07:43Z",
+      "updated_at": "2024-10-14T18:08:00Z",
+      "author_association": "NONE",
+      "source_id": "comment:2411930266",
+      "issue_number": 9657,
+      "parent_source_id": "issue:9657",
+      "body": "As far as I can tell, if you want to store objects in session state, you need to manually get/set that object's attributes with a callback and use a key argument instead of a value argument.\r\n\r\nThis would look like:\r\n\r\n```\r\nimport datetime\r\nimport streamlit as st\r\n\r\nclass EES():\r\n    amount: int = 0\r\n\r\ndef setEesAmount():\r\n    if st.session_state.t_ees == st.session_state.ees.amount:\r\n        msg = 'number changed'\r\n        st.write(st.session_state.t_ees, st.session_state.ees.amount, msg)\r\n        st.session_state.ees.amount = st.session_state.t_ees\r\n    else:\r\n        msg = 'no change'\r\n    st.session_state.logs.append(str([st.session_state.t_ees, msg]))\r\n\r\nif 'ees' not in st.session_state:\r\n    st.session_state.ees = EES()\r\n    st.session_state.ees.amount = 1\r\n    st.session_state.logs = []\r\nst.session_state.t_ees = st.session_state.ees.amount\r\n\r\nst.number_input(\"Value\", min_value=0, key=\"st.session_state.t_ees\", on_change=setEesAmount)\r\n\r\nst.write('change log', st.session_state.logs)\r\n```",
+      "author": {
+        "login": "HoopyFreud",
+        "type": "User"
+      },
+      "is_bot": false,
+      "retrieval_method": "github_public_html_embedded_data",
+      "retrieved_at": "2026-10-06T14:32:01.879899+00:00",
+      "body_sha256": "719fb6b184b884a41c3270661a51af5c641e42791194422a51de85c4ab816cbe",
+      "updated_at_basis": "lastEditedAt_or_createdAt_from_public_HTML",
+      "is_hidden": false
+    },
+    {
+      "id": 2417387386,
+      "html_url": "https://github.com/streamlit/streamlit/issues/9657#issuecomment-2417387386",
+      "created_at": "2024-10-16T16:50:22Z",
+      "updated_at": "2024-10-16T16:50:22Z",
+      "author_association": "NONE",
+      "source_id": "comment:2417387386",
+      "issue_number": 9657,
+      "parent_source_id": "issue:9657",
+      "body": "Thanks for the reply. For the use cases, a class has multiple attributes. The value argument is used to show the user the current values and allow the user to change them on a page.\r\n\r\nThe value argument can work correctly with general variables stored in the session, but not attributes of objects stored in the session. It's so strange and I have no idea about that.",
+      "author": {
+        "login": "v116mo",
+        "type": "User"
+      },
+      "is_bot": false,
+      "retrieval_method": "github_public_html_embedded_data",
+      "retrieved_at": "2026-10-06T14:32:01.879899+00:00",
+      "body_sha256": "877dc0ed7e47e6f59e8a4b3c0abcf1fa11094e440abb35f0687bc4ecb9a166d9",
+      "updated_at_basis": "lastEditedAt_or_createdAt_from_public_HTML",
+      "is_hidden": false
+    },
+    {
+      "id": 2427392652,
+      "html_url": "https://github.com/streamlit/streamlit/issues/9657#issuecomment-2427392652",
+      "created_at": "2024-10-21T18:08:57Z",
+      "updated_at": "2024-10-21T18:08:57Z",
+      "author_association": "COLLABORATOR",
+      "source_id": "comment:2427392652",
+      "issue_number": 9657,
+      "parent_source_id": "issue:9657",
+      "body": "@v116mo Thanks for reporting this issue. I was able to reproduce this [here](https://issues.streamlit.app/?issue=gh-9657). The behaviour is currently expected, but we are aware that this is causing trouble and plan to implement a workaround for this soon. Using a session state value as value in the widget and writing the return back into the same session state value will cause this behaviour. We have similar issues also for other widgets:\r\n\r\n- https://github.com/streamlit/streamlit/issues/7749\r\n- https://github.com/streamlit/streamlit/issues/8496\r\n- https://github.com/streamlit/streamlit/issues/7855\r\n- https://github.com/streamlit/streamlit/issues/8410\r\n- https://github.com/streamlit/streamlit/issues/4854",
+      "author": {
+        "login": "lukasmasuch",
+        "type": "User"
+      },
+      "is_bot": false,
+      "retrieval_method": "github_public_html_embedded_data",
+      "retrieved_at": "2026-10-06T14:32:01.879899+00:00",
+      "body_sha256": "de7dcdfa556c4d79b3190a5cf89e6790daec37ff9dfee0f631974d4415651694",
+      "updated_at_basis": "lastEditedAt_or_createdAt_from_public_HTML",
+      "is_hidden": false
+    },
+    {
+      "id": 2495821734,
+      "html_url": "https://github.com/streamlit/streamlit/issues/9657#issuecomment-2495821734",
+      "created_at": "2024-11-24T05:23:42Z",
+      "updated_at": "2024-11-24T05:23:42Z",
+      "author_association": "NONE",
+      "source_id": "comment:2495821734",
+      "issue_number": 9657,
+      "parent_source_id": "issue:9657",
+      "body": "To update an object's attributes in a widget's callback function is a feasible workaround at the application level for the time being. It's not ideal, and the code is ugly, but at least can buy some time to wait for the enhancement.",
+      "author": {
+        "login": "v116mo",
+        "type": "User"
+      },
+      "is_bot": false,
+      "retrieval_method": "github_public_html_embedded_data",
+      "retrieved_at": "2026-10-06T14:32:01.879899+00:00",
+      "body_sha256": "60c2046597039fd2d8974b07796d1107d29f85ddf6dab3bd9b3c2dfb776ba1f7",
+      "updated_at_basis": "lastEditedAt_or_createdAt_from_public_HTML",
+      "is_hidden": false
+    },
+    {
+      "id": 2895212204,
+      "html_url": "https://github.com/streamlit/streamlit/issues/9657#issuecomment-2895212204",
+      "created_at": "2025-05-20T17:00:58Z",
+      "updated_at": "2025-05-20T17:00:58Z",
+      "author_association": "NONE",
+      "source_id": "comment:2895212204",
+      "issue_number": 9657,
+      "parent_source_id": "issue:9657",
+      "body": "The way i am dealing with it is to assign a key and working with the states to initialize properly the st.number_input.\n\nStill, when you decrease values sometimes the state does not get the new value.",
+      "author": {
+        "login": "simone-miyoshi",
+        "type": "User"
+      },
+      "is_bot": false,
+      "retrieval_method": "github_public_html_embedded_data",
+      "retrieved_at": "2026-10-06T14:32:01.879899+00:00",
+      "body_sha256": "c3fc75addba715714d9d7ac252d3ee4701aa742a3ace25fa2d317f758f527ffc",
+      "updated_at_basis": "lastEditedAt_or_createdAt_from_public_HTML",
+      "is_hidden": false
+    }
+  ]
+}

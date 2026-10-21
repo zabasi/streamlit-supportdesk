@@ -1,0 +1,172 @@
+{
+  "issue": {
+    "id": 949853841,
+    "number": 3585,
+    "title": "Onclick callback for Forms runs before being clicked",
+    "html_url": "https://github.com/streamlit/streamlit/issues/3585",
+    "created_at": "2021-07-21T15:40:32Z",
+    "updated_at": "2021-09-10T02:14:40Z",
+    "closed_at": "2021-08-28T02:19:32Z",
+    "state": "closed",
+    "state_reason": "completed",
+    "author_association": "NONE",
+    "source_id": "issue:3585",
+    "repository": "streamlit/streamlit",
+    "body": "### Summary\r\n\r\nUsing the new `session_state` functionality, when adding a function to the `on_click` attribute of `st.form_submit_button` (tested with sidebar), the callback is called the first time application runs before the user clicking.\r\n \r\n### Steps to reproduce\r\n\r\nCode snippet:\r\n\r\n```\r\ndef callback():\r\n  print(\"Foo\")\r\n\r\nwith st.sidebar:\r\n  with st.form(key='form'):\r\n    textbox = st.selectbox('select one', ['shao khan', 'sindel', 'the kollector'])\r\n    submit = st.form_submit_button(\"submit\", on_click=callback)\r\n\r\n```\r\n\r\n**Expected behavior vs Actual:**\r\n\r\nThe first time app runs there shouldn't be a \"Foo\" in the terminal and it should appear when form button is clicked. However it appears when the first time app is ran, without a click happening from the user.\r\n\r\n### Is this a regression?\r\n\r\nThat is, did this use to work the way you expected in the past?\r\nSession state is new functionality, so not applicable\r\n\r\n### Debug info\r\n\r\n- Streamlit version: 0.84.1\r\n- Python version: 3.7\r\n- Using Conda? Yes\r\n- OS version: Win 10\r\n- Browser version: Chrome (latest)",
+    "labels": [
+      "type:bug"
+    ],
+    "author": {
+      "login": "shervinmanzuri",
+      "type": "User"
+    },
+    "comment_count": 5,
+    "comments_complete": true,
+    "metadata_retrieved_at": "2026-10-06T14:27:52.872268+00:00",
+    "comments_retrieved_at": "2026-10-06T14:34:14.819484+00:00",
+    "comments_retrieval_method": "github_public_html_embedded_data",
+    "body_sha256": "298addac0c7cd717cd66f26de805f900ac9fdc03be091ac1dfe8d08fd2482e10",
+    "original_body_sha256": "a0c12362a3e5106d01d7aed1e140d43a62aaa5372de1ab05036c8703e8759dd0",
+    "streamlit_version": {
+      "value": "0.84.1",
+      "evidence_text": "- Streamlit version: 0.84.1",
+      "start_char": 951,
+      "end_char": 979,
+      "method": "explicit_version_line_regex"
+    },
+    "python_version": {
+      "value": "3.7",
+      "evidence_text": "- Python version: 3.7",
+      "start_char": 980,
+      "end_char": 1002,
+      "method": "explicit_version_line_regex"
+    },
+    "topic_tags_heuristic": [
+      "callbacks",
+      "forms"
+    ],
+    "sampling_sources": [
+      "repo:streamlit/streamlit is:issue session_state in:title,body created:<=2026-10-06",
+      "repo:streamlit/streamlit is:issue \"session state\" in:title,body created:<=2026-10-06"
+    ],
+    "relevance_basis": "body_keyword_requires_review",
+    "evaluation_split": null,
+    "pilot_previously_inspected": false,
+    "historical_as_of_reconstruction": false,
+    "operating_system": null,
+    "browser": {
+      "value": "Chrome (latest)",
+      "evidence_text": "- Browser version: Chrome (latest)",
+      "start_char": 1045,
+      "end_char": 1079,
+      "method": "explicit_environment_line_regex"
+    }
+  },
+  "comments": [
+    {
+      "id": 884678169,
+      "html_url": "https://github.com/streamlit/streamlit/issues/3585#issuecomment-884678169",
+      "created_at": "2021-07-22T06:10:57Z",
+      "updated_at": "2021-07-22T06:10:57Z",
+      "author_association": "CONTRIBUTOR",
+      "source_id": "comment:884678169",
+      "issue_number": 3585,
+      "parent_source_id": "issue:3585",
+      "body": "Thanks for reporting this @shervinmanzuri! I'll see if I can look into this in the next few weeks",
+      "author": {
+        "login": "vdonato",
+        "type": "User"
+      },
+      "is_bot": false,
+      "retrieval_method": "github_public_html_embedded_data",
+      "retrieved_at": "2026-10-06T14:34:14.819484+00:00",
+      "body_sha256": "fc2c90ece67683859681ad8ea70d1639d822d8a0cb9f8c2c063354f322ec43b1",
+      "updated_at_basis": "lastEditedAt_or_createdAt_from_public_HTML",
+      "is_hidden": false
+    },
+    {
+      "id": 885069460,
+      "html_url": "https://github.com/streamlit/streamlit/issues/3585#issuecomment-885069460",
+      "created_at": "2021-07-22T17:02:19Z",
+      "updated_at": "2021-07-22T17:02:19Z",
+      "author_association": "NONE",
+      "source_id": "comment:885069460",
+      "issue_number": 3585,
+      "parent_source_id": "issue:3585",
+      "body": "Thank you. I also wanted to add that it's not specific to forms either apparently, I go into a page with a sole button and the on_click callback is called before the button is clicked as well.",
+      "author": {
+        "login": "shervinmanzuri",
+        "type": "User"
+      },
+      "is_bot": false,
+      "retrieval_method": "github_public_html_embedded_data",
+      "retrieved_at": "2026-10-06T14:34:14.819484+00:00",
+      "body_sha256": "583bf91b3a932b326b21fb633bd54cf97fb7bc1a61eb135b4bd8fe2a3b7c4c7c",
+      "updated_at_basis": "lastEditedAt_or_createdAt_from_public_HTML",
+      "is_hidden": false
+    },
+    {
+      "id": 892982716,
+      "html_url": "https://github.com/streamlit/streamlit/issues/3585#issuecomment-892982716",
+      "created_at": "2021-08-04T21:20:27Z",
+      "updated_at": "2021-08-04T21:20:27Z",
+      "author_association": "CONTRIBUTOR",
+      "source_id": "comment:892982716",
+      "issue_number": 3585,
+      "parent_source_id": "issue:3585",
+      "body": "Hey @shervinmanzuri I am unable to repro this issue on the latest Streamlit. Could you upgrade and verify this behavior? Thanks!",
+      "author": {
+        "login": "kmcgrady",
+        "type": "User"
+      },
+      "is_bot": false,
+      "retrieval_method": "github_public_html_embedded_data",
+      "retrieved_at": "2026-10-06T14:34:14.819484+00:00",
+      "body_sha256": "7d095a8aa5e68990f9aa40bcc5bbbd89c63fa66c4a2242ca9a89c8ba4699574d",
+      "updated_at_basis": "lastEditedAt_or_createdAt_from_public_HTML",
+      "is_hidden": false
+    },
+    {
+      "id": 896770906,
+      "html_url": "https://github.com/streamlit/streamlit/issues/3585#issuecomment-896770906",
+      "created_at": "2021-08-11T12:08:16Z",
+      "updated_at": "2021-08-11T13:42:55Z",
+      "author_association": "NONE",
+      "source_id": "comment:896770906",
+      "issue_number": 3585,
+      "parent_source_id": "issue:3585",
+      "body": "Same issue here (streamlit ver 0.86.0), the callable function run on every session despite the button never being clicked.\r\n\r\nEdit: I was using the callback feature improperly. Following the documentation, `on_click=` accepts functions and then `args=` is where arguments to pass are placed.\r\n\r\nInstead of `st.button('Some Button', on_click=function_name(function_argument))` try `st.button('Some Button', on_click=function_name, args=(function_argument, ))`. Beware that `args=` needs a tuple.",
+      "author": {
+        "login": "simprecicchiani",
+        "type": "User"
+      },
+      "is_bot": false,
+      "retrieval_method": "github_public_html_embedded_data",
+      "retrieved_at": "2026-10-06T14:34:14.819484+00:00",
+      "body_sha256": "ecb7f44c22746881a9f13a382eb9390e0b3bc30fef128fd7b4246d148674ccca",
+      "updated_at_basis": "lastEditedAt_or_createdAt_from_public_HTML",
+      "is_hidden": false
+    },
+    {
+      "id": 907552097,
+      "html_url": "https://github.com/streamlit/streamlit/issues/3585#issuecomment-907552097",
+      "created_at": "2021-08-28T02:19:32Z",
+      "updated_at": "2021-08-28T02:19:32Z",
+      "author_association": "CONTRIBUTOR",
+      "source_id": "comment:907552097",
+      "issue_number": 3585,
+      "parent_source_id": "issue:3585",
+      "body": "Going to close this as I've been unable to reproduce this issue. @shervinmanzuri - I'm happy to reopen if you're able to provide some additional steps to trigger the bug, but I'm unable to do so with the provided code snippet.",
+      "author": {
+        "login": "vdonato",
+        "type": "User"
+      },
+      "is_bot": false,
+      "retrieval_method": "github_public_html_embedded_data",
+      "retrieved_at": "2026-10-06T14:34:14.819484+00:00",
+      "body_sha256": "2d086c19b7e0ba1b22a75d0330189c9160c59582b49071639cbc3777fdee05f3",
+      "updated_at_basis": "lastEditedAt_or_createdAt_from_public_HTML",
+      "is_hidden": false
+    }
+  ]
+}

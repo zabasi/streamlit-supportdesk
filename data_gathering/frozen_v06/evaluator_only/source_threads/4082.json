@@ -1,0 +1,130 @@
+{
+  "issue": {
+    "id": 1056204077,
+    "number": 4082,
+    "title": "Form updates session state only after every second submission",
+    "html_url": "https://github.com/streamlit/streamlit/issues/4082",
+    "created_at": "2021-11-17T14:34:14Z",
+    "updated_at": "2024-08-15T21:22:33Z",
+    "closed_at": "2021-11-17T15:19:52Z",
+    "state": "closed",
+    "state_reason": "completed",
+    "author_association": "NONE",
+    "source_id": "issue:4082",
+    "repository": "streamlit/streamlit",
+    "body": "### Summary\r\n\r\nUsing a form and a submit button to change a session state variable, e.g., a string, does only work for every second submission.\r\n\r\n### Steps to reproduce\r\n\r\nCode snippet:\r\n\r\n```\r\nimport streamlit as st\r\n\r\nif \"data\" not in st.session_state:\r\n    st.session_state[\"data\"] = \"empty\"\r\n\r\nwith st.form(\"myform\"):\r\n    st.session_state[\"data\"] = st.text_input(\r\n        \"Enter name\",\r\n        st.session_state[\"data\"],\r\n        key=\"name\"\r\n    )\r\n    if st.form_submit_button(\"Submit\"):\r\n        st.write(\"Submitted!\")\r\n\r\nst.write(st.session_state[\"data\"])\r\n```\r\n\r\n1. Change text in text input\r\n2. Click on 'Submit' -> session state changes to new text\r\n3. Change text in text input\r\n4. Click on 'Submit' -> input in text field is reset to previous value and session state is not updated\r\n5. Change text in text input\r\n6. Click on 'Submit' -> session state changes to new text\r\n\r\nThis repeats, only every second submission is successful.\r\n\r\n**Expected behavior:**\r\n\r\nI expect the session state to be updated after each submission.\r\n\r\n**Actual behavior:**\r\n\r\nI have no explanation for this behavior, but I assume it is unexpected. Am I missing something?\r\n\r\n### Is this a regression?\r\n\r\nUnknown, I did not use older streamlit versions.\r\n\r\n### Debug info\r\n\r\n- Streamlit version: 1.2.0\r\n- Python version: 3.8\r\n- OS version: Ubuntu 20.04.3 LTS 64 bit\r\n- Browser version: Firefox 94.0",
+    "labels": [
+      "type:bug"
+    ],
+    "author": {
+      "login": "MaWeffm",
+      "type": "User"
+    },
+    "comment_count": 3,
+    "comments_complete": true,
+    "metadata_retrieved_at": "2026-10-06T14:27:52.872268+00:00",
+    "comments_retrieved_at": "2026-10-06T14:30:20.095684+00:00",
+    "comments_retrieval_method": "github_public_html_embedded_data",
+    "body_sha256": "dd0b80e1efcb26e752cb309e32bd48523e36475f2f5b3d1daf7e88608d5ddec2",
+    "original_body_sha256": "3226ad67b9446c21719e1e42089670525d6db869c3bed4cd53cf139df0a53efc",
+    "streamlit_version": {
+      "value": "1.2.0",
+      "evidence_text": "- Streamlit version: 1.2.0",
+      "start_char": 1265,
+      "end_char": 1292,
+      "method": "explicit_version_line_regex"
+    },
+    "python_version": {
+      "value": "3.8",
+      "evidence_text": "- Python version: 3.8",
+      "start_char": 1293,
+      "end_char": 1315,
+      "method": "explicit_version_line_regex"
+    },
+    "topic_tags_heuristic": [
+      "forms",
+      "reset_or_persistence",
+      "initialization_or_update"
+    ],
+    "sampling_sources": [
+      "repo:streamlit/streamlit is:issue \"session state\" in:title,body created:<=2026-10-06"
+    ],
+    "relevance_basis": "state_label_or_title",
+    "evaluation_split": null,
+    "pilot_previously_inspected": false,
+    "historical_as_of_reconstruction": false,
+    "operating_system": null,
+    "browser": {
+      "value": "Firefox 94.0",
+      "evidence_text": "- Browser version: Firefox 94.0",
+      "start_char": 1357,
+      "end_char": 1388,
+      "method": "explicit_environment_line_regex"
+    }
+  },
+  "comments": [
+    {
+      "id": 971658941,
+      "html_url": "https://github.com/streamlit/streamlit/issues/4082#issuecomment-971658941",
+      "created_at": "2021-11-17T14:54:57Z",
+      "updated_at": "2021-11-17T14:56:01Z",
+      "author_association": "NONE",
+      "source_id": "comment:971658941",
+      "issue_number": 4082,
+      "parent_source_id": "issue:4082",
+      "body": "I added output just at the beginning of the script:\r\n```\r\nimport streamlit as st\r\n\r\nif \"data\" not in st.session_state:\r\n    st.session_state[\"data\"] = \"empty\"\r\nst.write(f\"st.session_state['data']:\", st.session_state[\"data\"])\r\n\r\nwith st.form(\"myform\"):\r\n    st.session_state[\"data\"] = st.text_input(\r\n        \"Enter name\",\r\n        st.session_state[\"data\"],\r\n        key=\"name\"\r\n    )\r\n    if st.form_submit_button(\"Submit\"):\r\n        st.write(\"Submitted!\")\r\n\r\nst.write(f\"st.session_state['data']:\", st.session_state[\"data\"])\r\n\r\n```\r\nThe session state is basically updated only after pressing 'Submit' twice. Is this expected behavior?",
+      "author": {
+        "login": "MaWeffm",
+        "type": "User"
+      },
+      "is_bot": false,
+      "retrieval_method": "github_public_html_embedded_data",
+      "retrieved_at": "2026-10-06T14:30:20.095684+00:00",
+      "body_sha256": "91af86e0da80a879886df6031545d5de04e1181010c5849ff6e7bba1d66cc84a",
+      "updated_at_basis": "lastEditedAt_or_createdAt_from_public_HTML",
+      "is_hidden": false
+    },
+    {
+      "id": 971661684,
+      "html_url": "https://github.com/streamlit/streamlit/issues/4082#issuecomment-971661684",
+      "created_at": "2021-11-17T14:58:03Z",
+      "updated_at": "2021-11-17T14:58:03Z",
+      "author_association": "NONE",
+      "source_id": "comment:971661684",
+      "issue_number": 4082,
+      "parent_source_id": "issue:4082",
+      "body": "@MaWeffm, appropriate implementation would be:\r\n```\r\nimport streamlit as st\r\n\r\nif \"data\" not in st.session_state:\r\n    st.session_state[\"data\"] = \"empty\"\r\n\r\nwith st.form(\"myform\"):\r\n    def change_data():\r\n        st.session_state[\"data\"] = st.session_state[\"name\"]\r\n\r\n    st.text_input(\"Enter name\", st.session_state[\"data\"], key=\"name\")\r\n    if st.form_submit_button(\"Submit\", on_click=change_data):\r\n        st.write(\"Submitted!\")\r\n\r\nst.write(st.session_state[\"data\"])\r\n```",
+      "author": {
+        "login": "igor-i-plotnikov",
+        "type": "User"
+      },
+      "is_bot": false,
+      "retrieval_method": "github_public_html_embedded_data",
+      "retrieved_at": "2026-10-06T14:30:20.095684+00:00",
+      "body_sha256": "3236adab59fb32401051c159420ac7ea2148e73f3b11081a566772d15ad0a780",
+      "updated_at_basis": "lastEditedAt_or_createdAt_from_public_HTML",
+      "is_hidden": false
+    },
+    {
+      "id": 971682604,
+      "html_url": "https://github.com/streamlit/streamlit/issues/4082#issuecomment-971682604",
+      "created_at": "2021-11-17T15:19:52Z",
+      "updated_at": "2021-11-17T15:19:52Z",
+      "author_association": "NONE",
+      "source_id": "comment:971682604",
+      "issue_number": 4082,
+      "parent_source_id": "issue:4082",
+      "body": "@igor-i-plotnikov, thanks a lot! I was testing with callbacks, but it never occurred to me to put the update function inside the 'with st.form...' block. But now as I think about it, it seems to make sense. I'll close this issue.",
+      "author": {
+        "login": "MaWeffm",
+        "type": "User"
+      },
+      "is_bot": false,
+      "retrieval_method": "github_public_html_embedded_data",
+      "retrieved_at": "2026-10-06T14:30:20.095684+00:00",
+      "body_sha256": "ba57fc8831cd9cbb555f3004bd8d16b01b1d6c9d6c61f630b3359aa70785fa19",
+      "updated_at_basis": "lastEditedAt_or_createdAt_from_public_HTML",
+      "is_hidden": false
+    }
+  ]
+}

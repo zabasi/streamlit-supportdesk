@@ -1,0 +1,63 @@
+{
+  "version": "v04",
+  "baseline": "v03",
+  "before": {
+    "source_records": 472,
+    "text_characters": 634118,
+    "text_utf8_bytes": 635269,
+    "text_whitespace_words": 83050
+  },
+  "after": {
+    "source_records": 472,
+    "text_characters": 618226,
+    "text_utf8_bytes": 618925,
+    "text_whitespace_words": 80531
+  },
+  "source_counts": {
+    "issue": 126,
+    "comment": 214,
+    "documentation": 21,
+    "release_section": 111
+  },
+  "changed_text_records": 332,
+  "changed_text_records_by_type": {
+    "issue": 76,
+    "comment": 134,
+    "documentation": 17,
+    "release_section": 105
+  },
+  "cleanup_event_counts": {
+    "issue_template_prompt": 11,
+    "unfilled_template": 5,
+    "empty_section_heading": 74,
+    "reviewed_nontechnical_phrase": 162,
+    "blank_line_normalization": 190,
+    "empty_line_whitespace": 5,
+    "empty_environment_field": 47,
+    "decorative_prose_icon": 9,
+    "envelope_trim": 32,
+    "unchecked_template_default": 55,
+    "personal_address": 24,
+    "image_badge_to_demo_link": 1,
+    "invisible_prose_character": 2,
+    "personal_reference_without_identity": 14,
+    "empty_quote": 13,
+    "email_quote_header": 1,
+    "documentation_voting_prompt": 1,
+    "decorative_release_icon": 105,
+    "contributor_acknowledgement": 6
+  },
+  "metadata_correction_count": 33,
+  "metadata_corrected_issue_count": 12,
+  "selected_source_ids_unchanged": true,
+  "all_protected_code_preserved": true,
+  "comment_allowed_use_counts": {
+    "diagnostic_context": 72,
+    "reported_observation": 140,
+    "corroborated_claim": 2
+  },
+  "no_paid_api_calls": true,
+  "chunks_built": false,
+  "embeddings_built": false,
+  "runtime_verified": false
+}

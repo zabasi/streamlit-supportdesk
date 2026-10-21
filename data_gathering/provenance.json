@@ -1,0 +1,32 @@
+{
+  "source_delivery": "Streamlit_Session_State_Reviewed_v06",
+  "recovered_location": "Desktop/Streamlit_Session_State_Reviewed_v06/Streamlit_Session_State_Reviewed_v06",
+  "collection_script_origin": "audit/colleague_scripts",
+  "collection_script_bytes_unchanged": true,
+  "corpus_records_equal_to_current_repository": true,
+  "counts": {
+    "issue": 126,
+    "comment": 214,
+    "documentation": 54,
+    "release_section": 111,
+    "linked_reference": 35
+  },
+  "new_handoff_files": [
+    "README.md",
+    "README_FA.md",
+    "acquisition/run_collection.py",
+    "acquisition/.env.example",
+    "requirements-acquisition.txt",
+    "export_corpus.py",
+    ".gitignore",
+    "verification.json",
+    "provenance.json",
+    "file_manifest.json"
+  ],
+  "limitations": [
+    "No network acquisition executed or live API compatibility certified.",
+    "Historical environment settings are not recovered from a live .env.",
+    "Fresh acquisition does not automatically reconstruct reviewed v06 or quarantine.",
+    "Frozen evaluator contracts are a baseline, not a replacement for later project revisions."
+  ]
+}

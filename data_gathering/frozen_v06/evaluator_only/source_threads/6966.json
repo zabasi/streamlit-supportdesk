@@ -1,0 +1,94 @@
+{
+  "issue": {
+    "id": 1794544227,
+    "number": 6966,
+    "title": "streamlit chat_input callback (on_submit) not returning the message you input",
+    "html_url": "https://github.com/streamlit/streamlit/issues/6966",
+    "created_at": "2023-07-07T23:47:15Z",
+    "updated_at": "2024-08-15T20:52:59Z",
+    "closed_at": "2023-07-10T11:32:28Z",
+    "state": "closed",
+    "state_reason": "completed",
+    "author_association": "NONE",
+    "source_id": "issue:6966",
+    "repository": "streamlit/streamlit",
+    "body": "### Checklist\n\n\n### Summary\n\nThe image below shows a test I'm running to show the issue. The error happens after running streamlit run app.py on the terminal and writing a message on the chat_input box that appears on screen. Once you press enter, this error happens.\r\n\r\n<img width=\"1119\" alt=\"image\" src=\"https://github.com/streamlit/streamlit/assets/87614116/7170a52e-5b38-4dfc-92f9-d3d0609d027a\">\r\n\r\nI think the error happens because the streamlit callback is not returning anything. If you use the second function (print_args) you will see that it's not printing anything in any of the variables that could be outputting something.\r\n\r\n<img width=\"718\" alt=\"image\" src=\"https://github.com/streamlit/streamlit/assets/87614116/d3f90f0b-5b45-43fb-bf14-8480c14fe402\">\r\n\n\n### Reproducible Code Example\n\n```Python\n# Code to reproduce the first error:\r\n# You need to start the app with streamlit run app.py first\r\nimport streamlit\r\ndef print_text(chat_input):\r\n    print(chat_input)\r\n\r\nstreamlit.chat_input(\"Start a conversation!\", on_submit=print_text)\r\n\r\n# Code to reproduce the second error:\r\nimport streamlit\r\ndef print_args(*args, **kwargs):\r\n    print(\"Args:\", args)\r\n    print(\"Kwargs:\", kwargs)\r\n\r\nstreamlit.chat_input(\"Start a conversation!\", on_submit=print_args)\n```\n\n\n### Steps To Reproduce\n\nTo reproduce both error you need to open a terminal, navigate to where the app.py file that contains the code above is located and execute: streamlit run app.py\r\n\r\nThen you have to open a browser window (if it doesn't open for you directly), write localhost:8501 and enter a message in the chat box that will appear on your browser\n\n### Expected Behavior\n\nIf this was working as I'm expecting it to work, the callback would return the message that the user passed as a variable like the on_change argument works in a streamlit.text_input block.\n\n### Current Behavior\n\nTypeError: print_text() missing 1 required positional argument: 'chat_input'\r\nTraceback:\r\nFile \"/usr/local/lib/python3.11/site-packages/streamlit/runtime/scriptrunner/script_runner.py\", line 548, in _run_script\r\n    self._session_state.on_script_will_rerun(rerun_data.widget_states)\r\nFile \"/usr/local/lib/python3.11/site-packages/streamlit/runtime/state/safe_session_state.py\", line 68, in on_script_will_rerun\r\n    self._state.on_script_will_rerun(latest_widget_states)\r\nFile \"/usr/local/lib/python3.11/site-packages/streamlit/runtime/state/session_state.py\", line 484, in on_script_will_rerun\r\n    self._call_callbacks()\r\nFile \"/usr/local/lib/python3.11/site-packages/streamlit/runtime/state/session_state.py\", line 497, in _call_callbacks\r\n    self._new_widget_state.call_callback(wid)\r\nFile \"/usr/local/lib/python3.11/site-packages/streamlit/runtime/state/session_state.py\", line 249, in call_callback\r\n    callback(*args, **kwargs)\n\n### Is this a regression?\n\n- [ ] Yes, this used to work in a previous version.\n\n### Debug info\n\n- Streamlit version: 1.24.0\r\n- Python version: 3.11.3\r\n- Operating System: MacOS\r\n- Browser: Google Chrome\r\n- Virtual environment: Docker container on a python slim buster base image\r\n\n\n### Additional Information\n\n_No response_\n\n### Are you willing to submit a PR?\n\n- [ ] Yes, I am willing to submit a PR!",
+    "labels": [
+      "type:bug",
+      "feature:st.chat_input"
+    ],
+    "author": {
+      "login": "micheldc55",
+      "type": "User"
+    },
+    "comment_count": 1,
+    "comments_complete": true,
+    "metadata_retrieved_at": "2026-10-06T14:28:04.043219+00:00",
+    "comments_retrieved_at": "2026-10-06T14:38:02.284811+00:00",
+    "comments_retrieval_method": "github_public_html_embedded_data",
+    "body_sha256": "3eb2e813967fa96ddf2844375c67317c8115a3f35188b2a77d58ab1360c9df16",
+    "original_body_sha256": "9f6aa96402a2efc8f2fb75d71e1f87bf5ef96838c220d6c8202eeabdfe562398",
+    "streamlit_version": {
+      "value": "1.24.0",
+      "evidence_text": "- Streamlit version: 1.24.0",
+      "start_char": 2902,
+      "end_char": 2930,
+      "method": "explicit_version_line_regex"
+    },
+    "python_version": {
+      "value": "3.11.3",
+      "evidence_text": "- Python version: 3.11.3",
+      "start_char": 2931,
+      "end_char": 2956,
+      "method": "explicit_version_line_regex"
+    },
+    "topic_tags_heuristic": [
+      "callbacks"
+    ],
+    "sampling_sources": [
+      "repo:streamlit/streamlit is:issue \"session state\" in:title,body created:<=2026-10-06",
+      "repo:streamlit/streamlit is:issue \"widget state\" in:title,body created:<=2026-10-06"
+    ],
+    "relevance_basis": "body_keyword_requires_review",
+    "evaluation_split": null,
+    "pilot_previously_inspected": false,
+    "historical_as_of_reconstruction": false,
+    "operating_system": {
+      "value": "MacOS",
+      "evidence_text": "- Operating System: MacOS",
+      "start_char": 2957,
+      "end_char": 2983,
+      "method": "explicit_environment_line_regex"
+    },
+    "browser": {
+      "value": "Google Chrome",
+      "evidence_text": "- Browser: Google Chrome",
+      "start_char": 2984,
+      "end_char": 3009,
+      "method": "explicit_environment_line_regex"
+    }
+  },
+  "comments": [
+    {
+      "id": 1628781087,
+      "html_url": "https://github.com/streamlit/streamlit/issues/6966#issuecomment-1628781087",
+      "created_at": "2023-07-10T11:31:25Z",
+      "updated_at": "2023-07-10T11:32:19Z",
+      "author_association": "COLLABORATOR",
+      "source_id": "comment:1628781087",
+      "issue_number": 6966,
+      "parent_source_id": "issue:6966",
+      "body": "@micheldc55 This is the expected behavior. The `chat_input` value is not passed to the callback as a parameter, but instead, you can access it from the session state:\r\n\r\n```python\r\nimport streamlit\r\ndef print_text():\r\n    print(st.session_state.user_input)\r\n\r\nstreamlit.chat_input(\"Start a conversation!\", on_submit=print_text, key=\"user_input\")\r\n```\r\n\r\nIt could also be a nice feature to access via a function parameter. Feel free to create a feature request for this.",
+      "author": {
+        "login": "lukasmasuch",
+        "type": "User"
+      },
+      "is_bot": false,
+      "retrieval_method": "github_public_html_embedded_data",
+      "retrieved_at": "2026-10-06T14:38:02.284811+00:00",
+      "body_sha256": "7c687d8eb9d003005c8429b068a8b501609ad570f04190047eeaadc1731a408c",
+      "updated_at_basis": "lastEditedAt_or_createdAt_from_public_HTML",
+      "is_hidden": false
+    }
+  ]
+}

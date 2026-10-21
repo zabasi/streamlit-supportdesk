@@ -1,0 +1,240 @@
+{
+  "issue": {
+    "id": 1280080640,
+    "number": 4884,
+    "title": "date_input fails to initialize from sessionstate if today's date is not in the range [min_value, max_value]",
+    "html_url": "https://github.com/streamlit/streamlit/issues/4884",
+    "created_at": "2022-06-22T12:39:36Z",
+    "updated_at": "2025-05-05T18:01:08Z",
+    "closed_at": "2025-05-05T18:01:07Z",
+    "state": "closed",
+    "state_reason": "completed",
+    "author_association": "NONE",
+    "source_id": "issue:4884",
+    "repository": "streamlit/streamlit",
+    "body": "### Summary\n\ndate_input fails to initialize from sessionstate if today's date is not in the range [min_value, max_value]\n \n### Steps to reproduce\n\n[![Open in Streamlit Cloud](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://issues.streamlitapp.com/?issue=gh-4884)\n\nCode snippet:\n\n```python\nimport streamlit\nfrom datetime import date\nmin_date = date(2029, 1, 1)\nstreamlit.session_state[\"with_min_value\"] = min_date\nstreamlit.date_input(\"with_min_value\", min_value=min_date, key=\"with_min_value\")\n```\n\nor\n\n```python\nimport streamlit\nfrom datetime import date\nmax_date = date(2020, 12, 31)\nstreamlit.session_state[\"with_max_value\"] = max_date\nstreamlit.date_input(\"with_max_value\", max_value=max_date, key=\"with_max_value\")\n```\n\n**Expected behavior:**\nNo error\n\n**Actual behavior:**\nStreamlitAPIException: The default value of <today's date> must lie between the min_value of ... and the max_value of ... inclusively.\n\nNo error is issued and date_input is correctly initialized from sessionstate if today's date lies in the range [min_value, max_value], for example:\n\n```python\nimport streamlit\nfrom datetime import date\nmin_date = date(2020, 1, 1)\nmax_date = date(2030, 12, 31)\nstreamlit.session_state[\"x\"] = min_date\nstreamlit.date_input(\"x\", min_value=min_date, max_value=max_date, key=\"x\")\n```\n\n\n### Debug info\nStreamlit, version 1.10.0\nPython 3.10.4\n\n---\n\nCommunity voting on feature requests enables the Streamlit team to understand which features are most important to our users.\n\n**If you'd like the Streamlit team to prioritize this feature request, please use the 👍 (thumbs up emoji) reaction in response to the initial post.**\n\n![Views](https://api.views-badge.org/badge/st-issue-4884)",
+    "labels": [
+      "type:enhancement",
+      "feature:state",
+      "feature:st.date_input",
+      "feature:st.session_state"
+    ],
+    "author": {
+      "login": "clo-vis",
+      "type": "User"
+    },
+    "comment_count": 9,
+    "comments_complete": true,
+    "metadata_retrieved_at": "2026-10-06T14:27:52.872268+00:00",
+    "comments_retrieved_at": "2026-10-06T14:45:42.260358+00:00",
+    "comments_retrieval_method": "github_rest_comments",
+    "body_sha256": "36d1da4f191ace67eca2c80038377d35b83c99afb9b666fa98b3b3eb05529a92",
+    "original_body_sha256": "36d1da4f191ace67eca2c80038377d35b83c99afb9b666fa98b3b3eb05529a92",
+    "streamlit_version": null,
+    "python_version": null,
+    "topic_tags_heuristic": [
+      "initialization_or_update"
+    ],
+    "sampling_sources": [
+      "label:feature:st.session_state",
+      "repo:streamlit/streamlit is:issue \"session state\" in:title,body created:<=2026-10-06"
+    ],
+    "relevance_basis": "state_label_or_title",
+    "evaluation_split": null,
+    "pilot_previously_inspected": false,
+    "historical_as_of_reconstruction": false,
+    "operating_system": null,
+    "browser": null
+  },
+  "comments": [
+    {
+      "id": 1163079418,
+      "html_url": "https://github.com/streamlit/streamlit/issues/4884#issuecomment-1163079418",
+      "created_at": "2022-06-22T13:11:27Z",
+      "updated_at": "2022-06-22T13:11:27Z",
+      "author_association": "NONE",
+      "source_id": "comment:1163079418",
+      "issue_number": 4884,
+      "parent_source_id": "issue:4884",
+      "body": "Workaround: use additionally the argument value=<initial value> with date_input.\r\nA warning is issued, but only once.",
+      "author": {
+        "login": "clo-vis",
+        "type": "User"
+      },
+      "is_bot": false,
+      "retrieval_method": "github_rest_comments",
+      "retrieved_at": "2026-10-06T14:45:42.260358+00:00",
+      "body_sha256": "b1c0f31a40f10ccdab27b0397ca4e94ab032160afcae08014796e54859c62195",
+      "updated_at_basis": "rest_updated_at",
+      "is_hidden": false
+    },
+    {
+      "id": 1163144640,
+      "html_url": "https://github.com/streamlit/streamlit/issues/4884#issuecomment-1163144640",
+      "created_at": "2022-06-22T14:05:40Z",
+      "updated_at": "2022-06-22T14:05:40Z",
+      "author_association": "CONTRIBUTOR",
+      "source_id": "comment:1163144640",
+      "issue_number": 4884,
+      "parent_source_id": "issue:4884",
+      "body": "Thanks for reporting @clo-vis. You could argue that this is or isn't a bug, depending on your viewpoint.\r\n\r\nIn the [docstring](https://docs.streamlit.io/library/api-reference/widgets/st.date_input), it mentions that the argument `value`:\r\n\r\n> Defaults to today as a single-date picker.\r\n\r\nSince you are specifying min and max dates, but not value, then the code fails because today's date isn't between those values.\r\n\r\nHowever, you could argue in a case like these, `value` should equal `min_value` or `max_value` so that the code always works. I'll mark this as an enhancement to look into.\r\n\r\nBest,\r\nRandy",
+      "author": {
+        "login": "randyzwitch",
+        "type": "User"
+      },
+      "is_bot": false,
+      "retrieval_method": "github_rest_comments",
+      "retrieved_at": "2026-10-06T14:45:42.260358+00:00",
+      "body_sha256": "5e83e7e6ba8123e79aaf29c8048d344e67e08afc784798a39f1480ce8f8042f4",
+      "updated_at_basis": "rest_updated_at",
+      "is_hidden": false
+    },
+    {
+      "id": 1163918896,
+      "html_url": "https://github.com/streamlit/streamlit/issues/4884#issuecomment-1163918896",
+      "created_at": "2022-06-23T04:37:32Z",
+      "updated_at": "2022-06-23T05:16:02Z",
+      "author_association": "NONE",
+      "source_id": "comment:1163918896",
+      "issue_number": 4884,
+      "parent_source_id": "issue:4884",
+      "body": "The [`documentation`](https://docs.streamlit.io/library/api-reference/session-state#caveats-and-limitations) also says:\r\n\r\n> Setting the widget state via the Session State API and using the value parameter in the widget declaration is not recommended, and will throw a warning on the first run\r\n\r\n(this is my workaround currently)\r\n\r\nThe fact that streamlit wants me to set a valid initial value within [min, max] using `value` and the recommendation that I should **not** use `value` if I initialize the widget using session state is problematic for _number_input_ too.  This will fail with \"The default value of 0 must lie between the min_value of None and the max_value of -1, inclusively.:\r\n\r\n```python\r\nstreamlit.session_state[\"negnum\"] = -1\r\nstreamlit.number_input(\"A negative number\", max_value=-1, key=\"negnum\")\r\n```",
+      "author": {
+        "login": "clo-vis",
+        "type": "User"
+      },
+      "is_bot": false,
+      "retrieval_method": "github_rest_comments",
+      "retrieved_at": "2026-10-06T14:45:42.260358+00:00",
+      "body_sha256": "cf47ef0f02404748f95eed0963cc6da567f881ac0fca396a8f23025a2b14b3ba",
+      "updated_at_basis": "rest_updated_at",
+      "is_hidden": false
+    },
+    {
+      "id": 1168692570,
+      "html_url": "https://github.com/streamlit/streamlit/issues/4884#issuecomment-1168692570",
+      "created_at": "2022-06-28T13:01:20Z",
+      "updated_at": "2022-06-28T13:01:20Z",
+      "author_association": "NONE",
+      "source_id": "comment:1168692570",
+      "issue_number": 4884,
+      "parent_source_id": "issue:4884",
+      "body": "> Since you are specifying min and max dates, but not value, then the code fails because today's date isn't between those values.\r\n\r\nAccording to the documentation, min_date and max_date are used to specify the minimum and maximum **_selectable_** dates, not the minimum and maximum valid dates. Streamlit doesn't complain at all if I type a date outside the range (that is, without using the widget for date selection), so why complaining about an invalid initial value?",
+      "author": {
+        "login": "clo-vis",
+        "type": "User"
+      },
+      "is_bot": false,
+      "retrieval_method": "github_rest_comments",
+      "retrieved_at": "2026-10-06T14:45:42.260358+00:00",
+      "body_sha256": "98280ab08fde19b50f0b2c94efccea7ac43c91c2dfb93324b965f6c55f733154",
+      "updated_at_basis": "rest_updated_at",
+      "is_hidden": false
+    },
+    {
+      "id": 2043854824,
+      "html_url": "https://github.com/streamlit/streamlit/issues/4884#issuecomment-2043854824",
+      "created_at": "2024-04-08T23:36:39Z",
+      "updated_at": "2024-04-08T23:38:53Z",
+      "author_association": "CONTRIBUTOR",
+      "source_id": "comment:2043854824",
+      "issue_number": 4884,
+      "parent_source_id": "issue:4884",
+      "body": "I am hitting this bug, too.\r\n\r\nThis works for other widgets:\r\n```\r\nimport streamlit as st\r\n\r\nif \"some_number\" not in st.session_state:\r\n    st.session_state.some_number = 3\r\n\r\nst.number_input(\"some_number\", min_value=2, max_value=4, key=\"some_number\")\r\n```\r\n\r\nBut fails for `st.date_input`\r\n\r\n```\r\nimport streamlit as st\r\nfrom datetime import date\r\n\r\nif \"some_date\" not in st.session_state:\r\n    st.session_state.some_date = date(2023,1,1)\r\n\r\nst.date_input(\"some_date\", min_value=date(2023,1,1), max_value=date(2023,12,31), key=\"some_date\")\r\n```\r\nThat latter generates an exception:\r\n\r\n```\r\nStreamlitAPIException: The default value of [datetime.date(2024, 4, 8)] must lie between the min_value of 2023-01-01 and the max_value of 2023-12-31, inclusively.\r\n```\r\n\r\n@LukasMasuch As I was searching for this bug to report or upvote, I saw #8410 and am wondering if this bug might be accidentally nudging people into that \"known limitation\" of combining `value` and `key`.",
+      "author": {
+        "login": "sfc-gh-dmatthews",
+        "type": "User"
+      },
+      "is_bot": false,
+      "retrieval_method": "github_rest_comments",
+      "retrieved_at": "2026-10-06T14:45:42.260358+00:00",
+      "body_sha256": "2e12f74e90eb61ca7bacf3c4491eaab5ad69c573b83aede8f787a49d1dd6478d",
+      "updated_at_basis": "rest_updated_at",
+      "is_hidden": false
+    },
+    {
+      "id": 2045631138,
+      "html_url": "https://github.com/streamlit/streamlit/issues/4884#issuecomment-2045631138",
+      "created_at": "2024-04-09T16:39:32Z",
+      "updated_at": "2024-04-09T16:39:32Z",
+      "author_association": "COLLABORATOR",
+      "source_id": "comment:2045631138",
+      "issue_number": 4884,
+      "parent_source_id": "issue:4884",
+      "body": "@sfc-gh-dmatthews Yep, that indeed looks like that `date_input` is broken in this case. In the case of  number_input we are only checking this for `value` if it's not None: https://github.com/streamlit/streamlit/blob/55bba786dcc8dd85e724746cd26bba3018a147bc/lib/streamlit/elements/widgets/number_input.py#L377 In case of `date_input` it seems that we are doing this check after the default value is already set (to today) -> this is causing the issue.",
+      "author": {
+        "login": "lukasmasuch",
+        "type": "User"
+      },
+      "is_bot": false,
+      "retrieval_method": "github_rest_comments",
+      "retrieved_at": "2026-10-06T14:45:42.260358+00:00",
+      "body_sha256": "dc4ea5ce5e159cb771707dd6bc072557a24180e9ea4bc0588e2397dabbb2bbd7",
+      "updated_at_basis": "rest_updated_at",
+      "is_hidden": false
+    },
+    {
+      "id": 2844922337,
+      "html_url": "https://github.com/streamlit/streamlit/issues/4884#issuecomment-2844922337",
+      "created_at": "2025-05-01T14:13:34Z",
+      "updated_at": "2025-05-02T07:58:27Z",
+      "author_association": "NONE",
+      "source_id": "comment:2844922337",
+      "issue_number": 4884,
+      "parent_source_id": "issue:4884",
+      "body": "I'm hitting the bug when typing in a date that is out of bounds. With @sfc-gh-dmatthews's code snippet it looks like this when changing the year to 2022.\n\nThe error appears before clicking out of the field, so you can stumble into it while editing the date.\n\n![Image](https://github.com/user-attachments/assets/5ba364f0-0b88-4bdd-86f8-544d54fcad62)\n\nStreamlit version 1.44.1",
+      "author": {
+        "login": "foldager",
+        "type": "User"
+      },
+      "is_bot": false,
+      "retrieval_method": "github_rest_comments",
+      "retrieved_at": "2026-10-06T14:45:42.260358+00:00",
+      "body_sha256": "031a04e31b1355f495181afb732719ea00367eb03a0648acfb7d1190245c16b5",
+      "updated_at_basis": "rest_updated_at",
+      "is_hidden": false
+    },
+    {
+      "id": 2846903346,
+      "html_url": "https://github.com/streamlit/streamlit/issues/4884#issuecomment-2846903346",
+      "created_at": "2025-05-02T10:39:20Z",
+      "updated_at": "2025-05-02T10:39:20Z",
+      "author_association": "NONE",
+      "source_id": "comment:2846903346",
+      "issue_number": 4884,
+      "parent_source_id": "issue:4884",
+      "body": "I think this issue can be closed. I cannot reproduce it on streamlit version 1.44.1. I have made a new bug report for the related issue in my previous comment.",
+      "author": {
+        "login": "foldager",
+        "type": "User"
+      },
+      "is_bot": false,
+      "retrieval_method": "github_rest_comments",
+      "retrieved_at": "2026-10-06T14:45:42.260358+00:00",
+      "body_sha256": "deda9a64c5026ab10feab238d7af50192fa6796c3f1702ed51f63c6d43526f66",
+      "updated_at_basis": "rest_updated_at",
+      "is_hidden": false
+    },
+    {
+      "id": 2851880559,
+      "html_url": "https://github.com/streamlit/streamlit/issues/4884#issuecomment-2851880559",
+      "created_at": "2025-05-05T18:01:07Z",
+      "updated_at": "2025-05-05T18:01:07Z",
+      "author_association": "COLLABORATOR",
+      "source_id": "comment:2851880559",
+      "issue_number": 4884,
+      "parent_source_id": "issue:4884",
+      "body": "@foldager Thanks for pointing this out! I also cannot reproduce the issue above anymore in the latest version of Streamlit.",
+      "author": {
+        "login": "lukasmasuch",
+        "type": "User"
+      },
+      "is_bot": false,
+      "retrieval_method": "github_rest_comments",
+      "retrieved_at": "2026-10-06T14:45:42.260358+00:00",
+      "body_sha256": "3635474ab51b793001b5ee64a76c0b6ffee373f39ed966601b8288d69d618ecd",
+      "updated_at_basis": "rest_updated_at",
+      "is_hidden": false
+    }
+  ]
+}

@@ -1,0 +1,247 @@
+{
+  "contract_version": "2.0",
+  "status": "source_envelopes_delivered_chunking_and_embeddings_not_implemented",
+  "language_policy": {
+    "guides_and_metadata": "English",
+    "source_content": "Preserve original source language. Do not translate."
+  },
+  "runtime_input_paths": [
+    "retrieval_corpus/issues.jsonl",
+    "retrieval_corpus/comments.jsonl",
+    "retrieval_corpus/documents.jsonl",
+    "retrieval_corpus/release_sections.jsonl"
+  ],
+  "runtime_excluded_directories": [
+    "audit",
+    "review_pending",
+    "evaluator_only",
+    "agent_inputs",
+    "config",
+    "scripts"
+  ],
+  "source_envelope": {
+    "required_fields": [
+      "source_id",
+      "source_type",
+      "text",
+      "metadata",
+      "text_sha256"
+    ],
+    "source_type_enum": [
+      "issue",
+      "comment",
+      "documentation",
+      "release_section"
+    ],
+    "text": "The only embedding input at source level. Includes a compact title/context prefix where appropriate. Final chunk text is used after chunking.",
+    "text_sha256": "SHA-256 of the exact UTF-8 text field.",
+    "metadata": "Separate provenance and evidence role. Do not serialize this object into embedding text.",
+    "metadata_fields_by_type": {
+      "documentation": [
+        "commit",
+        "content_path",
+        "content_sha256",
+        "evidence_role",
+        "html_url",
+        "media_present",
+        "raw_source_sha256",
+        "repository",
+        "representation",
+        "retrieval_body_sha256",
+        "retrieved_at",
+        "source_body_sha256",
+        "source_id",
+        "source_type",
+        "source_url",
+        "title",
+        "version_applicability"
+      ],
+      "issue": [
+        "author_association",
+        "body_sha256",
+        "browser",
+        "closed_at",
+        "created_at",
+        "evidence_role",
+        "family_id",
+        "html_url",
+        "id",
+        "labels",
+        "media_present",
+        "number",
+        "operating_system",
+        "python_version",
+        "repository",
+        "scope_match_basis",
+        "source_id",
+        "source_intent_hint",
+        "source_type",
+        "state",
+        "state_reason",
+        "streamlit_version",
+        "title",
+        "updated_at",
+        "usage_constraint",
+        "verification_status"
+      ],
+      "release_section": [
+        "body_sha256",
+        "commit",
+        "evidence_role",
+        "html_url",
+        "parent_source_id",
+        "release_date",
+        "relevance_basis",
+        "retrieved_at",
+        "section_heading",
+        "source_id",
+        "source_type",
+        "source_url",
+        "version"
+      ],
+      "comment": [
+        "allowed_use_after_review",
+        "author_association",
+        "body_sha256",
+        "created_at",
+        "embedding_allowed",
+        "evidence_role",
+        "html_url",
+        "id",
+        "issue_number",
+        "media_present",
+        "parent_source_id",
+        "review_flags",
+        "source_id",
+        "source_type",
+        "updated_at",
+        "verification_status",
+        "allowed_use",
+        "supporting_source_ids",
+        "reviewer",
+        "review_rationale",
+        "version_applicability_review",
+        "media_independence_review"
+      ]
+    }
+  },
+  "source_counts_at_delivery": {
+    "retrieval_issues": 164,
+    "retrieval_comments_approved": 0,
+    "retrieval_documentation_pages": 21,
+    "retrieval_release_sections": 263,
+    "comments_pending_review": 343
+  },
+  "actual_source_example": {
+    "source_id": "issue:7851",
+    "source_type": "issue",
+    "text": "Title: Make Streamlit more friendly to multi-threading\n\n### Checklist\n\n- [X] I added a descriptive title and summary to this issue.\n\n### Summary\n\nStreamlit doesn't currently tackle multi-threading as a core feature and leads to some undefined behavior when used (ex: empty session state). \n\n\n### Why?\n\n**Related issue submissions:**\n#1906 \n#7290 \n#7655",
+    "metadata": {
+      "source_id": "issue:7851",
+      "id": 2047604103,
+      "number": 7851,
+      "html_url": "https://github.com/streamlit/streamlit/issues/7851",
+      "title": "Make Streamlit more friendly to multi-threading",
+      "repository": "streamlit/streamlit",
+      "created_at": "2023-12-18T23:01:08Z",
+      "updated_at": "2026-08-22T10:23:42Z",
+      "closed_at": null,
+      "state": "open",
+      "state_reason": null,
+      "labels": [
+        "type:enhancement",
+        "area:performance",
+        "area:threading/processing"
+      ],
+      "author_association": "COLLABORATOR",
+      "streamlit_version": null,
+      "python_version": null,
+      "operating_system": null,
+      "browser": null,
+      "body_sha256": "655d43dceb66871c2554322f89fc6057e95b7c1d9c6bce8ad621316219c9d461",
+      "family_id": "family:1a7f67c7a3ec1109",
+      "verification_status": "reported_not_independently_verified",
+      "source_type": "issue",
+      "scope_match_basis": "body_narrative_requires_review",
+      "media_present": false,
+      "evidence_role": "reported_problem_not_verified_solution",
+      "source_intent_hint": "feature_request",
+      "usage_constraint": "Proposed APIs are not evidence of implemented behavior."
+    },
+    "text_sha256": "5c95154a5c0d2fc47e7821618c97e6d39006c6cb5f16963dd03b1c94c0a9b85c"
+  },
+  "future_chunk_contract": {
+    "status": "proposed_not_generated",
+    "fields": {
+      "chunk_id": "Stable ID computed from source_id, source text hash, chunker configuration hash, and chunk index.",
+      "source_id": "Parent delivered source_id.",
+      "chunk_index": "Zero-based order within a source.",
+      "text": "Exact source text slice with code fences preserved; the only payload submitted for embedding.",
+      "metadata": "Inherited source metadata plus chunk offsets, source text hash, and chunker configuration hash.",
+      "text_sha256": "SHA-256 of the final chunk text."
+    },
+    "offset_basis": "Character offsets into the delivered source envelope text, not original GitHub bodies or archived rubric span bodies.",
+    "proposed_starting_configuration": {
+      "target_tokens": 400,
+      "overlap_tokens": 80,
+      "tokenizer": "Choose with the embedding model; not selected in this delivery.",
+      "split_priority": [
+        "section boundaries",
+        "paragraphs",
+        "complete code fences"
+      ],
+      "oversized_code_block_policy": "Prefer a standalone code chunk within the chosen model limit. If a split is required, retain enough context and explicit continuation metadata.",
+      "tuning_policy": "Tune on development cases only; freeze configuration before test execution."
+    },
+    "identity_warning": "Chunk indices alone are unstable after source edits. Include source/configuration hashes in chunk identity."
+  },
+  "approval_policy": {
+    "default_comment_index_count": 0,
+    "pending_comments": 343,
+    "approval_file": "config/comment_reviews.json",
+    "required_approval_fields": [
+      "source_id",
+      "decision",
+      "reviewer",
+      "rationale",
+      "approved_text",
+      "allowed_use",
+      "evidence_source_ids",
+      "version_applicability"
+    ],
+    "allowed_use_enum": [
+      "reported_observation",
+      "diagnostic_context",
+      "corroborated_claim"
+    ],
+    "approved_text_rule": "Exact substring of the pending source text; a human must check that it is not misleading out of context.",
+    "corroborated_claim_rule": "At least one official documentation/release source ID; human review must establish actual entailment and version relevance.",
+    "media_rule": "For a media-containing candidate, media_independence must equal selected_excerpt_is_self_contained_without_media."
+  },
+  "evidence_interpretation": {
+    "issue": "An unverified reported problem, observation, or proposal; not a verified solution.",
+    "comment": "Use only according to the recorded human review scope.",
+    "documentation": "Official snapshot; check applicability to the user version.",
+    "release_section": "Official change for its explicit version/date; check that it addresses the claim."
+  },
+  "evaluation_boundary": {
+    "fixed_development_cases": 15,
+    "fixed_test_cases": 15,
+    "future_turns": "Evaluator-only; release a due message after the specified prior assistant response.",
+    "gold": "Never add evaluator rubrics, full held-out threads, or audit snapshots to the retrieval index.",
+    "access_control": "The runner must enforce path access. The loader allowlist is not OS isolation."
+  },
+  "provenance_hashes": {
+    "body_sha256": "Normalized source body hash where provided.",
+    "source_body_sha256": "Canonical archived documentation body hash.",
+    "text_sha256": "Transformed delivered source envelope text hash.",
+    "rubric_offsets": "Offsets into archived canonical documentation body; do not apply directly to retrieval or chunk text."
+  },
+  "api_execution": {
+    "embedding_api_calls": 0,
+    "model_api_calls": 0,
+    "model_embedding_api_cost_usd": 0,
+    "embeddings_built": false,
+    "chunks_built": false
+  }
+}

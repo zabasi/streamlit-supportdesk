@@ -1,0 +1,150 @@
+{
+  "issue": {
+    "id": 2489674265,
+    "number": 9342,
+    "title": "`st.number_input`/`st.slider` don't raise an error when assigned a value outside of their min/max range through Session State.",
+    "html_url": "https://github.com/streamlit/streamlit/issues/9342",
+    "created_at": "2024-08-27T15:12:15Z",
+    "updated_at": "2025-10-07T10:59:24Z",
+    "closed_at": "2025-03-10T19:55:01Z",
+    "state": "closed",
+    "state_reason": "completed",
+    "author_association": "CONTRIBUTOR",
+    "source_id": "issue:9342",
+    "repository": "streamlit/streamlit",
+    "body": "### Checklist\r\n\n\n### Summary\r\n\r\nI believe this applies to `st.slider` as well, but for `st.number_input`:\r\n\r\nIf you declare the widget with a default value that violates `min_value` or `max_value`, an error is raised. However, if you assign such a value through Session State, the widget takes on the incorrect value without (Python) warning.\r\n\r\nhttps://github.com/user-attachments/assets/0b1869ed-562c-442a-a842-71fd091eae2d\r\n\r\n\r\n\r\n### Reproducible Code Example\r\n\r\n[![Open in Streamlit Cloud](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://issues.streamlitapp.com/?issue=gh-9342)\r\n\r\n```Python\r\nimport streamlit as st\r\n\r\nvalue = st.number_input(\"A\",min_value=1, max_value=5, key=\"A\")\r\n\r\ndef set_too_big():\r\n    st.session_state.A = 10\r\n\r\nst.button(\"Too big\", on_click=set_too_big)\r\n\r\nst.write(value)\r\n```\r\n\r\n\r\n### Steps To Reproduce\r\n\r\n1. Run the app\r\n2. Click the button to programattically set a value greater than the declared max\r\n3. Observe the widget returns the too-large value\r\n4. Click the minus on the widget and get stuck in an editing state for the widget until the bad value is resolved\r\n\r\n### Expected Behavior\r\n\r\nIf an invalid value is set programmatically, the back end should raise an error in Python.\r\n\r\n### Current Behavior\r\n\r\n_No response_\r\n\r\n### Is this a regression?\r\n\r\n- [ ] Yes, this used to work in a previous version.\r\n\r\n### Debug info\r\n\r\n- Streamlit version:\r\n- Python version:\r\n- Operating System:\r\n- Browser:\r\n\r\n\r\n### Additional Information\r\n\r\nStep 4 above is particularly frustrating for an end user (who didn't set the bad value themselves since it came in through the Python back end). It's really annoying to click on something and not be able to escape out of it.\r\n\r\nRelated to #5099",
+    "labels": [
+      "type:bug",
+      "status:confirmed",
+      "priority:P3",
+      "feature:st.number_input",
+      "feature:st.slider",
+      "feature:st.session_state"
+    ],
+    "author": {
+      "login": "sfc-gh-dmatthews",
+      "type": "User"
+    },
+    "comment_count": 4,
+    "comments_complete": true,
+    "metadata_retrieved_at": "2026-10-06T14:28:04.043219+00:00",
+    "comments_retrieved_at": "2026-10-06T14:29:22.660299+00:00",
+    "comments_retrieval_method": "github_public_html_embedded_data",
+    "body_sha256": "f5f419cb6544587dbb52258ac5c75d5ca70609cc7588e7cfe726c066c7add2e0",
+    "original_body_sha256": "44c6c92ec14964f3dc7212b9d03371d91df60dee8f43d8d730039d89f8fc12ed",
+    "streamlit_version": null,
+    "python_version": null,
+    "topic_tags_heuristic": [
+      "callbacks"
+    ],
+    "sampling_sources": [
+      "label:feature:st.session_state",
+      "repo:streamlit/streamlit is:issue \"session state\" in:title,body created:<=2026-10-06",
+      "repo:streamlit/streamlit is:issue \"widget state\" in:title,body created:<=2026-10-06"
+    ],
+    "relevance_basis": "state_label_or_title",
+    "evaluation_split": null,
+    "pilot_previously_inspected": false,
+    "historical_as_of_reconstruction": false,
+    "operating_system": {
+      "value": "- Browser:",
+      "evidence_text": "- Operating System:\r\n- Browser:",
+      "start_char": 1436,
+      "end_char": 1468,
+      "method": "explicit_environment_line_regex"
+    },
+    "browser": {
+      "value": "### Additional Information",
+      "evidence_text": "- Browser:\r\n\r\n\r\n### Additional Information",
+      "start_char": 1457,
+      "end_char": 1500,
+      "method": "explicit_environment_line_regex"
+    }
+  },
+  "comments": [
+    {
+      "id": 2312839831,
+      "html_url": "https://github.com/streamlit/streamlit/issues/9342#issuecomment-2312839831",
+      "created_at": "2024-08-27T15:12:26Z",
+      "updated_at": "2024-08-27T15:12:26Z",
+      "author_association": "CONTRIBUTOR",
+      "source_id": "comment:2312839831",
+      "issue_number": 9342,
+      "parent_source_id": "issue:9342",
+      "body": "**If this issue affects you, please react with a 👍 (thumbs up emoji) to the initial post.**\n\nYour feedback helps us prioritize which bugs to investigate and address first.\n\n![Visits](https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2Fstreamlit%2Fstreamlit%2Fissues%2F9342&title=visits&edge_flat=false)",
+      "author": {
+        "login": "github-actions",
+        "type": "Bot"
+      },
+      "is_bot": true,
+      "retrieval_method": "github_public_html_embedded_data",
+      "retrieved_at": "2026-10-06T14:29:22.660299+00:00",
+      "body_sha256": "e6131551b68006da6ee3d497e932f175ba19c02d093962583998a002ead189c8",
+      "updated_at_basis": "lastEditedAt_or_createdAt_from_public_HTML",
+      "is_hidden": false
+    },
+    {
+      "id": 2313181992,
+      "html_url": "https://github.com/streamlit/streamlit/issues/9342#issuecomment-2313181992",
+      "created_at": "2024-08-27T17:53:08Z",
+      "updated_at": "2024-08-27T17:54:08Z",
+      "author_association": "CONTRIBUTOR",
+      "source_id": "comment:2313181992",
+      "issue_number": 9342,
+      "parent_source_id": "issue:9342",
+      "body": "Another note: The widgets do raise a `TypeError` if programmatically set to an incorrect type of value on [this line](https://github.com/streamlit/streamlit/blob/d3d00dcc6744b570d85ebb48ff7ab5f64551dc40/lib/streamlit/elements/widgets/number_input.py#L529). So if possible, it'd be nice in the same area to elegantly raise an error when the value is out of range.",
+      "author": {
+        "login": "sfc-gh-dmatthews",
+        "type": "User"
+      },
+      "is_bot": false,
+      "retrieval_method": "github_public_html_embedded_data",
+      "retrieved_at": "2026-10-06T14:29:22.660299+00:00",
+      "body_sha256": "4a56ead647cd8b3c14ec8040acceccde1889fbaf10fa2550a726686d0381bb8c",
+      "updated_at_basis": "lastEditedAt_or_createdAt_from_public_HTML",
+      "is_hidden": false
+    },
+    {
+      "id": 2318901380,
+      "html_url": "https://github.com/streamlit/streamlit/issues/9342#issuecomment-2318901380",
+      "created_at": "2024-08-29T20:25:24Z",
+      "updated_at": "2024-08-29T20:25:24Z",
+      "author_association": "CONTRIBUTOR",
+      "source_id": "comment:2318901380",
+      "issue_number": 9342,
+      "parent_source_id": "issue:9342",
+      "body": "@sfc-gh-dmatthews are you fixing this or shall I knock it out?",
+      "author": {
+        "login": "Asaurus1",
+        "type": "User"
+      },
+      "is_bot": false,
+      "retrieval_method": "github_public_html_embedded_data",
+      "retrieved_at": "2026-10-06T14:29:22.660299+00:00",
+      "body_sha256": "3a429b4566757187b932007f5971123f8124df92b1830f75ac469bda05671bab",
+      "updated_at_basis": "lastEditedAt_or_createdAt_from_public_HTML",
+      "is_hidden": false
+    },
+    {
+      "id": 2325014651,
+      "html_url": "https://github.com/streamlit/streamlit/issues/9342#issuecomment-2325014651",
+      "created_at": "2024-09-02T15:46:52Z",
+      "updated_at": "2024-09-02T15:46:52Z",
+      "author_association": "CONTRIBUTOR",
+      "source_id": "comment:2325014651",
+      "issue_number": 9342,
+      "parent_source_id": "issue:9342",
+      "body": "@Asaurus1 I am not working on this myself, but there is some work ongoing to revamp exceptions. So, @sfc-gh-nbellante is at least working in a related area.",
+      "author": {
+        "login": "sfc-gh-dmatthews",
+        "type": "User"
+      },
+      "is_bot": false,
+      "retrieval_method": "github_public_html_embedded_data",
+      "retrieved_at": "2026-10-06T14:29:22.660299+00:00",
+      "body_sha256": "0f63af2e989e61d5ec42425c1e410deab086efd0c3226895e0273b274d382c57",
+      "updated_at_basis": "lastEditedAt_or_createdAt_from_public_HTML",
+      "is_hidden": false
+    }
+  ]
+}

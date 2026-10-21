@@ -1,0 +1,1318 @@
+[
+  {
+    "case_id": "dev-001",
+    "family_id": "family-15148",
+    "split": "dev",
+    "multi_turn": true,
+    "tags": [
+      "caching",
+      "forms_callbacks",
+      "rerun_execution"
+    ],
+    "turns": [
+      {
+        "turn_id": 1,
+        "user": "I am investigating this Streamlit issue:\n\nTitle: ValueError: blake2b blocked on FIPS systems since 1.57.0\n\nReported details:\n### Checklist\n\n- [x] I have searched the [existing issues](https://github.com/streamlit/streamlit/issues) for similar issues.\n- [x] I added a very descriptive title to this issue.\n- [x] I have provided sufficient information below to help reproduce this issue.\n\n### Summary\n\nStreamlit 1.57.0 raises ValueError on FIPS-compliant Python environments (any system running Python against an OpenSSL in FIPS mode). The app fails to perform any hashing operation — element ID generation, cache key computation, file watching all break. Streamlit 1.56.0 is unaffected.\n\n### Reproducible Code Example\n\n```Python\nfrom streamlit.util import create_fast_hasher\n\nh = create_fast_hasher()\nh.update(b\"hello\")\nprint(h.hexdigest())\n```\n\n### Steps To Reproduce\n\nRun this on any FIPS-enforcing Python 3.x environment (e.g. a Chainguard python-fips image, RHEL 9 with FIPS mode enabled, or any OpenSSL built with enable-fips).\n\n### Expected Behavior\n\nStreamlit starts and runs normally. blake2b is used for non-security purposes (element IDs, cache keys, file change detection) and should be callable on FIPS systems with `usedforsecurity=False`.\n\n### Current Behavior\n\nAny code path that calls create_fast_hasher() or calc_hash() raises ValueError and crashes.\n\n```python\nTraceback (most recent call last):\n  File \"test_hashing.py\", line 3, in <module>\n    h = create_fast_hasher()\n        ^^^^^^^^^^^^^^^^^^^^\n  File \".../site-packages/streamlit/util.py\", line 74, in create_fast_hasher\n    return hashlib.blake2b(digest_size=16)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/lib/python3.12/hashlib.py\", line 86, in __usedforsecurity_check\n    raise ValueError(name + \" is blocked when usedforsecurity=True\")\nValueError: blake2b is blocked when usedforsecurity=True\n```\n\n### Is this a regression?\n\n- [x] Yes, this used to work in a previous version.\n\n### Debug info\n\nStreamlit: 1.57.0 (regression; 1.56.0 works)\nPython: 3.12 (reproduced; also expected on 3.10, 3.11)\n\n### Additional Information\n\nIntroduced by: #14842 — which replaced MD5 with blake2b but omitted usedforsecurity=False\n\nBased only on the available evidence, explain what is reported, what is supported by the evidence, and what information is still missing.",
+        "gold_evidence_ids": [
+          "issue-15148",
+          "comment-4431502024",
+          "comment-4432099610",
+          "document-doc-695e6ce2fb1b-3483017622359616890",
+          "release-note-d121bacf4c2f3fd5bbb252009bf562c0ebb62045"
+        ],
+        "expected_behavior": [
+          "Identify the reported problem without changing its meaning.",
+          "Use the selected evidence to support factual claims.",
+          "Distinguish reported facts from documented explanations and hypotheses.",
+          "Do not treat the issue's closed/open state as proof that the problem is solved.",
+          "Do not invent missing technical details.",
+          "Use the linked technical comment when it provides additional reproduction, explanation, workaround, or implementation evidence."
+        ],
+        "must_ask": [
+          "What operating system are you using?"
+        ],
+        "must_not_claim": [
+          "Do not claim that a closed issue is automatically solved.",
+          "Do not claim a root cause unless the evidence supports it.",
+          "Do not invent Streamlit versions, operating systems, Python versions, or reproduction steps.",
+          "Do not claim that a workaround is guaranteed to solve the user's problem unless the evidence supports that claim."
+        ]
+      },
+      {
+        "turn_id": 2,
+        "user": "For the issue 'ValueError: blake2b blocked on FIPS systems since 1.57.0', what additional technical information should I provide to distinguish between the possible explanations? Please separate information that is already known from information that is still unknown.",
+        "gold_evidence_ids": [
+          "issue-15148",
+          "comment-4431502024",
+          "comment-4432099610",
+          "document-doc-695e6ce2fb1b-3483017622359616890",
+          "release-note-d121bacf4c2f3fd5bbb252009bf562c0ebb62045"
+        ],
+        "expected_behavior": [
+          "Do not repeat checks or explanations already established in turn 1.",
+          "Maintain the same issue context.",
+          "Clearly distinguish known facts from missing information.",
+          "Ask only discriminating questions that could change the diagnosis or next action."
+        ],
+        "must_ask": [
+          "What operating system are you using?"
+        ],
+        "must_not_claim": [
+          "Do not claim that a closed issue is automatically solved.",
+          "Do not claim a root cause unless the evidence supports it.",
+          "Do not invent Streamlit versions, operating systems, Python versions, or reproduction steps.",
+          "Do not claim that a workaround is guaranteed to solve the user's problem unless the evidence supports that claim."
+        ]
+      }
+    ],
+    "final_expected": {
+      "answer_points": [
+        "Explain the reported behavior described in issue 15148.",
+        "Identify which claims are directly supported by the selected evidence.",
+        "Identify important information that remains unknown.",
+        "Incorporate the linked technical comment when it provides evidence relevant to the issue.",
+        "Use the official documentation as documentation evidence when it directly applies."
+      ],
+      "evidence_requirements": [
+        "Use at least one relevant issue record.",
+        "Do not use evidence that is not present in corpus.",
+        "Do not treat issue state as proof of resolution.",
+        "Do not guess missing technical details."
+      ],
+      "maintainer_summary_points": [
+        "Problem summary based on the original issue.",
+        "Evidence-backed findings.",
+        "Known versus unknown technical details.",
+        "Recommended next diagnostic information or action."
+      ]
+    }
+  },
+  {
+    "case_id": "dev-002",
+    "family_id": "family-17082",
+    "split": "dev",
+    "multi_turn": true,
+    "tags": [
+      "forms_callbacks",
+      "rerun_execution"
+    ],
+    "turns": [
+      {
+        "turn_id": 1,
+        "user": "I am investigating this Streamlit issue:\n\nTitle: GlobalHotkeys crashes on keydown/keyup events without a key\n\nReported details:\n### Checklist\n\n    - [x] I searched the existing issues and pull requests for this bug.\n    - [x] I reproduced this on Streamlit 1.63.0 and confirmed the same unguarded code is present on the current develop branch.\n\n    ### Summary\n\n    The global shortcut handler assumes every dispatched keydown/keyup event has a string key. Browser integrations, test harnesses, embedded hosts, or extensions can dispatch an Event without the KeyboardEvent key field. In that case, GlobalHotkeys calls toLowerCase on undefined and throws an uncaught TypeError.\n\n    ### Minimal reproduction\n\n    Run any Streamlit app, open the browser console after the app loads, and execute:\n\n    ~~~js\n    document.dispatchEvent(new Event(\"keydown\"))\n    document.dispatchEvent(new Event(\"keyup\"))\n    ~~~\n\n    The first event reaches GlobalHotkeys.handleKeyDown and calls normalizeKey(event.key). The second reaches handleKeyUp and does the same. Because Event has no key property, normalizeKey receives undefined and key.toLowerCase() throws.\n\n    A plain DOM Event is intentional here: event listeners can receive synthetic events from browser hosts and integrations despite the TypeScript annotation. The handler should be defensive at this external boundary.\n\n    ### Current implementation\n\n    In frontend/app/src/components/GlobalHotkeys/GlobalHotkeys.tsx:\n\n    ~~~ts\n    function normalizeKey(key: string): string {\n    return key === \"Escape\" || key === \"Esc\" ? \"esc\" : key.toLowerCase()\n    }\n\n    const handleKeyDown = (event: KeyboardEvent): void => {\n    const normalizedKey = normalizeKey(event.key)\n    // ...\n    }\n\n    const handleKeyUp = (event: KeyboardEvent): void => {\n    const normalizedKey = normalizeKey(event.key)\n    // ...\n    }\n    ~~~\n\n    ### Expected behavior\n\n    Malformed or non-keyboard keydown/keyup events without a string key should be ignored without throwing. Normal keyboard shortcuts should continue to work.\n\n    ### Suggested fix\n\n    Guard both handlers before normalization, for example:\n\n    ~~~ts\n    if (typeof event.key !== \"string\") {\n    return\n    }\n    ~~~\n\n    Alternatively, make normalizeKey accept unknown and return undefined for invalid values, with callers returning early.\n\n    ### Regression test\n\n    Add cases in GlobalHotkeys.test.tsx that dispatch keydown and keyup events without key and assert that no exception is thrown and no shortcut callback runs.\n\n    ### Environment\n\n    - Streamlit: 1.63.0\n    - Also present on the current develop branch as of 2026-09-22\n    - Browser: Chromium\n\nBased only on the available evidence, explain what is reported, what is supported by the evidence, and what information is still missing.",
+        "gold_evidence_ids": [
+          "issue-17082",
+          "comment-5784854348",
+          "comment-5790085634",
+          "document-doc-695e6ce2fb1b-3483017622359616890",
+          "release-note-d121bacf4c2f3fd5bbb252009bf562c0ebb62045"
+        ],
+        "expected_behavior": [
+          "Identify the reported problem without changing its meaning.",
+          "Use the selected evidence to support factual claims.",
+          "Distinguish reported facts from documented explanations and hypotheses.",
+          "Do not treat the issue's closed/open state as proof that the problem is solved.",
+          "Do not invent missing technical details.",
+          "Use the linked technical comment when it provides additional reproduction, explanation, workaround, or implementation evidence."
+        ],
+        "must_ask": [
+          "What Streamlit version are you using?",
+          "What Python version are you using?"
+        ],
+        "must_not_claim": [
+          "Do not claim that a closed issue is automatically solved.",
+          "Do not claim a root cause unless the evidence supports it.",
+          "Do not invent Streamlit versions, operating systems, Python versions, or reproduction steps.",
+          "Do not claim that a workaround is guaranteed to solve the user's problem unless the evidence supports that claim."
+        ]
+      },
+      {
+        "turn_id": 2,
+        "user": "For the issue 'GlobalHotkeys crashes on keydown/keyup events without a key', what additional technical information should I provide to distinguish between the possible explanations? Please separate information that is already known from information that is still unknown.",
+        "gold_evidence_ids": [
+          "issue-17082",
+          "comment-5784854348",
+          "comment-5790085634",
+          "document-doc-695e6ce2fb1b-3483017622359616890",
+          "release-note-d121bacf4c2f3fd5bbb252009bf562c0ebb62045"
+        ],
+        "expected_behavior": [
+          "Do not repeat checks or explanations already established in turn 1.",
+          "Maintain the same issue context.",
+          "Clearly distinguish known facts from missing information.",
+          "Ask only discriminating questions that could change the diagnosis or next action."
+        ],
+        "must_ask": [
+          "What Streamlit version are you using?",
+          "What Python version are you using?"
+        ],
+        "must_not_claim": [
+          "Do not claim that a closed issue is automatically solved.",
+          "Do not claim a root cause unless the evidence supports it.",
+          "Do not invent Streamlit versions, operating systems, Python versions, or reproduction steps.",
+          "Do not claim that a workaround is guaranteed to solve the user's problem unless the evidence supports that claim."
+        ]
+      }
+    ],
+    "final_expected": {
+      "answer_points": [
+        "Explain the reported behavior described in issue 17082.",
+        "Identify which claims are directly supported by the selected evidence.",
+        "Identify important information that remains unknown.",
+        "Incorporate the linked technical comment when it provides evidence relevant to the issue.",
+        "Use the official documentation as documentation evidence when it directly applies."
+      ],
+      "evidence_requirements": [
+        "Use at least one relevant issue record.",
+        "Do not use evidence that is not present in corpus.",
+        "Do not treat issue state as proof of resolution.",
+        "Do not guess missing technical details."
+      ],
+      "maintainer_summary_points": [
+        "Problem summary based on the original issue.",
+        "Evidence-backed findings.",
+        "Known versus unknown technical details.",
+        "Recommended next diagnostic information or action."
+      ]
+    }
+  },
+  {
+    "case_id": "dev-003",
+    "family_id": "family-7749",
+    "split": "dev",
+    "multi_turn": true,
+    "tags": [
+      "forms_callbacks",
+      "rerun_execution",
+      "session_state",
+      "widgets"
+    ],
+    "turns": [
+      {
+        "turn_id": 1,
+        "user": "I am investigating this Streamlit issue:\n\nTitle: Using st.data_editor with session state, input data \"disappears\": Requires double input to register changes.\n\nReported details:\n### Checklist\n\n- [X] I have searched the [existing issues](https://github.com/streamlit/streamlit/issues) for similar issues.\n- [X] I added a very descriptive title to this issue.\n- [X] I have provided sufficient information below to help reproduce this issue.\n\n### Summary\n\nThis issue is practically the same as this closed issue: #7354\nBut since it is closed (due to the user not really needing the particular use case) I have opened this new one with another simple minimum reproducible example.\n\n### Reproducible Code Example\n\n[![Open in Streamlit Cloud](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://issues.streamlitapp.com/?issue=gh-7749)\n\n```Python\nimport streamlit as st\nimport pandas as pd\n\n# using session state, works ever other input:\nif \"df\" not in st.session_state:\n    st.session_state.df = pd.DataFrame({\"In\":[0,1,2],\"Out\":[0,0,0]})\nst.session_state.df = st.data_editor(st.session_state.df)\nst.session_state.df[\"Out\"] = st.session_state.df[\"In\"]**2\nst.write(st.session_state.df)\n\n# # works every input but the df is not updated in data_editor:\n# df = pd.DataFrame({\"In\":[0,1,2],\"Out\":[0,0,0]})\n# df = st.data_editor(df)\n# df[\"Out\"] = df[\"In\"]**2\n# st.write(df)\n```\n\n### Steps To Reproduce\n\n1. Click on a field in the in column.\n2. Input a number, enter.\n3. Watch for changes in the dataframes.\n\n### Expected Behavior\n\nI expect that each input in the data_editor to result in the rest of the code to run, before it loops back to the top and into the data_editor with new data which is displayed.\nIn this example I expect the \"state\" version to behave just like the \"non-state\" example, with the added functionality of the state of course.\n\n### Current Behavior\n\n1. I input a number(say 5) in a input field press enter.\n2. This new input is replaced with the previous value instantly.\n3. I input 5 in the same box again.\n4. The edit_data frame now has the correct input, but not the updated input. The st.write frame is updated to reflect the correct values.\n\nAnother variant:\n1. I input 5 in row 1. -> instantly replaced, nothing in st.write\n2. I input 4 in row 2. -> editor: input is updated, output is not. st.write: row two is updated.\n3. I input 3 in row 3. -> editor: row 2 is updated, row 3 ignored. Both editor and write now agrees.\nOR: in another box I input a changed number (not the same as exists already, that doesnt do anything)\n\nPretty hard to explain, please try for yourself to get an idea how it really behaves.\nBasically the state of data_editor is always one loop behind in updating, and the input seems to dissapear until another change is made.\n\n### Is this a regression?\n\n- [ ] Yes, this used to work in a previous version.\n\n### Debug info\n\n- Streamlit version: 1.28.1\n- Python version: 3.12\n- Operating System: Win 10\n- Browser: Edge or Firefox\n\n### Additional Information\n\n[See my earlier comment on the other issue: ](https://github.com/streamlit/streamlit/issues/7354#issuecomment-1823470192)\nSimilar problem from the docs, with\n[issue body truncated]\n\nBased only on the available evidence, explain what is reported, what is supported by the evidence, and what information is still missing.",
+        "gold_evidence_ids": [
+          "issue-7749",
+          "comment-1825263946",
+          "document-doc-695e6ce2fb1b-3483017622359616890",
+          "release-note-d121bacf4c2f3fd5bbb252009bf562c0ebb62045"
+        ],
+        "expected_behavior": [
+          "Identify the reported problem without changing its meaning.",
+          "Use the selected evidence to support factual claims.",
+          "Distinguish reported facts from documented explanations and hypotheses.",
+          "Do not treat the issue's closed/open state as proof that the problem is solved.",
+          "Do not invent missing technical details.",
+          "Use the linked technical comment when it provides additional reproduction, explanation, workaround, or implementation evidence."
+        ],
+        "must_ask": [],
+        "must_not_claim": [
+          "Do not claim that a closed issue is automatically solved.",
+          "Do not claim a root cause unless the evidence supports it.",
+          "Do not invent Streamlit versions, operating systems, Python versions, or reproduction steps.",
+          "Do not claim that a workaround is guaranteed to solve the user's problem unless the evidence supports that claim."
+        ]
+      },
+      {
+        "turn_id": 2,
+        "user": "For the issue 'Using st.data_editor with session state, input data \"disappears\": Requires double input to register changes.', what additional technical information should I provide to distinguish between the possible explanations? Please separate information that is already known from information that is still unknown.",
+        "gold_evidence_ids": [
+          "issue-7749",
+          "comment-1825263946",
+          "document-doc-695e6ce2fb1b-3483017622359616890",
+          "release-note-d121bacf4c2f3fd5bbb252009bf562c0ebb62045"
+        ],
+        "expected_behavior": [
+          "Do not repeat checks or explanations already established in turn 1.",
+          "Maintain the same issue context.",
+          "Clearly distinguish known facts from missing information.",
+          "Ask only discriminating questions that could change the diagnosis or next action."
+        ],
+        "must_ask": [
+          "Can you provide the exact Streamlit version and a minimal reproduction that shows the behavior with and without st.session_state, including whether the problem still occurs on the latest Streamlit release?"
+        ],
+        "must_not_claim": [
+          "Do not claim that a closed issue is automatically solved.",
+          "Do not claim a root cause unless the evidence supports it.",
+          "Do not invent Streamlit versions, operating systems, Python versions, or reproduction steps.",
+          "Do not claim that a workaround is guaranteed to solve the user's problem unless the evidence supports that claim."
+        ]
+      }
+    ],
+    "final_expected": {
+      "answer_points": [
+        "Explain the reported behavior described in issue 7749.",
+        "Identify which claims are directly supported by the selected evidence.",
+        "Identify important information that remains unknown.",
+        "Incorporate the linked technical comment when it provides evidence relevant to the issue.",
+        "Use the official documentation as documentation evidence when it directly applies."
+      ],
+      "evidence_requirements": [
+        "Use at least one relevant issue record.",
+        "Do not use evidence that is not present in corpus.",
+        "Do not treat issue state as proof of resolution.",
+        "Do not guess missing technical details."
+      ],
+      "maintainer_summary_points": [
+        "Problem summary based on the original issue.",
+        "Evidence-backed findings.",
+        "Known versus unknown technical details.",
+        "Recommended next diagnostic information or action."
+      ]
+    }
+  },
+  {
+    "case_id": "dev-004",
+    "family_id": "family-16386",
+    "split": "dev",
+    "multi_turn": true,
+    "tags": [
+      "forms_callbacks"
+    ],
+    "turns": [
+      {
+        "turn_id": 1,
+        "user": "I am investigating this Streamlit issue:\n\nTitle: Security: Multiple Information Disclosure issues in Streamlit internal endpoints (_stcore) affecting Enterprise DAST scans\n\nReported details:\n### Checklist\n\n- [x] I have searched the [existing issues](https://github.com/streamlit/streamlit/issues) for similar issues.\n- [x] I added a very descriptive title to this issue.\n- [x] I have provided sufficient information below to help reproduce this issue.\n\n### Summary\n\nOur application recently underwent an Enterprise DAST (Dynamic Application Security Testing) review.\n\nThe scanner reported multiple Information Disclosure findings originating from Streamlit internal endpoints and Tornado responses rather than application code.\n\nThe application itself already handles exceptions and returns generic messages.\n\nThe remaining findings appear to originate from Streamlit framework internals.\n\n### Reproducible Code Example\n\n```Python\n\n```\n\n### Steps To Reproduce\n\n_No response_\n\n### Expected Behavior\n\nEnterprise deployments should have configuration options to:\n\n• Hide Tornado Server header\n\n• Hide Streamlit version\n\n• Disable /_stcore/host-config endpoint\n\n• Validate WebSocket Origin\n\n• Return generic websocket errors\n\n• Remove filesystem paths\n\n• Remove OS version disclosure\n\nThese options are commonly required during DAST / Penetration Testing.\n\n### Current Behavior\n\n### 1. Server Banner Disclosure\n\nHTTP Response contains\n\nServer: TornadoServer/6.x.x\n\nExpected:\n\nAbility to suppress or remove the Server header.\n\n------------------------------------------------\n\n### 2. WebSocket Error Messages\n\nMalformed websocket messages return internal traceback information including\n\nbrowser_websocket_handler.py\n\nfilesystem paths\n\nline numbers\n\nExpected:\n\nReturn generic websocket error.\n\n------------------------------------------------\n\n### 3. Linux Version Disclosure\n\nWebSocket responses disclose Linux version / platform details.\n\nExpected:\n\nNo operating system information returned to clients.\n\n------------------------------------------------\n\n### 4. Host Configuration Disclosure\n\nEndpoint\n\n/_stcore/host-config\n\nreturns\n\nallowedOrigins\n\nincluding wildcard entries.\n\nExpected:\n\nConfiguration to disable endpoint or suppress origin disclosure.\n\n------------------------------------------------\n\n### 5. Missing Origin Validation\n\nChanging the Origin header during websocket upgrade still establishes the connection.\n\nExpected:\n\nAbility to configure allowed websocket origins.\n\n### Is this a regression?\n\n- [ ] Yes, this used to work in a previous version.\n\n### Debug info\n\n## Environment\nStreamlit Version: 1.48.1\n\nPython: 3.12\n\nDeployment:\n\nAzure App Service (Linux)\n\nAzure Application Gateway WAF v2\n\nOKTA OIDC Authentication\n\nBrowser:\n\nChrome\n\nEnterprise Banking Application\n\n### Additional Information\n\nThese findings were identified during Enterprise Banking security assessment.\n\nApplication code is already updated to:\n\n• Return generic application errors\n\n• Log detailed exceptions server-side\n\nRemaining disclosures originate from Streamlit internal implementation.\n\nIs there any supported configuration or roadmap to address these?\n\nBased only on the available evidence, explain what is reported, what is supported by the evidence, and what information is still missing.",
+        "gold_evidence_ids": [
+          "issue-16386",
+          "comment-5207913747",
+          "comment-5240522134",
+          "document-doc-695e6ce2fb1b-3483017622359616890",
+          "release-note-d121bacf4c2f3fd5bbb252009bf562c0ebb62045"
+        ],
+        "expected_behavior": [
+          "Identify the reported problem without changing its meaning.",
+          "Use the selected evidence to support factual claims.",
+          "Distinguish reported facts from documented explanations and hypotheses.",
+          "Do not treat the issue's closed/open state as proof that the problem is solved.",
+          "Do not invent missing technical details.",
+          "Use the linked technical comment when it provides additional reproduction, explanation, workaround, or implementation evidence."
+        ],
+        "must_ask": [],
+        "must_not_claim": [
+          "Do not claim that a closed issue is automatically solved.",
+          "Do not claim a root cause unless the evidence supports it.",
+          "Do not invent Streamlit versions, operating systems, Python versions, or reproduction steps.",
+          "Do not claim that a workaround is guaranteed to solve the user's problem unless the evidence supports that claim."
+        ]
+      },
+      {
+        "turn_id": 2,
+        "user": "For the issue 'Security: Multiple Information Disclosure issues in Streamlit internal endpoints (_stcore) affecting Enterprise DAST scans', what additional technical information should I provide to distinguish between the possible explanations? Please separate information that is already known from information that is still unknown.",
+        "gold_evidence_ids": [
+          "issue-16386",
+          "comment-5207913747",
+          "comment-5240522134",
+          "document-doc-695e6ce2fb1b-3483017622359616890",
+          "release-note-d121bacf4c2f3fd5bbb252009bf562c0ebb62045"
+        ],
+        "expected_behavior": [
+          "Do not repeat checks or explanations already established in turn 1.",
+          "Maintain the same issue context.",
+          "Clearly distinguish known facts from missing information.",
+          "Ask only discriminating questions that could change the diagnosis or next action."
+        ],
+        "must_ask": [
+          "Which exact _stcore endpoint, HTTP response, and response headers/body triggered each remaining disclosure finding, and which Streamlit version was tested for each finding?",
+          "Can you provide the sanitized DAST request/response evidence for the remaining findings so we can distinguish framework behavior from configuration or proxy behavior?"
+        ],
+        "must_not_claim": [
+          "Do not claim that a closed issue is automatically solved.",
+          "Do not claim a root cause unless the evidence supports it.",
+          "Do not invent Streamlit versions, operating systems, Python versions, or reproduction steps.",
+          "Do not claim that a workaround is guaranteed to solve the user's problem unless the evidence supports that claim."
+        ]
+      }
+    ],
+    "final_expected": {
+      "answer_points": [
+        "Explain the reported behavior described in issue 16386.",
+        "Identify which claims are directly supported by the selected evidence.",
+        "Identify important information that remains unknown.",
+        "Incorporate the linked technical comment when it provides evidence relevant to the issue.",
+        "Use the official documentation as documentation evidence when it directly applies."
+      ],
+      "evidence_requirements": [
+        "Use at least one relevant issue record.",
+        "Do not use evidence that is not present in corpus.",
+        "Do not treat issue state as proof of resolution.",
+        "Do not guess missing technical details."
+      ],
+      "maintainer_summary_points": [
+        "Problem summary based on the original issue.",
+        "Evidence-backed findings.",
+        "Known versus unknown technical details.",
+        "Recommended next diagnostic information or action."
+      ]
+    }
+  },
+  {
+    "case_id": "dev-005",
+    "family_id": "family-16538",
+    "split": "dev",
+    "multi_turn": true,
+    "tags": [
+      "forms_callbacks"
+    ],
+    "turns": [
+      {
+        "turn_id": 1,
+        "user": "I am investigating this Streamlit issue:\n\nTitle: st.color_picker cannot be fully interacted with when it's directly inside st.dialog\n\nReported details:\n### Checklist\n\n- [x] I have searched the [existing issues](https://github.com/streamlit/streamlit/issues) for similar issues.\n- [x] I added a very descriptive title to this issue.\n- [x] I have provided sufficient information below to help reproduce this issue.\n\n### Summary\n\nWhen using `st.color_picker` the component does not work when it's inside `st.dialog`.  Clicking on the coloured square opens the color pallete, but any interaction with that pallete is imposible.\n\nPutting the element inside a popover fixes the issue. I have tested `st.column`, `st.expander` and neither of them fix the issue like `st.dialog`.\n\n### Reproducible Code Example\n\n```Python\nimport streamlit as st\n\n@st.dialog(\"Example dialog\")\ndef example_dialog():\n    color = st.color_picker(\"Color picker inside dialog\")\n    st.text(color)\n\n    with st.popover(\"Example popover\"):\n        color = st.color_picker(\"Color picker inside dialog inside popover\")\n        st.text(color)\n\ncolor = st.color_picker(\"Color picker inside dialog inside popover\")\nst.text(color)\n\nst.button(\"Click me\", on_click=example_dialog)\n```\n\n### Steps To Reproduce\n\n1. Create `st.dialog`\n2. Create `st.color_picker` inside that dialog\n3. Try to interact with the `st.color_picker`\n\n### Expected Behavior\n\nThe color pallete would be interactable with inside st.dialog.\n\n### Current Behavior\n\nUpon clicking on `st.color_picker` that is inside `st.dialog` the color pallete dropdown opens, but user cannot interact with it with mouse nor keyboard.\n\n### Is this a regression?\n\n- [ ] Yes, this used to work in a previous version.\n\n### Debug info\n\n- Streamlit version: 1.61.1\n- Python version: Python 3.12.4\n- Operating System: Windows 11 (OS build 26100.9106)\n- I have tested this behaviour on following browsers and the unexpected behaviour was same for all\n    - Microsoft Edge (Version 151.0.4129.78) (Official build) (64-bit)\n    - Firefox Version 153.0.4 (64-bit)\n    - Google Chrome (Version 151.0.7922.138) (Official Build) (64-bit)\n\n### Additional Information\n\n_No response_\n\nBased only on the available evidence, explain what is reported, what is supported by the evidence, and what information is still missing.",
+        "gold_evidence_ids": [
+          "issue-16538",
+          "comment-5315874375",
+          "comment-5318329347",
+          "document-doc-695e6ce2fb1b-3483017622359616890",
+          "release-note-d121bacf4c2f3fd5bbb252009bf562c0ebb62045"
+        ],
+        "expected_behavior": [
+          "Identify the reported problem without changing its meaning.",
+          "Use the selected evidence to support factual claims.",
+          "Distinguish reported facts from documented explanations and hypotheses.",
+          "Do not treat the issue's closed/open state as proof that the problem is solved.",
+          "Do not invent missing technical details.",
+          "Use the linked technical comment when it provides additional reproduction, explanation, workaround, or implementation evidence."
+        ],
+        "must_ask": [],
+        "must_not_claim": [
+          "Do not claim that a closed issue is automatically solved.",
+          "Do not claim a root cause unless the evidence supports it.",
+          "Do not invent Streamlit versions, operating systems, Python versions, or reproduction steps.",
+          "Do not claim that a workaround is guaranteed to solve the user's problem unless the evidence supports that claim."
+        ]
+      },
+      {
+        "turn_id": 2,
+        "user": "For the issue 'st.color_picker cannot be fully interacted with when it's directly inside st.dialog', what additional technical information should I provide to distinguish between the possible explanations? Please separate information that is already known from information that is still unknown.",
+        "gold_evidence_ids": [
+          "issue-16538",
+          "comment-5315874375",
+          "comment-5318329347",
+          "document-doc-695e6ce2fb1b-3483017622359616890",
+          "release-note-d121bacf4c2f3fd5bbb252009bf562c0ebb62045"
+        ],
+        "expected_behavior": [
+          "Do not repeat checks or explanations already established in turn 1.",
+          "Maintain the same issue context.",
+          "Clearly distinguish known facts from missing information.",
+          "Ask only discriminating questions that could change the diagnosis or next action."
+        ],
+        "must_ask": [
+          "Does the interaction failure occur with both mouse and keyboard input, and does it reproduce with a minimal st.dialog containing only st.color_picker?",
+          "Which browser versions and Streamlit version reproduce the issue, and does the same minimal example work when st.color_picker is placed in st.popover or outside an overlay?"
+        ],
+        "must_not_claim": [
+          "Do not claim that a closed issue is automatically solved.",
+          "Do not claim a root cause unless the evidence supports it.",
+          "Do not invent Streamlit versions, operating systems, Python versions, or reproduction steps.",
+          "Do not claim that a workaround is guaranteed to solve the user's problem unless the evidence supports that claim."
+        ]
+      }
+    ],
+    "final_expected": {
+      "answer_points": [
+        "Explain the reported behavior described in issue 16538.",
+        "Identify which claims are directly supported by the selected evidence.",
+        "Identify important information that remains unknown.",
+        "Incorporate the linked technical comment when it provides evidence relevant to the issue.",
+        "Use the official documentation as documentation evidence when it directly applies."
+      ],
+      "evidence_requirements": [
+        "Use at least one relevant issue record.",
+        "Do not use evidence that is not present in corpus.",
+        "Do not treat issue state as proof of resolution.",
+        "Do not guess missing technical details."
+      ],
+      "maintainer_summary_points": [
+        "Problem summary based on the original issue.",
+        "Evidence-backed findings.",
+        "Known versus unknown technical details.",
+        "Recommended next diagnostic information or action."
+      ]
+    }
+  },
+  {
+    "case_id": "dev-006",
+    "family_id": "family-16281",
+    "split": "dev",
+    "multi_turn": true,
+    "tags": [
+      "forms_callbacks",
+      "multipage_navigation",
+      "rerun_execution"
+    ],
+    "turns": [
+      {
+        "turn_id": 1,
+        "user": "I am investigating this Streamlit issue:\n\nTitle: `st.status` created on a container outside a fragment corrupts the element tree and crashes the app with \"Cannot set a node at a delta path\"\n\nReported details:\n### Checklist\n\n- [x] I have searched the [existing issues](https://github.com/streamlit/streamlit/issues) for similar issues.\n- [x] I added a very descriptive title to this issue.\n- [x] I have provided sufficient information below to help reproduce this issue.\n\n### Summary\n\nWhen a fragment calls `.status()` on a container that was declared outside the fragment, and then opens that status block a second time with a separate `with` statement, the app crashes to a blank page with `Uncaught Error: Cannot set a node at a delta path`. The status container re-emits its own block at the wrong delta path, which destroys an intermediate container in the frontend element tree, so the next element written inside it has no parent. This is a regression: it works in 1.58.0 and fails in every version from 1.59.0 onward.\n\n### Reproducible Code Example\n\n[![Open in Streamlit Cloud](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://issues.streamlitapp.com/?issue=gh-16281)\n\n```Python\nimport streamlit as st\n\n@st.fragment\ndef frag(outside):\n    block = outside.status(\"query\")\n    with block:\n        st.code(\"first\")\n    with block:  # second, separate `with` on the same status block\n        st.text(\"second\")\n\nst.title(\"Repro\")\nfrag(st.container())\n```\n\n### Steps To Reproduce\n\n1. Save the example above and run it with `streamlit run app.py`.\n2. Open the app in a browser and open the developer console.\n3. No interaction is needed. The crash happens during the initial page load.\n\n### Expected Behavior\n\nThe app renders the title and a `query` status container holding both writes. Opening a status block twice with two separate `with` statements should behave the same whether the status was created on a container inside or outside the fragment.\n\n### Current Behavior\n\nThe app area goes blank and the \"running\" indicator returns to a rerun control. The console logs this error, thrown at `frontend/lib/src/render-tree/visitors/SetNodeByDeltaPathVisitor.ts:125` (bundle paths shortened to `index.js`):\n\n```\nUncaught Error: Cannot set a node at a delta path\n    at e.visitBlockNode (index.js:14:6488)\n    at bu.accept (index.js:14:2717)\n    at e.visitBlockNode (index.js:14:6366)\n    at bu.accept (index.js:14:2717)\n    at e.visitBlockNode (index.js:14:6366)\n    at bu.accept (index.js:14:2717)\n    at e.visitBlockNode (index.js:14:6366)\n    at bu.accept (index.js:14:2717)\n    at e.setNodeAtPath (index.js:14:6730)\n    at e.addElement (index.js:14:9426)\n```\n\n### Is this a regression?\n\n- [x] Yes, this used to work in a previous version.\n\n### Debug info\n\n- Streamlit version: 1.60.0\n- Python version: 3.11.13\n- Operating System: Linux\n- Browser: Chromium\n\n### Additional Information\n\n#### Affected versions\n\nSame repro, one browser check per version, each version serving its own frontend:\n\n| Streamlit version | Crashes on initial load |\n| --- | --- |\n| 1.58.0 | no |\n| 1.59.0 | yes |\n| 1.59.1 | yes |\n| 1.59.2 | yes |\n| 1.60.0 | yes |\n| `1.60.1.dev20260729` (nightly) | ye\n[issue body truncated]\n\nBased only on the available evidence, explain what is reported, what is supported by the evidence, and what information is still missing.",
+        "gold_evidence_ids": [
+          "issue-16281",
+          "comment-5147756586",
+          "comment-5147776101",
+          "document-doc-695e6ce2fb1b-3483017622359616890",
+          "release-note-d121bacf4c2f3fd5bbb252009bf562c0ebb62045"
+        ],
+        "expected_behavior": [
+          "Identify the reported problem without changing its meaning.",
+          "Use the selected evidence to support factual claims.",
+          "Distinguish reported facts from documented explanations and hypotheses.",
+          "Do not treat the issue's closed/open state as proof that the problem is solved.",
+          "Do not invent missing technical details.",
+          "Use the linked technical comment when it provides additional reproduction, explanation, workaround, or implementation evidence."
+        ],
+        "must_ask": [
+          "What Python version are you using?",
+          "What operating system are you using?"
+        ],
+        "must_not_claim": [
+          "Do not claim that a closed issue is automatically solved.",
+          "Do not claim a root cause unless the evidence supports it.",
+          "Do not invent Streamlit versions, operating systems, Python versions, or reproduction steps.",
+          "Do not claim that a workaround is guaranteed to solve the user's problem unless the evidence supports that claim."
+        ]
+      },
+      {
+        "turn_id": 2,
+        "user": "For the issue '`st.status` created on a container outside a fragment corrupts the element tree and crashes the app with \"Cannot set a node at a delta path\"', what additional technical information should I provide to distinguish between the possible explanations? Please separate information that is already known from information that is still unknown.",
+        "gold_evidence_ids": [
+          "issue-16281",
+          "comment-5147756586",
+          "comment-5147776101",
+          "document-doc-695e6ce2fb1b-3483017622359616890",
+          "release-note-d121bacf4c2f3fd5bbb252009bf562c0ebb62045"
+        ],
+        "expected_behavior": [
+          "Do not repeat checks or explanations already established in turn 1.",
+          "Maintain the same issue context.",
+          "Clearly distinguish known facts from missing information.",
+          "Ask only discriminating questions that could change the diagnosis or next action."
+        ],
+        "must_ask": [
+          "What Python version are you using?",
+          "What operating system are you using?"
+        ],
+        "must_not_claim": [
+          "Do not claim that a closed issue is automatically solved.",
+          "Do not claim a root cause unless the evidence supports it.",
+          "Do not invent Streamlit versions, operating systems, Python versions, or reproduction steps.",
+          "Do not claim that a workaround is guaranteed to solve the user's problem unless the evidence supports that claim."
+        ]
+      }
+    ],
+    "final_expected": {
+      "answer_points": [
+        "Explain the reported behavior described in issue 16281.",
+        "Identify which claims are directly supported by the selected evidence.",
+        "Identify important information that remains unknown.",
+        "Incorporate the linked technical comment when it provides evidence relevant to the issue.",
+        "Use the official documentation as documentation evidence when it directly applies."
+      ],
+      "evidence_requirements": [
+        "Use at least one relevant issue record.",
+        "Do not use evidence that is not present in corpus.",
+        "Do not treat issue state as proof of resolution.",
+        "Do not guess missing technical details."
+      ],
+      "maintainer_summary_points": [
+        "Problem summary based on the original issue.",
+        "Evidence-backed findings.",
+        "Known versus unknown technical details.",
+        "Recommended next diagnostic information or action."
+      ]
+    }
+  },
+  {
+    "case_id": "dev-007",
+    "family_id": "family-16247",
+    "split": "dev",
+    "multi_turn": true,
+    "tags": [
+      "forms_callbacks",
+      "rerun_execution",
+      "widgets"
+    ],
+    "turns": [
+      {
+        "turn_id": 1,
+        "user": "I am investigating this Streamlit issue:\n\nTitle: Disable chat_input submit button if uploaded files exceed size limit or uploads fail or file format mismatch\n\nReported details:\n### Checklist\n\n- [x] I have searched the [existing issues](https://github.com/streamlit/streamlit/issues) for similar feature requests.\n- [x] I added a descriptive title and summary to this issue.\n\n### Summary\n\nWhen st.chat_input (and st.file_uploader) accept files, a file that exceeds max_upload_size or otherwise fails to upload is flagged with an error chip in the UI, but the submit button stays enabled — so the user can still send the message with a failed or missing attachment. Please provide a way to automatically disable the submit button while any attached file is over the limit, errored, or still uploading, so an incomplete/invalid set of files can't be submitted. Ideally also expose the per-file upload status so developers can gate submission themselves.\n\n### Why?\n\nThere's currently no way to stop a chat submission when an upload fails. max_upload_size (from #12692) rejects oversized files before upload, which is great, but the rejected file is then silently dropped — it never appears in the returned ChatInputValue.files / st.file_uploader value, and st.chat_input returns None until submit, so no upload status is available to Python before the user hits send. As a result the app can't detect the failure or set disabled= off it.\n\nThe practical impact:\n- The user attaches 3 files, 1 is over the limit → only 2 upload, the failed one is invisible to the app, and the user can still submits mistakenly believing all 3 went. The app then runs on a partial/incorrect set — wrong results, wasted compute/tokens (very common in LLM apps), and confusion.\n- Submitting while a file is still uploading can send an incomplete set.\n- submit_mode only governs behavior after submit (disable/stop during the run), so it doesn't help gate submission on upload state.\n\n### How?\n\nTwo complementary options:\n\n1. A built-in guard — a parameter that auto-disables the submit button until every attached file has uploaded successfully. For example:\n\nst.chat_input(\n       \"Type a message…\",\n       accept_file=\"multiple\",\n       max_upload_size=1,\n       block_submit_on_upload_error=True,  # submit stays disabled while any file errors/uploads\n   )\n\n2. Expose the upload status so developers can implement their own logic — e.g. a list of {name, size, status} (uploading / success / error) available on rerun before submit, so we can do disabled=any(f.status != \"success\" for f in files).\n\nDesired behavior (matching the natural mental model): submit is enabled only when all attached files have status success. If the user deletes an errored file, it drops out of the status list, and since the remaining files are already success, submit re-enables. In short: track upload status per file before submit, and let it drive the submit button.\n\n### Additional Context\n\n_No response_\n\nBased only on the available evidence, explain what is reported, what is supported by the evidence, and what information is still missing.",
+        "gold_evidence_ids": [
+          "issue-16247",
+          "comment-5122842931",
+          "comment-5123385063",
+          "document-doc-695e6ce2fb1b-3483017622359616890",
+          "release-note-d121bacf4c2f3fd5bbb252009bf562c0ebb62045"
+        ],
+        "expected_behavior": [
+          "Identify the reported problem without changing its meaning.",
+          "Use the selected evidence to support factual claims.",
+          "Distinguish reported facts from documented explanations and hypotheses.",
+          "Do not treat the issue's closed/open state as proof that the problem is solved.",
+          "Do not invent missing technical details.",
+          "Use the linked technical comment when it provides additional reproduction, explanation, workaround, or implementation evidence."
+        ],
+        "must_ask": [
+          "What Streamlit version are you using?",
+          "What operating system are you using?"
+        ],
+        "must_not_claim": [
+          "Do not claim that a closed issue is automatically solved.",
+          "Do not claim a root cause unless the evidence supports it.",
+          "Do not invent Streamlit versions, operating systems, Python versions, or reproduction steps.",
+          "Do not claim that a workaround is guaranteed to solve the user's problem unless the evidence supports that claim."
+        ]
+      },
+      {
+        "turn_id": 2,
+        "user": "For the issue 'Disable chat_input submit button if uploaded files exceed size limit or uploads fail or file format mismatch', what additional technical information should I provide to distinguish between the possible explanations? Please separate information that is already known from information that is still unknown.",
+        "gold_evidence_ids": [
+          "issue-16247",
+          "comment-5122842931",
+          "comment-5123385063",
+          "document-doc-695e6ce2fb1b-3483017622359616890",
+          "release-note-d121bacf4c2f3fd5bbb252009bf562c0ebb62045"
+        ],
+        "expected_behavior": [
+          "Do not repeat checks or explanations already established in turn 1.",
+          "Maintain the same issue context.",
+          "Clearly distinguish known facts from missing information.",
+          "Ask only discriminating questions that could change the diagnosis or next action."
+        ],
+        "must_ask": [
+          "What Streamlit version are you using?",
+          "What operating system are you using?"
+        ],
+        "must_not_claim": [
+          "Do not claim that a closed issue is automatically solved.",
+          "Do not claim a root cause unless the evidence supports it.",
+          "Do not invent Streamlit versions, operating systems, Python versions, or reproduction steps.",
+          "Do not claim that a workaround is guaranteed to solve the user's problem unless the evidence supports that claim."
+        ]
+      }
+    ],
+    "final_expected": {
+      "answer_points": [
+        "Explain the reported behavior described in issue 16247.",
+        "Identify which claims are directly supported by the selected evidence.",
+        "Identify important information that remains unknown.",
+        "Incorporate the linked technical comment when it provides evidence relevant to the issue.",
+        "Use the official documentation as documentation evidence when it directly applies."
+      ],
+      "evidence_requirements": [
+        "Use at least one relevant issue record.",
+        "Do not use evidence that is not present in corpus.",
+        "Do not treat issue state as proof of resolution.",
+        "Do not guess missing technical details."
+      ],
+      "maintainer_summary_points": [
+        "Problem summary based on the original issue.",
+        "Evidence-backed findings.",
+        "Known versus unknown technical details.",
+        "Recommended next diagnostic information or action."
+      ]
+    }
+  },
+  {
+    "case_id": "dev-008",
+    "family_id": "family-16570",
+    "split": "dev",
+    "multi_turn": true,
+    "tags": [
+      "caching",
+      "forms_callbacks"
+    ],
+    "turns": [
+      {
+        "turn_id": 1,
+        "user": "I am investigating this Streamlit issue:\n\nTitle: Connection error\n\nReported details:\n### Checklist\n\n- [x] I have searched the [existing issues](https://github.com/streamlit/streamlit/issues) for similar issues.\n- [x] I added a very descriptive title to this issue.\n- [x] I have provided sufficient information below to help reproduce this issue.\n\n### Summary\n\nFailed to process a Websocket message. Error: Cached ForwardMsg MISS [hash=cd4746dc1df6dcfb073b12276a2c9e39]. This is not expected to happen.\n\n### Reproducible Code Example\n\n```Python\n\n```\n\n### Steps To Reproduce\n\n_No response_\n\n### Expected Behavior\n\n_No response_\n\n### Current Behavior\n\n_No response_\n\n### Is this a regression?\n\n- [ ] Yes, this used to work in a previous version.\n\n### Debug info\n\n- Streamlit version:\n- Python version:\n- Operating System:\n- Browser:\n\n### Additional Information\n\n_No response_\n\nBased only on the available evidence, explain what is reported, what is supported by the evidence, and what information is still missing.",
+        "gold_evidence_ids": [
+          "issue-16570",
+          "comment-5339531156",
+          "comment-5339577190",
+          "document-doc-695e6ce2fb1b-3483017622359616890",
+          "release-note-d121bacf4c2f3fd5bbb252009bf562c0ebb62045"
+        ],
+        "expected_behavior": [
+          "Identify the reported problem without changing its meaning.",
+          "Use the selected evidence to support factual claims.",
+          "Distinguish reported facts from documented explanations and hypotheses.",
+          "Do not treat the issue's closed/open state as proof that the problem is solved.",
+          "Do not invent missing technical details.",
+          "Use the linked technical comment when it provides additional reproduction, explanation, workaround, or implementation evidence."
+        ],
+        "must_ask": [],
+        "must_not_claim": [
+          "Do not claim that a closed issue is automatically solved.",
+          "Do not claim a root cause unless the evidence supports it.",
+          "Do not invent Streamlit versions, operating systems, Python versions, or reproduction steps.",
+          "Do not claim that a workaround is guaranteed to solve the user's problem unless the evidence supports that claim."
+        ]
+      },
+      {
+        "turn_id": 2,
+        "user": "For the issue 'Connection error', what additional technical information should I provide to distinguish between the possible explanations? Please separate information that is already known from information that is still unknown.",
+        "gold_evidence_ids": [
+          "issue-16570",
+          "comment-5339531156",
+          "comment-5339577190",
+          "document-doc-695e6ce2fb1b-3483017622359616890",
+          "release-note-d121bacf4c2f3fd5bbb252009bf562c0ebb62045"
+        ],
+        "expected_behavior": [
+          "Do not repeat checks or explanations already established in turn 1.",
+          "Maintain the same issue context.",
+          "Clearly distinguish known facts from missing information.",
+          "Ask only discriminating questions that could change the diagnosis or next action."
+        ],
+        "must_ask": [
+          "What exact Streamlit version, Python version, operating system, browser, and deployment environment produced the Cached ForwardMsg MISS?",
+          "Can you provide a minimal reproducible application and indicate whether the error occurs after a specific rerun, reconnect, or widget interaction?"
+        ],
+        "must_not_claim": [
+          "Do not claim that a closed issue is automatically solved.",
+          "Do not claim a root cause unless the evidence supports it.",
+          "Do not invent Streamlit versions, operating systems, Python versions, or reproduction steps.",
+          "Do not claim that a workaround is guaranteed to solve the user's problem unless the evidence supports that claim."
+        ]
+      }
+    ],
+    "final_expected": {
+      "answer_points": [
+        "Explain the reported behavior described in issue 16570.",
+        "Identify which claims are directly supported by the selected evidence.",
+        "Identify important information that remains unknown.",
+        "Incorporate the linked technical comment when it provides evidence relevant to the issue.",
+        "Use the official documentation as documentation evidence when it directly applies."
+      ],
+      "evidence_requirements": [
+        "Use at least one relevant issue record.",
+        "Do not use evidence that is not present in corpus.",
+        "Do not treat issue state as proof of resolution.",
+        "Do not guess missing technical details."
+      ],
+      "maintainer_summary_points": [
+        "Problem summary based on the original issue.",
+        "Evidence-backed findings.",
+        "Known versus unknown technical details.",
+        "Recommended next diagnostic information or action."
+      ]
+    }
+  },
+  {
+    "case_id": "dev-009",
+    "family_id": "family-14247",
+    "split": "dev",
+    "multi_turn": true,
+    "tags": [
+      "caching",
+      "forms_callbacks",
+      "multipage_navigation",
+      "widgets"
+    ],
+    "turns": [
+      {
+        "turn_id": 1,
+        "user": "I am investigating this Streamlit issue:\n\nTitle: \"Missing Submit Button\" error displayed while a form is loading\n\nReported details:\n### Checklist\n\n- [x] I have searched the [existing issues](https://github.com/streamlit/streamlit/issues) for similar issues.\n- [x] I added a very descriptive title to this issue.\n- [x] I have provided sufficient information below to help reproduce this issue.\n\n### Summary\n\nWhile a form is loading, for a brief moment \"Missing Submit Button\" error flashes on the screen.\n\n### Reproducible Code Example\n\nFrom official examples: https://docs.streamlit.io/develop/api-reference/execution-flow/st.form\n\n```Python\nimport streamlit as st\n\nwith st.form(\"my_form\"):\n    st.write(\"Inside the form\")\n    slider_val = st.slider(\"Form slider\")\n    checkbox_val = st.checkbox(\"Form checkbox\")\n\n    # Every form must have a submit button.\n    submitted = st.form_submit_button(\"Submit\")\n    if submitted:\n        st.write(\"slider\", slider_val, \"checkbox\", checkbox_val)\nst.write(\"Outside the form\")\n```\n\n### Steps To Reproduce\n\n1. Navigate to the official form example: https://doc-form1.streamlit.app/\n2. Turn on browser developer tools (I am using Chrome in this example)\n3. Select \"Disable cache\"\n4. Select \"Slow 4G\" throttling\n    <img width=\"387\" height=\"97\" alt=\"Image\" src=\"https://github.com/user-attachments/assets/7e77f36c-71fc-482e-9d99-34ffde158198\" />\n5. Refresh the page\n6. Observe a big red error message \"Missing Submit Button\"\n\n<img width=\"1158\" height=\"850\" alt=\"Image\" src=\"https://github.com/user-attachments/assets/9f039a3d-e969-4540-8fe9-2bb0597d3a15\" />\n\nAfter the form finishes loading it works fine.\n\n### Expected Behavior\n\nWhile a form is loading, no error messages should be displayed.\n\n### Current Behavior\n\nWhile a form is loading, for a brief moment \"Missing Submit Button\" error flashes on the screen.\n\n<img width=\"1158\" height=\"850\" alt=\"Image\" src=\"https://github.com/user-attachments/assets/9f039a3d-e969-4540-8fe9-2bb0597d3a15\" />\n\n### Is this a regression?\n\n- [ ] Yes, this used to work in a previous version.\n\n### Debug info\n\n- Streamlit version: 1.55.0\n- Python version: 3.12.12\n- Operating System: Ubuntu 24.04 LTS\n- Browser: Chrome, Firefox\n\n### Additional Information\n\n_No response_\n\nBased only on the available evidence, explain what is reported, what is supported by the evidence, and what information is still missing.",
+        "gold_evidence_ids": [
+          "issue-14247",
+          "comment-4012448231",
+          "comment-4115739058",
+          "document-doc-695e6ce2fb1b-3483017622359616890",
+          "release-note-d121bacf4c2f3fd5bbb252009bf562c0ebb62045"
+        ],
+        "expected_behavior": [
+          "Identify the reported problem without changing its meaning.",
+          "Use the selected evidence to support factual claims.",
+          "Distinguish reported facts from documented explanations and hypotheses.",
+          "Do not treat the issue's closed/open state as proof that the problem is solved.",
+          "Do not invent missing technical details.",
+          "Use the linked technical comment when it provides additional reproduction, explanation, workaround, or implementation evidence."
+        ],
+        "must_ask": [],
+        "must_not_claim": [
+          "Do not claim that a closed issue is automatically solved.",
+          "Do not claim a root cause unless the evidence supports it.",
+          "Do not invent Streamlit versions, operating systems, Python versions, or reproduction steps.",
+          "Do not claim that a workaround is guaranteed to solve the user's problem unless the evidence supports that claim."
+        ]
+      },
+      {
+        "turn_id": 2,
+        "user": "For the issue '\"Missing Submit Button\" error displayed while a form is loading', what additional technical information should I provide to distinguish between the possible explanations? Please separate information that is already known from information that is still unknown.",
+        "gold_evidence_ids": [
+          "issue-14247",
+          "comment-4012448231",
+          "comment-4115739058",
+          "document-doc-695e6ce2fb1b-3483017622359616890",
+          "release-note-d121bacf4c2f3fd5bbb252009bf562c0ebb62045"
+        ],
+        "expected_behavior": [
+          "Do not repeat checks or explanations already established in turn 1.",
+          "Maintain the same issue context.",
+          "Clearly distinguish known facts from missing information.",
+          "Ask only discriminating questions that could change the diagnosis or next action."
+        ],
+        "must_ask": [
+          "Does the warning appear only during the initial page load on slow connections, and does it disappear after the form finishes rendering?",
+          "Can you provide the approximate network conditions and confirm whether the issue reproduces with the official minimal form example on the same Streamlit version?"
+        ],
+        "must_not_claim": [
+          "Do not claim that a closed issue is automatically solved.",
+          "Do not claim a root cause unless the evidence supports it.",
+          "Do not invent Streamlit versions, operating systems, Python versions, or reproduction steps.",
+          "Do not claim that a workaround is guaranteed to solve the user's problem unless the evidence supports that claim."
+        ]
+      }
+    ],
+    "final_expected": {
+      "answer_points": [
+        "Explain the reported behavior described in issue 14247.",
+        "Identify which claims are directly supported by the selected evidence.",
+        "Identify important information that remains unknown.",
+        "Incorporate the linked technical comment when it provides evidence relevant to the issue.",
+        "Use the official documentation as documentation evidence when it directly applies."
+      ],
+      "evidence_requirements": [
+        "Use at least one relevant issue record.",
+        "Do not use evidence that is not present in corpus.",
+        "Do not treat issue state as proof of resolution.",
+        "Do not guess missing technical details."
+      ],
+      "maintainer_summary_points": [
+        "Problem summary based on the original issue.",
+        "Evidence-backed findings.",
+        "Known versus unknown technical details.",
+        "Recommended next diagnostic information or action."
+      ]
+    }
+  },
+  {
+    "case_id": "dev-010",
+    "family_id": "family-15893",
+    "split": "dev",
+    "multi_turn": true,
+    "tags": [
+      "forms_callbacks",
+      "multipage_navigation",
+      "rerun_execution",
+      "session_state",
+      "widgets"
+    ],
+    "turns": [
+      {
+        "turn_id": 1,
+        "user": "I am investigating this Streamlit issue:\n\nTitle: st.tabs collapses into a stacked column after certain session-state interactions on 1.59.0 (works on 1.58.x)\n\nReported details:\n### Checklist\n\n- [x] I have searched the [existing issues](https://github.com/streamlit/streamlit/issues) for similar issues.\n- [x] I added a very descriptive title to this issue.\n- [x] I have provided sufficient information below to help reproduce this issue.\n\n### Summary\n\nst.tabs([...]) renders correctly on the first page load, but after a chain of nested widget interactions (in our case: submit a form → click a computation button → select a CSV from the training-library st.selectbox inside a nested expander) the tab widget flattens on the next rerun: all with tab_X: block contents render as a single scrollable column with no tab bar. Downgrading to streamlit<1.59 (latest 1.58.x) restores the tab widget with no other code changes.\n\nBroken: streamlit==1.59.0 (released 2026-07-06).\nWorking: streamlit<1.59 (latest 1.58.x).\n\nSource\nhttps://github.com/Fodera-Laboratory/PEARL-app — pinned to streamlit<1.59 in requirements.txt for the moment.\n\n### Reproducible Code Example\n\n```Python\n\n```\n\n### Steps To Reproduce\n\nReproduction (against our app)\n\nOpen https://pearl-app.streamlit.app/ — 10 tabs render correctly.\nIn the 📂 Linescan files tab, upload a linescan .txt file.\nIn the 📊 PLS regression unmixing tab, click ▶ Apply PLS Model.\nIn the 📐 CLS unmixing tab, click ▶ Run CLS.\nIn the same tab, expand Water content — response factor method → click ▶ Build response curve.\nScroll to the Pure-water test section, select a spectrum from the training-library dropdown.\nOn the next rerun, the tab widget disappears — all 10 tab contents are rendered as sequential sections in a single column.\nReloading the page fully restores the tab widget.\n\n### Expected Behavior\n\nExpected behavior\n\nst.tabs() should render as a tab widget across all reruns, regardless of session-state activity elsewhere in the script.\n\n### Current Behavior\n\nDiagnostic signals:\nNo JavaScript errors in browser DevTools console.\nNo Python exceptions in the Streamlit Cloud runtime log.\nThe only warning present is check_session_state_rules for widgets created with both value= and key= where the key's slot is pre-seeded via st.session_state.setdefault(...). We refactored those to remove value= / index= in favour of pure setdefault seeding; the warning went away but the tab collapse persisted.\n\n### Is this a regression?\n\n- [x] Yes, this used to work in a previous version.\n\n### Debug info\n\n- Streamlit version: 1.59.0 (broken) → downgraded to 1.58.x (fixed)\n- Python version: 3.14 (Streamlit Community Cloud current default)\n- Operating System: macOS 26.5.1 (25F80)\n- Browser: Chrome and Safari — both affected - Repro also observed in an incognito window (rules out client-side state)\n\n### Additional Information\n\n_No response_\n\nBased only on the available evidence, explain what is reported, what is supported by the evidence, and what information is still missing.",
+        "gold_evidence_ids": [
+          "issue-15893",
+          "comment-4912669057",
+          "comment-4912779849",
+          "document-doc-695e6ce2fb1b-3483017622359616890",
+          "release-note-d121bacf4c2f3fd5bbb252009bf562c0ebb62045"
+        ],
+        "expected_behavior": [
+          "Identify the reported problem without changing its meaning.",
+          "Use the selected evidence to support factual claims.",
+          "Distinguish reported facts from documented explanations and hypotheses.",
+          "Do not treat the issue's closed/open state as proof that the problem is solved.",
+          "Do not invent missing technical details.",
+          "Use the linked technical comment when it provides additional reproduction, explanation, workaround, or implementation evidence."
+        ],
+        "must_ask": [],
+        "must_not_claim": [
+          "Do not claim that a closed issue is automatically solved.",
+          "Do not claim a root cause unless the evidence supports it.",
+          "Do not invent Streamlit versions, operating systems, Python versions, or reproduction steps.",
+          "Do not claim that a workaround is guaranteed to solve the user's problem unless the evidence supports that claim."
+        ]
+      },
+      {
+        "turn_id": 2,
+        "user": "For the issue 'st.tabs collapses into a stacked column after certain session-state interactions on 1.59.0 (works on 1.58.x)', what additional technical information should I provide to distinguish between the possible explanations? Please separate information that is already known from information that is still unknown.",
+        "gold_evidence_ids": [
+          "issue-15893",
+          "comment-4912669057",
+          "comment-4912779849",
+          "document-doc-695e6ce2fb1b-3483017622359616890",
+          "release-note-d121bacf4c2f3fd5bbb252009bf562c0ebb62045"
+        ],
+        "expected_behavior": [
+          "Do not repeat checks or explanations already established in turn 1.",
+          "Maintain the same issue context.",
+          "Clearly distinguish known facts from missing information.",
+          "Ask only discriminating questions that could change the diagnosis or next action."
+        ],
+        "must_ask": [
+          "Can you provide a minimal reproduction containing only st.tabs and the smallest widget/session-state interaction sequence that triggers the collapse?",
+          "Does the failure reproduce consistently on 1.59.0 and disappear on 1.58.x with the same code, Python version, and browser?"
+        ],
+        "must_not_claim": [
+          "Do not claim that a closed issue is automatically solved.",
+          "Do not claim a root cause unless the evidence supports it.",
+          "Do not invent Streamlit versions, operating systems, Python versions, or reproduction steps.",
+          "Do not claim that a workaround is guaranteed to solve the user's problem unless the evidence supports that claim."
+        ]
+      }
+    ],
+    "final_expected": {
+      "answer_points": [
+        "Explain the reported behavior described in issue 15893.",
+        "Identify which claims are directly supported by the selected evidence.",
+        "Identify important information that remains unknown.",
+        "Incorporate the linked technical comment when it provides evidence relevant to the issue.",
+        "Use the official documentation as documentation evidence when it directly applies."
+      ],
+      "evidence_requirements": [
+        "Use at least one relevant issue record.",
+        "Do not use evidence that is not present in corpus.",
+        "Do not treat issue state as proof of resolution.",
+        "Do not guess missing technical details."
+      ],
+      "maintainer_summary_points": [
+        "Problem summary based on the original issue.",
+        "Evidence-backed findings.",
+        "Known versus unknown technical details.",
+        "Recommended next diagnostic information or action."
+      ]
+    }
+  },
+  {
+    "case_id": "dev-011",
+    "family_id": "family-16909",
+    "split": "dev",
+    "multi_turn": true,
+    "tags": [
+      "forms_callbacks",
+      "widgets"
+    ],
+    "turns": [
+      {
+        "turn_id": 1,
+        "user": "I am investigating this Streamlit issue:\n\nTitle: st.data_editor NumberColumn: typing a value starting with \".\" (no leading zero) drops the decimal point and reads digits as a whole number\n\nReported details:\n### Checklist\n\n- [x] I have searched the [existing issues](https://github.com/streamlit/streamlit/issues) for similar issues.\n- [x] I added a very descriptive title to this issue.\n- [x] I have provided sufficient information below to help reproduce this issue.\n\n### Summary\n\nWhen a NumberColumn cell is selected and you type a value that starts with `.` (e.g. `.01`), the `.` is silently dropped and the remaining digits are committed as a whole number — `.01` becomes `1`, `.07` becomes `7`. Typing the same value with a leading zero (`0.01`) works correctly, and **pasting** `.01` into the cell also works correctly. So this is specific to the character-by-character typed-entry path.\n\nImpact\nThis is a real-world data-entry trap: any user in the habit of typing .01-style shorthand (common for percentage/margin fields) silently enters a value the cell just shows a plausible-looking wrong number.\n\n### Reproducible Code Example\n\n```Python\nimport pandas as pd\nimport streamlit as st\ndf = pd.DataFrame({\"Customer\": [\"A\", \"B\"], \"Margin\": [12.0, 8.0]})\nst.data_editor(\n    df,\n    column_config={\n        \"Margin\": st.column_config.NumberColumn(\"Margin\", format=\"%.4f\", step=0.0001),\n    },\n)\n```\n\n### Steps To Reproduce\n\nClick the Margin cell for row A (shows 12.0000).\nType .07 (as literal keystrokes: ., 0, 7).\nPress Enter.\n\n### Expected Behavior\n\nExpected: cell shows 0.0700.\n\n### Current Behavior\n\nActual: cell shows 7.0000.\n\n### Is this a regression?\n\n- [ ] Yes, this used to work in a previous version.\n\n### Debug info\n\nStreamlit version: 1.61.1\nPython version: 3.12/3.14\nBrowser: Chrome\nOS: Windows\n\n### Additional Information\n\n_No response_\n\nBased only on the available evidence, explain what is reported, what is supported by the evidence, and what information is still missing.",
+        "gold_evidence_ids": [
+          "issue-16909",
+          "comment-5609182193",
+          "comment-5610395575",
+          "document-doc-695e6ce2fb1b-3483017622359616890",
+          "release-note-d121bacf4c2f3fd5bbb252009bf562c0ebb62045"
+        ],
+        "expected_behavior": [
+          "Identify the reported problem without changing its meaning.",
+          "Use the selected evidence to support factual claims.",
+          "Distinguish reported facts from documented explanations and hypotheses.",
+          "Do not treat the issue's closed/open state as proof that the problem is solved.",
+          "Do not invent missing technical details.",
+          "Use the linked technical comment when it provides additional reproduction, explanation, workaround, or implementation evidence."
+        ],
+        "must_ask": [
+          "What operating system are you using?"
+        ],
+        "must_not_claim": [
+          "Do not claim that a closed issue is automatically solved.",
+          "Do not claim a root cause unless the evidence supports it.",
+          "Do not invent Streamlit versions, operating systems, Python versions, or reproduction steps.",
+          "Do not claim that a workaround is guaranteed to solve the user's problem unless the evidence supports that claim."
+        ]
+      },
+      {
+        "turn_id": 2,
+        "user": "For the issue 'st.data_editor NumberColumn: typing a value starting with \".\" (no leading zero) drops the decimal point and reads digits as a whole number', what additional technical information should I provide to distinguish between the possible explanations? Please separate information that is already known from information that is still unknown.",
+        "gold_evidence_ids": [
+          "issue-16909",
+          "comment-5609182193",
+          "comment-5610395575",
+          "document-doc-695e6ce2fb1b-3483017622359616890",
+          "release-note-d121bacf4c2f3fd5bbb252009bf562c0ebb62045"
+        ],
+        "expected_behavior": [
+          "Do not repeat checks or explanations already established in turn 1.",
+          "Maintain the same issue context.",
+          "Clearly distinguish known facts from missing information.",
+          "Ask only discriminating questions that could change the diagnosis or next action."
+        ],
+        "must_ask": [
+          "What operating system are you using?"
+        ],
+        "must_not_claim": [
+          "Do not claim that a closed issue is automatically solved.",
+          "Do not claim a root cause unless the evidence supports it.",
+          "Do not invent Streamlit versions, operating systems, Python versions, or reproduction steps.",
+          "Do not claim that a workaround is guaranteed to solve the user's problem unless the evidence supports that claim."
+        ]
+      }
+    ],
+    "final_expected": {
+      "answer_points": [
+        "Explain the reported behavior described in issue 16909.",
+        "Identify which claims are directly supported by the selected evidence.",
+        "Identify important information that remains unknown.",
+        "Incorporate the linked technical comment when it provides evidence relevant to the issue.",
+        "Use the official documentation as documentation evidence when it directly applies."
+      ],
+      "evidence_requirements": [
+        "Use at least one relevant issue record.",
+        "Do not use evidence that is not present in corpus.",
+        "Do not treat issue state as proof of resolution.",
+        "Do not guess missing technical details."
+      ],
+      "maintainer_summary_points": [
+        "Problem summary based on the original issue.",
+        "Evidence-backed findings.",
+        "Known versus unknown technical details.",
+        "Recommended next diagnostic information or action."
+      ]
+    }
+  },
+  {
+    "case_id": "dev-012",
+    "family_id": "family-16358",
+    "split": "dev",
+    "multi_turn": true,
+    "tags": [
+      "forms_callbacks",
+      "rerun_execution"
+    ],
+    "turns": [
+      {
+        "turn_id": 1,
+        "user": "I am investigating this Streamlit issue:\n\nTitle: Streamlit 1.61 runs into error when launching streamlit hello: connection failed with status 500\n\nReported details:\n### Checklist\n\n- [x] I have searched the [existing issues](https://github.com/streamlit/streamlit/issues) for similar issues.\n- [x] I added a very descriptive title to this issue.\n- [x] I have provided sufficient information below to help reproduce this issue.\n\n### Summary\n\nPackage is installed from conda-forge\n\nException in ASGI application\nTraceback (most recent call last):\n  File \"/opt/miniconda3/envs/tf-env/lib/python3.14/site-packages/uvicorn/protocols/http/httptools_impl.py\", line 422, in run_asgi\n    result = await app(  # type: ignore[func-returns-value]\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n        self.scope, self.receive, self.send\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    )\n    ^\n  File \"/opt/miniconda3/envs/tf-env/lib/python3.14/site-packages/uvicorn/middleware/proxy_headers.py\", line 63, in __call__\n    return await self.app(scope, receive, send)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/miniconda3/envs/tf-env/lib/python3.14/site-packages/starlette/applications.py\", line 90, in __call__\n    await self.middleware_stack(scope, receive, send)\n  File \"/opt/miniconda3/envs/tf-env/lib/python3.14/site-packages/starlette/middleware/errors.py\", line 186, in __call__\n    raise exc\n  File \"/opt/miniconda3/envs/tf-env/lib/python3.14/site-packages/starlette/middleware/errors.py\", line 164, in __call__\n    await self.app(scope, receive, _send)\n  File \"/opt/miniconda3/envs/tf-env/lib/python3.14/site-packages/streamlit/web/server/starlette/starlette_path_security_middleware.py\", line 162, in __call__\n    await self.app(scope, receive, send)\n  File \"/opt/miniconda3/envs/tf-env/lib/python3.14/site-packages/starlette/middleware/sessions.py\", line 88, in __call__\n    await self.app(scope, receive, send_wrapper)\n  File \"/opt/miniconda3/envs/tf-env/lib/python3.14/site-packages/streamlit/web/server/starlette/starlette_gzip_middleware.py\", line 144, in __call__\n    await super().__call__(scope, receive, send)\n  File \"/opt/miniconda3/envs/tf-env/lib/python3.14/site-packages/streamlit/web/server/starlette/starlette_gzip_middleware.py\", line 125, in __call__\n    responder = _MediaAwareGZipResponder(\n        self.app, self.minimum_size, compresslevel=self.compresslevel\n    )\nTypeError: GZipResponder.__init__() missing 1 required keyword-only argument: 'thread_minimum_size'\n\n### Reproducible Code Example\n\n```Python\n\n```\n\n### Steps To Reproduce\n\n_No response_\n\n### Expected Behavior\n\n_No response_\n\n### Current Behavior\n\n_No response_\n\n### Is this a regression?\n\n- [ ] Yes, this used to work in a previous version.\n\n### Debug info\n\n- Streamlit version: 1.61.0-pyhd8ed1ab_0(conda-forge)\n- Python version: 3.14.5\n- Operating System: MacOS 26.6\n- Browser: Chrome: 151.0.7922.76\n\n### Additional Information\n\n_No response_\n\nBased only on the available evidence, explain what is reported, what is supported by the evidence, and what information is still missing.",
+        "gold_evidence_ids": [
+          "issue-16358",
+          "comment-5199776229",
+          "comment-5201242949",
+          "document-doc-695e6ce2fb1b-3483017622359616890",
+          "release-note-d121bacf4c2f3fd5bbb252009bf562c0ebb62045"
+        ],
+        "expected_behavior": [
+          "Identify the reported problem without changing its meaning.",
+          "Use the selected evidence to support factual claims.",
+          "Distinguish reported facts from documented explanations and hypotheses.",
+          "Do not treat the issue's closed/open state as proof that the problem is solved.",
+          "Do not invent missing technical details.",
+          "Use the linked technical comment when it provides additional reproduction, explanation, workaround, or implementation evidence."
+        ],
+        "must_ask": [],
+        "must_not_claim": [
+          "Do not claim that a closed issue is automatically solved.",
+          "Do not claim a root cause unless the evidence supports it.",
+          "Do not invent Streamlit versions, operating systems, Python versions, or reproduction steps.",
+          "Do not claim that a workaround is guaranteed to solve the user's problem unless the evidence supports that claim."
+        ]
+      },
+      {
+        "turn_id": 2,
+        "user": "For the issue 'Streamlit 1.61 runs into error when launching streamlit hello: connection failed with status 500', what additional technical information should I provide to distinguish between the possible explanations? Please separate information that is already known from information that is still unknown.",
+        "gold_evidence_ids": [
+          "issue-16358",
+          "comment-5199776229",
+          "comment-5201242949",
+          "document-doc-695e6ce2fb1b-3483017622359616890",
+          "release-note-d121bacf4c2f3fd5bbb252009bf562c0ebb62045"
+        ],
+        "expected_behavior": [
+          "Do not repeat checks or explanations already established in turn 1.",
+          "Maintain the same issue context.",
+          "Clearly distinguish known facts from missing information.",
+          "Ask only discriminating questions that could change the diagnosis or next action."
+        ],
+        "must_ask": [
+          "Can you provide the exact Starlette and Uvicorn versions installed alongside Streamlit 1.61.0 and confirm whether upgrading specifically to Streamlit 1.61.1 resolves the startup error?",
+          "Does the same failure reproduce outside conda-forge, for example in a clean pip environment with the same Python version?"
+        ],
+        "must_not_claim": [
+          "Do not claim that a closed issue is automatically solved.",
+          "Do not claim a root cause unless the evidence supports it.",
+          "Do not invent Streamlit versions, operating systems, Python versions, or reproduction steps.",
+          "Do not claim that a workaround is guaranteed to solve the user's problem unless the evidence supports that claim."
+        ]
+      }
+    ],
+    "final_expected": {
+      "answer_points": [
+        "Explain the reported behavior described in issue 16358.",
+        "Identify which claims are directly supported by the selected evidence.",
+        "Identify important information that remains unknown.",
+        "Incorporate the linked technical comment when it provides evidence relevant to the issue.",
+        "Use the official documentation as documentation evidence when it directly applies."
+      ],
+      "evidence_requirements": [
+        "Use at least one relevant issue record.",
+        "Do not use evidence that is not present in corpus.",
+        "Do not treat issue state as proof of resolution.",
+        "Do not guess missing technical details."
+      ],
+      "maintainer_summary_points": [
+        "Problem summary based on the original issue.",
+        "Evidence-backed findings.",
+        "Known versus unknown technical details.",
+        "Recommended next diagnostic information or action."
+      ]
+    }
+  },
+  {
+    "case_id": "dev-013",
+    "family_id": "family-14917",
+    "split": "dev",
+    "multi_turn": true,
+    "tags": [
+      "forms_callbacks",
+      "multipage_navigation",
+      "rerun_execution",
+      "widgets"
+    ],
+    "turns": [
+      {
+        "turn_id": 1,
+        "user": "I am investigating this Streamlit issue:\n\nTitle: Parent-page scroll resets after closing `st.dialog` opened from a custom component (regression since 1.41.0, worsened at 1.53.0)\n\nReported details:\n### Checklist\n\n- [x] I have searched the [existing issues](https://github.com/streamlit/streamlit/issues) for similar issues.\n- [x] I added a very descriptive title to this issue.\n- [x] I have provided sufficient information below to help reproduce this issue.\n\n### Summary\n\n### Summary\n\nWhen a `@st.dialog` is opened from a Streamlit custom component (e.g. via\n`Streamlit.setComponentValue(...)` on user interaction) and then closed, the main content\narea's scroll position — `section[data-testid=\"stMain\"]` in the parent DOM — is reset. This\nis a regression that was introduced in Streamlit 1.41.0 and was made strictly worse in\n1.53.0.\n\n### Bisect (using streamlit-pdf-viewer as the test vehicle)\n\n| streamlit-pdf-viewer | Streamlit | Browser  | scrollTop 200 → | Verdict              |\n|----------------------|-----------|----------|-----------------|----------------------|\n| 0.0.25               | 1.40.2    | both     | 200             | ok                   |\n| 0.0.25               | 1.47.0    | both     | 200             | ok *(reporter's env)*|\n| 0.0.25               | **1.52.0**| firefox  | 200             | **ok**               |\n| 0.0.25               | **1.53.0**| firefox  | 0               | **regression**       |\n| 0.0.25               | 1.53.0    | chromium | 0               | regression           |\n| 0.0.25               | 1.56.0    | both     | 0               | broken               |\n| 0.0.26+              | 1.40.2    | both     | 200             | ok                   |\n| **0.0.26+**          | **1.41.0**| firefox  | 0               | **regression**       |\n| 0.0.26+              | 1.41.0    | chromium | ~174            | minor shift          |\n| 0.0.26+              | 1.56.0    | firefox  | 0               | broken               |\n\nTwo distinct regressions are visible:\n\n1. **1.40.2 → 1.41.0** — Firefox-only reset. Only triggers when the custom component's DOM\n   has a `.scrolling-container` wrapper plus an absolutely-positioned sibling (a common shape\n   for components with overlay controls). A minimal-DOM component escapes it.\n2. **1.52.0 → 1.53.0** — reset on **both** browsers, regardless of DOM shape. Any custom\n   component that triggers a rerun via `st.dialog` close hits this.\n\nAfter 1.53.0, there is no version of the downstream component that avoids the bug.\n\n### Reproducible Code Example\n\n```Python\nimport streamlit as st\nfrom streamlit_pdf_viewer import pdf_viewer  # pip install streamlit-pdf-viewer==0.0.26\n\n@st.dialog(\"popup\")\ndef show_popup():\n    st.text(\"Close me and observe the page scroll reset.\")\n\nwith open(\"resources/test.pdf\", \"rb\") as f:\n    content = f.read()\n\nannotations = [\n    {\"page\": 1, \"x\": 100, \"y\": 100, \"height\": 22, \"width\": 30, \"color\": \"blue\"},\n    {\"page\": 1, \"x\": 150, \"y\": 120, \"height\": 22, \"width\": 30, \"color\": \"green\"},\n    {\"page\": 2, \"x\": 180, \"y\": 130, \"height\": 22, \"width\": 30, \"color\": \"purple\"},\n    {\"page\": 2, \"x\": 220, \"y\": 155, \"height\": 22, \"width\": 30, \"color\": \"red\"},\n]\n\nclicked = pdf_viewer(c\n[issue body truncated]\n\nBased only on the available evidence, explain what is reported, what is supported by the evidence, and what information is still missing.",
+        "gold_evidence_ids": [
+          "issue-14917",
+          "comment-4316310301",
+          "comment-4909385326",
+          "document-doc-695e6ce2fb1b-3483017622359616890",
+          "release-note-d121bacf4c2f3fd5bbb252009bf562c0ebb62045"
+        ],
+        "expected_behavior": [
+          "Identify the reported problem without changing its meaning.",
+          "Use the selected evidence to support factual claims.",
+          "Distinguish reported facts from documented explanations and hypotheses.",
+          "Do not treat the issue's closed/open state as proof that the problem is solved.",
+          "Do not invent missing technical details.",
+          "Use the linked technical comment when it provides additional reproduction, explanation, workaround, or implementation evidence."
+        ],
+        "must_ask": [
+          "What Python version are you using?",
+          "What operating system are you using?"
+        ],
+        "must_not_claim": [
+          "Do not claim that a closed issue is automatically solved.",
+          "Do not claim a root cause unless the evidence supports it.",
+          "Do not invent Streamlit versions, operating systems, Python versions, or reproduction steps.",
+          "Do not claim that a workaround is guaranteed to solve the user's problem unless the evidence supports that claim."
+        ]
+      },
+      {
+        "turn_id": 2,
+        "user": "For the issue 'Parent-page scroll resets after closing `st.dialog` opened from a custom component (regression since 1.41.0, worsened at 1.53.0)', what additional technical information should I provide to distinguish between the possible explanations? Please separate information that is already known from information that is still unknown.",
+        "gold_evidence_ids": [
+          "issue-14917",
+          "comment-4316310301",
+          "comment-4909385326",
+          "document-doc-695e6ce2fb1b-3483017622359616890",
+          "release-note-d121bacf4c2f3fd5bbb252009bf562c0ebb62045"
+        ],
+        "expected_behavior": [
+          "Do not repeat checks or explanations already established in turn 1.",
+          "Maintain the same issue context.",
+          "Clearly distinguish known facts from missing information.",
+          "Ask only discriminating questions that could change the diagnosis or next action."
+        ],
+        "must_ask": [
+          "What Python version are you using?",
+          "What operating system are you using?"
+        ],
+        "must_not_claim": [
+          "Do not claim that a closed issue is automatically solved.",
+          "Do not claim a root cause unless the evidence supports it.",
+          "Do not invent Streamlit versions, operating systems, Python versions, or reproduction steps.",
+          "Do not claim that a workaround is guaranteed to solve the user's problem unless the evidence supports that claim."
+        ]
+      }
+    ],
+    "final_expected": {
+      "answer_points": [
+        "Explain the reported behavior described in issue 14917.",
+        "Identify which claims are directly supported by the selected evidence.",
+        "Identify important information that remains unknown.",
+        "Incorporate the linked technical comment when it provides evidence relevant to the issue.",
+        "Use the official documentation as documentation evidence when it directly applies."
+      ],
+      "evidence_requirements": [
+        "Use at least one relevant issue record.",
+        "Do not use evidence that is not present in corpus.",
+        "Do not treat issue state as proof of resolution.",
+        "Do not guess missing technical details."
+      ],
+      "maintainer_summary_points": [
+        "Problem summary based on the original issue.",
+        "Evidence-backed findings.",
+        "Known versus unknown technical details.",
+        "Recommended next diagnostic information or action."
+      ]
+    }
+  },
+  {
+    "case_id": "dev-014",
+    "family_id": "family-9380",
+    "split": "dev",
+    "multi_turn": true,
+    "tags": [
+      "forms_callbacks",
+      "rerun_execution"
+    ],
+    "turns": [
+      {
+        "turn_id": 1,
+        "user": "I am investigating this Streamlit issue:\n\nTitle: Attempting to show a table with nested lists fails with `cannot mix list and non-list, non-null values`\n\nReported details:\n### Checklist\n\n- [X] I have searched the [existing issues](https://github.com/streamlit/streamlit/issues) for similar issues.\n- [X] I added a very descriptive title to this issue.\n- [X] I have provided sufficient information below to help reproduce this issue.\n\n### Summary\n\nThe provided snippet attempts to show a `DataFrame` table, but it fails with a pyarrow serialization error `cannot mix list and non-list, non-null values`. For full traceback see below.\n\n### Reproducible Code Example\n\n[![Open in Streamlit Cloud](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://issues.streamlitapp.com/?issue=gh-9380)\n\n```Python\nimport pandas as pd\nimport streamlit as st\n\nNESTED_LAT_LON_COORDS = [\n    [\n        [8.7778551, 49.3375681],\n        [8.7775115, 49.3371419],\n        [8.7772715, 49.3369171],\n    ],\n    [\n        [\n            [8.7778551, 49.3375681],\n            [8.7775115, 49.3371419],\n        ]\n    ],\n]\n\ndf = pd.DataFrame(\n    {\n        \"nested_lat_lon_coords\": NESTED_LAT_LON_COORDS,\n    }\n)\nst.write(df)\n```\n\n### Steps To Reproduce\n\n1. Just run it via `streamlit run debug_script.py`. The error is immediate.\n\n### Expected Behavior\n\nShould not crash and display the table.\n\n### Current Behavior\n\nThe full error traceback is:\n\n```\n2024-08-31 10:59:25.071 Serialization of dataframe to Arrow table was unsuccessful due to: ('cannot mix list and non-list, non-null values', 'Conversion failed for column nested_lat_lon_coords with type object'). Applying automatic fixes for column types to make the dataframe Arrow-compatible.\n2024-08-31 10:59:25.072 Uncaught app exception\nTraceback (most recent call last):\n  File \"/home/fabian/git/immoscrape/venv/lib/python3.10/site-packages/streamlit/dataframe_util.py\", line 815, in convert_pandas_df_to_arrow_bytes\n    table = pa.Table.from_pandas(df)\n  File \"pyarrow/table.pxi\", line 4623, in pyarrow.lib.Table.from_pandas\n  File \"/home/fabian/git/immoscrape/venv/lib/python3.10/site-packages/pyarrow/pandas_compat.py\", line 616, in dataframe_to_arrays\n    arrays = [convert_column(c, f)\n  File \"/home/fabian/git/immoscrape/venv/lib/python3.10/site-packages/pyarrow/pandas_compat.py\", line 616, in <listcomp>\n    arrays = [convert_column(c, f)\n  File \"/home/fabian/git/immoscrape/venv/lib/python3.10/site-packages/pyarrow/pandas_compat.py\", line 603, in convert_column\n    raise e\n  File \"/home/fabian/git/immoscrape/venv/lib/python3.10/site-packages/pyarrow/pandas_compat.py\", line 597, in convert_column\n    result = pa.array(col, type=type_, from_pandas=True, safe=safe)\n  File \"pyarrow/array.pxi\", line 358, in pyarrow.lib.array\n  File \"pyarrow/array.pxi\", line 85, in pyarrow.lib._ndarray_to_array\n  File \"pyarrow/error.pxi\", line 92, in pyarrow.lib.check_status\npyarrow.lib.ArrowInvalid: ('cannot mix list and non-list, non-null values', 'Conversion failed for column nested_lat_lon_coords with type object')\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  \n[issue body truncated]\n\nBased only on the available evidence, explain what is reported, what is supported by the evidence, and what information is still missing.",
+        "gold_evidence_ids": [
+          "issue-9380",
+          "comment-2322851884",
+          "comment-2324021942",
+          "document-doc-695e6ce2fb1b-3483017622359616890",
+          "release-note-d121bacf4c2f3fd5bbb252009bf562c0ebb62045"
+        ],
+        "expected_behavior": [
+          "Identify the reported problem without changing its meaning.",
+          "Use the selected evidence to support factual claims.",
+          "Distinguish reported facts from documented explanations and hypotheses.",
+          "Do not treat the issue's closed/open state as proof that the problem is solved.",
+          "Do not invent missing technical details.",
+          "Use the linked technical comment when it provides additional reproduction, explanation, workaround, or implementation evidence."
+        ],
+        "must_ask": [],
+        "must_not_claim": [
+          "Do not claim that a closed issue is automatically solved.",
+          "Do not claim a root cause unless the evidence supports it.",
+          "Do not invent Streamlit versions, operating systems, Python versions, or reproduction steps.",
+          "Do not claim that a workaround is guaranteed to solve the user's problem unless the evidence supports that claim."
+        ]
+      },
+      {
+        "turn_id": 2,
+        "user": "For the issue 'Attempting to show a table with nested lists fails with `cannot mix list and non-list, non-null values`', what additional technical information should I provide to distinguish between the possible explanations? Please separate information that is already known from information that is still unknown.",
+        "gold_evidence_ids": [
+          "issue-9380",
+          "comment-2322851884",
+          "comment-2324021942",
+          "document-doc-695e6ce2fb1b-3483017622359616890",
+          "release-note-d121bacf4c2f3fd5bbb252009bf562c0ebb62045"
+        ],
+        "expected_behavior": [
+          "Do not repeat checks or explanations already established in turn 1.",
+          "Maintain the same issue context.",
+          "Clearly distinguish known facts from missing information.",
+          "Ask only discriminating questions that could change the diagnosis or next action."
+        ],
+        "must_ask": [
+          "Can you provide the exact DataFrame schema and representative values that contain the mixed list/non-list structure, plus the complete traceback?",
+          "Does converting the nested structure to a uniform Arrow-compatible type change the behavior, and which Streamlit/PyArrow versions are involved?"
+        ],
+        "must_not_claim": [
+          "Do not claim that a closed issue is automatically solved.",
+          "Do not claim a root cause unless the evidence supports it.",
+          "Do not invent Streamlit versions, operating systems, Python versions, or reproduction steps.",
+          "Do not claim that a workaround is guaranteed to solve the user's problem unless the evidence supports that claim."
+        ]
+      }
+    ],
+    "final_expected": {
+      "answer_points": [
+        "Explain the reported behavior described in issue 9380.",
+        "Identify which claims are directly supported by the selected evidence.",
+        "Identify important information that remains unknown.",
+        "Incorporate the linked technical comment when it provides evidence relevant to the issue.",
+        "Use the official documentation as documentation evidence when it directly applies."
+      ],
+      "evidence_requirements": [
+        "Use at least one relevant issue record.",
+        "Do not use evidence that is not present in corpus.",
+        "Do not treat issue state as proof of resolution.",
+        "Do not guess missing technical details."
+      ],
+      "maintainer_summary_points": [
+        "Problem summary based on the original issue.",
+        "Evidence-backed findings.",
+        "Known versus unknown technical details.",
+        "Recommended next diagnostic information or action."
+      ]
+    }
+  },
+  {
+    "case_id": "dev-015",
+    "family_id": "family-8488",
+    "split": "dev",
+    "multi_turn": true,
+    "tags": [
+      "caching",
+      "forms_callbacks",
+      "rerun_execution",
+      "session_state"
+    ],
+    "turns": [
+      {
+        "turn_id": 1,
+        "user": "I am investigating this Streamlit issue:\n\nTitle: Native asyncio support\n\nReported details:\n### Checklist\n\n- [X] I have searched the [existing issues](https://github.com/streamlit/streamlit/issues) for similar feature requests.\n- [X] I added a descriptive title and summary to this issue.\n\n### Summary\n\nStreamlit needs native asyncio support.\n\nI would like to point the following:\n\n- asyncio interface is also important for snowflake, so usability or applicability of that should be a no brainer\n- all modern databases have async interfaces and they will only expand with time\n- streamlit is based on asyncio itself, so at least properly exposing the original tornado's event loop would also not require to much work for you\n\nKnown problems for now:\n- when using asyncio.run() -> RuntimeError: Event loop is closed if the requests follow concurrently in the tornado eventlets\n- every eventlet with own event loop -> tasks are getting to the wrong event loop\n- cached event loop for all eventlets through session state -> best for now, gets event loop is closed when multile sessions are acessing the app simultaneously\n\nSo with that said, very ugly workaround that I found working best for now:\n\n```python\n@st.cache_resource(show_spinner=False)\ndef get_event_loop():\n    loop = asyncio.new_event_loop()\n    asyncio.set_event_loop(loop)\n    return loop\n\nif not st.session_state.get(\"event_loop\"):\n    st.session_state[\"event_loop\"] = get_event_loop()\n```\n\nthen pass that event loop wherever your data is coming from, here is motor example:\n\n```python\nasync def setup_db(force=False):\n    if force or not st.session_state.get(\"db_client\"):\n        with st.spinner(\"Loading...\"):\n            client = AsyncIOMotorClient(\n                os.environ[\"MONGODB_URI\"],\n                tls=MONGODB_TLS,\n                io_loop=st.session_state[\"event_loop\"],\n            )\n            st.session_state[\"db_client\"] = await init_database(client=client)\n            return client\n```\ninit_database is a call to beanie's init database\n\nI understand that making the entire framework async would require too much work and would prb confuse the ML/AI crowd too much, but streamlit is such a gorgeous framework, the only place it fails in misery is the async\n\n### Why?\n\nAsyncio data technologies should be natively or at least easily accessible from streamlit apps.\n\n### How?\n\nRuns with asyncio.run() should not result to errors.\nConcurrent access also should not be broken.\nAsyncio loop from tornado app should be available in the scripts.\n\nHandling st.* calls async seems quite unimaginable, but at least the functioning asyncio in the eventlets would give us a lot.\n\nAlso async support for on_change and on_click callbacks and caching functions.\n\n### Additional Context\n\nRelated issues:\n- https://github.com/streamlit/streamlit/issues/744\n- https://github.com/streamlit/streamlit/issues/8308\n- https://github.com/streamlit/streamlit/issues/12076\n\nBased only on the available evidence, explain what is reported, what is supported by the evidence, and what information is still missing.",
+        "gold_evidence_ids": [
+          "issue-8488",
+          "comment-2724643471",
+          "comment-2724927627",
+          "document-doc-695e6ce2fb1b-43138702738729614",
+          "release-note-d121bacf4c2f3fd5bbb252009bf562c0ebb62045"
+        ],
+        "expected_behavior": [
+          "Identify the reported problem without changing its meaning.",
+          "Use the selected evidence to support factual claims.",
+          "Distinguish reported facts from documented explanations and hypotheses.",
+          "Do not treat the issue's closed/open state as proof that the problem is solved.",
+          "Do not invent missing technical details.",
+          "Use the linked technical comment when it provides additional reproduction, explanation, workaround, or implementation evidence."
+        ],
+        "must_ask": [
+          "What Streamlit version are you using?",
+          "What Python version are you using?"
+        ],
+        "must_not_claim": [
+          "Do not claim that a closed issue is automatically solved.",
+          "Do not claim a root cause unless the evidence supports it.",
+          "Do not invent Streamlit versions, operating systems, Python versions, or reproduction steps.",
+          "Do not claim that a workaround is guaranteed to solve the user's problem unless the evidence supports that claim."
+        ]
+      },
+      {
+        "turn_id": 2,
+        "user": "For the issue 'Native asyncio support', what additional technical information should I provide to distinguish between the possible explanations? Please separate information that is already known from information that is still unknown.",
+        "gold_evidence_ids": [
+          "issue-8488",
+          "comment-2724643471",
+          "comment-2724927627",
+          "document-doc-695e6ce2fb1b-43138702738729614",
+          "release-note-d121bacf4c2f3fd5bbb252009bf562c0ebb62045"
+        ],
+        "expected_behavior": [
+          "Do not repeat checks or explanations already established in turn 1.",
+          "Maintain the same issue context.",
+          "Clearly distinguish known facts from missing information.",
+          "Ask only discriminating questions that could change the diagnosis or next action."
+        ],
+        "must_ask": [
+          "What Streamlit version are you using?",
+          "What Python version are you using?"
+        ],
+        "must_not_claim": [
+          "Do not claim that a closed issue is automatically solved.",
+          "Do not claim a root cause unless the evidence supports it.",
+          "Do not invent Streamlit versions, operating systems, Python versions, or reproduction steps.",
+          "Do not claim that a workaround is guaranteed to solve the user's problem unless the evidence supports that claim."
+        ]
+      }
+    ],
+    "final_expected": {
+      "answer_points": [
+        "Explain the reported behavior described in issue 8488.",
+        "Identify which claims are directly supported by the selected evidence.",
+        "Identify important information that remains unknown.",
+        "Incorporate the linked technical comment when it provides evidence relevant to the issue.",
+        "Use the official documentation as documentation evidence when it directly applies."
+      ],
+      "evidence_requirements": [
+        "Use at least one relevant issue record.",
+        "Do not use evidence that is not present in corpus.",
+        "Do not treat issue state as proof of resolution.",
+        "Do not guess missing technical details."
+      ],
+      "maintainer_summary_points": [
+        "Problem summary based on the original issue.",
+        "Evidence-backed findings.",
+        "Known versus unknown technical details.",
+        "Recommended next diagnostic information or action."
+      ]
+    }
+  }
+]

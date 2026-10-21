@@ -1,0 +1,449 @@
+{
+  "issue": {
+    "id": 951856319,
+    "number": 3601,
+    "title": "on_change not called for first session_state value",
+    "html_url": "https://github.com/streamlit/streamlit/issues/3601",
+    "created_at": "2021-07-23T19:51:41Z",
+    "updated_at": "2025-03-29T21:50:50Z",
+    "closed_at": null,
+    "state": "open",
+    "state_reason": null,
+    "author_association": "CONTRIBUTOR",
+    "source_id": "issue:3601",
+    "repository": "streamlit/streamlit",
+    "body": "### Summary\n\nStreamlit 0.84 introduces an [`on_change` callback](https://docs.streamlit.io/en/stable/session_state_api.html#use-callbacks-to-update-session-state) for some interactive widgets as part of the new Session State API. I've found that the callback is not invoked for the first value (i.e., the widget's default or initial value), only for subsequent values.  \n\n### Steps to reproduce\n\nCode snippet:\n\n```python\nimport streamlit as st\n\ndef colour_changed():\n    st.info(f\"colour_changed: {st.session_state.colour}\")\n\ncolour = st.selectbox(\"Colour\", [\"blue\", \"red\", \"yellow\", \"green\"], key=\"colour\", on_change=colour_changed)\n\nst.info(f\"selectbox returned: {colour}\")\n```\n\n1. When the report is first run, the selectbox returns `blue` as the selected value, but the `colour_changed()` callback is not called.\n2. When a different colour is selected, the selectbox returns the new colour and `colour_changed()` is called.\n \n**Expected behavior:**\n\nI believe the `on_change` callback should be called when a widget sets the initial/default value.\n\nI'm finding that the lack of a callback for the initial value greatly complicates things because I can't depend on the callback to do stuff for every value of an interactive widget. I have to write special cases for the initial state.\n\nThis is further complicated by what seems like a bug initializing default session_state values for widgets like selectbox (see #3598).\n\n**Actual behavior:**\n\nThe `on_change` callback is not called for a widget's initial/default value.\n\n### Is this a regression?\n\nNo. The Session State API is new in Streamlit 0.84.\n\n### Debug info\n\n- Streamlit version: Streamlit, version 0.84.2\n- Python version: Python 3.8.11\n- Using Conda? PipEnv? PyEnv? Pex? Just pip\n- OS version: Debian buster (in a python:3.8 container)\n- Browser version: Safari 14.1 on macOS Mojave 10.14.6\n\n### Additional information\n\nNone.\n\n---\n\nCommunity voting on feature requests enables the Streamlit team to understand which features are most important to our users.\n\n**If you'd like the Streamlit team to prioritize this feature request, please use the 👍 (thumbs up emoji) reaction in response to the initial post.**\n\n![Views](https://api.views-badge.org/badge/st-issue-3601)",
+    "labels": [
+      "type:enhancement",
+      "feature:state",
+      "feature:st.session_state"
+    ],
+    "author": {
+      "login": "kinghuang",
+      "type": "User"
+    },
+    "comment_count": 18,
+    "comments_complete": true,
+    "metadata_retrieved_at": "2026-10-06T14:28:11.874253+00:00",
+    "comments_retrieved_at": "2026-10-06T14:45:19.258377+00:00",
+    "comments_retrieval_method": "github_rest_comments",
+    "body_sha256": "5c4e68b10e8fc289126995a0ad212e5c4f3da72dfde7e53b5641344d73a44718",
+    "original_body_sha256": "5c4e68b10e8fc289126995a0ad212e5c4f3da72dfde7e53b5641344d73a44718",
+    "streamlit_version": {
+      "value": "0.84.2",
+      "evidence_text": "- Streamlit version: Streamlit, version 0.84.2",
+      "start_char": 1621,
+      "end_char": 1667,
+      "method": "explicit_version_line_regex"
+    },
+    "python_version": {
+      "value": "3.8.11",
+      "evidence_text": "- Python version: Python 3.8.11",
+      "start_char": 1668,
+      "end_char": 1699,
+      "method": "explicit_version_line_regex"
+    },
+    "topic_tags_heuristic": [
+      "callbacks",
+      "initialization_or_update"
+    ],
+    "sampling_sources": [
+      "label:feature:st.session_state",
+      "repo:streamlit/streamlit is:issue session_state in:title,body created:<=2026-10-06",
+      "repo:streamlit/streamlit is:issue \"session state\" in:title,body created:<=2026-10-06",
+      "repo:streamlit/streamlit is:issue \"widget state\" in:title,body created:<=2026-10-06"
+    ],
+    "relevance_basis": "state_label_or_title",
+    "evaluation_split": null,
+    "pilot_previously_inspected": false,
+    "historical_as_of_reconstruction": false,
+    "operating_system": null,
+    "browser": {
+      "value": "Safari 14.1 on macOS Mojave 10.14.6",
+      "evidence_text": "- Browser version: Safari 14.1 on macOS Mojave 10.14.6",
+      "start_char": 1800,
+      "end_char": 1854,
+      "method": "explicit_environment_line_regex"
+    }
+  },
+  "comments": [
+    {
+      "id": 885958004,
+      "html_url": "https://github.com/streamlit/streamlit/issues/3601#issuecomment-885958004",
+      "created_at": "2021-07-23T23:17:58Z",
+      "updated_at": "2021-07-23T23:17:58Z",
+      "author_association": "CONTRIBUTOR",
+      "source_id": "comment:885958004",
+      "issue_number": 3601,
+      "parent_source_id": "issue:3601",
+      "body": "Hi @kinghuang!\r\n\r\nThis is currently working as intended (semantically, we didn't want to consider the initial render of a widget a change to it), and I believe that most implementations of callbacks (for example, javascript `onchange` handlers) follow the same convention.\r\n\r\nI can, however, see how needing to special-case the initial state to have certain things run could be a pain depending on your use case. This may be a tricky one as I'd imagine that changing the behavior to call the callback on first render would similarly make other use cases have to write some code to special-case the first run and avoid doing things.\r\n\r\nFor now, I think our path forward for this issue will be to wait a bit to see how often people bring up this problem, and we can reevaluate our decision after collecting a bit more data as either solution will come with its own caveats.",
+      "author": {
+        "login": "vdonato",
+        "type": "User"
+      },
+      "is_bot": false,
+      "retrieval_method": "github_rest_comments",
+      "retrieved_at": "2026-10-06T14:45:19.258377+00:00",
+      "body_sha256": "b71e400dcead7f9d1490325031165dd226fccdbafde288697dc4e5c5a8000ae0",
+      "updated_at_basis": "rest_updated_at",
+      "is_hidden": false
+    },
+    {
+      "id": 886074035,
+      "html_url": "https://github.com/streamlit/streamlit/issues/3601#issuecomment-886074035",
+      "created_at": "2021-07-24T16:12:42Z",
+      "updated_at": "2021-07-24T16:20:47Z",
+      "author_association": "CONTRIBUTOR",
+      "source_id": "comment:886074035",
+      "issue_number": 3601,
+      "parent_source_id": "issue:3601",
+      "body": "While that does match how an `onChange` handler on an html `<select>` element would behave, I'd argue that it's not the right call for Streamlit, especially as part of the State API.\r\n\r\nThe programming model for Streamlit's interactive widgets is purely data oriented. When a widget like [`st.selectbox`](https://docs.streamlit.io/en/stable/session_state_api.html) is called, the return value is the widget's value not an instance of the widget. Developers don't get to interact with the widget object itself.\r\n\r\nWith the State API, widget values can now be backed by session state. As part of the State API and in keeping with Streamlit's data oriented flow, I believe that `on_change` should be called for changes to the state value, not changes to the widget value. So, when a widget sets a state value from *nothing* to the initial/default value, that is a change to the state value which should trigger `on_change`. Since developers don't have access to the widget, having `on_change` be based on widget changes is not as useful.\r\n\r\nOr, put another way, I should be able to transpose Streamlit code that acts on the return value of a widget into an `on_change` function, and have it do the same thing. As it stands, the transposed code will miss the first value. And, I now have to capture the return value and figure out how to call the `on_change` handler *just the first time*, which doesn't seem right for a Streamlit app.\r\n\r\n**Example code:**\r\n\r\nThe same logical code that acts on a widget's return value and `on_change` produces different results. The `on_change` handler isn't aware of the widget's initial value.\r\n\r\n```python\r\nimport streamlit as st\r\n\r\nif not \"initialized\" in st.session_state:\r\n    st.session_state.return_values = []\r\n    st.session_state.change_values = []\r\n    st.session_state.initialized = True\r\n\r\ndef capture_change_value():\r\n    st.session_state.change_values.append(st.session_state.number)\r\n    st.text(f\"Change values: {st.session_state.change_values}\")\r\n\r\ndef capture_return_value(number):\r\n    st.session_state.return_values.append(number)\r\n    st.text(f\"Return values: {st.session_state.return_values}\")\r\n\r\ncapture_return_value(st.number_input(\"Number\", key=\"number\", on_change=capture_change_value))\r\n```\r\n\r\n**Output after clicking + three times:**\r\n\r\n![image](https://user-images.githubusercontent.com/27340/126874503-ac0ce0e9-e891-4b47-8260-6c8fc685a9ba.png)\r\n\r\n**Example workaround:**\r\n\r\nIn order for existing code to work in an `on_change` handler, you'd have to capture the return value of a widget and call the `on_change` handler manually, but only for the very first return value. This isn't in keeping with Streamlit's data-oriented and not widget-oriented programming model.\r\n\r\n```python\r\nimport streamlit as st\r\n\r\nif not \"initialized\" in st.session_state:\r\n    st.session_state.return_values = []\r\n    st.session_state.change_values = []\r\n    st.session_state.initialized = True\r\n    st.session_state.first_return = True\r\n\r\ndef capture_change_value():\r\n    st.session_state.change_values.append(st.session_state.number)\r\n    st.text(f\"Change values: {st.session_state.change_values}\")\r\n\r\ndef capture_return_value(number):\r\n    if st.session_state.first_return:\r\n        capture_change_value()\r\n        st.session_state.first_return = False\r\n\r\n    st.session_state.return_values.append(number)\r\n    st.text(f\"Return values: {st.session_state.return_values}\")\r\n\r\ncapture_return_value(st.number_input(\"Number\", key=\"number\", on_change=capture_change_value))\r\n```\r\n\r\n![image](https://user-images.githubusercontent.com/27340/126874666-c96d361c-e7b6-416d-b41a-8f952974f2e7.png)",
+      "author": {
+        "login": "kinghuang",
+        "type": "User"
+      },
+      "is_bot": false,
+      "retrieval_method": "github_rest_comments",
+      "retrieved_at": "2026-10-06T14:45:19.258377+00:00",
+      "body_sha256": "1bfa50103d4c3a40e1fe521668f7b8e0abfd9fccaed8abece983b0d2d5e53b0d",
+      "updated_at_basis": "rest_updated_at",
+      "is_hidden": false
+    },
+    {
+      "id": 886086180,
+      "html_url": "https://github.com/streamlit/streamlit/issues/3601#issuecomment-886086180",
+      "created_at": "2021-07-24T17:42:46Z",
+      "updated_at": "2021-07-24T17:43:14Z",
+      "author_association": "CONTRIBUTOR",
+      "source_id": "comment:886086180",
+      "issue_number": 3601,
+      "parent_source_id": "issue:3601",
+      "body": "Here's another example of the problem, which requires even more complexity to solve. For a selectbox, if the options change, the `on_change` handler is not called for the first selection of the changed options.\r\n\r\n```python\r\nimport streamlit as st\r\n\r\nlist_one = (\"One\", (\"A\", \"B\", \"C\"))\r\nlist_two = (\"Two\", (\"D\", \"E\", \"F\"))\r\n\r\nif not \"initialized\" in st.session_state:\r\n    st.session_state.return_values = []\r\n    st.session_state.change_values = []\r\n    st.session_state.initialized = True\r\n\r\ndef capture_change_value():\r\n    st.session_state.change_values.append(st.session_state.item)\r\n    st.text(f\"Change values: {st.session_state.change_values}\")\r\n\r\ndef capture_return_value(item):\r\n    st.session_state.return_values.append(item)\r\n    st.text(f\"Return values: {st.session_state.return_values}\")\r\n\r\nret1 = st.selectbox(\"List\", (list_one, list_two), key=\"list\", format_func=lambda x: x[0])\r\nret2 = st.selectbox(\"Item\", st.session_state.list[1], key=\"item\", format_func=lambda x: x, on_change=capture_change_value)\r\n\r\ncapture_return_value(ret2)\r\n```\r\n\r\nStarting with `A` (the initial value), then selecting `B`, and `C` from the **Item** selectbox, then selecting **List** `Two` and continuing with `D`, `E` and `F` results in the `on_change` handler only being called for `B`, `C`, `E`, `F`. The two initial/default values, `A` and `D`, are missed and would require special handling.\r\n\r\n![image](https://user-images.githubusercontent.com/27340/126876788-cce32b41-0b5c-4b73-af7a-80438ffd874c.png)\r\n\r\nhttps://user-images.githubusercontent.com/27340/126876838-d80348bb-a129-4fb6-8bd7-6356936f83a6.mov",
+      "author": {
+        "login": "kinghuang",
+        "type": "User"
+      },
+      "is_bot": false,
+      "retrieval_method": "github_rest_comments",
+      "retrieved_at": "2026-10-06T14:45:19.258377+00:00",
+      "body_sha256": "49854c07f26caaf8ddd1b4a10ee10f4f0efe170a714820f90f025a87bb20696d",
+      "updated_at_basis": "rest_updated_at",
+      "is_hidden": false
+    },
+    {
+      "id": 887135212,
+      "html_url": "https://github.com/streamlit/streamlit/issues/3601#issuecomment-887135212",
+      "created_at": "2021-07-27T01:16:54Z",
+      "updated_at": "2021-07-27T01:16:54Z",
+      "author_association": "CONTRIBUTOR",
+      "source_id": "comment:887135212",
+      "issue_number": 3601,
+      "parent_source_id": "issue:3601",
+      "body": "Thanks for the detailed write-up @kinghuang! I'll loop in our product team to make sure these examples get some visibility (cc @asaini).",
+      "author": {
+        "login": "vdonato",
+        "type": "User"
+      },
+      "is_bot": false,
+      "retrieval_method": "github_rest_comments",
+      "retrieved_at": "2026-10-06T14:45:19.258377+00:00",
+      "body_sha256": "aa3e205ec41162cc20a5d6b09d6cbd7c5e275396bd39337cfe1327829ecf6627",
+      "updated_at_basis": "rest_updated_at",
+      "is_hidden": false
+    },
+    {
+      "id": 888418868,
+      "html_url": "https://github.com/streamlit/streamlit/issues/3601#issuecomment-888418868",
+      "created_at": "2021-07-28T15:47:30Z",
+      "updated_at": "2021-07-28T15:47:30Z",
+      "author_association": "NONE",
+      "source_id": "comment:888418868",
+      "issue_number": 3601,
+      "parent_source_id": "issue:3601",
+      "body": "Hi @kinghuang : I'm on the Product team at Streamlit. First of all, I want to say that we appreciate your efforts in bringing up this issue.\r\n\r\nWhile the examples you share help illustrate the problem, we would love to learn more about your use case for requesting a callback to be called when a widget sets the initial/default value. Can you shed some light on the app you're trying to build and if you've tried any workarounds to get around the problem?",
+      "author": {
+        "login": "asaini",
+        "type": "User"
+      },
+      "is_bot": false,
+      "retrieval_method": "github_rest_comments",
+      "retrieved_at": "2026-10-06T14:45:19.258377+00:00",
+      "body_sha256": "c4fc4beb93104a79eb4f60dc33b35e17c12a53175a646cced39f547c0633c8d9",
+      "updated_at_basis": "rest_updated_at",
+      "is_hidden": false
+    },
+    {
+      "id": 888592636,
+      "html_url": "https://github.com/streamlit/streamlit/issues/3601#issuecomment-888592636",
+      "created_at": "2021-07-28T20:16:45Z",
+      "updated_at": "2021-07-28T20:16:45Z",
+      "author_association": "CONTRIBUTOR",
+      "source_id": "comment:888592636",
+      "issue_number": 3601,
+      "parent_source_id": "issue:3601",
+      "body": "Sure, I don't have time to whip up a full example app right now, but I'll try to describe the main bits.\r\n\r\nI'm currently using Streamlit to build a series of review apps for our spaCy NLP pipelines. Using the new State API, I've been storing a database session object, a batch of rows for review, and a process object (basically a controller for what's being reviewed). Central to the apps are custom Streamlit components for doing things like scoring the quality of the Doc objects or modifying labels in the entity spans in the Doc objects.\r\n\r\nHere's an abbreviated version of the function that is struggling with the `on_change` calls.\r\n\r\n```python\r\ndef process_and_batch_selector(process_title=\"Process\", batch_title=\"Batch\"):\r\n    # Prepare data change handlers.\r\n    def process_changed():\r\n        st.session_state.batch_infos = st.session_state.process.batch_infos()\r\n\r\n    def batch_changed():\r\n        batch_info = st.session_state.batch_info\r\n        if not batch_info:\r\n            return\r\n\r\n        # When a batch changes, commit any pending changes in the active session,\r\n        # then create a new session for the batch.\r\n        if session := st.session_state.session:\r\n            session.commit()\r\n            session.close()\r\n\r\n        st.session_state.session = session = create_session()\r\n\r\n        # Get the batch id from batch_info, and load a full object for the batch\r\n        # into the session.\r\n        process = st.session_state.process\r\n        batch_id = batch_info[0]\r\n\r\n        st.session_state.batch = session.query(process.batch_cls).filter(process.batch_cls.id == batch_id).first()\r\n\r\n    # Initialize session state data.\r\n    if not \"session\" in st.session_state:\r\n        st.session_state.session = None\r\n        st.session_state.batch = None\r\n\r\n    # Select the review process.\r\n    if process_title:\r\n        st.subheader(process_title)\r\n    process = st.selectbox(\"\", PROCESSES, format_func=lambda p: p.label, key=\"process\", on_change=process_changed)\r\n\r\n    # Workaround for selectbox state and on_change limitations\r\n    if not \"batch_infos\" in st.session_state:\r\n        process_changed()\r\n\r\n    if batch_title:\r\n        st.subheader(batch_title)\r\n    batch_info = st.selectbox(\"\", st.session_state.batch_infos, format_func=lambda info: info[1], key=\"batch_info\", on_change=batch_changed)\r\n\r\n    # Workaround for selectbox state and on_change limitations\r\n    if batch_info is not None and st.session_state.session is None:\r\n        batch_changed()\r\n```\r\n\r\nWhen a `batch_info` is selected, I want to commit changes in the batch being edited (if any), then fetch the new batch of objects from the database for editing.\r\n\r\nIf you look for the `# Workaround` comments, you can see where the `on_change` functions are being explicitly invoked for both process and batch selection. Without them, the initial/default batch that is selected doesn't load, for example, because the batch selectbox's `on_change` function isn't called.\r\n\r\nIf I didn't set the `key` attribute on the batch selector on the batch selectbox and relied on its return value, I would get the value (including the initial/default value) on every run of the code. But, then, I'd have to implement my own change detection, probably by storing a value in `session_state` and then comparing it to the return value.",
+      "author": {
+        "login": "kinghuang",
+        "type": "User"
+      },
+      "is_bot": false,
+      "retrieval_method": "github_rest_comments",
+      "retrieved_at": "2026-10-06T14:45:19.258377+00:00",
+      "body_sha256": "150e8d4e1438ef624ffe69c5a9376f84718ca8222e13a51d7d5ee9f7b33ed219",
+      "updated_at_basis": "rest_updated_at",
+      "is_hidden": false
+    },
+    {
+      "id": 1079654255,
+      "html_url": "https://github.com/streamlit/streamlit/issues/3601#issuecomment-1079654255",
+      "created_at": "2022-03-26T10:05:57Z",
+      "updated_at": "2022-03-26T10:05:57Z",
+      "author_association": "NONE",
+      "source_id": "comment:1079654255",
+      "issue_number": 3601,
+      "parent_source_id": "issue:3601",
+      "body": "I was stuck with a similar problem, thank you @kinghuang 😀👍",
+      "author": {
+        "login": "ahmedshahriar",
+        "type": "User"
+      },
+      "is_bot": false,
+      "retrieval_method": "github_rest_comments",
+      "retrieved_at": "2026-10-06T14:45:19.258377+00:00",
+      "body_sha256": "8820929ece06e5b020ecbd6f21c1c839842f93fb6ea380844f41e61bc07e5e4a",
+      "updated_at_basis": "rest_updated_at",
+      "is_hidden": false
+    },
+    {
+      "id": 1232975831,
+      "html_url": "https://github.com/streamlit/streamlit/issues/3601#issuecomment-1232975831",
+      "created_at": "2022-08-31T13:57:47Z",
+      "updated_at": "2022-09-08T11:09:42Z",
+      "author_association": "NONE",
+      "source_id": "comment:1232975831",
+      "issue_number": 3601,
+      "parent_source_id": "issue:3601",
+      "body": "I would like to reiterate the request of @kinghuang, `I believe the on_change callback should be called when a widget sets the initial/default value.`\r\nI have several selectbox chained dynamically. If there appear only one option in one of those selectboxes, the rest won't work because I am not able to call on_change function. I mean that on_change callback is not called by the selectbox with one option.",
+      "author": {
+        "login": "bulend-karadag",
+        "type": "User"
+      },
+      "is_bot": false,
+      "retrieval_method": "github_rest_comments",
+      "retrieved_at": "2026-10-06T14:45:19.258377+00:00",
+      "body_sha256": "017ebb084a873d509925a608150578c9f93cf958df90b96f6c84262ed0765f62",
+      "updated_at_basis": "rest_updated_at",
+      "is_hidden": false
+    },
+    {
+      "id": 1255299073,
+      "html_url": "https://github.com/streamlit/streamlit/issues/3601#issuecomment-1255299073",
+      "created_at": "2022-09-22T16:55:44Z",
+      "updated_at": "2022-09-22T16:55:44Z",
+      "author_association": "NONE",
+      "source_id": "comment:1255299073",
+      "issue_number": 3601,
+      "parent_source_id": "issue:3601",
+      "body": "I also agree with this, it's a bit frustrating to set up state somewhere bc `on_change` doesn't hold the value properly.\r\nOn top of that, the value from the widget itself isn't sent to the callback, meaning I *have* to use the `st.session_state` key to access it which makes it a bit more frustrating to use this api feature.",
+      "author": {
+        "login": "0xMochan",
+        "type": "User"
+      },
+      "is_bot": false,
+      "retrieval_method": "github_rest_comments",
+      "retrieved_at": "2026-10-06T14:45:19.258377+00:00",
+      "body_sha256": "3eb7cee63ffa2ec46dabb16afbac5b29d93ac5e186c46ffd8708092d68b8ed67",
+      "updated_at_basis": "rest_updated_at",
+      "is_hidden": false
+    },
+    {
+      "id": 1328323123,
+      "html_url": "https://github.com/streamlit/streamlit/issues/3601#issuecomment-1328323123",
+      "created_at": "2022-11-27T19:32:07Z",
+      "updated_at": "2022-11-27T19:32:07Z",
+      "author_association": "NONE",
+      "source_id": "comment:1328323123",
+      "issue_number": 3601,
+      "parent_source_id": "issue:3601",
+      "body": "Adding myself to the list of folks who need the on_change callback to be called the first time the widget changes value. Appreciate the detailed bug report @kinghuang",
+      "author": {
+        "login": "paintlikeanengineer",
+        "type": "User"
+      },
+      "is_bot": false,
+      "retrieval_method": "github_rest_comments",
+      "retrieved_at": "2026-10-06T14:45:19.258377+00:00",
+      "body_sha256": "09b07fce022ac36d77f7bdc92901cda11cfe0d0021c7f1e8cab80ab4d106a7e8",
+      "updated_at_basis": "rest_updated_at",
+      "is_hidden": false
+    },
+    {
+      "id": 1460511064,
+      "html_url": "https://github.com/streamlit/streamlit/issues/3601#issuecomment-1460511064",
+      "created_at": "2023-03-08T17:04:48Z",
+      "updated_at": "2023-03-08T17:04:48Z",
+      "author_association": "NONE",
+      "source_id": "comment:1460511064",
+      "issue_number": 3601,
+      "parent_source_id": "issue:3601",
+      "body": "Adding my voice on this. I think @kinghuang had a good insight that it is better to think about this from the state perspective rather than the widget perspective. While there may be use cases for the on_change to function as it does currently, to me the obvious use case is the data input one where selecting the first option should give the same behavior as selecting any of the others.",
+      "author": {
+        "login": "smullgg",
+        "type": "User"
+      },
+      "is_bot": false,
+      "retrieval_method": "github_rest_comments",
+      "retrieved_at": "2026-10-06T14:45:19.258377+00:00",
+      "body_sha256": "a108f5f84300252b825f7797ff3d99080fb3da67a49794d1fc83f3a42b3d0bf7",
+      "updated_at_basis": "rest_updated_at",
+      "is_hidden": false
+    },
+    {
+      "id": 1531662195,
+      "html_url": "https://github.com/streamlit/streamlit/issues/3601#issuecomment-1531662195",
+      "created_at": "2023-05-02T15:18:04Z",
+      "updated_at": "2023-05-02T15:18:04Z",
+      "author_association": "NONE",
+      "source_id": "comment:1531662195",
+      "issue_number": 3601,
+      "parent_source_id": "issue:3601",
+      "body": "I have a similar issue. I would like to update a multiselect with a dual select_slider just to reduce the effort for the user to click so many times in case the user would like to have a range selection plus some additional selections outside of that range.",
+      "author": {
+        "login": "NanisTe",
+        "type": "User"
+      },
+      "is_bot": false,
+      "retrieval_method": "github_rest_comments",
+      "retrieved_at": "2026-10-06T14:45:19.258377+00:00",
+      "body_sha256": "caf9c3409f4adf60a483b298f4d805f2f67c2fc51d6e25d6bb264877750f467b",
+      "updated_at_basis": "rest_updated_at",
+      "is_hidden": false
+    },
+    {
+      "id": 1703309932,
+      "html_url": "https://github.com/streamlit/streamlit/issues/3601#issuecomment-1703309932",
+      "created_at": "2023-09-01T20:54:52Z",
+      "updated_at": "2023-09-01T20:54:52Z",
+      "author_association": "NONE",
+      "source_id": "comment:1703309932",
+      "issue_number": 3601,
+      "parent_source_id": "issue:3601",
+      "body": "Just adding to the chain, I am facing a similar issue, which would be solved by having on_change invoked for initial/default values",
+      "author": {
+        "login": "ruthwik081",
+        "type": "User"
+      },
+      "is_bot": false,
+      "retrieval_method": "github_rest_comments",
+      "retrieved_at": "2026-10-06T14:45:19.258377+00:00",
+      "body_sha256": "b20d0b0e3a6e1448559a59fc5a6a653325cd2c73bf778024113fb71e7536ded9",
+      "updated_at_basis": "rest_updated_at",
+      "is_hidden": false
+    },
+    {
+      "id": 1830888900,
+      "html_url": "https://github.com/streamlit/streamlit/issues/3601#issuecomment-1830888900",
+      "created_at": "2023-11-28T22:56:06Z",
+      "updated_at": "2023-11-28T22:56:06Z",
+      "author_association": "NONE",
+      "source_id": "comment:1830888900",
+      "issue_number": 3601,
+      "parent_source_id": "issue:3601",
+      "body": "Similar issue, I think the callback should be able to be called on the initial value!",
+      "author": {
+        "login": "sean-roelofs-ai",
+        "type": "User"
+      },
+      "is_bot": false,
+      "retrieval_method": "github_rest_comments",
+      "retrieved_at": "2026-10-06T14:45:19.258377+00:00",
+      "body_sha256": "b3dd79bbd30e2c6c07ae2832014622ae48a0b45405538b32834ab8652e2de92a",
+      "updated_at_basis": "rest_updated_at",
+      "is_hidden": false
+    },
+    {
+      "id": 1891008886,
+      "html_url": "https://github.com/streamlit/streamlit/issues/3601#issuecomment-1891008886",
+      "created_at": "2024-01-14T17:13:32Z",
+      "updated_at": "2024-01-14T17:13:32Z",
+      "author_association": "NONE",
+      "source_id": "comment:1891008886",
+      "issue_number": 3601,
+      "parent_source_id": "issue:3601",
+      "body": "Same issue here. I am updating content when a user changes the select box.  But now when they select the first item in the select box from any other item, it doesn't fire!  No bueno.",
+      "author": {
+        "login": "kevintupper",
+        "type": "User"
+      },
+      "is_bot": false,
+      "retrieval_method": "github_rest_comments",
+      "retrieved_at": "2026-10-06T14:45:19.258377+00:00",
+      "body_sha256": "bc503fbdb3bf228cb6a72b0f730363a7098b844f2f7a788492b6385ddce93623",
+      "updated_at_basis": "rest_updated_at",
+      "is_hidden": false
+    },
+    {
+      "id": 1997194209,
+      "html_url": "https://github.com/streamlit/streamlit/issues/3601#issuecomment-1997194209",
+      "created_at": "2024-03-14T11:09:13Z",
+      "updated_at": "2024-03-14T11:09:13Z",
+      "author_association": "CONTRIBUTOR",
+      "source_id": "comment:1997194209",
+      "issue_number": 3601,
+      "parent_source_id": "issue:3601",
+      "body": "Same issue... Adding myself to the list.",
+      "author": {
+        "login": "LarsHill",
+        "type": "User"
+      },
+      "is_bot": false,
+      "retrieval_method": "github_rest_comments",
+      "retrieved_at": "2026-10-06T14:45:19.258377+00:00",
+      "body_sha256": "e0a3656410ddc893c3cfeee7c83cb678e8db1a06e40d6f6579b5c7a9c4e31ea3",
+      "updated_at_basis": "rest_updated_at",
+      "is_hidden": false
+    },
+    {
+      "id": 2343786041,
+      "html_url": "https://github.com/streamlit/streamlit/issues/3601#issuecomment-2343786041",
+      "created_at": "2024-09-11T14:09:36Z",
+      "updated_at": "2024-09-11T14:09:36Z",
+      "author_association": "NONE",
+      "source_id": "comment:2343786041",
+      "issue_number": 3601,
+      "parent_source_id": "issue:3601",
+      "body": "Same here...",
+      "author": {
+        "login": "eyilmazDXC",
+        "type": "User"
+      },
+      "is_bot": false,
+      "retrieval_method": "github_rest_comments",
+      "retrieved_at": "2026-10-06T14:45:19.258377+00:00",
+      "body_sha256": "3b3015d7aed3c696f0ab5662144c20c11ca2626328bfcf0396a84e1824f2ffbe",
+      "updated_at_basis": "rest_updated_at",
+      "is_hidden": false
+    },
+    {
+      "id": 2520000592,
+      "html_url": "https://github.com/streamlit/streamlit/issues/3601#issuecomment-2520000592",
+      "created_at": "2024-12-05T11:08:25Z",
+      "updated_at": "2024-12-05T11:08:25Z",
+      "author_association": "NONE",
+      "source_id": "comment:2520000592",
+      "issue_number": 3601,
+      "parent_source_id": "issue:3601",
+      "body": "Same issue here :-(",
+      "author": {
+        "login": "AnskeVan",
+        "type": "User"
+      },
+      "is_bot": false,
+      "retrieval_method": "github_rest_comments",
+      "retrieved_at": "2026-10-06T14:45:19.258377+00:00",
+      "body_sha256": "cab7489a0c04c13db273ac91c6d7d57ed8bc8ec5096c3aa9a8d87294f75db62f",
+      "updated_at_basis": "rest_updated_at",
+      "is_hidden": false
+    }
+  ]
+}

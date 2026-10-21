@@ -1,0 +1,121 @@
+{
+  "issue": {
+    "id": 3000247355,
+    "number": 11115,
+    "title": "session_state not preserved when using st.switch_page",
+    "html_url": "https://github.com/streamlit/streamlit/issues/11115",
+    "created_at": "2025-04-16T17:08:25Z",
+    "updated_at": "2026-09-04T07:01:52Z",
+    "closed_at": null,
+    "state": "open",
+    "state_reason": null,
+    "author_association": "NONE",
+    "source_id": "issue:11115",
+    "repository": "streamlit/streamlit",
+    "body": "### Checklist\n\n\n### Summary\n\nI encountered an issue while trying to pass data via session_state between the pages in my multi-page app using `st.switch_page`. \n\nmy_repository/\n├── streamlit_app.py\n├── page_1.py\n├── page_2.py\n\n`session_state.unit` is initialized through a checkbox in streamlit_app.py.  \n`session_state.unit` is lost upon clicking `st.switch_page` on page 2.\nInterestingly, `session_state.unit` is preserved when navigating pages via the sidebar or using `st.page_link` on page 1. \n\n\n### Reproducible Code Example\n\n```Python\n>>>>> streamlit_app.py <<<<<<<\n\nimport streamlit as st\n\n\nst.sidebar.checkbox(\"set unit to True\", key=\"unit\")\n\npages = {\n    \"Your app\": [\n        st.Page(\"page_1.py\", title=\"Page 1\"),\n        st.Page(\"page_2.py\", title=\"Page 2\"),\n    ],\n}\npg = st.navigation(pages)\npg.run()\n\n\n>>>>> page_1.py <<<<<<<\nimport streamlit as st\n\nst.session_state.unit\nst.page_link(\"page_2.py\", label=\"page_2\") # this preserves state\n\n\n>>>>> page_2.py <<<<<<<\nimport streamlit as st\n\nst.session_state.unit\nback = st.button(\"< Back to Page 1\", type=\"primary\")\nif back:\n    st.switch_page(\"page_1.py\") # this causes state to be lost\n```\n\n### Steps To Reproduce\n\n1. `streamlit run streamlit_app.py`\n2. Click the checkbox to `turn session_state.unit` to True\n3. Navigate to page 2. Notice the value is still True\n4. Click the button\n5. Switches to page 1 and results in the following: AttributeError: st.session_state has no attribute \"unit\". Did you forget to initialize it?\n\n### Expected Behavior\n\n`session_state.unit` should be preserved after clicking `st.switch_page`\n\n### Current Behavior\n\nSwitches to page 1 and produces following: \n\n> AttributeError: st.session_state has no attribute \"unit\". Did you forget to initialize it?\n\n### Is this a regression?\n\n- [x] Yes, this used to work in a previous version.\n\n### Debug info\n\n- Streamlit version: 1.44.1\n- Python version: 3.11\n- Operating System: MacOS\n- Browser: Chrome\n\n\n### Additional Information\n\n_No response_",
+    "labels": [
+      "type:bug",
+      "status:confirmed",
+      "priority:P3",
+      "feature:st.session_state",
+      "feature:st.switch_page"
+    ],
+    "author": {
+      "login": "drew-wks",
+      "type": "User"
+    },
+    "comment_count": 2,
+    "comments_complete": true,
+    "metadata_retrieved_at": "2026-10-06T14:27:25.875926+00:00",
+    "comments_retrieved_at": "2026-10-06T14:29:27.119468+00:00",
+    "comments_retrieval_method": "github_public_html_embedded_data",
+    "body_sha256": "65898c87ec7e58de7254d311aa58a21a242410aa9826928b32833ea2d09bb124",
+    "original_body_sha256": "2c0e8967e351db0752a0031b9cec85e9d75d6985bff331a6c2c4397a6bb14c4b",
+    "streamlit_version": {
+      "value": "1.44.1",
+      "evidence_text": "- Streamlit version: 1.44.1",
+      "start_char": 1845,
+      "end_char": 1872,
+      "method": "explicit_version_line_regex"
+    },
+    "python_version": {
+      "value": "3.11",
+      "evidence_text": "- Python version: 3.11",
+      "start_char": 1873,
+      "end_char": 1895,
+      "method": "explicit_version_line_regex"
+    },
+    "topic_tags_heuristic": [
+      "multipage",
+      "reset_or_persistence",
+      "initialization_or_update"
+    ],
+    "sampling_sources": [
+      "label:feature:st.session_state",
+      "repo:streamlit/streamlit is:issue session_state in:title,body created:<=2026-10-06",
+      "repo:streamlit/streamlit is:issue \"session state\" in:title,body created:<=2026-10-06"
+    ],
+    "relevance_basis": "state_label_or_title",
+    "evaluation_split": null,
+    "pilot_previously_inspected": false,
+    "historical_as_of_reconstruction": false,
+    "operating_system": {
+      "value": "MacOS",
+      "evidence_text": "- Operating System: MacOS",
+      "start_char": 1896,
+      "end_char": 1921,
+      "method": "explicit_environment_line_regex"
+    },
+    "browser": {
+      "value": "Chrome",
+      "evidence_text": "- Browser: Chrome",
+      "start_char": 1922,
+      "end_char": 1939,
+      "method": "explicit_environment_line_regex"
+    }
+  },
+  "comments": [
+    {
+      "id": 2810200477,
+      "html_url": "https://github.com/streamlit/streamlit/issues/11115#issuecomment-2810200477",
+      "created_at": "2025-04-16T17:08:38Z",
+      "updated_at": "2025-04-16T17:08:38Z",
+      "author_association": "CONTRIBUTOR",
+      "source_id": "comment:2810200477",
+      "issue_number": 11115,
+      "parent_source_id": "issue:11115",
+      "body": "**If this issue affects you, please react with a 👍 (thumbs up emoji) to the initial post.**\n\nYour feedback helps us prioritize which bugs to investigate and address first.\n\n![Views](https://api.views-badge.org/badge/st-issue-11115)",
+      "author": {
+        "login": "github-actions",
+        "type": "Bot"
+      },
+      "is_bot": true,
+      "retrieval_method": "github_public_html_embedded_data",
+      "retrieved_at": "2026-10-06T14:29:27.119468+00:00",
+      "body_sha256": "b83dcccdbc982744af63e9c4fa56ec8b336d55c084d00d605a5114563abbf54f",
+      "updated_at_basis": "lastEditedAt_or_createdAt_from_public_HTML",
+      "is_hidden": false
+    },
+    {
+      "id": 2810864197,
+      "html_url": "https://github.com/streamlit/streamlit/issues/11115#issuecomment-2810864197",
+      "created_at": "2025-04-16T21:34:24Z",
+      "updated_at": "2025-04-16T21:34:24Z",
+      "author_association": "CONTRIBUTOR",
+      "source_id": "comment:2810864197",
+      "issue_number": 11115,
+      "parent_source_id": "issue:11115",
+      "body": "Hi @drew-wks thanks for filing this issue and with such a simple repro. I can confirm that this issue exists.",
+      "author": {
+        "login": "sfc-gh-nbellante",
+        "type": "User"
+      },
+      "is_bot": false,
+      "retrieval_method": "github_public_html_embedded_data",
+      "retrieved_at": "2026-10-06T14:29:27.119468+00:00",
+      "body_sha256": "67e6cd536cf6e3a9e80808835a2a2e3633c10000b9257e1dd4495fdd39fc2a32",
+      "updated_at_basis": "lastEditedAt_or_createdAt_from_public_HTML",
+      "is_hidden": false
+    }
+  ]
+}

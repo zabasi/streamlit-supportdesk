@@ -1,0 +1,236 @@
+{
+  "issue": {
+    "id": 1024172954,
+    "number": 3903,
+    "title": "Setting widget values using session_state does not work after initialization",
+    "html_url": "https://github.com/streamlit/streamlit/issues/3903",
+    "created_at": "2021-10-12T19:05:04Z",
+    "updated_at": "2022-07-27T00:33:03Z",
+    "closed_at": "2022-07-27T00:33:03Z",
+    "state": "closed",
+    "state_reason": "completed",
+    "author_association": "NONE",
+    "source_id": "issue:3903",
+    "repository": "streamlit/streamlit",
+    "body": "### Summary\r\n\r\nIf a widget's value is set by modifying the session state the widget does not update.\r\n\r\nThe [docs](https://docs.streamlit.io/library/advanced-features/session-state) state\r\n\r\n> We can set and get the value of the temperature widget by using the Session State API\r\n\r\n### Steps to reproduce\r\n\r\nIf you take the example stated in the docs that works fine and sets the value, but only for the first run\r\n\r\n```\r\nimport streamlit as st\r\n\r\nif \"celsius\" not in st.session_state:\r\n    # set the initial default value of the slider widget\r\n    st.session_state.celsius = 50.0\r\n\r\nst.slider(\r\n    \"Temperature in Celsius\",\r\n    min_value=-100.0,\r\n    max_value=100.0,\r\n    key=\"celsius\"\r\n)\r\n\r\n# This will get the value of the slider widget\r\nst.write(st.session_state.celsius)\r\n```\r\nIf you modify the session state before the widget is \"initialized\" the GUI does not update,\r\nbut the actual value returned from the widget is the one set.\r\n\r\ne.g. with the following example:\r\n\r\n```\r\nimport streamlit as st\r\nimport datetime\r\n\r\ndef cbk_text_input():\r\n    st.write('callback text')\r\n    st.write(datetime.datetime.now())\r\n\r\ndef cbk_slider():\r\n    st.write('callback slider')\r\n    st.write(datetime.datetime.now())\r\n\r\nif 'id_input' not in st.session_state:\r\n    st.session_state['id_input'] = ''\r\n\r\nif 'my_slider' not in st.session_state:\r\n    st.session_state['my_slider'] = 5\r\n\r\n# these values do not reflect in the GUI,\r\n# but they do in the actual value returned from the widget\r\nst.session_state['id_input'] = 'sdf'\r\nst.session_state['my_slider'] = 50\r\n\r\nanswer = st.text_input(f'', value='', \r\n                            key='id_input',\r\n                            on_change=cbk_text_input)\r\n\r\nx = st.slider('some slider', key='my_slider',\r\n                         min_value=0,\r\n                         max_value=100,\r\n                         value=4,\r\n                         step=5,\r\n                         on_change=cbk_slider)\r\n\r\nanswer\r\nst.session_state['id_input']\r\nx\r\nst.session_state['my_slider']\r\n```\r\nBut I would expect the widget to also reflect a \"manual\" change to the session state.\r\nI would have expected the slider to move and the text box to change its content.\r\n\r\n### Is this a regression?\r\n\r\nno clue\r\n\r\n### Debug info\r\n\r\n- Streamlit version: 1.0.0\r\n- Python version: 3.9\r\n- OS version: Linux Mint\r\n- Browser version: Firefox 92.0.1",
+    "labels": [
+      "type:bug"
+    ],
+    "author": {
+      "login": "solarjoe",
+      "type": "User"
+    },
+    "comment_count": 8,
+    "comments_complete": true,
+    "metadata_retrieved_at": "2026-10-06T14:28:11.874253+00:00",
+    "comments_retrieved_at": "2026-10-06T14:30:20.062291+00:00",
+    "comments_retrieval_method": "github_public_html_embedded_data",
+    "body_sha256": "5ed386a2f7f43f901ad229033bcee760b6e57c9d4b56beb7f91442d7f811bf31",
+    "original_body_sha256": "ba1b36061b95c91befca5f5402bdce8957ebd156aa6394120aa90fa3f506a7b4",
+    "streamlit_version": {
+      "value": "1.0.0",
+      "evidence_text": "- Streamlit version: 1.0.0",
+      "start_char": 2251,
+      "end_char": 2278,
+      "method": "explicit_version_line_regex"
+    },
+    "python_version": {
+      "value": "3.9",
+      "evidence_text": "- Python version: 3.9",
+      "start_char": 2279,
+      "end_char": 2301,
+      "method": "explicit_version_line_regex"
+    },
+    "topic_tags_heuristic": [
+      "callbacks",
+      "initialization_or_update"
+    ],
+    "sampling_sources": [
+      "repo:streamlit/streamlit is:issue session_state in:title,body created:<=2026-10-06",
+      "repo:streamlit/streamlit is:issue \"session state\" in:title,body created:<=2026-10-06",
+      "repo:streamlit/streamlit is:issue \"widget state\" in:title,body created:<=2026-10-06"
+    ],
+    "relevance_basis": "state_label_or_title",
+    "evaluation_split": null,
+    "pilot_previously_inspected": false,
+    "historical_as_of_reconstruction": false,
+    "operating_system": null,
+    "browser": {
+      "value": "Firefox 92.0.1",
+      "evidence_text": "- Browser version: Firefox 92.0.1",
+      "start_char": 2328,
+      "end_char": 2361,
+      "method": "explicit_environment_line_regex"
+    }
+  },
+  "comments": [
+    {
+      "id": 941335247,
+      "html_url": "https://github.com/streamlit/streamlit/issues/3903#issuecomment-941335247",
+      "created_at": "2021-10-12T19:20:29Z",
+      "updated_at": "2021-10-12T19:20:29Z",
+      "author_association": "NONE",
+      "source_id": "comment:941335247",
+      "issue_number": 3903,
+      "parent_source_id": "issue:3903",
+      "body": "I just saw that the code lines where the values are set \r\n```\r\nst.session_state['id_input'] = 'sdf'\r\nst.session_state['my_slider'] = 50\r\n```\r\nseem to trigger the callbacks, if the values are not 'sdf' or 50.\r\nYou can see the two blocks at the top.\r\nThat seems a bit strange and unexpected to me\r\nbecause I would expect this only on GUI interaction.\r\nIs this triggered by JavaScript?",
+      "author": {
+        "login": "solarjoe",
+        "type": "User"
+      },
+      "is_bot": false,
+      "retrieval_method": "github_public_html_embedded_data",
+      "retrieved_at": "2026-10-06T14:30:20.062291+00:00",
+      "body_sha256": "36efb73444e4107f092150fc34faf54a087097f8293bcea2f18be0d45182d64d",
+      "updated_at_basis": "lastEditedAt_or_createdAt_from_public_HTML",
+      "is_hidden": false
+    },
+    {
+      "id": 942464488,
+      "html_url": "https://github.com/streamlit/streamlit/issues/3903#issuecomment-942464488",
+      "created_at": "2021-10-13T16:14:13Z",
+      "updated_at": "2021-10-13T16:14:31Z",
+      "author_association": "NONE",
+      "source_id": "comment:942464488",
+      "issue_number": 3903,
+      "parent_source_id": "issue:3903",
+      "body": "Is this mapped correctly onto the proto values? `\"stringValue\"` vs. `string string_value = 6;`\r\n\r\nhttps://github.com/streamlit/streamlit/blob/b8c284071b6c5ed5291526978ee7b589e4d1695c/proto/streamlit/proto/WidgetStates.proto#L43\r\n\r\nhttps://github.com/streamlit/streamlit/blob/17d8999d7b27fbd85fe3664a6c56fd4579cdf9eb/frontend/src/components/widgets/TextInput/TextInput.tsx#L64\r\n\r\nhttps://github.com/streamlit/streamlit/blob/17d8999d7b27fbd85fe3664a6c56fd4579cdf9eb/frontend/src/lib/WidgetStateManager.ts#L307",
+      "author": {
+        "login": "solarjoe",
+        "type": "User"
+      },
+      "is_bot": false,
+      "retrieval_method": "github_public_html_embedded_data",
+      "retrieved_at": "2026-10-06T14:30:20.062291+00:00",
+      "body_sha256": "e0f3666066f2b8d2b14392f542c021ee85176321766bf7be99b4f5eeceb30c89",
+      "updated_at_basis": "lastEditedAt_or_createdAt_from_public_HTML",
+      "is_hidden": false
+    },
+    {
+      "id": 942712909,
+      "html_url": "https://github.com/streamlit/streamlit/issues/3903#issuecomment-942712909",
+      "created_at": "2021-10-13T20:55:02Z",
+      "updated_at": "2021-10-13T20:55:02Z",
+      "author_association": "CONTRIBUTOR",
+      "source_id": "comment:942712909",
+      "issue_number": 3903,
+      "parent_source_id": "issue:3903",
+      "body": "> Is this mapped correctly onto the proto values? \"stringValue\" vs. string string_value = 6;\r\n\r\nThe conversion from `snake_case` to `lowerCamelCase` is done automagically for protobufs depending on the conventions of the language, so the mapping here is correct. \r\n\r\nI think a change may have recently gone in to fix this that'll be released in the next version. @AnOctopus can confirm whether this is the case.",
+      "author": {
+        "login": "vdonato",
+        "type": "User"
+      },
+      "is_bot": false,
+      "retrieval_method": "github_public_html_embedded_data",
+      "retrieved_at": "2026-10-06T14:30:20.062291+00:00",
+      "body_sha256": "2de225157937e9769b702f1867762a9fbf0057728f15c315d3574031609c506d",
+      "updated_at_basis": "lastEditedAt_or_createdAt_from_public_HTML",
+      "is_hidden": false
+    },
+    {
+      "id": 942961882,
+      "html_url": "https://github.com/streamlit/streamlit/issues/3903#issuecomment-942961882",
+      "created_at": "2021-10-14T05:27:04Z",
+      "updated_at": "2021-10-14T05:27:04Z",
+      "author_association": "NONE",
+      "source_id": "comment:942961882",
+      "issue_number": 3903,
+      "parent_source_id": "issue:3903",
+      "body": "Yes, I found the tickets and PRs, and it seems to be the same issue.\r\nhttps://github.com/streamlit/streamlit/issues/3873\r\n\r\nI also saw other PRs that discuss this behaviour with select_slider and slider and I also see this behaviour with text_input and text_area.\r\n\r\nIs there a simple method to try the new changes without having to npm build?\r\nElse I will have to wait for the changes to make it to PyPI.",
+      "author": {
+        "login": "solarjoe",
+        "type": "User"
+      },
+      "is_bot": false,
+      "retrieval_method": "github_public_html_embedded_data",
+      "retrieved_at": "2026-10-06T14:30:20.062291+00:00",
+      "body_sha256": "202f7561dc0f615d63d7fd7a2836a30f1951cdbeb1399bde9214ac86570cac40",
+      "updated_at_basis": "lastEditedAt_or_createdAt_from_public_HTML",
+      "is_hidden": false
+    },
+    {
+      "id": 942989065,
+      "html_url": "https://github.com/streamlit/streamlit/issues/3903#issuecomment-942989065",
+      "created_at": "2021-10-14T05:55:32Z",
+      "updated_at": "2021-10-14T05:55:32Z",
+      "author_association": "NONE",
+      "source_id": "comment:942989065",
+      "issue_number": 3903,
+      "parent_source_id": "issue:3903",
+      "body": "I can also confirm that it works fine with Streamlit 0.87.0",
+      "author": {
+        "login": "solarjoe",
+        "type": "User"
+      },
+      "is_bot": false,
+      "retrieval_method": "github_public_html_embedded_data",
+      "retrieved_at": "2026-10-06T14:30:20.062291+00:00",
+      "body_sha256": "130becdf2ceccc828b7fdcb4f142bdb893662b3656f41322779cd4d0b56f29ec",
+      "updated_at_basis": "lastEditedAt_or_createdAt_from_public_HTML",
+      "is_hidden": false
+    },
+    {
+      "id": 943788937,
+      "html_url": "https://github.com/streamlit/streamlit/issues/3903#issuecomment-943788937",
+      "created_at": "2021-10-14T22:32:29Z",
+      "updated_at": "2021-10-14T22:32:29Z",
+      "author_association": "CONTRIBUTOR",
+      "source_id": "comment:943788937",
+      "issue_number": 3903,
+      "parent_source_id": "issue:3903",
+      "body": "Yep, this should be fixed by #3875, which will be included in the next release.",
+      "author": {
+        "login": "AnOctopus",
+        "type": "User"
+      },
+      "is_bot": false,
+      "retrieval_method": "github_public_html_embedded_data",
+      "retrieved_at": "2026-10-06T14:30:20.062291+00:00",
+      "body_sha256": "112a6a65edcbcceb38a94b493eb1d2b8056ed7d46d256272f759dda12e56bc08",
+      "updated_at_basis": "lastEditedAt_or_createdAt_from_public_HTML",
+      "is_hidden": false
+    },
+    {
+      "id": 951410933,
+      "html_url": "https://github.com/streamlit/streamlit/issues/3903#issuecomment-951410933",
+      "created_at": "2021-10-25T23:19:41Z",
+      "updated_at": "2021-10-25T23:19:41Z",
+      "author_association": "NONE",
+      "source_id": "comment:951410933",
+      "issue_number": 3903,
+      "parent_source_id": "issue:3903",
+      "body": "Hello @solarjoe  - I was having issues with widgets after version 0.87 too. I am currently up to date at version 1.1 and my issues were not completely solved by #3875.\r\n\r\nIf you are at v1.1 and still having issues, my problem and solution is described here: #3963. https://github.com/streamlit/streamlit/issues/3963#issuecomment-951306196",
+      "author": {
+        "login": "openfieldbook",
+        "type": "User"
+      },
+      "is_bot": false,
+      "retrieval_method": "github_public_html_embedded_data",
+      "retrieved_at": "2026-10-06T14:30:20.062291+00:00",
+      "body_sha256": "f8af6fbaa14e8dd3386cf6d4aa4927c4b57bc32a74503b5e159eab1e6ea9083e",
+      "updated_at_basis": "lastEditedAt_or_createdAt_from_public_HTML",
+      "is_hidden": false
+    },
+    {
+      "id": 1196140672,
+      "html_url": "https://github.com/streamlit/streamlit/issues/3903#issuecomment-1196140672",
+      "created_at": "2022-07-27T00:33:03Z",
+      "updated_at": "2022-07-27T00:33:03Z",
+      "author_association": "CONTRIBUTOR",
+      "source_id": "comment:1196140672",
+      "issue_number": 3903,
+      "parent_source_id": "issue:3903",
+      "body": "Closing this as it seems resolved. Let us know if there's an issue.",
+      "author": {
+        "login": "kmcgrady",
+        "type": "User"
+      },
+      "is_bot": false,
+      "retrieval_method": "github_public_html_embedded_data",
+      "retrieved_at": "2026-10-06T14:30:20.062291+00:00",
+      "body_sha256": "470914c61304f7e9c7fb0c2a81b638d02ca5a47aa66fcfa5cedfe2566bedb6ab",
+      "updated_at_basis": "lastEditedAt_or_createdAt_from_public_HTML",
+      "is_hidden": false
+    }
+  ]
+}
