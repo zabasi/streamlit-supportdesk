@@ -178,6 +178,10 @@ them all, and `docs/pipelines.md` describes them with their results.
   one of these cases' issues out, so neither split can find its own answer.
 - `data/questions/`: the doc2query bank: 730 questions for 146 documentation sections, with their embeddings.
 - `data/sample/`: a small synthetic corpus for offline runs.
+- `data_gathering/`: how the corpus was collected and prepared: the download code for issues, comments,
+  documentation and release notes, the frozen v06 dataset with its cleaning and review code, and offline
+  validation (`data_gathering/README.md`). Nothing in the system reads from it; exporting its retrieval
+  corpus reproduces `data/processed/corpus.jsonl` byte for byte.
 
 The corpus quotes public GitHub issues and comments verbatim, including their code and tracebacks, and
 the Streamlit documentation; their original authors and licences apply to that text.
@@ -191,6 +195,7 @@ configs/                  default settings, pipeline profiles (main ones on top,
                           prompts, prices, the sample configuration, and overlays/: small example
                           files applied on top of any pipeline with --config
 data/                     corpus, evaluation files, doc2query bank, sample, experiment inputs
+data_gathering/           how the corpus was collected and prepared (separate; its own README)
 docs/                     results, configuration, evaluation, pipelines, schemas, the answer step,
                           snapshots, and write-ups of the experiments (docs/experiments/)
 scripts/                  one-off tools: question bank, diagnostics, case export, judge agreement
